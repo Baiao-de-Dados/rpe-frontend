@@ -51,10 +51,10 @@ export default function AsideMenu() {
 
             <aside
                 className={`
-                    bg-[#f1f1f1] flex flex-col p-4 w-24 h-screen 
+                    absolute bg-[#fff] flex flex-col p-4 w-24 h-screen 
                     transition-all duration-300 ease-in-out overflow-hidden z-[999] overflow-y-auto
                     ${isNavHovered ? 'w-60' : ''}
-                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-[#f1f1f1]
+                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-[#fff]
                     ${isMenuOpened ? 'max-lg:flex max-lg:flex-col' : 'max-lg:hidden'}
                 `}
             >

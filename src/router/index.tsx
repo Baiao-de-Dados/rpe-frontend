@@ -1,8 +1,9 @@
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
+import { Dashboard, Avaliacao, Evolucao } from '../pages';
 
 function ProtectedLayout() {
-    const isLoggedIn = true; // Altere para true/false para testar
+    const isLoggedIn = true;
 
     return isLoggedIn ? <DefaultLayout /> : <Navigate to="/login" replace />;
 }
@@ -25,12 +26,9 @@ export function Router() {
                 />
                 <Route path="/login" element={<h1>Login</h1>} />
                 <Route path="/" element={<ProtectedLayout />}>
-                    <Route path="dashboard" element={<h1>Dashboard</h1>} />
-                    <Route
-                        path="avaliacao"
-                        element={<h1>Avaliação de ciclo</h1>}
-                    />
-                    <Route path="evolucao" element={<h1>Evolução</h1>} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="avaliacao" element={<Avaliacao />} />
+                    <Route path="evolucao" element={<Evolucao />} />
                 </Route>
             </Routes>
         </BrowserRouter>

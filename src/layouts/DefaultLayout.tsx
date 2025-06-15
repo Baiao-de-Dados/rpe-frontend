@@ -3,11 +3,11 @@ import AsideMenu from '../components/AsideMenu';
 
 export function DefaultLayout() {
     return (
-        <div className="flex h-screen max-sm:flex-col">
+        <div className="relative h-screen max-lg:flex-col">
             <AsideMenu />
-            <main className="flex-1 overflow-y-auto">
-                <div id="main" className="p-12 ml-20 max-sm:ml-0">
-                    <div className="dashboard mt-4 mb-8">
+            <main className="h-full overflow-y-auto">
+                <div id="main" className="p-12 ml-24 max-lg:ml-0">
+                    <div className="page-content mt-4 mb-8">
                         <Outlet />
                     </div>
                 </div>
