@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Typography from '../components/Typography';
+import { useAuth } from '../contexts/AuthContext';
 
 interface LoginFormData {
     email: string;
@@ -15,6 +16,7 @@ interface LoginFormErrors {
 }
 
 export default function LoginPage() {
+    const { login } = useAuth();
     const [form, setForm] = useState<LoginFormData>({
         email: '',
         password: '',
@@ -24,8 +26,8 @@ export default function LoginPage() {
 
     // Test credentials for demonstration purposes. You will be redirecting to /dashboard
     const testCredentials = {
-        email: 'admin@baiaodedados.com',
-        password: 'rocket',
+        email: 'usuario@teste.com',
+        password: 'senha123',
     };
 
     const corporateImage =
@@ -54,20 +56,12 @@ export default function LoginPage() {
         setErrors({});
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Validate test credentials, will remove this later
-            if (
-                form.email === testCredentials.email &&
-                form.password === testCredentials.password
-            ) {
-                alert('Login realizado com sucesso! Redirecionando...');
-                window.location.href = '/dashboard';
-            } else {
-                setErrors({ general: 'Email ou senha incorretos' });
-            }
-        } catch {
-            setErrors({ general: 'Erro ao fazer login' });
+            // Usando nosso contexto de autenticação para fazer login
+            await login(form.email, form.password);
+            // O redirecionamento será tratado pelo Router
+        } catch (error) {
+            console.error(error);
+            setErrors({ general: 'Email ou senha incorretos' });
         } finally {
             setIsLoading(false);
         }

@@ -8,11 +8,13 @@ import {
     ChartNoAxesCombined,
     LogOut,
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const rpeIcon = 'src/assets/rpe-logo.png';
 
 export default function AsideMenu() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const [isNavHovered, setIsNavHovered] = useState(false);
     const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -26,6 +28,7 @@ export default function AsideMenu() {
     };
 
     const handleLogout = () => {
+        logout();
         navigate('/login');
     };
 
