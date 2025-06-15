@@ -1,7 +1,8 @@
-import { Router } from './router';
+// src/App.tsx
+import LoginPage from './pages/LoginPage';
 
 function App() {
-    return <Router />;
+    return <LoginPage />;
 }
 
 export default App;
