@@ -1,17 +1,19 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import {
     Menu,
     ArrowLeft,
     LayoutGrid,
     ClipboardPen,
-    BarChart,
+    ChartNoAxesCombined,
     LogOut,
 } from 'lucide-react';
 
 const rpeIcon = 'src/assets/rpe-logo.png';
 
 export default function AsideMenu() {
+    const navigate = useNavigate();
+
     const [isNavHovered, setIsNavHovered] = useState(false);
     const [isMenuOpened, setIsMenuOpened] = useState(false);
 
@@ -23,39 +25,43 @@ export default function AsideMenu() {
         setIsMenuOpened(false);
     };
 
+    const handleLogout = () => {
+        navigate('/login');
+    };
+
     return (
         <>
-            <Menu
-                onClick={openMenu}
-                className={`hidden max-lg:block mt-4 ml-4 text-purple-900 cursor-pointer ${
-                    isMenuOpened ? 'hidden' : ''
-                }`}
-                size={50}
-                strokeWidth={2.5}
-            />
+            {!isMenuOpened && (
+                <Menu
+                    onClick={openMenu}
+                    className="hidden max-lg:block fixed top-4 left-4 text-[#6b9999] cursor-pointer z-[1000]"
+                    size={50}
+                    strokeWidth={2.5}
+                />
+            )}
 
-            <ArrowLeft
-                onClick={closeMenu}
-                className={`hidden max-lg:block mt-4 ml-4 text-white cursor-pointer z-[999] ${
-                    !isMenuOpened ? 'hidden' : ''
-                }`}
-                size={50}
-                strokeWidth={2.5}
-            />
+            {isMenuOpened && (
+                <ArrowLeft
+                    onClick={closeMenu}
+                    className="hidden max-lg:block fixed top-4 left-4 text-[#6b9999] cursor-pointer z-[1001]"
+                    size={50}
+                    strokeWidth={2.5}
+                />
+            )}
 
             <aside
                 className={`
                     bg-[#f1f1f1] flex flex-col p-4 w-24 h-screen 
                     transition-all duration-300 ease-in-out overflow-hidden z-[999] overflow-y-auto
                     ${isNavHovered ? 'w-60' : ''}
-                    max-lg:hidden max-lg:absolute max-lg:min-w-full max-lg:h-screen
-                    ${isMenuOpened ? 'max-lg:flex' : 'max-lg:hidden'}
+                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-[#f1f1f1]
+                    ${isMenuOpened ? 'max-lg:flex max-lg:flex-col' : 'max-lg:hidden'}
                 `}
             >
                 <div className="flex justify-center items-center w-full mb-4">
                     <Link to="/">
                         <img
-                            className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-20 max-lg:h-20"
+                            className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-32 max-lg:h-32 max-lg:mt-8"
                             src={rpeIcon}
                             alt="Logo"
                         />
@@ -67,21 +73,21 @@ export default function AsideMenu() {
                     onMouseEnter={() => setIsNavHovered(true)}
                     onMouseLeave={() => setIsNavHovered(false)}
                 >
-                    <ul className="flex flex-col gap-4 pl-0 w-full max-lg:justify-center">
-                        <li className="list-none w-full max-lg:flex max-lg:justify-center">
+                    <ul className="flex flex-col gap-4 pl-0 w-full max-lg:justify-start max-lg:gap-8 max-lg:mt-8 max-lg:pl-20 max-lg:w-auto">
+                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                             <NavLink
                                 to="/dashboard"
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
                                     transition-all duration-200 ease-in-out hover:text-[#3a7b7d]
-                                    max-lg:text-2xl max-lg:gap-2
+                                    max-lg:text-2xl max-lg:gap-4
                                     ${isActive ? 'text-[#2b5f60]' : 'text-[#6b9999]'}
                                 `}
                             >
                                 <LayoutGrid
                                     size={32}
-                                    className="flex-shrink-0 ml-4 max-lg:w-16 max-lg:h-12 self-center"
+                                    className="flex-shrink-0 ml-4 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
                                 />
                                 <span
                                     className={`
@@ -95,20 +101,20 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
 
-                        <li className="list-none w-full max-lg:flex max-lg:justify-center">
+                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                             <NavLink
                                 to="/avaliacao"
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
                                     transition-all duration-200 ease-in-out hover:text-[#3a7b7d]
-                                    max-lg:text-2xl max-lg:gap-2
+                                    max-lg:text-2xl max-lg:gap-4
                                     ${isActive ? 'text-[#2b5f60]' : 'text-[#6b9999]'}
                                 `}
                             >
                                 <ClipboardPen
                                     size={32}
-                                    className="flex-shrink-0 ml-4 max-lg:w-16 max-lg:h-12 self-center"
+                                    className="flex-shrink-0 ml-4 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
                                 />
                                 <span
                                     className={`
@@ -122,20 +128,20 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
 
-                        <li className="list-none w-full max-lg:flex max-lg:justify-center">
+                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                             <NavLink
                                 to="/evolucao"
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
                                     transition-all duration-200 ease-in-out hover:text-[#3a7b7d]
-                                    max-lg:text-2xl max-lg:gap-2
+                                    max-lg:text-2xl max-lg:gap-4
                                     ${isActive ? 'text-[#2b5f60]' : 'text-[#6b9999]'}
                                 `}
                             >
-                                <BarChart
+                                <ChartNoAxesCombined
                                     size={32}
-                                    className="flex-shrink-0 ml-4 max-lg:w-16 max-lg:h-12 self-center"
+                                    className="flex-shrink-0 ml-4 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
                                 />
                                 <span
                                     className={`
@@ -149,16 +155,29 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
                     </ul>
-                </nav>
 
-                {/* Logout */}
-                <div className="flex justify-center w-full mt-auto">
-                    <LogOut
-                        className="cursor-pointer mt-auto ml-2 text-[#6b9999] hover:text-[#3a7b7d] transition-colors duration-200"
-                        size={32}
-                        strokeWidth={2.5}
-                    />
-                </div>
+                    <div className="flex w-full mt-auto max-lg:mb-4 max-lg:justify-center">
+                        <div
+                            onClick={handleLogout}
+                            className="flex items-center gap-4 cursor-pointer ml-4 text-[#6b9999] hover:text-[#3a7b7d] transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0"
+                        >
+                            <LogOut
+                                size={32}
+                                strokeWidth={2.5}
+                                className="flex-shrink-0 max-lg:w-12 max-lg:h-12"
+                            />
+                            <span
+                                className={`
+                                opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out 
+                                ${isNavHovered ? 'opacity-100 visible' : ''}
+                                max-lg:opacity-100 max-lg:visible
+                            `}
+                            >
+                                Sair
+                            </span>
+                        </div>
+                    </div>
+                </nav>
             </aside>
         </>
     );
