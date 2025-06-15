@@ -51,12 +51,17 @@ export default function AsideMenu() {
 
             <aside
                 className={`
-                    absolute bg-[#fff] flex flex-col p-4 w-24 h-screen 
+                    absolute bg-[#fff] flex flex-col p-4 w-24 h-screen border-r-4 border-[#D9D9D9]
                     transition-all duration-300 ease-in-out overflow-hidden z-[999] overflow-y-auto
                     ${isNavHovered ? 'w-60' : ''}
-                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-[#fff]
+                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-[#fff] max-lg:border-r-0
                     ${isMenuOpened ? 'max-lg:flex max-lg:flex-col' : 'max-lg:hidden'}
                 `}
+                style={{
+                    boxShadow: isNavHovered
+                        ? '0 1px 3px 0 rgba(0, 0, 0, 0.05)'
+                        : 'none',
+                }}
             >
                 <div className="flex justify-center items-center w-full mb-4">
                     <Link to="/">
