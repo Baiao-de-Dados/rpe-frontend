@@ -22,8 +22,15 @@ export default function LoginPage() {
     const [errors, setErrors] = useState<LoginFormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
 
-    // URL da imagem corporativa (deixe vazio para usar o gradiente verde)
-    const corporateImage = '';
+    // Test credentials for demonstration purposes. You will be redirecting to /dashboard
+    const testCredentials = {
+        email: 'admin@baiaodedados.com',
+        password: 'rocket',
+    };
+
+    const corporateImage =
+        'https://s32907.pcdn.co/wp-content/uploads/2019/03/ambiente-corporativo.jpg';
+    const rpeLogo = 'src/assets/rpe-logo.png';
 
     const validateForm = (): boolean => {
         const newErrors: LoginFormErrors = {};
@@ -45,9 +52,20 @@ export default function LoginPage() {
 
         setIsLoading(true);
         setErrors({});
+
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
-            alert('Login realizado!');
+
+            // Validate test credentials, will remove this later
+            if (
+                form.email === testCredentials.email &&
+                form.password === testCredentials.password
+            ) {
+                alert('Login realizado com sucesso! Redirecionando...');
+                window.location.href = '/dashboard';
+            } else {
+                setErrors({ general: 'Email ou senha incorretos' });
+            }
         } catch {
             setErrors({ general: 'Erro ao fazer login' });
         } finally {
@@ -63,90 +81,69 @@ export default function LoginPage() {
                 setErrors(prev => ({ ...prev, [field]: undefined }));
         };
 
+    // Function to fill test credentials, will remove this later
+    const fillTestCredentials = () => {
+        setForm(testCredentials);
+        setErrors({}); // Limpar erros
+    };
+
     return (
         <div className="min-h-screen flex">
-            {/* Esquerda - 60% */}
+            {/*Left - 60%*/}
             <aside className="hidden lg:flex lg:w-3/5 relative overflow-hidden">
-                {/* Imagem ou Gradiente de fundo */}
                 {corporateImage ? (
                     <img
                         src={corporateImage}
-                        alt="RPE Frontend"
+                        alt="Rocket Coorporation"
                         className="absolute inset-0 w-full h-full object-cover"
                     />
                 ) : (
                     <div className="absolute inset-0 bg-gradient-primary-dark" />
                 )}
-                {/* Overlay escuro */}
-                <div className="absolute inset-0 bg-black/30" />
-                // ...existing code...
-                {/* Conteúdo */}
-                <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 text-white">
-                    <div className="max-w-lg">
-                        {/* Hero Text - Estilo "The Future is Rocket" */}
-                        <div className="mb-12">
-                            <h1 className="text-5xl xl:text-6xl font-bold leading-tight mb-8">
-                                <span className="text-white block mb-2">
-                                    O Futuro é
-                                </span>
-                                <span
-                                    className="block bg-gradient-to-r from-[#6dd4ce] via-[#3eb8b0] to-[#2B5F60] bg-clip-text text-transparent text-6xl xl:text-7xl font-black"
-                                    style={{
-                                        filter: 'drop-shadow(0 0 20px rgba(109, 212, 206, 0.3))',
-                                    }}
-                                >
-                                    RPE
-                                </span>
-                            </h1>
 
-                            {/* Subtítulo elegante */}
-                            <p className="text-white/80 text-lg xl:text-xl leading-relaxed max-w-md">
-                                Descubra inovações de ponta que redefinem a
-                                excelência. Experimente a harmonia perfeita
-                                entre design e performance.
-                            </p>
+                {/* Overlay escuro */}
+                <div className="absolute inset-0 bg-black/70" />
+
+                {/* Conteúdo */}
+                <div className="relative z-10 flex flex-col justify-between h-full px-12 xl:px-16 text-white py-12">
+                    {/* Título no topo esquerdo */}
+                    <div className="pt-8 overflow-visible">
+                        <div className="overflow-visible">
+                            <Typography
+                                variant="h1"
+                                color="gradient"
+                                className="text-7xl xl:text-8xl font-black leading-none mb-4 block overflow-visible"
+                            >
+                                Rocket Performance & Engagement
+                            </Typography>
                         </div>
 
-                        {/* Features minimalistas */}
-                        <div className="space-y-3">
-                            {[
-                                'Interface moderna e intuitiva',
-                                'Segurança de dados garantida',
-                                'Suporte técnico 24/7',
-                            ].map((text, i) => (
-                                <div key={i} className="flex items-center">
-                                    <div className="w-2 h-2 bg-[#6dd4ce] rounded-full mr-4 shadow-lg shadow-[#6dd4ce]/30"></div>
-                                    <span className="text-white/90 text-base">
-                                        {text}
-                                    </span>
-                                </div>
-                            ))}
+                        <div className="max-w-md">
+                            <Typography
+                                variant="h2"
+                                color="white"
+                                className="text-xl font-medium mb-4 leading-relaxed px-2"
+                            >
+                                A nova era da avaliação de desempenho começa
+                                aqui!
+                            </Typography>
                         </div>
                     </div>
                 </div>
-                // ...existing code...
             </aside>
 
-            {/* Direita - 40% */}
+            {/* Right - 40% */}
             <main className="flex-1 lg:w-2/5 flex items-center justify-center p-4 lg:p-8 xl:p-12 bg-gray-50">
                 <div className="w-full max-w-md">
                     <div className="bg-white rounded-2xl shadow-2xl p-6 lg:p-8 border border-gray-100">
                         {/* Header */}
                         <header className="text-center mb-8">
-                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                                <svg
-                                    className="w-8 h-8 text-primary-600"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                    />
-                                </svg>
+                            <div className="mx-auto mb-4">
+                                <img
+                                    src={rpeLogo}
+                                    alt="RPE Logo"
+                                    className="w-20 h-20 mx-auto object-contain"
+                                />
                             </div>
                             <Typography
                                 variant="h1"
@@ -160,7 +157,7 @@ export default function LoginPage() {
                             </Typography>
                         </header>
 
-                        {/* Erro geral */}
+                        {/* Error */}
                         {errors.general && (
                             <div
                                 role="alert"
@@ -212,17 +209,25 @@ export default function LoginPage() {
                                 <label className="flex items-center">
                                     <input
                                         type="checkbox"
-                                        className="rounded border-gray-300 text-primary focus:ring-primary-400"
+                                        className="rounded border-gray-300 text-primary-500 focus:ring-primary-400"
                                     />
-                                    <span className="ml-2 text-gray-700">
+                                    <Typography
+                                        variant="caption"
+                                        className="ml-2 text-gray-700"
+                                    >
                                         Lembrar de mim
-                                    </span>
+                                    </Typography>
                                 </label>
                                 <a
                                     href="#"
-                                    className="text-primary hover:text-primary-700 font-medium"
+                                    className="text-primary-500 hover:text-primary-700 font-medium"
                                 >
-                                    Esqueceu a senha?
+                                    <Typography
+                                        variant="caption"
+                                        className="text-primary-500 hover:text-primary-700 font-medium"
+                                    >
+                                        Esqueceu a senha?
+                                    </Typography>
                                 </a>
                             </div>
 
@@ -236,24 +241,36 @@ export default function LoginPage() {
                             </Button>
                         </form>
 
-                        {/* Footer */}
-                        <footer className="text-center mt-6">
-                            <Typography variant="caption" color="secondary">
-                                Não tem uma conta?{' '}
-                                <a
-                                    href="#"
-                                    className="text-primary hover:text-primary-700 font-medium"
+                        {/* Testing Credentials - To be removed later */}
+                        <div className="mt-6 p-4 bg-primary-50 rounded-lg border border-primary-200">
+                            <div className="flex items-center justify-between mb-3">
+                                <Typography
+                                    variant="caption"
+                                    className="text-primary-700 font-medium"
                                 >
-                                    Cadastre-se aqui
-                                </a>
+                                    Credenciais de teste:
+                                </Typography>
+                                <button
+                                    type="button"
+                                    onClick={fillTestCredentials}
+                                    className="px-4 py-2 text-sm bg-primary-100 hover:bg-primary-200 text-primary-700 rounded-md transition-colors duration-200 font-medium border border-primary-300"
+                                >
+                                    Preencher
+                                </button>
+                            </div>
+                            <Typography
+                                variant="caption"
+                                className="text-primary-600 font-mono text-sm"
+                            >
+                                {testCredentials.email} /{' '}
+                                {testCredentials.password}
                             </Typography>
-                        </footer>
+                        </div>
                     </div>
-
-                    {/* Copyright fora do card */}
+                    {/* Copyright */}
                     <div className="text-center mt-6">
                         <Typography variant="caption" color="secondary">
-                            © 2025 RPE Frontend. Todos os direitos reservados.
+                            © 2025 Rocket Corp. Todos os direitos reservados.
                         </Typography>
                     </div>
                 </div>
