@@ -21,11 +21,11 @@ export default function Button({
 
     const variants = {
         primary:
-            'bg-primary hover:bg-primary-600 text-white shadow-lg hover:shadow-xl hover:scale-105',
+            'bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl hover:scale-105',
         secondary:
             'bg-gray-600 hover:bg-gray-700 text-white shadow-lg hover:shadow-xl hover:scale-105',
         outline:
-            'border-2 border-primary text-primary hover:bg-primary hover:text-white hover:scale-105',
+            'border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white hover:scale-105',
     };
 
     const sizes = {

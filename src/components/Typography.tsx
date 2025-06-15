@@ -1,11 +1,8 @@
-import React from 'react';
-import type { JSX } from 'react';
-
 interface TypographyProps {
     variant: 'h1' | 'h2' | 'h3' | 'body' | 'caption';
     children: React.ReactNode;
     className?: string;
-    color?: 'primary' | 'secondary' | 'error';
+    color?: 'primary' | 'secondary' | 'muted' | 'error' | 'gradient' | 'white';
 }
 
 export default function Typography({
@@ -23,24 +20,20 @@ export default function Typography({
     };
 
     const colors = {
-        primary: 'text-gray-900',
-        secondary: 'text-gray-600',
-        error: 'text-red-600',
+        primary: 'text-primary-700', // Texto principal
+        secondary: 'text-primary-600', // Texto secundário
+        muted: 'text-primary-400', // Texto suave/disabled
+        error: 'text-red-600', // Erros
+        gradient: 'text-gradient-primary', // Gradiente customizado
+        white: 'text-white', // Texto branco
     };
 
-    const tag = {
-        h1: 'h1',
-        h2: 'h2',
-        h3: 'h3',
-        body: 'p',
-        caption: 'span',
-    }[variant] as keyof JSX.IntrinsicElements;
+    const Tag =
+        variant === 'body' ? 'p' : variant === 'caption' ? 'span' : variant;
 
-    return React.createElement(
-        tag,
-        {
-            className: `${variants[variant]} ${colors[color]} ${className}`,
-        },
-        children,
+    return (
+        <Tag className={`${variants[variant]} ${colors[color]} ${className}`}>
+            {children}
+        </Tag>
     );
 }
