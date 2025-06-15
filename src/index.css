@@ -1,69 +1,142 @@
 @import 'tailwindcss';
 
+/* Paleta de cores baseada em #2B5F60 */
 :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    --primary-50: #f0f9f9; /* Muito claro */
+    --primary-100: #d1f2f0; /* Claro */
+    --primary-200: #a7e8e4; /* Médio claro */
+    --primary-300: #6dd4ce; /* Médio */
+    --primary-400: #3eb8b0; /* Médio escuro */
+    --primary-500: #2b5f60; /* Base - sua cor */
+    --primary-600: #1f4a4d; /* Escuro */
+    --primary-700: #163a3d; /* Muito escuro */
+    --primary-800: #0f2d30; /* Quase preto */
+    --primary-900: #0a2224; /* Preto */
 }
 
-a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
+/* Classes utilitárias para nossa paleta personalizada */
+.bg-primary {
+    background-color: var(--primary-500);
 }
-a:hover {
-    color: #535bf2;
+.bg-primary-50 {
+    background-color: var(--primary-50);
 }
-
-body {
-    margin: 0;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
+.bg-primary-100 {
+    background-color: var(--primary-100);
 }
-
-h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
+.bg-primary-200 {
+    background-color: var(--primary-200);
 }
-
-button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
+.bg-primary-300 {
+    background-color: var(--primary-300);
 }
-button:hover {
-    border-color: #646cff;
+.bg-primary-400 {
+    background-color: var(--primary-400);
 }
-button:focus,
-button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+.bg-primary-500 {
+    background-color: var(--primary-500);
+}
+.bg-primary-600 {
+    background-color: var(--primary-600);
+}
+.bg-primary-700 {
+    background-color: var(--primary-700);
+}
+.bg-primary-800 {
+    background-color: var(--primary-800);
+}
+.bg-primary-900 {
+    background-color: var(--primary-900);
 }
 
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
-    a:hover {
-        color: #747bff;
-    }
-    button {
-        background-color: #f9f9f9;
-    }
+.text-primary {
+    color: var(--primary-500);
+}
+.text-primary-50 {
+    color: var(--primary-50);
+}
+.text-primary-100 {
+    color: var(--primary-100);
+}
+.text-primary-200 {
+    color: var(--primary-200);
+}
+.text-primary-300 {
+    color: var(--primary-300);
+}
+.text-primary-400 {
+    color: var(--primary-400);
+}
+.text-primary-500 {
+    color: var(--primary-500);
+}
+.text-primary-600 {
+    color: var(--primary-600);
+}
+.text-primary-700 {
+    color: var(--primary-700);
+}
+.text-primary-800 {
+    color: var(--primary-800);
+}
+.text-primary-900 {
+    color: var(--primary-900);
+}
+
+.border-primary {
+    border-color: var(--primary-500);
+}
+.border-primary-50 {
+    border-color: var(--primary-50);
+}
+.border-primary-100 {
+    border-color: var(--primary-100);
+}
+.border-primary-200 {
+    border-color: var(--primary-200);
+}
+.border-primary-300 {
+    border-color: var(--primary-300);
+}
+.border-primary-400 {
+    border-color: var(--primary-400);
+}
+.border-primary-500 {
+    border-color: var(--primary-500);
+}
+.border-primary-600 {
+    border-color: var(--primary-600);
+}
+.border-primary-700 {
+    border-color: var(--primary-700);
+}
+.border-primary-800 {
+    border-color: var(--primary-800);
+}
+.border-primary-900 {
+    border-color: var(--primary-900);
+}
+
+.hover\:bg-primary-600:hover {
+    background-color: var(--primary-600);
+}
+.hover\:bg-primary-700:hover {
+    background-color: var(--primary-700);
+}
+.hover\:text-primary-50:hover {
+    color: var(--primary-50);
+}
+
+/* Gradientes personalizados */
+.bg-gradient-primary-light {
+    background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+}
+
+.bg-gradient-primary-dark {
+    background: linear-gradient(
+        135deg,
+        var(--primary-600),
+        var(--primary-700),
+        var(--primary-800)
+    );
 }
