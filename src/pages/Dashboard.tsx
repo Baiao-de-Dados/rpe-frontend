@@ -12,7 +12,7 @@ export function Dashboard() {
         { cycleName: 'Ciclo 2025.1', score: 0 },
         { cycleName: 'Ciclo 2024.2', score: 4.5 },
         { cycleName: 'Ciclo 2024.1', score: 4.1 },
-        { cycleName: 'Ciclo 2023.2', score: 3.2 },
+        { cycleName: 'Ciclo 2023.2', score: 3.3 },
         { cycleName: 'Ciclo 2023.1', score: 4.8 },
         { cycleName: 'Ciclo 2022.2', score: 3.9 },
         { cycleName: 'Ciclo 2022.1', score: 4.0 },
