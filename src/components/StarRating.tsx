@@ -1,6 +1,7 @@
 import React from 'react';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
+import { Star } from 'lucide-react';
 
 interface StarRatingProps {
     value: number | null;
@@ -10,6 +11,7 @@ interface StarRatingProps {
 const StyledRating = styled(Rating)({
     '& .MuiRating-icon': {
         fontSize: '1.7rem',
+        margin: '0 1rem 0 -0.1rem',
     },
     '& .MuiRating-iconFilled': {
         color: 'var(--color-primary-500)',
@@ -28,6 +30,8 @@ const StarRating: React.FC<StarRatingProps> = ({ value, onChange }) => {
             name="rating"
             value={value}
             onChange={(_, newValue) => onChange(newValue)}
+            emptyIcon={<Star />}
+            icon={<Star fill="var(--color-primary-500)" />}
         />
     );
 };
