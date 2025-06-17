@@ -1,5 +1,10 @@
+import Typography from './Typography';
+import { LuNotebookPen } from 'react-icons/lu';
+import { IoIosArrowForward } from 'react-icons/io';
+
 interface CycleBannerProps {
-    status: 'open' | 'closed' | 'upcoming';
+    status: string; // Adicionada a propriedade 'status'
+    initialStatus: string;
     cycleName: string;
     remainingDays?: number;
 }
@@ -9,39 +14,57 @@ export function CycleBanner({
     cycleName,
     remainingDays,
 }: CycleBannerProps) {
+    const daysLeft = remainingDays ?? 0;
+
     const getBannerContent = () => {
         switch (status) {
             case 'open':
                 return (
                     <>
-                        <p className="text-white font-bold">
+                        <Typography
+                            variant="h3"
+                            color="white"
+                            className="font-bold"
+                        >
                             {cycleName} de avaliação está aberto
-                        </p>
-                        <p className="text-white text-sm">
-                            {remainingDays} dias restantes
-                        </p>
+                        </Typography>
+                        <Typography variant="caption" color="white">
+                            {daysLeft > 0
+                                ? `${daysLeft} dias restantes`
+                                : 'Ciclo encerrado'}
+                        </Typography>
                     </>
                 );
             case 'closed':
                 return (
                     <>
-                        <p className="text-white font-bold">
+                        <Typography
+                            variant="h3"
+                            color="muted"
+                            className="font-bold"
+                        >
                             {cycleName} de avaliação foi finalizado
-                        </p>
-                        <p className="text-white text-sm">
+                        </Typography>
+                        <Typography variant="caption" color="muted">
                             Aguarde o próximo ciclo
-                        </p>
+                        </Typography>
                     </>
                 );
             case 'upcoming':
                 return (
                     <>
-                        <p className="text-white font-bold">
+                        <Typography
+                            variant="h3"
+                            color="primary"
+                            className="font-bold"
+                        >
                             {cycleName} de avaliação está finalizando
-                        </p>
-                        <p className="text-white text-sm">
-                            {remainingDays} dias para começar
-                        </p>
+                        </Typography>
+                        <Typography variant="caption" color="primary">
+                            {daysLeft > 0
+                                ? `${daysLeft} dias para começar`
+                                : 'Ciclo iniciado'}
+                        </Typography>
                     </>
                 );
             default:
@@ -49,14 +72,46 @@ export function CycleBanner({
         }
     };
 
+    const getBannerColor = () => {
+        switch (status) {
+            case 'open':
+                return 'bg-teal-600';
+            case 'closed':
+                return 'bg-white';
+            case 'upcoming':
+                return 'bg-gray-100';
+            default:
+                return 'bg-gray-100';
+        }
+    };
+
+    const getIconColor = () => {
+        switch (status) {
+            case 'open':
+                return 'text-white';
+            case 'closed':
+                return 'text-primary-400';
+            case 'upcoming':
+                return 'text-primary-700';
+            default:
+                return 'text-gray-600';
+        }
+    };
+
     return (
-        <div className="bg-teal-600 p-4 rounded-lg flex items-center justify-between">
+        <div
+            className={`${getBannerColor()} p-4 rounded-lg shadow-lg flex items-center justify-between`}
+        >
             <div className="flex items-center space-x-4">
-                <span className="text-white text-2xl">📄</span>
+                <span className={`text-2xl ${getIconColor()}`}>
+                    <LuNotebookPen />
+                </span>
                 <div>{getBannerContent()}</div>
             </div>
             <div className="flex items-center justify-center w-8 h-8 bg-teal-800 rounded-full">
-                <span className="text-white text-lg"></span>
+                <span className="text-white text-lg">
+                    <IoIosArrowForward />
+                </span>
             </div>
         </div>
     );
