@@ -5,7 +5,7 @@ export function DefaultLayout() {
     return (
         <div className="flex h-screen">
             <AsideMenu />
-            <div className="flex-1 h-full overflow-y-auto max-lg:w-full">
+            <div className="flex-1 h-full overflow-y-auto max-lg:w-full max-lg:mt-15">
                 <Outlet />
             </div>
         </div>
