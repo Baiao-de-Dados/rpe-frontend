@@ -40,7 +40,7 @@ export function Dashboard() {
                 {/* Exibe o nome do usuário logado */}
                 <Avatar name={user?.name || 'Colaborador'} />
             </header>
-            <div className="p-8 bg-gray-100 mb-6">
+            <div className="p-8 bg-gray-100">
                 <CycleBanner
                     status={bannerStatus}
                     initialStatus="open"
