@@ -1,11 +1,20 @@
 import { useState, useMemo, useCallback } from 'react';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
-import Topic from '../components/Topic';
+import SelfAssessment from '../components/EvaluationCards/SelfAssessment';
+import SearchBar from '../components/Searchbar';
+import CollaboratorCard from '../components/CollaboratorCard';
+import CollaboratorEvaluation360 from '../components/EvaluationCards/Evaluation360';
+import RatingDisplay from '../components/RatingDisplay';
 import {
     mockEvaluationPillars,
     type Criterion,
 } from '../data/mockEvaluationPIllars';
+import {
+    searchCollaborators,
+    type Collaborator,
+    type CollaboratorEvaluation,
+} from '../data/mockCollaborators';
 
 const sections = ['Autoavaliação', 'Avaliação 360', 'Mentoring', 'Referências'];
 
@@ -19,6 +28,15 @@ export function Avaliacao() {
     const [evaluations, setEvaluations] = useState<
         Record<string, CriterionEvaluation>
     >({});
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCollaborators, setSelectedCollaborators] = useState<
+        Collaborator[]
+    >([]);
+    const [collaboratorEvaluations, setCollaboratorEvaluations] = useState<
+        Record<string, CollaboratorEvaluation>
+    >({});
+
     const isFormComplete = false; // Mude para true quando quiser ativar o botão
 
     // Controla quais seções têm notificações (bolinhas vermelhas)
@@ -27,6 +45,81 @@ export function Avaliacao() {
     const handleNavClick = useCallback((section: string) => {
         setActiveSection(section);
     }, []);
+
+    const filteredCollaborators = useMemo(() => {
+        if (!searchQuery.trim()) return [];
+        return searchCollaborators(searchQuery).filter(
+            collaborator =>
+                !selectedCollaborators.find(
+                    selected => selected.id === collaborator.id,
+                ),
+        );
+    }, [searchQuery, selectedCollaborators]);
+
+    const addCollaborator = useCallback((collaborator: Collaborator) => {
+        setSelectedCollaborators(prev => [...prev, collaborator]);
+        setSearchQuery('');
+        setCollaboratorEvaluations(prev => ({
+            ...prev,
+            [collaborator.id]: {
+                collaboratorId: collaborator.id,
+                ratings: {},
+                pontosFortes: '',
+                pontosMelhoria: '',
+            },
+        }));
+    }, []);
+
+    const clearSearch = useCallback(() => {
+        setSearchQuery('');
+    }, []);
+
+    const removeCollaboratorFromEvaluation = useCallback(
+        (collaboratorId: string) => {
+            setSelectedCollaborators(prev =>
+                prev.filter(c => c.id !== collaboratorId),
+            );
+            setCollaboratorEvaluations(prev => {
+                const newEvaluations = { ...prev };
+                delete newEvaluations[collaboratorId];
+                return newEvaluations;
+            });
+        },
+        [],
+    );
+
+    const updateCollaboratorRating = useCallback(
+        (collaboratorId: string, rating: number | null) => {
+            setCollaboratorEvaluations(prev => ({
+                ...prev,
+                [collaboratorId]: {
+                    ...prev[collaboratorId],
+                    ratings: {
+                        ...prev[collaboratorId]?.ratings,
+                        general: rating || 0,
+                    },
+                },
+            }));
+        },
+        [],
+    );
+
+    const updateCollaboratorField = useCallback(
+        (
+            collaboratorId: string,
+            field: 'pontosFortes' | 'pontosMelhoria',
+            value: string,
+        ) => {
+            setCollaboratorEvaluations(prev => ({
+                ...prev,
+                [collaboratorId]: {
+                    ...prev[collaboratorId],
+                    [field]: value,
+                },
+            }));
+        },
+        [],
+    );
 
     const updateEvaluation = useCallback(
         (criterionId: string, evaluation: CriterionEvaluation) => {
@@ -202,11 +295,13 @@ export function Avaliacao() {
                                                         )}
                                                 </div>
                                                 <div className="flex items-center gap-4">
-                                                    <span className="w-10 h-6 text-sm font-medium text-primary-500 bg-gray-200 flex justify-center items-center rounded-sm">
-                                                        {pillarAverages[
-                                                            pillar.titulo
-                                                        ]?.toFixed(1) || '-'}
-                                                    </span>
+                                                    <RatingDisplay
+                                                        rating={
+                                                            pillarAverages[
+                                                                pillar.titulo
+                                                            ]?.toFixed(1) || '-'
+                                                        }
+                                                    ></RatingDisplay>
                                                     <Typography
                                                         variant="body"
                                                         className="text-sm text-gray-500"
@@ -233,7 +328,7 @@ export function Avaliacao() {
                                                                 criterion.id
                                                             ] || {};
                                                         return (
-                                                            <Topic
+                                                            <SelfAssessment
                                                                 key={
                                                                     criterion.id
                                                                 }
@@ -277,8 +372,107 @@ export function Avaliacao() {
                 )}
                 {activeSection === 'Avaliação 360' && (
                     <section>
-                        <Typography variant="h2">Avaliação 360</Typography>
-                        <p>Conteúdo da seção de Avaliação 360.</p>
+                        <div className="mb-8">
+                            <div className="mb-6 relative">
+                                <SearchBar
+                                    value={searchQuery}
+                                    onChange={setSearchQuery}
+                                    placeholder="Buscar por colaboradores"
+                                    className="w-full"
+                                />
+
+                                {searchQuery &&
+                                    filteredCollaborators.length > 0 && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-5"
+                                                onClick={clearSearch}
+                                            />
+                                            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 z-10 max-h-80 overflow-y-auto">
+                                                {filteredCollaborators.map(
+                                                    collaborator => (
+                                                        <div
+                                                            key={
+                                                                collaborator.id
+                                                            }
+                                                            className="px-4 py-3 mx-2 my-1 first:mt-2 last:mb-2 hover:bg-[var(--color-neutral-100)] cursor-pointer rounded-lg transition-all duration-200 border border-transparent"
+                                                            onClick={() =>
+                                                                addCollaborator(
+                                                                    collaborator,
+                                                                )
+                                                            }
+                                                        >
+                                                            <CollaboratorCard
+                                                                collaborator={
+                                                                    collaborator
+                                                                }
+                                                                variant="compact"
+                                                            />
+                                                        </div>
+                                                    ),
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+
+                                {searchQuery &&
+                                    filteredCollaborators.length === 0 && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-5"
+                                                onClick={clearSearch}
+                                            />
+                                            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 z-10 p-6">
+                                                <Typography
+                                                    variant="body"
+                                                    className="text-gray-500 text-center"
+                                                >
+                                                    Nenhum colaborador
+                                                    encontrado
+                                                </Typography>
+                                            </div>
+                                        </>
+                                    )}
+                            </div>
+                        </div>
+
+                        {selectedCollaborators.length > 0 && (
+                            <div className="space-y-6">
+                                {selectedCollaborators.map(collaborator => {
+                                    const evaluation =
+                                        collaboratorEvaluations[
+                                            collaborator.id
+                                        ];
+                                    return (
+                                        <CollaboratorEvaluation360
+                                            key={collaborator.id}
+                                            collaborator={collaborator}
+                                            evaluation={evaluation}
+                                            onClearEvaluation={
+                                                removeCollaboratorFromEvaluation
+                                            }
+                                            onRatingChange={
+                                                updateCollaboratorRating
+                                            }
+                                            onFieldChange={
+                                                updateCollaboratorField
+                                            }
+                                        />
+                                    );
+                                })}
+                            </div>
+                        )}
+                        {selectedCollaborators.length === 0 && (
+                            <div className="text-center py-12">
+                                <Typography
+                                    variant="body"
+                                    className="text-gray-500"
+                                >
+                                    Busque um colaborador para começar a
+                                    Avaliação 360
+                                </Typography>
+                            </div>
+                        )}
                     </section>
                 )}
                 {activeSection === 'Mentoring' && (

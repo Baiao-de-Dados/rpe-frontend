@@ -40,6 +40,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 disabled={disabled}
                 autoFocus={autoFocus}
                 leftIcon={<Search className="w-4 h-4" />}
+                className="bg-white focus:ring-primary-500 focus:border-primary-500"
             />
         </div>
     );

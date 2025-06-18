@@ -1,7 +1,8 @@
 import React, { useState, memo } from 'react';
-import StarRating from './StarRating';
+import StarRating from '../StarRating';
 import { ChevronDown, Check } from 'lucide-react';
-import TextAreaWithTitle from './TextAreaWithTitle';
+import TextAreaWithTitle from '../TextAreaWithTitle';
+import RatingDisplay from '../RatingDisplay';
 
 interface TopicProps {
     topicName: string;
@@ -12,7 +13,7 @@ interface TopicProps {
     onEvaluationChange?: (rating: number | null, justification: string) => void;
 }
 
-const Topic: React.FC<TopicProps> = ({
+const SelfAssessment: React.FC<TopicProps> = ({
     topicName,
     topicNumber,
     isLast = false,
@@ -72,9 +73,7 @@ const Topic: React.FC<TopicProps> = ({
                         </h1>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="w-8 text-sm font-medium text-primary-500 bg-gray-200 flex justify-center rounded-sm">
-                            {rating ?? '-'}
-                        </span>
+                        <RatingDisplay rating={rating} />
                         <div
                             className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${isMinimized ? 'rotate-0' : '-rotate-180'}`}
                         >
@@ -113,4 +112,4 @@ const Topic: React.FC<TopicProps> = ({
     );
 };
 
-export default memo(Topic);
+export default memo(SelfAssessment);
