@@ -6,9 +6,10 @@ import TextAreaWithTitle from './TextAreaWithTitle';
 interface TopicProps {
     topicName: string;
     topicNumber?: number;
+    isLast: boolean;
 }
 
-const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
+const Topic: React.FC<TopicProps> = ({ topicName, topicNumber, isLast }) => {
     const [isMinimized, setIsMinimized] = useState(false);
     const [rating, setRating] = useState<number | null>(null);
     const [isJustified, setIsJustified] = useState(false);
@@ -27,7 +28,9 @@ const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
     };
 
     return (
-        <div className="bg-white border-b-2 border-b-gray-300 overflow-hidden">
+        <div
+            className={`bg-white overflow-hidden ${isLast ? 'border-b-0' : 'border-b-2 border-b-gray-300'}`}
+        >
             <div className="p-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
