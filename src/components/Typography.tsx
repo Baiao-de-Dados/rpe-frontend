@@ -3,6 +3,7 @@ interface TypographyProps {
     children: React.ReactNode;
     className?: string;
     color?: 'primary' | 'secondary' | 'muted' | 'error' | 'gradient' | 'white';
+    onClick?: () => void; // Add onClick prop
 }
 
 export default function Typography({
@@ -10,6 +11,7 @@ export default function Typography({
     children,
     className = '',
     color = 'primary',
+    onClick, // Include onClick in props
 }: TypographyProps) {
     const variants = {
         h1: 'text-3xl font-bold',
@@ -32,7 +34,10 @@ export default function Typography({
         variant === 'body' ? 'p' : variant === 'caption' ? 'span' : variant;
 
     return (
-        <Tag className={`${variants[variant]} ${colors[color]} ${className}`}>
+        <Tag
+            className={`${variants[variant]} ${colors[color]} ${className}`}
+            onClick={onClick} // Pass onClick to the rendered tag
+        >
             {children}
         </Tag>
     );
