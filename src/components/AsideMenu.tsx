@@ -37,7 +37,7 @@ export default function AsideMenu() {
             {!isMenuOpened && (
                 <Menu
                     onClick={openMenu}
-                    className="hidden max-lg:block fixed top-4 left-4 text-[#6b9999] cursor-pointer z-[1000]"
+                    className="hidden max-lg:block fixed top-4 left-4 text-secondary-400 cursor-pointer z-[1000]"
                     size={50}
                     strokeWidth={2.5}
                 />
@@ -46,7 +46,7 @@ export default function AsideMenu() {
             {isMenuOpened && (
                 <ArrowLeft
                     onClick={closeMenu}
-                    className="hidden max-lg:block fixed top-4 left-4 text-[#6b9999] cursor-pointer z-[1001]"
+                    className="hidden max-lg:block fixed top-4 left-4 text-secondary-400 cursor-pointer z-[1001]"
                     size={50}
                     strokeWidth={2.5}
                 />
@@ -54,10 +54,10 @@ export default function AsideMenu() {
 
             <aside
                 className={`
-                    absolute bg-[#fff] flex flex-col p-4 w-24 h-screen border-r-4 border-[#D9D9D9]
+                    absolute bg-white flex flex-col p-4 w-24 h-screen border-r-4 border-neutral-300
                     transition-all duration-300 ease-in-out overflow-hidden z-[999] overflow-y-auto
                     ${isNavHovered ? 'w-60' : ''}
-                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-[#fff] max-lg:border-r-0
+                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:h-screen max-lg:bg-white max-lg:border-r-0
                     ${isMenuOpened ? 'max-lg:flex max-lg:flex-col' : 'max-lg:hidden'}
                 `}
                 style={{
@@ -88,9 +88,9 @@ export default function AsideMenu() {
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
-                                    transition-all duration-200 ease-in-out hover:text-[#3a7b7d]
+                                    transition-all duration-200 ease-in-out hover:text-secondary-600
                                     max-lg:text-2xl max-lg:gap-4
-                                    ${isActive ? 'text-[#2b5f60]' : 'text-[#6b9999]'}
+                                    ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
                             >
                                 <LayoutGrid
@@ -115,9 +115,9 @@ export default function AsideMenu() {
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
-                                    transition-all duration-200 ease-in-out hover:text-[#3a7b7d]
+                                    transition-all duration-200 ease-in-out hover:text-secondary-600
                                     max-lg:text-2xl max-lg:gap-4
-                                    ${isActive ? 'text-[#2b5f60]' : 'text-[#6b9999]'}
+                                    ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
                             >
                                 <ClipboardPen
@@ -142,9 +142,9 @@ export default function AsideMenu() {
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
-                                    transition-all duration-200 ease-in-out hover:text-[#3a7b7d]
+                                    transition-all duration-200 ease-in-out hover:text-secondary-600
                                     max-lg:text-2xl max-lg:gap-4
-                                    ${isActive ? 'text-[#2b5f60]' : 'text-[#6b9999]'}
+                                    ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
                             >
                                 <ChartNoAxesCombined
@@ -167,7 +167,7 @@ export default function AsideMenu() {
                     <div className="flex w-full mt-auto max-lg:mb-4 max-lg:justify-center">
                         <div
                             onClick={handleLogout}
-                            className="flex items-center gap-4 cursor-pointer ml-4 text-[#6b9999] hover:text-[#3a7b7d] transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0"
+                            className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0"
                         >
                             <LogOut
                                 size={32}
