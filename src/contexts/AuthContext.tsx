@@ -10,6 +10,7 @@ type User = {
 type AuthContextType = {
     isAuthenticated: boolean;
     user: User | null;
+    loading: boolean; // Novo estado para controlar carregamento
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
 };
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true); // Inicia com loading=true
 
     useEffect(() => {
         // Verifica se há um usuário salvo no localStorage ao carregar a página
@@ -29,6 +31,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(JSON.parse(storedUser));
             setIsAuthenticated(true);
         }
+
+        // Após verificar o localStorage, marca como carregado
+        setLoading(false);
     }, []);
 
     const login = async (email: string, password: string) => {
@@ -68,7 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+        <AuthContext.Provider
+            value={{ isAuthenticated, user, loading, login, logout }}
+        >
             {children}
         </AuthContext.Provider>
     );
