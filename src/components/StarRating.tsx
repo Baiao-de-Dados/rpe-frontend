@@ -11,7 +11,7 @@ interface StarRatingProps {
 const StyledRating = styled(Rating)({
     '& .MuiRating-icon': {
         fontSize: '1.7rem',
-        margin: '0 1rem 0 -0.1rem',
+        margin: '0 0.5rem 0 0',
     },
     '& .MuiRating-iconFilled': {
         color: 'var(--color-primary-500)',

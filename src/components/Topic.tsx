@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import StarRating from './StarRating';
 import { ChevronDown, Check } from 'lucide-react';
 import TextAreaWithTitle from './TextAreaWithTitle';
@@ -6,13 +6,26 @@ import TextAreaWithTitle from './TextAreaWithTitle';
 interface TopicProps {
     topicName: string;
     topicNumber?: number;
+    isLast?: boolean;
+    rating?: number;
+    justification?: string;
+    onEvaluationChange?: (rating: number | null, justification: string) => void;
 }
 
-const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
+const Topic: React.FC<TopicProps> = ({
+    topicName,
+    topicNumber,
+    isLast = false,
+    rating: initialRating,
+    justification: initialJustification = '',
+    onEvaluationChange,
+}) => {
     const [isMinimized, setIsMinimized] = useState(false);
-    const [rating, setRating] = useState<number | null>(null);
-    const [isJustified, setIsJustified] = useState(false);
-    const [justification, setJustification] = useState('');
+    const [rating, setRating] = useState<number | null>(initialRating || null);
+    const [isJustified, setIsJustified] = useState(
+        initialJustification.trim() !== '',
+    );
+    const [justification, setJustification] = useState(initialJustification);
 
     const toggleMinimized = () => {
         setIsMinimized(!isMinimized);
@@ -23,16 +36,25 @@ const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
     ) => {
         const text = e.target.value;
         setJustification(text);
-        setIsJustified(text.trim() !== '');
+        const justified = text.trim() !== '';
+        setIsJustified(justified);
+        onEvaluationChange?.(rating, text);
+    };
+
+    const handleRatingChange = (newRating: number | null) => {
+        setRating(newRating);
+        onEvaluationChange?.(newRating, justification);
     };
 
     return (
-        <div className="bg-white border-b-2 border-b-gray-300 overflow-hidden">
-            <div className="p-4">
-                <div className="flex items-center justify-between">
+        <div
+            className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}
+        >
+            <div className="p-4 pl-0" onClick={toggleMinimized}>
+                <div className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-2">
                         <div
-                            className={`w-6 h-6 rounded-full border-2 text-gray-600 flex items-center justify-center font-semibold ${!rating || !isJustified ? 'border-gray-600' : 'bg-check-color border-check-color'}`}
+                            className={`w-6 h-6 rounded-full border-1 text-gray-600 flex items-center justify-center ${!rating || !isJustified ? 'border-gray-600' : 'bg-check-color border-check-color'}`}
                         >
                             {!rating || !isJustified ? (
                                 topicNumber
@@ -54,8 +76,7 @@ const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
                             {rating ?? '-'}
                         </span>
                         <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-300 ${isMinimized ? 'rotate-0' : '-rotate-180'}`}
-                            onClick={toggleMinimized}
+                            className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${isMinimized ? 'rotate-0' : '-rotate-180'}`}
                         >
                             <ChevronDown size={24} />
                         </div>
@@ -70,14 +91,14 @@ const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
                         : 'max-h-[500px] opacity-100 scale-y-100'
                 }`}
             >
-                <div className="p-4 pt-0">
+                <div className="p-4 pt-0 pl-0">
                     <p className="text-sm text-gray-600 mb-2">
                         Dê uma avaliação de 1 à 5 com base no critério
                     </p>
                     <div className="mb-2">
                         <StarRating
                             value={rating}
-                            onChange={newValue => setRating(newValue)}
+                            onChange={handleRatingChange}
                         />
                     </div>
                     <TextAreaWithTitle
@@ -92,4 +113,4 @@ const Topic: React.FC<TopicProps> = ({ topicName, topicNumber }) => {
     );
 };
 
-export default Topic;
+export default memo(Topic);
