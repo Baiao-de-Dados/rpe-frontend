@@ -1,3 +1,5 @@
+import { TiStarburst } from 'react-icons/ti';
+
 interface CycleCardProps {
     score: number;
     status: 'Finalizado' | 'Em andamento' | 'Pendente';
@@ -57,10 +59,17 @@ export function CycleCard({
                               : 'Ruim'}
                 </p>
             </div>
-            <div className="flex-1 flex flex-col justify-between shadow-md">
+            <div className="flex-1 flex flex-col justify-between">
                 <p className="text-lg font-bold">{cycleName}</p>
-                <div className="mt-1 bg-gray-100 p-3 rounded-lg">
-                    <p className="text-sm font-semibold ">Resumo</p>
+                <div className="mt-2 bg-gray-50 p-4 rounded-lg border-l-4 border-teal-600">
+                    <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-teal-600 text-lg">
+                            <TiStarburst />
+                        </span>
+                        <p className="text-sm font-semibold text-gray-700">
+                            Resumo
+                        </p>
+                    </div>
                     <p className="text-sm text-gray-500">{summary}</p>
                 </div>
             </div>
