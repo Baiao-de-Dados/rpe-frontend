@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import Typography from '../../Typography';
 import CardContainer from '../../CardContainer';
 import NotificationBadge from '../../NotificationBadge';
 import RatingDisplay from '../../RatingDisplay';
 import SelfAssessment from '../Cards/SelfAssessment';
+import { ChevronDown } from 'lucide-react';
 import {
     mockEvaluationPillars,
     type Criterion,
@@ -25,6 +27,23 @@ export function SelfAssessmentSection({
     evaluations,
     updateEvaluation,
 }: SelfAssessmentSectionProps) {
+    const [minimizedPillars, setMinimizedPillars] = useState<
+        Record<string, boolean>
+    >(() => {
+        const initialState: Record<string, boolean> = {};
+        Object.values(mockEvaluationPillars).forEach(pillar => {
+            initialState[pillar.titulo] = true;
+        });
+        return initialState;
+    });
+
+    const togglePillar = (pillarTitle: string) => {
+        setMinimizedPillars(prev => ({
+            ...prev,
+            [pillarTitle]: !prev[pillarTitle],
+        }));
+    };
+
     // Cálculos simples - removido useMemo desnecessário
     const completedCriteriaCount = Object.values(mockEvaluationPillars).map(
         pillar => {
@@ -88,12 +107,17 @@ export function SelfAssessmentSection({
             <div className="space-y-8">
                 {Object.entries(mockEvaluationPillars).map(([, pillar]) => {
                     const stats = pillarStats[pillar.titulo];
+                    const isMinimized = minimizedPillars[pillar.titulo];
+
                     return (
                         <CardContainer
                             className="pt-14 p-10 mb-5"
                             key={pillar.titulo}
                         >
-                            <div className="flex items-center justify-between mb-4">
+                            <div
+                                className="flex items-center justify-between mb-4 cursor-pointer"
+                                onClick={() => togglePillar(pillar.titulo)}
+                            >
                                 <div className="flex items-center gap-2">
                                     <Typography
                                         variant="h3"
@@ -133,45 +157,67 @@ export function SelfAssessmentSection({
                                         {pillar.criterios.length} critérios
                                         concluídos
                                     </Typography>
+                                    <div
+                                        className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${isMinimized ? 'rotate-180' : 'rotate-0'}`}
+                                    >
+                                        <ChevronDown
+                                            size={24}
+                                            className="text-gray-600"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className="space-y-4">
-                                {pillar.criterios.map(
-                                    (criterion: Criterion, index: number) => {
-                                        const evaluation =
-                                            evaluations[criterion.id] || {};
-                                        return (
-                                            <SelfAssessment
-                                                key={criterion.id}
-                                                topicNumber={index + 1}
-                                                topicName={criterion.nome}
-                                                isLast={
-                                                    index ===
-                                                    pillar.criterios.length - 1
-                                                }
-                                                rating={evaluation.rating}
-                                                justification={
-                                                    evaluation.justification ||
-                                                    ''
-                                                }
-                                                onEvaluationChange={(
-                                                    rating,
-                                                    justification,
-                                                ) =>
-                                                    updateEvaluation(
-                                                        criterion.id,
-                                                        {
-                                                            rating:
-                                                                rating ||
-                                                                undefined,
-                                                            justification,
-                                                        },
-                                                    )
-                                                }
-                                            />
-                                        );
-                                    },
-                                )}
+
+                            <div
+                                className={`transition-all duration-300 ease-out overflow-hidden ${
+                                    isMinimized
+                                        ? 'max-h-0 opacity-0'
+                                        : 'max-h-[2000px] opacity-100'
+                                }`}
+                            >
+                                <div className="space-y-4">
+                                    {pillar.criterios.map(
+                                        (
+                                            criterion: Criterion,
+                                            index: number,
+                                        ) => {
+                                            const evaluation =
+                                                evaluations[criterion.id] || {};
+                                            return (
+                                                <SelfAssessment
+                                                    key={criterion.id}
+                                                    topicNumber={index + 1}
+                                                    topicName={criterion.nome}
+                                                    isLast={
+                                                        index ===
+                                                        pillar.criterios
+                                                            .length -
+                                                            1
+                                                    }
+                                                    rating={evaluation.rating}
+                                                    justification={
+                                                        evaluation.justification ||
+                                                        ''
+                                                    }
+                                                    onEvaluationChange={(
+                                                        rating,
+                                                        justification,
+                                                    ) =>
+                                                        updateEvaluation(
+                                                            criterion.id,
+                                                            {
+                                                                rating:
+                                                                    rating ||
+                                                                    undefined,
+                                                                justification,
+                                                            },
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        },
+                                    )}
+                                </div>
                             </div>
                         </CardContainer>
                     );
