@@ -1,7 +1,6 @@
 import React from 'react';
 import CollaboratorCard from '../CollaboratorCard';
 import TextAreaWithTitle from '../TextAreaWithTitle';
-import Typography from '../Typography';
 import { Trash } from 'lucide-react';
 import {
     type Collaborator,
@@ -22,6 +21,7 @@ interface ReferenceCardProps {
 
 const ReferenceCard: React.FC<ReferenceCardProps> = ({
     collaborator,
+    evaluation,
     onClearReference,
     onFieldChange,
 }) => {
@@ -44,16 +44,10 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({
             </div>
 
             <div className="mb-6">
-                <Typography
-                    variant="body"
-                    className="text-sm text-gray-600 mb-3"
-                >
-                    Justifique sua escolha
-                </Typography>
                 <TextAreaWithTitle
-                    title="Referência"
-                    placeholder="Justifique sua nota"
-                    value={''}
+                    title="Justifique sua escolha"
+                    placeholder="Justifique sua escolha"
+                    value={evaluation?.referencia || ''}
                     onChange={e =>
                         onFieldChange(
                             collaborator.id,

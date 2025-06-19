@@ -58,6 +58,7 @@ export function Avaliacao() {
                 ratings: {},
                 pontosFortes: '',
                 pontosMelhoria: '',
+                referencia: '',
             },
         }));
     }, []);
@@ -95,7 +96,7 @@ export function Avaliacao() {
     const updateCollaboratorField = useCallback(
         (
             collaboratorId: string,
-            field: 'pontosFortes' | 'pontosMelhoria',
+            field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
             value: string,
         ) => {
             setCollaboratorEvaluations(prev => ({
@@ -206,29 +207,6 @@ export function Avaliacao() {
     }, [completedCriteriaCount]);
 
     const handleClearReference = removeCollaboratorFromEvaluation;
-
-    const handleFieldChange = (
-        collaboratorId: string,
-        field: 'referencia',
-        value: string,
-    ) => {
-        setCollaboratorEvaluations(prev => ({
-            ...prev,
-            [collaboratorId]: {
-                ...prev[collaboratorId],
-                [field]: value,
-            },
-        }));
-    };
-
-    const referenceHandlers = useMemo(() => {
-        const handlers: Record<string, (value: string) => void> = {};
-        selectedCollaborators.forEach(collaborator => {
-            handlers[collaborator.id] = value =>
-                handleFieldChange(collaborator.id, 'referencia', value);
-        });
-        return handlers;
-    }, [selectedCollaborators, handleFieldChange]);
 
     return (
         <>
@@ -488,9 +466,7 @@ export function Avaliacao() {
                                                 handleClearReference
                                             }
                                             onFieldChange={
-                                                referenceHandlers[
-                                                    collaborator.id
-                                                ]
+                                                updateCollaboratorField
                                             }
                                         />
                                     );

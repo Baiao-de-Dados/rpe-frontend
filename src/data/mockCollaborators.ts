@@ -10,6 +10,7 @@ export interface CollaboratorEvaluation {
     ratings: Record<string, number>;
     pontosFortes: string;
     pontosMelhoria: string;
+    referencia?: string;
 }
 
 export const mockCollaborators: Collaborator[] = [
