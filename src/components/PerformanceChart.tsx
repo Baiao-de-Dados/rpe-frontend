@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -24,13 +25,20 @@ interface PerformanceChartProps {
 }
 
 export function PerformanceChart({ cycles }: PerformanceChartProps) {
+    const [filter, setFilter] = useState('all');
+
+    const filteredCycles =
+        filter === 'all'
+            ? cycles
+            : cycles.filter(cycle => cycle.cycleName === filter);
+
     const data = {
-        labels: cycles.map(cycle => cycle.cycleName),
+        labels: filteredCycles.map(cycle => cycle.cycleName),
         datasets: [
             {
                 label: 'Desempenho',
-                data: cycles.map(cycle => cycle.score),
-                backgroundColor: cycles.map(cycle =>
+                data: filteredCycles.map(cycle => cycle.score),
+                backgroundColor: filteredCycles.map(cycle =>
                     cycle.score >= 4.5
                         ? 'rgba(34, 197, 94, 0.7)'
                         : cycle.score >= 3.5
@@ -39,7 +47,7 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                             ? 'rgba(249, 115, 22, 0.7)'
                             : 'rgba(239, 68, 68, 0.7)',
                 ),
-                borderColor: cycles.map(cycle =>
+                borderColor: filteredCycles.map(cycle =>
                     cycle.score >= 4.5
                         ? 'rgba(34, 197, 94, 1)'
                         : cycle.score >= 3.5
@@ -49,8 +57,8 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                             : 'rgba(239, 68, 68, 1)',
                 ),
                 borderWidth: 1,
-                borderRadius: 5, // Adiciona bordas arredondadas
-                barThickness: 20, // Define a largura das barras
+                borderRadius: 5, // Bordas arredondadas
+                barThickness: 30, // Aumenta a largura das barras
             },
         ],
     };
@@ -76,5 +84,23 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
         },
     };
 
-    return <Bar data={data} options={options} />;
+    return (
+        <div>
+            <div className="flex items-center justify-between mb-4">
+                <select
+                    className="border border-gray-300 cursor-pointer rounded-lg px-4 py-2 text-sm text-gray-600"
+                    value={filter}
+                    onChange={e => setFilter(e.target.value)}
+                >
+                    <option value="all">Todos os ciclos</option>
+                    {cycles.map(cycle => (
+                        <option key={cycle.cycleName} value={cycle.cycleName}>
+                            {cycle.cycleName}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <Bar data={data} options={options} />
+        </div>
+    );
 }

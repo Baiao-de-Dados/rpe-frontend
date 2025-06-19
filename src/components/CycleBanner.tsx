@@ -75,7 +75,7 @@ export function CycleBanner({
     const getBannerColor = () => {
         switch (status) {
             case 'open':
-                return 'bg-teal-600';
+                return 'bg-[#105c64]';
             case 'closed':
                 return 'bg-white';
             case 'upcoming':
@@ -108,7 +108,7 @@ export function CycleBanner({
                 </span>
                 <div>{getBannerContent()}</div>
             </div>
-            <div className="flex items-center justify-center w-8 h-8 bg-teal-800 rounded-full">
+            <div className="flex items-center justify-center w-8 h-8 bg-[#105c64] rounded-full">
                 <span className="text-white text-lg">
                     <IoIosArrowForward />
                 </span>

@@ -4,19 +4,11 @@ import { PerformanceChart } from '../components/PerformanceChart';
 import Typography from '../components/Typography';
 import Avatar from '../components/Avatar';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext'; // Importa o contexto de autenticação
+import { useAuth } from '../contexts/AuthContext';
+import { mockCycles } from '../data/mockCycles'; // Importa os ciclos mockados
 
 export function Dashboard() {
     const { user } = useAuth(); // Obtém o usuário logado
-    const cycles = [
-        { cycleName: 'Ciclo 2025.1', score: 0 },
-        { cycleName: 'Ciclo 2024.2', score: 4.5 },
-        { cycleName: 'Ciclo 2024.1', score: 4.1 },
-        { cycleName: 'Ciclo 2023.2', score: 3.3 },
-        { cycleName: 'Ciclo 2023.1', score: 4.8 },
-        { cycleName: 'Ciclo 2022.2', score: 3.9 },
-        { cycleName: 'Ciclo 2022.1', score: 4.0 },
-    ];
 
     const calculateRemainingDays = (targetDate: string) => {
         const today = new Date();
@@ -33,11 +25,10 @@ export function Dashboard() {
 
     return (
         <>
-            <header className="p-8 pt-12 pb-12 bg-gray-100 flex items-center justify-between">
+            <header className="p-8 pt-12 pb-12 flex items-center justify-between">
                 <Typography variant="h1" color="primary">
                     Olá, {user?.name || 'Colaborador'}
-                </Typography>{' '}
-                {/* Exibe o nome do usuário logado */}
+                </Typography>
                 <Avatar name={user?.name || 'Colaborador'} />
             </header>
             <div className="p-8 bg-gray-100">
@@ -48,7 +39,7 @@ export function Dashboard() {
                     remainingDays={remainingDays}
                 />
             </div>
-            <main className="p-8 pt-6 grid grid-cols-1 md:grid-cols-10 gap-6 bg-gray-100 mb-4">
+            <main className="p-8 pt-6 grid grid-cols-1 md:grid-cols-10 gap-6 mb-4">
                 <section className="col-span-1 md:col-span-3 bg-white p-6 rounded-lg shadow-md mb-4 relative">
                     <div className="flex items-center justify-between mb-3">
                         <Typography variant="h2" color="primary">
@@ -68,32 +59,37 @@ export function Dashboard() {
                         </button>
                     </div>
                     <div className="space-y-4 overflow-y-auto max-h-150">
-                        {cycles.map(cycle => (
-                            <CycleCard
-                                key={cycle.cycleName}
-                                score={cycle.score}
-                                status={
-                                    cycle.score === 0
-                                        ? 'Em andamento'
-                                        : 'Finalizado'
-                                }
-                                cycleName={cycle.cycleName}
-                                summary={
-                                    cycle.score === 0
-                                        ? 'Este ciclo está em andamento. Aguarde a finalização para ver sua nota.'
-                                        : 'Resumo do desempenho neste ciclo.'
-                                }
-                            />
-                        ))}
+                        {mockCycles
+                            .slice()
+                            .sort((a, b) =>
+                                b.cycleName.localeCompare(a.cycleName),
+                            ) // Ordena em ordem decrescente
+                            .map(cycle => (
+                                <CycleCard
+                                    key={cycle.cycleName}
+                                    score={cycle.score}
+                                    status={
+                                        cycle.status as
+                                            | 'Finalizado'
+                                            | 'Em andamento'
+                                            | 'Pendente'
+                                    }
+                                    cycleName={cycle.cycleName}
+                                    summary={
+                                        cycle.status === 'Em andamento'
+                                            ? 'Este ciclo está em andamento. Aguarde a finalização para ver sua nota.'
+                                            : 'Resumo do desempenho neste ciclo.'
+                                    }
+                                />
+                            ))}
                     </div>
                 </section>
 
-                {/* Gráfico de desempenho */}
                 <section className="col-span-1 md:col-span-7 bg-white p-6 rounded-lg shadow-md mb-4">
                     <Typography variant="h2" color="primary" className="mb-3">
                         Desempenho
                     </Typography>
-                    <PerformanceChart cycles={cycles} />
+                    <PerformanceChart cycles={mockCycles} />
                 </section>
             </main>
         </>
