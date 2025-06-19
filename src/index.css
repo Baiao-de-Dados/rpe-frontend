@@ -1,31 +1,37 @@
 @import 'tailwindcss';
 
 @theme {
-    --color-primary-50: #f0f9f9;
-    --color-primary-100: #d1f2f0;
-    --color-primary-200: #a7e8e4;
-    --color-primary-300: #6dd4ce;
-    --color-primary-400: #3eb8b0;
-    --color-primary-500: #2b5f60;
-    --color-primary-600: #1f4a4d;
-    --color-primary-700: #163a3d;
-    --color-primary-800: #0f2d30;
-    --color-primary-900: #0a2224;
+    /* Escala de cores primárias - azul esverdeado/teal */
+    --color-primary-50: #f0f9f9; /* Fundo muito claro, bom para hover em elementos claros */
+    --color-primary-100: #d1f2f0; /* Fundo claro, bom para backgrounds sutis */
+    --color-primary-200: #a7e8e4; /* Bom para bordas claras, ícones leves */
+    --color-primary-300: #6dd4ce; /* Bom para indicadores, bordas médias */
+    --color-primary-400: #3eb8b0; /* Cor média, boa para botões secundários, ícones */
+    --color-primary-500: #2b5f60; /* Cor principal da marca, boa para cabeçalhos, banners */
+    --color-primary-600: #1f4a4d; /* Versão mais escura, boa para botões de hover */
+    --color-primary-700: #163a3d; /* Boa para texto sobre fundos claros */
+    --color-primary-800: #0f2d30; /* Muito escura, boa para texto de alto contraste */
+    --color-primary-900: #0a2224; /* Quase preto, boa para texto muito importante */
 
-    --color-check-color: #539959;
-    --color-secondary-400: #6b9999;
-    --color-secondary-600: #3a7b7d;
+    /* Cores de estado/feedback */
+    --color-check-color: #539959; /* Verde para confirmação, sucesso, itens concluídos */
 
-    --color-neutral-100: #f5f5f5;
-    --color-neutral-200: #e5e5e5;
-    --color-neutral-300: #d4d4d4;
-    --color-neutral-400: #a3a3a3;
-    --color-neutral-500: #8b949e;
-    --color-neutral-700: #374151;
-    --color-neutral-800: #21262d;
+    /* Cores secundárias - tons complementares */
+    --color-secondary-400: #6b9999; /* Versão média, útil para elementos secundários */
+    --color-secondary-600: #3a7b7d; /* Versão mais escura, boa para hover em elementos secundários */
 
-    --color-error-500: #da3633;
-    --color-error-600: #b91c1c;
+    /* Escala de neutros - tons de cinza */
+    --color-neutral-100: #f5f5f5; /* Fundo muito claro, quase branco */
+    --color-neutral-200: #e5e5e5; /* Bordas claras, separadores */
+    --color-neutral-300: #d4d4d4; /* Bordas médias, ícones desabilitados */
+    --color-neutral-400: #a3a3a3; /* Texto secundário, placeholders */
+    --color-neutral-500: #8b949e; /* Texto de menor importância */
+    --color-neutral-700: #374151; /* Texto principal */
+    --color-neutral-800: #21262d; /* Texto de títulos, alta importância */
+
+    /* Cores de erro/alerta */
+    --color-error-500: #da3633; /* Alerta, erro, notificações importantes */
+    --color-error-600: #b91c1c; /* Versão mais escura para hover em botões de erro */
 }
 
 /* Gradiente para texto - com melhor rendering */
@@ -42,10 +48,12 @@
     overflow: visible;
 }
 
+/* Gradiente de fundo para elementos de destaque */
 .bg-gradient-primary-dark {
     background: linear-gradient(135deg, #1f4a4d, #0f2d30);
 }
 
+/* Definições globais para a fonte e cor de fundo */
 :root {
     font-family: 'Inter', sans-serif;
     line-height: 1.5;

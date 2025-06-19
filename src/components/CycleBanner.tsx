@@ -1,20 +1,30 @@
 import Typography from './Typography';
 import { LuNotebookPen } from 'react-icons/lu';
 import { IoIosArrowForward } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
+import CardContainer from './CardContainer';
 
 interface CycleBannerProps {
-    status: string; // Adicionada a propriedade 'status'
-    initialStatus: string;
+    status: string;
     cycleName: string;
     remainingDays?: number;
+    linkTo?: string;
 }
 
 export function CycleBanner({
     status,
     cycleName,
     remainingDays,
+    linkTo = '/avaliacao',
 }: CycleBannerProps) {
+    const navigate = useNavigate();
     const daysLeft = remainingDays ?? 0;
+
+    const handleNavigate = () => {
+        if (linkTo) {
+            navigate(linkTo);
+        }
+    };
 
     const getBannerContent = () => {
         switch (status) {
@@ -72,16 +82,17 @@ export function CycleBanner({
         }
     };
 
-    const getBannerColor = () => {
+    // Determinando classes específicas baseadas no status
+    const getBannerClass = () => {
         switch (status) {
             case 'open':
-                return 'bg-teal-600';
+                return 'bg-primary-500 hover:bg-primary-600';
             case 'closed':
-                return 'bg-white';
+                return 'bg-white hover:bg-gray-100';
             case 'upcoming':
-                return 'bg-gray-100';
+                return 'bg-neutral-100 hover:bg-neutral-200';
             default:
-                return 'bg-gray-100';
+                return 'bg-neutral-100 hover:bg-neutral-200';
         }
     };
 
@@ -94,25 +105,33 @@ export function CycleBanner({
             case 'upcoming':
                 return 'text-primary-700';
             default:
-                return 'text-gray-600';
+                return 'text-neutral-500';
         }
     };
 
     return (
-        <div
-            className={`${getBannerColor()} p-4 rounded-lg shadow-lg flex items-center justify-between`}
+        <CardContainer
+            className={`${getBannerClass()} p-0 cursor-pointer transition-all hover:opacity-95 shadow`}
+            noPadding
         >
-            <div className="flex items-center space-x-4">
-                <span className={`text-2xl ${getIconColor()}`}>
-                    <LuNotebookPen />
-                </span>
-                <div>{getBannerContent()}</div>
+            <div
+                className="flex items-center justify-between p-10"
+                onClick={handleNavigate}
+                role="button"
+                aria-label={`Ver detalhes do ${cycleName}`}
+            >
+                <div className="flex items-center space-x-5">
+                    <span className={`text-2xl ${getIconColor()}`}>
+                        <LuNotebookPen />
+                    </span>
+                    <div>{getBannerContent()}</div>
+                </div>
+                <div className="flex items-center justify-center w-8 h-8  bg-opacity-20 rounded-full">
+                    <span className="text-white text-lg">
+                        <IoIosArrowForward />
+                    </span>
+                </div>
             </div>
-            <div className="flex items-center justify-center w-8 h-8 bg-teal-800 rounded-full">
-                <span className="text-white text-lg">
-                    <IoIosArrowForward />
-                </span>
-            </div>
-        </div>
+        </CardContainer>
     );
 }
