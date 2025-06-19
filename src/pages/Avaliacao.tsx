@@ -48,19 +48,8 @@ export function Avaliacao() {
         setActiveSection(section);
     }, []);
 
-    const filteredCollaborators = useMemo(() => {
-        if (!searchQuery.trim()) return [];
-        return searchCollaborators(searchQuery).filter(
-            collaborator =>
-                !selectedCollaborators.find(
-                    selected => selected.id === collaborator.id,
-                ),
-        );
-    }, [searchQuery, selectedCollaborators]);
-
     const addCollaborator = useCallback((collaborator: Collaborator) => {
         setSelectedCollaborators(prev => [...prev, collaborator]);
-        setSearchQuery('');
         setCollaboratorEvaluations(prev => ({
             ...prev,
             [collaborator.id]: {
@@ -70,10 +59,6 @@ export function Avaliacao() {
                 pontosMelhoria: '',
             },
         }));
-    }, []);
-
-    const clearSearch = useCallback(() => {
-        setSearchQuery('');
     }, []);
 
     const removeCollaboratorFromEvaluation = useCallback(
@@ -373,65 +358,23 @@ export function Avaliacao() {
                     <section>
                         <div className="mb-8">
                             <div className="mb-6 relative">
-                                <SearchBar
+                                <SearchBar<Collaborator>
                                     value={searchQuery}
                                     onChange={setSearchQuery}
                                     placeholder="Buscar por colaboradores"
                                     className="w-full"
+                                    searchFunction={searchCollaborators}
+                                    onItemSelect={addCollaborator}
+                                    renderItem={collaborator => (
+                                        <CollaboratorCard
+                                            collaborator={collaborator}
+                                            variant="compact"
+                                        />
+                                    )}
+                                    excludeItems={selectedCollaborators}
+                                    getItemKey={collaborator => collaborator.id}
+                                    noResultsMessage="Nenhum colaborador encontrado"
                                 />
-
-                                {searchQuery &&
-                                    filteredCollaborators.length > 0 && (
-                                        <>
-                                            <div
-                                                className="fixed inset-0 z-5"
-                                                onClick={clearSearch}
-                                            />
-                                            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 z-10 max-h-80 overflow-y-auto">
-                                                {filteredCollaborators.map(
-                                                    collaborator => (
-                                                        <div
-                                                            key={
-                                                                collaborator.id
-                                                            }
-                                                            className="px-4 py-3 mx-2 my-1 first:mt-2 last:mb-2 hover:bg-[var(--color-neutral-100)] cursor-pointer rounded-lg transition-all duration-200 border border-transparent"
-                                                            onClick={() =>
-                                                                addCollaborator(
-                                                                    collaborator,
-                                                                )
-                                                            }
-                                                        >
-                                                            <CollaboratorCard
-                                                                collaborator={
-                                                                    collaborator
-                                                                }
-                                                                variant="compact"
-                                                            />
-                                                        </div>
-                                                    ),
-                                                )}
-                                            </div>
-                                        </>
-                                    )}
-
-                                {searchQuery &&
-                                    filteredCollaborators.length === 0 && (
-                                        <>
-                                            <div
-                                                className="fixed inset-0 z-5"
-                                                onClick={clearSearch}
-                                            />
-                                            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 z-10 p-6">
-                                                <Typography
-                                                    variant="body"
-                                                    className="text-gray-500 text-center"
-                                                >
-                                                    Nenhum colaborador
-                                                    encontrado
-                                                </Typography>
-                                            </div>
-                                        </>
-                                    )}
                             </div>
                         </div>
 
