@@ -13,6 +13,19 @@
     --color-primary-900: #0a2224;
 
     --color-check-color: #539959;
+    --color-secondary-400: #6b9999;
+    --color-secondary-600: #3a7b7d;
+
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #8b949e;
+    --color-neutral-700: #374151;
+    --color-neutral-800: #21262d;
+
+    --color-error-500: #da3633;
+    --color-error-600: #b91c1c;
 }
 
 /* Gradiente para texto - com melhor rendering */
@@ -31,4 +44,18 @@
 
 .bg-gradient-primary-dark {
     background: linear-gradient(135deg, #1f4a4d, #0f2d30);
+}
+
+:root {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    background-color: #f1f1f1;
+    color: #1d1d1d;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
