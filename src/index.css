@@ -12,6 +12,7 @@
     --color-primary-800: #0f2d30;
     --color-primary-900: #0a2224;
 
+    --color-check-color: #539959;
     --color-secondary-400: #6b9999;
     --color-secondary-600: #3a7b7d;
 
@@ -43,4 +44,18 @@
 
 .bg-gradient-primary-dark {
     background: linear-gradient(135deg, #1f4a4d, #0f2d30);
+}
+
+:root {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    background-color: #f1f1f1;
+    color: #1d1d1d;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
