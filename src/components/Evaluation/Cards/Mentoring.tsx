@@ -1,19 +1,19 @@
 import React from 'react';
-import StarRating from '../StarRating';
-import TextAreaWithTitle from '../TextAreaWithTitle';
-import Typography from '../Typography';
-import CollaboratorCard from '../CollaboratorCard';
-import RatingDisplay from '../RatingDisplay';
-import CardContainer from '../CardContainer';
+import StarRating from '../../StarRating';
+import TextAreaWithTitle from '../../TextAreaWithTitle';
+import Typography from '../../Typography';
+import CollaboratorCard from '../../CollaboratorCard';
+import RatingDisplay from '../../RatingDisplay';
+import CardContainer from '../../CardContainer';
 
-interface MentoringCardProps {
+interface MentoringProps {
     rating: number | null;
     justification: string;
     onRatingChange: (rating: number | null) => void;
     onJustificationChange: (justification: string) => void;
 }
 
-const MentoringCard: React.FC<MentoringCardProps> = ({
+const Mentoring: React.FC<MentoringProps> = ({
     rating,
     justification,
     onRatingChange,
@@ -48,4 +48,4 @@ const MentoringCard: React.FC<MentoringCardProps> = ({
     );
 };
 
-export default MentoringCard;
+export default Mentoring;

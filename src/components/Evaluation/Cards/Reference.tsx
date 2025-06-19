@@ -1,14 +1,14 @@
 import React from 'react';
-import CollaboratorCard from '../CollaboratorCard';
-import TextAreaWithTitle from '../TextAreaWithTitle';
+import CollaboratorCard from '../../CollaboratorCard';
+import TextAreaWithTitle from '../../TextAreaWithTitle';
 import { Trash } from 'lucide-react';
 import {
     type Collaborator,
     type CollaboratorEvaluation,
-} from '../../data/mockCollaborators';
-import CardContainer from '../CardContainer';
+} from '../../../data/mockCollaborators';
+import CardContainer from '../../CardContainer';
 
-interface ReferenceCardProps {
+interface ReferenceProps {
     collaborator: Collaborator;
     evaluation?: CollaboratorEvaluation;
     onClearReference: (collaboratorId: string) => void;
@@ -19,7 +19,7 @@ interface ReferenceCardProps {
     ) => void;
 }
 
-const ReferenceCard: React.FC<ReferenceCardProps> = ({
+const Reference: React.FC<ReferenceProps> = ({
     collaborator,
     evaluation,
     onClearReference,
@@ -61,4 +61,4 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({
     );
 };
 
-export default ReferenceCard;
+export default Reference;

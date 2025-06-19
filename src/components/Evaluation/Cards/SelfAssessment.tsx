@@ -1,8 +1,8 @@
 import React, { useState, memo } from 'react';
-import StarRating from '../StarRating';
+import StarRating from '../../StarRating';
 import { ChevronDown, Check } from 'lucide-react';
-import TextAreaWithTitle from '../TextAreaWithTitle';
-import RatingDisplay from '../RatingDisplay';
+import TextAreaWithTitle from '../../TextAreaWithTitle';
+import RatingDisplay from '../../RatingDisplay';
 
 interface TopicProps {
     topicName: string;
@@ -112,4 +112,18 @@ const SelfAssessment: React.FC<TopicProps> = ({
     );
 };
 
-export default memo(SelfAssessment);
+const arePropsEqual = (
+    prevProps: TopicProps,
+    nextProps: TopicProps,
+): boolean => {
+    return (
+        prevProps.topicName === nextProps.topicName &&
+        prevProps.topicNumber === nextProps.topicNumber &&
+        prevProps.isLast === nextProps.isLast &&
+        prevProps.rating === nextProps.rating &&
+        prevProps.justification === nextProps.justification &&
+        prevProps.onEvaluationChange === nextProps.onEvaluationChange
+    );
+};
+
+export default memo(SelfAssessment, arePropsEqual);

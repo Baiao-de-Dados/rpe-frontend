@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 
 export interface NotificationState {
     id: string;
@@ -13,28 +13,29 @@ export function useNotifications(
     const [notifications, setNotifications] =
         useState<NotificationState[]>(initialNotifications);
 
-    const addNotification = useCallback(
-        (notification: Omit<NotificationState, 'active'>) => {
-            setNotifications(prev => [
-                ...prev.filter(n => n.id !== notification.id),
-                { ...notification, active: true },
-            ]);
-        },
-        [],
-    );
+    // Funções simples - useCallback removido onde desnecessário
+    const addNotification = (
+        notification: Omit<NotificationState, 'active'>,
+    ) => {
+        setNotifications(prev => [
+            ...prev.filter(n => n.id !== notification.id),
+            { ...notification, active: true },
+        ]);
+    };
 
-    const removeNotification = useCallback((id: string) => {
+    const removeNotification = (id: string) => {
         setNotifications(prev =>
             prev.map(n => (n.id === id ? { ...n, active: false } : n)),
         );
-    }, []);
+    };
 
-    const toggleNotification = useCallback((id: string) => {
+    const toggleNotification = (id: string) => {
         setNotifications(prev =>
             prev.map(n => (n.id === id ? { ...n, active: !n.active } : n)),
         );
-    }, []);
+    };
 
+    // Mantém useCallback apenas para funções que são frequentemente passadas como props
     const updateNotificationCount = useCallback((id: string, count: number) => {
         setNotifications(prev =>
             prev.map(n =>
@@ -52,24 +53,18 @@ export function useNotifications(
         [],
     );
 
-    const clearAllNotifications = useCallback(() => {
+    const clearAllNotifications = () => {
         setNotifications(prev => prev.map(n => ({ ...n, active: false })));
-    }, []);
+    };
 
-    const getNotification = useCallback(
-        (id: string) => {
-            return notifications.find(n => n.id === id);
-        },
-        [notifications],
-    );
+    // Função simples - não precisa de useCallback
+    const getNotification = (id: string) => {
+        return notifications.find(n => n.id === id);
+    };
 
-    const hasActiveNotifications = useMemo(() => {
-        return notifications.some(n => n.active);
-    }, [notifications]);
-
-    const activeNotificationsCount = useMemo(() => {
-        return notifications.filter(n => n.active).length;
-    }, [notifications]);
+    // Cálculos simples - removido useMemo desnecessário
+    const hasActiveNotifications = notifications.some(n => n.active);
+    const activeNotificationsCount = notifications.filter(n => n.active).length;
 
     return {
         notifications,

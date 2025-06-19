@@ -1,15 +1,15 @@
-import React from 'react';
-import CollaboratorCard from '../CollaboratorCard';
-import StarRating from '../StarRating';
-import TextAreaWithTitle from '../TextAreaWithTitle';
-import Typography from '../Typography';
+import React, { memo } from 'react';
+import CollaboratorCard from '../../CollaboratorCard';
+import StarRating from '../../StarRating';
+import TextAreaWithTitle from '../../TextAreaWithTitle';
+import Typography from '../../Typography';
 import { Trash } from 'lucide-react';
 import {
     type Collaborator,
     type CollaboratorEvaluation,
-} from '../../data/mockCollaborators';
-import RatingDisplay from '../RatingDisplay';
-import CardContainer from '../CardContainer';
+} from '../../../data/mockCollaborators';
+import RatingDisplay from '../../RatingDisplay';
+import CardContainer from '../../CardContainer';
 
 interface CollaboratorEvaluation360Props {
     collaborator: Collaborator;
@@ -96,4 +96,23 @@ const CollaboratorEvaluation360: React.FC<CollaboratorEvaluation360Props> = ({
     );
 };
 
-export default CollaboratorEvaluation360;
+const arePropsEqual = (
+    prevProps: CollaboratorEvaluation360Props,
+    nextProps: CollaboratorEvaluation360Props,
+): boolean => {
+    if (prevProps.collaborator.id !== nextProps.collaborator.id) {
+        return false;
+    }
+
+    const prevEvaluationStr = JSON.stringify(prevProps.evaluation);
+    const nextEvaluationStr = JSON.stringify(nextProps.evaluation);
+
+    return (
+        prevEvaluationStr === nextEvaluationStr &&
+        prevProps.onClearEvaluation === nextProps.onClearEvaluation &&
+        prevProps.onRatingChange === nextProps.onRatingChange &&
+        prevProps.onFieldChange === nextProps.onFieldChange
+    );
+};
+
+export default memo(CollaboratorEvaluation360, arePropsEqual);
