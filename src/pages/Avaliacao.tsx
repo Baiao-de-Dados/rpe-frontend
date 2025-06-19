@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
 import SelfAssessment from '../components/EvaluationCards/SelfAssessment';
@@ -8,6 +9,7 @@ import CollaboratorEvaluation360 from '../components/EvaluationCards/Evaluation3
 import RatingDisplay from '../components/RatingDisplay';
 import MentoringCard from '../components/EvaluationCards/MentoringCard';
 import CardContainer from '../components/CardContainer';
+import AnimatedCard from '../components/AnimatedCard';
 import ReferenceCard from '../components/EvaluationCards/ReferenceCard';
 import {
     mockEvaluationPillars,
@@ -382,34 +384,48 @@ export function Avaliacao() {
                             </div>
                         </div>
 
-                        {selectedCollaborators.length > 0 && (
+                        {selectedCollaborators.length > 0 ? (
                             <div className="space-y-6">
-                                {selectedCollaborators.map(collaborator => {
-                                    const evaluation =
-                                        collaboratorEvaluations[
-                                            collaborator.id
-                                        ];
-                                    return (
-                                        <CollaboratorEvaluation360
-                                            key={collaborator.id}
-                                            collaborator={collaborator}
-                                            evaluation={evaluation}
-                                            onClearEvaluation={
-                                                removeCollaboratorFromEvaluation
-                                            }
-                                            onRatingChange={
-                                                updateCollaboratorRating
-                                            }
-                                            onFieldChange={
-                                                updateCollaboratorField
-                                            }
-                                        />
-                                    );
-                                })}
+                                <AnimatePresence>
+                                    {selectedCollaborators.map(
+                                        (collaborator, index) => {
+                                            const evaluation =
+                                                collaboratorEvaluations[
+                                                    collaborator.id
+                                                ];
+                                            return (
+                                                <AnimatedCard
+                                                    key={collaborator.id}
+                                                    index={index}
+                                                >
+                                                    <CollaboratorEvaluation360
+                                                        collaborator={
+                                                            collaborator
+                                                        }
+                                                        evaluation={evaluation}
+                                                        onClearEvaluation={
+                                                            removeCollaboratorFromEvaluation
+                                                        }
+                                                        onRatingChange={
+                                                            updateCollaboratorRating
+                                                        }
+                                                        onFieldChange={
+                                                            updateCollaboratorField
+                                                        }
+                                                    />
+                                                </AnimatedCard>
+                                            );
+                                        },
+                                    )}
+                                </AnimatePresence>
                             </div>
-                        )}
-                        {selectedCollaborators.length === 0 && (
-                            <div className="text-center py-12">
+                        ) : (
+                            <motion.div
+                                className="text-center py-12"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
                                 <Typography
                                     variant="body"
                                     className="text-gray-500"
@@ -417,7 +433,7 @@ export function Avaliacao() {
                                     Busque um colaborador para começar a
                                     Avaliação 360
                                 </Typography>
-                            </div>
+                            </motion.div>
                         )}
                     </section>
                 )}
@@ -450,39 +466,52 @@ export function Avaliacao() {
                             </div>
                         </div>
 
-                        {selectedCollaborators.length > 0 && (
+                        {selectedCollaborators.length > 0 ? (
                             <div className="space-y-6">
-                                {selectedCollaborators.map(collaborator => {
-                                    const evaluation =
-                                        collaboratorEvaluations[
-                                            collaborator.id
-                                        ];
-                                    return (
-                                        <ReferenceCard
-                                            key={collaborator.id}
-                                            collaborator={collaborator}
-                                            evaluation={evaluation}
-                                            onClearReference={
-                                                handleClearReference
-                                            }
-                                            onFieldChange={
-                                                updateCollaboratorField
-                                            }
-                                        />
-                                    );
-                                })}
+                                <AnimatePresence>
+                                    {selectedCollaborators.map(
+                                        (collaborator, index) => {
+                                            const evaluation =
+                                                collaboratorEvaluations[
+                                                    collaborator.id
+                                                ];
+                                            return (
+                                                <AnimatedCard
+                                                    key={collaborator.id}
+                                                    index={index}
+                                                >
+                                                    <ReferenceCard
+                                                        collaborator={
+                                                            collaborator
+                                                        }
+                                                        evaluation={evaluation}
+                                                        onClearReference={
+                                                            handleClearReference
+                                                        }
+                                                        onFieldChange={
+                                                            updateCollaboratorField
+                                                        }
+                                                    />
+                                                </AnimatedCard>
+                                            );
+                                        },
+                                    )}
+                                </AnimatePresence>
                             </div>
-                        )}
-                        {selectedCollaborators.length === 0 && (
-                            <div className="text-center py-12">
+                        ) : (
+                            <motion.div
+                                className="text-center py-12"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
                                 <Typography
                                     variant="body"
                                     className="text-gray-500"
                                 >
-                                    Busque um colaborador para começar a seção
-                                    de Referências
+                                    Indique colaboradores como referências
                                 </Typography>
-                            </div>
+                            </motion.div>
                         )}
                     </section>
                 )}
