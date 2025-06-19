@@ -11,10 +11,12 @@ const CardContainer: React.FC<CardContainerProps> = ({
     className = '',
     noPadding = false,
 }) => {
+    const hasCustomBgClass = className.includes('bg-');
+
     return (
         <div
             className={`
-                bg-white rounded-2xl shadow-sm 
+                ${!hasCustomBgClass ? 'bg-white' : ''} rounded-2xl shadow-sm 
                 ${noPadding ? '' : 'p-6'} 
                 ${className}
             `}
