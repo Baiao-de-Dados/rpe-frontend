@@ -8,9 +8,12 @@ interface TypographyProps {
         | 'secondary'
         | 'muted'
         | 'error'
+        | 'success'
+        | 'warning'
         | 'gradient'
-        | 'white';
-    onClick?: () => void; // Add onClick prop
+        | 'white'
+        | 'link';
+    onClick?: () => void;
 }
 
 export default function Typography({
@@ -18,24 +21,27 @@ export default function Typography({
     children,
     className = '',
     color = 'primary',
-    onClick, // Include onClick in props
+    onClick,
 }: TypographyProps) {
     const variants = {
         h1: 'text-3xl font-bold',
         h2: 'text-2xl font-semibold',
-        h3: 'text-xl', // Remove font-medium para permitir customização
+        h3: 'text-xl',
         body: 'text-base',
         caption: 'text-sm',
     };
 
     const colors = {
-        primary: 'text-primary-700', // Texto principal
-        primary500: 'text-primary-500', // Texto primary 500
-        secondary: 'text-primary-600', // Texto secundário
-        muted: 'text-primary-400', // Texto suave/disabled
-        error: 'text-red-600', // Erros
-        gradient: 'text-gradient-primary', // Gradiente customizado
-        white: 'text-white', // Texto branco
+        primary: 'text-primary-700',
+        primary500: 'text-primary-500',
+        secondary: 'text-primary-600',
+        muted: 'text-neutral-500',
+        error: 'text-error-500',
+        success: 'text-check-color',
+        warning: 'text-yellow-500',
+        gradient: 'text-gradient-primary',
+        white: 'text-white',
+        link: 'text-primary-600 hover:text-primary-700',
     };
 
     const Tag =
@@ -43,8 +49,8 @@ export default function Typography({
 
     return (
         <Tag
-            className={`${variants[variant]} ${colors[color]} ${className}`}
-            onClick={onClick} // Pass onClick to the rendered tag
+            className={`${variants[variant]} ${colors[color]} ${className} ${onClick ? 'cursor-pointer' : ''}`}
+            onClick={onClick}
         >
             {children}
         </Tag>
