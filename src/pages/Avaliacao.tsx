@@ -8,6 +8,7 @@ import CollaboratorEvaluation360 from '../components/EvaluationCards/Evaluation3
 import RatingDisplay from '../components/RatingDisplay';
 import MentoringCard from '../components/EvaluationCards/MentoringCard';
 import CardContainer from '../components/CardContainer';
+import ReferenceCard from '../components/EvaluationCards/ReferenceCard';
 import {
     mockEvaluationPillars,
     type Criterion,
@@ -203,6 +204,31 @@ export function Avaliacao() {
             {} as Record<string, (typeof completedCriteriaCount)[0]>,
         );
     }, [completedCriteriaCount]);
+
+    const handleClearReference = removeCollaboratorFromEvaluation;
+
+    const handleFieldChange = (
+        collaboratorId: string,
+        field: 'referencia',
+        value: string,
+    ) => {
+        setCollaboratorEvaluations(prev => ({
+            ...prev,
+            [collaboratorId]: {
+                ...prev[collaboratorId],
+                [field]: value,
+            },
+        }));
+    };
+
+    const referenceHandlers = useMemo(() => {
+        const handlers: Record<string, (value: string) => void> = {};
+        selectedCollaborators.forEach(collaborator => {
+            handlers[collaborator.id] = value =>
+                handleFieldChange(collaborator.id, 'referencia', value);
+        });
+        return handlers;
+    }, [selectedCollaborators, handleFieldChange]);
 
     return (
         <>
@@ -424,8 +450,64 @@ export function Avaliacao() {
                 )}
                 {activeSection === 'Referências' && (
                     <section>
-                        <Typography variant="h2">Referências</Typography>
-                        <p>Conteúdo da seção de Referências.</p>
+                        <div className="mb-8">
+                            <div className="mb-6 relative">
+                                <SearchBar<Collaborator>
+                                    value={searchQuery}
+                                    onChange={setSearchQuery}
+                                    placeholder="Buscar por colaboradores"
+                                    className="w-full"
+                                    searchFunction={searchCollaborators}
+                                    onItemSelect={addCollaborator}
+                                    renderItem={collaborator => (
+                                        <CollaboratorCard
+                                            collaborator={collaborator}
+                                            variant="compact"
+                                        />
+                                    )}
+                                    excludeItems={selectedCollaborators}
+                                    getItemKey={collaborator => collaborator.id}
+                                    noResultsMessage="Nenhum colaborador encontrado"
+                                />
+                            </div>
+                        </div>
+
+                        {selectedCollaborators.length > 0 && (
+                            <div className="space-y-6">
+                                {selectedCollaborators.map(collaborator => {
+                                    const evaluation =
+                                        collaboratorEvaluations[
+                                            collaborator.id
+                                        ];
+                                    return (
+                                        <ReferenceCard
+                                            key={collaborator.id}
+                                            collaborator={collaborator}
+                                            evaluation={evaluation}
+                                            onClearReference={
+                                                handleClearReference
+                                            }
+                                            onFieldChange={
+                                                referenceHandlers[
+                                                    collaborator.id
+                                                ]
+                                            }
+                                        />
+                                    );
+                                })}
+                            </div>
+                        )}
+                        {selectedCollaborators.length === 0 && (
+                            <div className="text-center py-12">
+                                <Typography
+                                    variant="body"
+                                    className="text-gray-500"
+                                >
+                                    Busque um colaborador para começar a seção
+                                    de Referências
+                                </Typography>
+                            </div>
+                        )}
                     </section>
                 )}
             </main>
