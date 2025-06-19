@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import StarRating from '../StarRating';
 import TextAreaWithTitle from '../TextAreaWithTitle';
 import Typography from '../Typography';
@@ -6,10 +6,19 @@ import CollaboratorCard from '../CollaboratorCard';
 import RatingDisplay from '../RatingDisplay';
 import CardContainer from '../CardContainer';
 
-const MentoringCard: React.FC = () => {
-    const [rating, setRating] = useState<number | null>(null);
-    const [justification, setJustification] = useState('');
+interface MentoringCardProps {
+    rating: number | null;
+    justification: string;
+    onRatingChange: (rating: number | null) => void;
+    onJustificationChange: (justification: string) => void;
+}
 
+const MentoringCard: React.FC<MentoringCardProps> = ({
+    rating,
+    justification,
+    onRatingChange,
+    onJustificationChange,
+}) => {
     return (
         <CardContainer>
             <div className="flex items-center gap-4 mb-4">
@@ -27,16 +36,13 @@ const MentoringCard: React.FC = () => {
                 Dê uma avaliação de 1 à 5 ao seu mentor
             </Typography>
             <div className="mb-4">
-                <StarRating
-                    value={rating}
-                    onChange={newValue => setRating(newValue)}
-                />
+                <StarRating value={rating} onChange={onRatingChange} />
             </div>
             <TextAreaWithTitle
                 title="Justifique sua nota"
                 placeholder="Justifique sua nota"
                 value={justification}
-                onChange={e => setJustification(e.target.value)}
+                onChange={e => onJustificationChange(e.target.value)}
             />
         </CardContainer>
     );
