@@ -1,11 +1,12 @@
-import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, FormProvider } from 'react-hook-form';
+
 import {
     fullEvaluationSchema,
     type EvaluationFormData,
 } from '../schemas/evaluation';
+
 import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
-import { EvaluationHeader } from '../components/Evaluation/EvaluationHeader';
 import FloatingSubmitButton from '../components/FloatingSubmitButton';
 
 export function Avaliacao2() {
@@ -15,16 +16,11 @@ export function Avaliacao2() {
     });
 
     return (
-        <>
-            <EvaluationHeader />
-            <FormProvider {...methods}>
-                <FloatingSubmitButton />
-                <main className="p-8 pt-6">
-                    <form>
-                        <EvaluationForm />
-                    </form>
-                </main>
-            </FormProvider>
-        </>
+        <FormProvider {...methods}>
+            <FloatingSubmitButton />
+            <form>
+                <EvaluationForm />
+            </form>
+        </FormProvider>
     );
 }

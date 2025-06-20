@@ -1,41 +1,52 @@
-import { useState } from 'react';
-import Typography from '../../Typography';
+import { useEffect, useMemo, memo, useState } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { ChevronDown } from 'lucide-react';
 import CardContainer from '../../CardContainer';
+import Typography from '../../Typography';
 import NotificationBadge from '../../NotificationBadge';
 import RatingDisplay from '../../RatingDisplay';
 import SelfAssessment from '../Cards/SelfAssessment';
-import { ChevronDown } from 'lucide-react';
 import {
     mockEvaluationPillars,
     type Criterion,
 } from '../../../data/mockEvaluationPIllars';
+import type { EvaluationFormData } from '../../../schemas/evaluation';
 
-interface CriterionEvaluation {
-    rating?: number;
-    justification?: string;
-}
-
-interface SelfAssessmentSectionProps {
-    evaluations: Record<string, CriterionEvaluation>;
-    updateEvaluation: (
-        criterionId: string,
-        evaluation: CriterionEvaluation,
-    ) => void;
-}
-
-export function SelfAssessmentSection({
-    evaluations,
-    updateEvaluation,
-}: SelfAssessmentSectionProps) {
+export const SelfAssessmentSection = memo(() => {
+    const { control, watch } = useFormContext<EvaluationFormData>();
     const [minimizedPillars, setMinimizedPillars] = useState<
         Record<string, boolean>
-    >(() => {
-        const initialState: Record<string, boolean> = {};
-        Object.values(mockEvaluationPillars).forEach(pillar => {
-            initialState[pillar.titulo] = true;
-        });
-        return initialState;
+    >({});
+
+    const { fields, append } = useFieldArray({
+        control,
+        name: 'selfAssessment',
     });
+
+    useEffect(() => {
+        if (fields.length === 0) {
+            const allCriteria = Object.values(mockEvaluationPillars).flatMap(
+                pillar =>
+                    pillar.criterios.map((criterion: Criterion) => ({
+                        criterionId: criterion.id,
+                        rating: null,
+                        justification: '',
+                    })),
+            );
+
+            allCriteria.forEach(criterion => append(criterion));
+        }
+    }, [fields.length, append]);
+
+    const validFields = useMemo(
+        () => fields.filter(field => field.criterionId),
+        [fields],
+    );
+
+    const selfAssessmentValues = useMemo(
+        () => watch('selfAssessment') || [],
+        [watch],
+    );
 
     const togglePillar = (pillarTitle: string) => {
         setMinimizedPillars(prev => ({
@@ -44,35 +55,35 @@ export function SelfAssessmentSection({
         }));
     };
 
-    const completedCriteriaCount = Object.values(mockEvaluationPillars).map(
-        pillar => {
-            const completedCount = pillar.criterios.filter(
+    const pillarStats = useMemo(() => {
+        return Object.values(mockEvaluationPillars).map(pillar => {
+            const pillarCriteria = pillar.criterios;
+            const completedCount = pillarCriteria.filter(
                 (criterion: Criterion) => {
-                    const evaluation = evaluations[criterion.id];
+                    const fieldIndex = validFields.findIndex(
+                        f => f.criterionId === criterion.id,
+                    );
+                    if (fieldIndex === -1) return false;
+
+                    const evaluation = selfAssessmentValues[fieldIndex];
                     return (
-                        evaluation?.rating &&
-                        evaluation?.justification &&
-                        evaluation.justification.trim() !== ''
+                        evaluation?.rating && evaluation?.justification?.trim()
                     );
                 },
             ).length;
-            return {
-                pillarTitle: pillar.titulo,
-                completedCount,
-                totalCount: pillar.criterios.length,
-            };
-        },
-    );
 
-    const pillarAverages = Object.values(mockEvaluationPillars).reduce(
-        (acc, pillar) => {
-            const ratings = pillar.criterios
-                .map(
-                    (criterion: Criterion) => evaluations[criterion.id]?.rating,
-                )
+            const ratings = pillarCriteria
+                .map((criterion: Criterion) => {
+                    const fieldIndex = validFields.findIndex(
+                        f => f.criterionId === criterion.id,
+                    );
+                    return fieldIndex !== -1
+                        ? selfAssessmentValues[fieldIndex]?.rating
+                        : null;
+                })
                 .filter(
-                    (rating: number | undefined): rating is number =>
-                        rating !== undefined,
+                    (rating: number | null | undefined): rating is number =>
+                        rating !== null && rating !== undefined,
                 );
 
             const average =
@@ -87,35 +98,35 @@ export function SelfAssessmentSection({
                       ) / 10
                     : null;
 
-            acc[pillar.titulo] = average;
-            return acc;
-        },
-        {} as Record<string, number | null>,
-    );
-
-    const pillarStats = completedCriteriaCount.reduce(
-        (acc, item) => {
-            acc[item.pillarTitle] = item;
-            return acc;
-        },
-        {} as Record<string, (typeof completedCriteriaCount)[0]>,
-    );
+            return {
+                pillarTitle: pillar.titulo,
+                completedCount,
+                totalCount: pillar.criterios.length,
+                average,
+                criteria: pillar.criterios,
+            };
+        });
+    }, [validFields, selfAssessmentValues]);
 
     return (
         <section>
             <div className="space-y-8">
-                {Object.entries(mockEvaluationPillars).map(([, pillar]) => {
-                    const stats = pillarStats[pillar.titulo];
-                    const isMinimized = minimizedPillars[pillar.titulo];
+                {pillarStats.map(pillarStat => {
+                    const isMinimized =
+                        minimizedPillars[pillarStat.pillarTitle];
+                    const pendingCount =
+                        pillarStat.totalCount - pillarStat.completedCount;
 
                     return (
                         <CardContainer
                             className="pt-14 p-10 mb-5"
-                            key={pillar.titulo}
+                            key={pillarStat.pillarTitle}
                         >
                             <div
                                 className="flex items-center justify-between mb-4 cursor-pointer"
-                                onClick={() => togglePillar(pillar.titulo)}
+                                onClick={() =>
+                                    togglePillar(pillarStat.pillarTitle)
+                                }
                             >
                                 <div className="flex items-center gap-2">
                                     <Typography
@@ -123,41 +134,35 @@ export function SelfAssessmentSection({
                                         color="primary500"
                                         className="text-xl font-bold"
                                     >
-                                        Critérios de {pillar.titulo}
+                                        Critérios de {pillarStat.pillarTitle}
                                     </Typography>
-                                    {stats &&
-                                        stats.completedCount <
-                                            stats.totalCount && (
-                                            <NotificationBadge
-                                                show={true}
-                                                count={
-                                                    stats.totalCount -
-                                                    stats.completedCount
-                                                }
-                                                variant="small"
-                                                position="top-right"
-                                                className="relative top-0 right-0"
-                                            />
-                                        )}
+                                    {pendingCount > 0 && (
+                                        <NotificationBadge
+                                            show={true}
+                                            count={pendingCount}
+                                            variant="small"
+                                            position="top-right"
+                                            className="relative top-0 right-0"
+                                        />
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <RatingDisplay
-                                        rating={
-                                            pillarAverages[
-                                                pillar.titulo
-                                            ]?.toFixed(1) || '-'
-                                        }
+                                        rating={pillarStat.average || null}
                                     />
                                     <Typography
                                         variant="body"
                                         className="text-sm text-gray-500"
                                     >
-                                        {stats?.completedCount || 0} de{' '}
-                                        {pillar.criterios.length} critérios
-                                        concluídos
+                                        {pillarStat.completedCount}/
+                                        {pillarStat.totalCount} preenchidos
                                     </Typography>
                                     <div
-                                        className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${isMinimized ? 'rotate-180' : 'rotate-0'}`}
+                                        className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${
+                                            isMinimized
+                                                ? 'rotate-180'
+                                                : 'rotate-0'
+                                        }`}
                                     >
                                         <ChevronDown
                                             size={24}
@@ -175,43 +180,33 @@ export function SelfAssessmentSection({
                                 }`}
                             >
                                 <div className="space-y-4">
-                                    {pillar.criterios.map(
+                                    {pillarStat.criteria.map(
                                         (
                                             criterion: Criterion,
                                             index: number,
                                         ) => {
-                                            const evaluation =
-                                                evaluations[criterion.id] || {};
+                                            const fieldIndex =
+                                                validFields.findIndex(
+                                                    f =>
+                                                        f.criterionId ===
+                                                        criterion.id,
+                                                );
+                                            if (fieldIndex === -1) return null;
+
+                                            const fieldName = `selfAssessment.${fieldIndex}`;
+                                            const isLast =
+                                                index ===
+                                                pillarStat.criteria.length - 1;
+
                                             return (
                                                 <SelfAssessment
                                                     key={criterion.id}
+                                                    criterionName={
+                                                        criterion.nome
+                                                    }
+                                                    name={fieldName}
                                                     topicNumber={index + 1}
-                                                    topicName={criterion.nome}
-                                                    isLast={
-                                                        index ===
-                                                        pillar.criterios
-                                                            .length -
-                                                            1
-                                                    }
-                                                    rating={evaluation.rating}
-                                                    justification={
-                                                        evaluation.justification ||
-                                                        ''
-                                                    }
-                                                    onEvaluationChange={(
-                                                        rating,
-                                                        justification,
-                                                    ) =>
-                                                        updateEvaluation(
-                                                            criterion.id,
-                                                            {
-                                                                rating:
-                                                                    rating ||
-                                                                    undefined,
-                                                                justification,
-                                                            },
-                                                        )
-                                                    }
+                                                    isLast={isLast}
                                                 />
                                             );
                                         },
@@ -224,4 +219,4 @@ export function SelfAssessmentSection({
             </div>
         </section>
     );
-}
+});

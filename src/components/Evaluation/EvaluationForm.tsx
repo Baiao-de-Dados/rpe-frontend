@@ -1,17 +1,22 @@
-import { MentoringSection } from './Sections/MentoringSection';
-import { ReferencesSection } from './Sections/ReferencesSection';
-import { Evaluation360Section } from './Sections/Evaluation360Section';
+import { SectionRenderer } from './SectionRenderer';
+import { EvaluationHeader } from './EvaluationHeader';
+
+import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 
 export function EvaluationForm() {
+    const { activeSection, navigateToSection, sections } =
+        useSectionNavigation();
+
     return (
         <>
-            <Evaluation360Section />
-            <br />
-            <br />
-            <ReferencesSection />
-            <br />
-            <br />
-            <MentoringSection />
+            <EvaluationHeader
+                activeSection={activeSection}
+                onSectionChange={navigateToSection}
+                sections={sections}
+            />
+            <main className="p-8 pt-6">
+                <SectionRenderer activeSection={activeSection} />
+            </main>
         </>
     );
 }
