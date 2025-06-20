@@ -1,72 +1,68 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { Trash } from 'lucide-react';
+import CardContainer from '../../CardContainer';
 import CollaboratorCard from '../../CollaboratorCard';
 import TextAreaWithTitle from '../../TextAreaWithTitle';
-import { Trash } from 'lucide-react';
-import { type Collaborator } from '../../../data/mockCollaborators';
-import CardContainer from '../../CardContainer';
+import { Controller, useFormContext } from 'react-hook-form';
+import type { Collaborator } from '../../../data/mockCollaborators';
 
 interface ReferenceProps {
     collaborator: Collaborator;
-    onClearReference: (collaboratorId: string) => void;
+    onRemove: () => void;
+    name: string;
 }
 
 const Reference: React.FC<ReferenceProps> = ({
     collaborator,
-    onClearReference,
+    onRemove,
+    name,
 }) => {
-    const {
-        setValue,
-        watch,
-        formState: { errors },
-    } = useFormContext();
-
-    const fieldName = `reference.${collaborator.id}`;
-
-    const referencia = watch(fieldName) ?? '';
-
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setValue(fieldName, e.target.value);
-    };
+    const { control } = useFormContext();
 
     return (
         <CardContainer>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
                 <CollaboratorCard
                     collaborator={collaborator}
-                    variant="detailed"
+                    variant="compact"
                 />
                 <button
-                    title="Apagar referência"
-                    onClick={() => onClearReference(collaborator.id)}
+                    type="button"
+                    onClick={onRemove}
+                    className="text-red-500 hover:text-red-700 cursor-pointer p-2"
                 >
-                    <Trash
-                        className="w-6 h-6 text-red-500 cursor-pointer hover:text-red-700"
-                        strokeWidth={2}
-                    />
+                    <Trash size={20} />
                 </button>
             </div>
-
-            <div className="mb-6">
-                <TextAreaWithTitle
-                    title="Justifique sua escolha"
-                    placeholder="Justifique sua escolha"
-                    value={referencia}
-                    onChange={handleChange}
-                    error={
-                        errors?.reference &&
-                        typeof errors.reference === 'object' &&
-                        collaborator.id in errors.reference
-                            ? (
-                                  errors.reference[
-                                      collaborator.id as keyof typeof errors.reference
-                                  ] as { message?: string }
-                              )?.message
-                            : undefined
-                    }
-                    showCharCount
-                    minLength={10}
-                    maxLength={1000}
+            <div>
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={{
+                        required: 'A justificativa é obrigatória',
+                        minLength: {
+                            value: 10,
+                            message:
+                                'A justificativa deve ter pelo menos 10 caracteres',
+                        },
+                        maxLength: {
+                            value: 1000,
+                            message:
+                                'A justificativa deve ter no máximo 1000 caracteres',
+                        },
+                    }}
+                    render={({ field, fieldState }) => (
+                        <TextAreaWithTitle
+                            title="Justifique sua escolha"
+                            placeholder="Escreva sobre este colaborador como referência..."
+                            value={field.value || ''}
+                            onChange={field.onChange}
+                            showCharCount
+                            minLength={10}
+                            maxLength={1000}
+                            error={fieldState.error?.message}
+                        />
+                    )}
                 />
             </div>
         </CardContainer>

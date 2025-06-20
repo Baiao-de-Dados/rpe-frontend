@@ -23,6 +23,26 @@ export const mentoringSchema = z.object({
         ),
 });
 
+export const referenceSchema = z.object({
+    collaboratorId: z.string({
+        required_error: 'O ID do colaborador é obrigatório',
+    }),
+    justification: z
+        .string({
+            required_error: 'A justificativa é obrigatória',
+        })
+        .min(10, 'A justificativa deve ter pelo menos 10 caracteres')
+        .max(1000, 'A justificativa deve ter no máximo 1000 caracteres')
+        .trim()
+        .refine(
+            value => value.length > 0,
+            'A justificativa não pode conter apenas espaços em branco',
+        ),
+});
+
 export const fullEvaluationSchema = z.object({
     ...mentoringSchema.shape,
+    references: z.array(referenceSchema).optional(),
 });
+
+export type EvaluationFormData = z.infer<typeof fullEvaluationSchema>;

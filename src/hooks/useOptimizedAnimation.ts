@@ -44,13 +44,17 @@ export const animationPresets = {
         visible: {
             opacity: 1,
             transform: 'translateY(0px) scale(1)',
-        },
-        exit: {
-            opacity: 0,
-            transform: 'translateY(0px) scale(0.95)',
             transition: {
                 duration: 0.3,
                 ease: 'easeOut',
+            },
+        },
+        exit: {
+            opacity: 0,
+            transform: 'translateX(-100px) scale(0.9)',
+            transition: {
+                duration: 0.3,
+                ease: 'easeIn',
             },
         },
     },

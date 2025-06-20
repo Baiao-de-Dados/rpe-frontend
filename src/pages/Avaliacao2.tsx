@@ -1,23 +1,24 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { fullEvaluationSchema } from '../schemas/evaluation';
+import {
+    fullEvaluationSchema,
+    type EvaluationFormData,
+} from '../schemas/evaluation';
 import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
 import { EvaluationHeader } from '../components/Evaluation/EvaluationHeader';
-
-type MentoringFormData = {
-    mentoringRating: number;
-    mentoringJustification: string;
-};
+import FloatingSubmitButton from '../components/FloatingSubmitButton';
 
 export function Avaliacao2() {
-    const methods = useForm<MentoringFormData>({
+    const methods = useForm<EvaluationFormData>({
         resolver: zodResolver(fullEvaluationSchema),
+        mode: 'onChange',
     });
 
     return (
         <>
+            <EvaluationHeader />
             <FormProvider {...methods}>
-                <EvaluationHeader />
+                <FloatingSubmitButton />
                 <main className="p-8 pt-6">
                     <form>
                         <EvaluationForm />
