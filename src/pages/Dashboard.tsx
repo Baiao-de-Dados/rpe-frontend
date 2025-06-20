@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { CycleBanner } from '../components/CycleBanner';
 import { CycleCard } from '../components/CycleCard';
 import { PerformanceChart } from '../components/PerformanceChart';

@@ -1,90 +1,73 @@
-import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '../services/api';
+import type { User, LoginRequest } from '../types/auth';
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-};
-
-type AuthContextType = {
-    isAuthenticated: boolean;
+interface AuthContextType {
     user: User | null;
-    loading: boolean; // Novo estado para controlar carregamento
-    login: (email: string, password: string) => Promise<void>;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    login: (credentials: LoginRequest) => Promise<void>;
     logout: () => void;
-};
+}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+    undefined,
+);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true); // Inicia com loading=true
+const USER_QUERY_KEY = ['auth', 'me'];
 
-    useEffect(() => {
-        // Verifica se há um usuário salvo no localStorage ao carregar a página
-        const storedUser = localStorage.getItem('@rpe:user');
-        const storedToken = localStorage.getItem('@rpe:token');
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+    const queryClient = useQueryClient();
 
-        if (storedUser && storedToken) {
-            setUser(JSON.parse(storedUser));
-            setIsAuthenticated(true);
-        }
+    // Busca o usuário autenticado se houver token salvo
+    const { data: user, isLoading } = useQuery<User | null>({
+        queryKey: USER_QUERY_KEY,
+        queryFn: async () => {
+            const token = localStorage.getItem('@rpe:token');
+            if (!token) return null;
+            const res = await api.get('/auth/me');
+            return res.data;
+        },
+        staleTime: 1000 * 60 * 5, // 5 minutos
+        retry: false,
+    });
 
-        // Após verificar o localStorage, marca como carregado
-        setLoading(false);
-    }, []);
+    // Mutation para login
+    const loginMutation = useMutation({
+        mutationFn: async (credentials: LoginRequest) => {
+            const res = await api.post('/auth/login', credentials);
+            return res.data;
+        },
+        onSuccess: data => {
+            localStorage.setItem('@rpe:token', data.access_token);
+            queryClient.setQueryData(USER_QUERY_KEY, data.user);
+        },
+    });
 
-    const login = async (email: string, password: string) => {
-        try {
-            // Simulando uma chamada de API para login
-            // Em produção, substitua isso pela chamada real à sua API
-            if (email === 'usuario@teste.com' && password === 'senha123') {
-                const userData = {
-                    id: '1',
-                    name: 'Usuário Teste',
-                    email,
-                };
+    // Função de login
+    async function login(credentials: LoginRequest) {
+        await loginMutation.mutateAsync(credentials);
+    }
 
-                // Simula um token JWT
-                const token = 'token-simulado';
-
-                // Salva os dados no localStorage
-                localStorage.setItem('@rpe:user', JSON.stringify(userData));
-                localStorage.setItem('@rpe:token', token);
-
-                setUser(userData);
-                setIsAuthenticated(true);
-            } else {
-                throw new Error('Credenciais inválidas');
-            }
-        } catch (error) {
-            console.error('Erro ao fazer login:', error);
-            throw error;
-        }
-    };
-
-    const logout = () => {
-        localStorage.removeItem('@rpe:user');
+    // Função de logout
+    function logout() {
         localStorage.removeItem('@rpe:token');
-        setUser(null);
-        setIsAuthenticated(false);
-    };
+        queryClient.setQueryData(USER_QUERY_KEY, null);
+        queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
+    }
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, user, loading, login, logout }}
+            value={{
+                user: user ?? null,
+                isAuthenticated: !!user,
+                isLoading,
+                login,
+                logout,
+            }}
         >
             {children}
         </AuthContext.Provider>
     );
-}
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth deve ser usado dentro de um AuthProvider');
-    }
-    return context;
 }

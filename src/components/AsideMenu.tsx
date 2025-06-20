@@ -10,7 +10,7 @@ import {
     ChevronRight,
     ChevronLeft,
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 export default function AsideMenu() {
     const navigate = useNavigate();

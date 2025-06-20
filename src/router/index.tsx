@@ -1,84 +1,126 @@
-import {
-    Routes,
-    Route,
-    BrowserRouter,
-    Navigate,
-    Outlet,
-} from 'react-router-dom';
+// src/router/index.tsx
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 import { Dashboard, Avaliacao, Evolucao } from '../pages';
 import LoginPage from '../pages/LoginPage';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import { ProtectedRoute, RoleRoute } from '../components/ProtectedRoute';
+import { MultiRoleRoute } from '../components/MultiRoleRoute';
+import { UserRoleEnum } from '../types/auth';
 
-// Componente de carregamento
-function LoadingScreen() {
-    return (
-        <div className="flex h-screen items-center justify-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
-        </div>
-    );
-}
-
-function PrivateRoute() {
-    const { isAuthenticated, loading } = useAuth();
-
-    // Mostra tela de carregamento enquanto verifica autenticação
-    if (loading) {
-        return <LoadingScreen />;
-    }
-
-    // Redireciona para login se não estiver autenticado
-    if (!isAuthenticated) {
-        console.log('Redirecionando para login - usuário não autenticado');
-        return <Navigate to="/login" replace />;
-    }
-
-    // Permite acesso à rota protegida
-    return <Outlet />;
-}
+// Spinner enquanto o estado de auth é carregado
 
 export function Router() {
-    const { isAuthenticated, loading } = useAuth();
-
-    // Mostra tela de carregamento enquanto verifica autenticação
-    if (loading) {
-        return <LoadingScreen />;
-    }
+    const { isAuthenticated } = useAuth();
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        isAuthenticated ? (
-                            <Navigate to="/dashboard" replace />
-                        ) : (
-                            <Navigate to="/login" replace />
-                        )
-                    }
-                />
-                <Route
-                    path="/login"
-                    element={
-                        isAuthenticated ? (
-                            <Navigate to="/dashboard" replace />
-                        ) : (
-                            <LoginPage />
-                        )
-                    }
-                />
-                <Route element={<PrivateRoute />}>
-                    <Route element={<DefaultLayout />}>
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/avaliacao" element={<Avaliacao />} />
-                        <Route path="/evolucao" element={<Evolucao />} />
-                    </Route>
-                </Route>
+        <Routes>
+            {/* Login: se já estiver autenticado, manda direto pro dashboard */}
+            <Route
+                path="/login"
+                element={
+                    isAuthenticated ? (
+                        <Navigate to="/dashboard" replace />
+                    ) : (
+                        <LoginPage />
+                    )
+                }
+            />
 
-                {/* Rota para caminhos não encontrados */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </BrowserRouter>
+            {/* Roteamento protegido */}
+            <Route element={<ProtectedRoute />}>
+                <Route element={<DefaultLayout />}>
+                    {/* redireciona / para /dashboard */}
+                    <Route
+                        index
+                        element={<Navigate to="dashboard" replace />}
+                    />
+
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="avaliacao" element={<Avaliacao />} />
+
+                    <Route
+                        path="evolucao"
+                        element={
+                            <RoleRoute requiredRole={UserRoleEnum.MANAGER}>
+                                <Evolucao />
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="administracao"
+                        element={
+                            <RoleRoute requiredRole={UserRoleEnum.RH}>
+                                <div className="p-6">
+                                    <h1 className="text-2xl font-bold">
+                                        Painel de Administração
+                                    </h1>
+                                    <p>
+                                        Esta página só é acessível para RH,
+                                        Comitê, Admin e Desenvolvedor
+                                    </p>
+                                </div>
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="dev"
+                        element={
+                            <RoleRoute
+                                requiredRole={UserRoleEnum.DEVELOPER}
+                                redirectTo="/dashboard"
+                            >
+                                <div className="p-6">
+                                    <h1 className="text-2xl font-bold">
+                                        Ferramentas de Desenvolvimento
+                                    </h1>
+                                    <p>
+                                        Esta página só é acessível para
+                                        desenvolvedores
+                                    </p>
+                                </div>
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="mentoria"
+                        element={
+                            <MultiRoleRoute
+                                allowedRoles={[
+                                    UserRoleEnum.MENTOR,
+                                    UserRoleEnum.LEADER,
+                                    UserRoleEnum.MANAGER,
+                                ]}
+                                redirectTo="/dashboard"
+                            >
+                                <div className="p-6">
+                                    <h1 className="text-2xl font-bold">
+                                        Mentoria
+                                    </h1>
+                                    <p>
+                                        Esta página é acessível para mentores,
+                                        líderes e gestores
+                                    </p>
+                                </div>
+                            </MultiRoleRoute>
+                        }
+                    />
+                </Route>
+            </Route>
+
+            {/* Catch-all: qualquer rota não encontrada redireciona para login ou dashboard */}
+            <Route
+                path="*"
+                element={
+                    <Navigate
+                        to={isAuthenticated ? '/dashboard' : '/login'}
+                        replace
+                    />
+                }
+            />
+        </Routes>
     );
 }
