@@ -6,6 +6,7 @@ import Typography from '../../Typography';
 import CollaboratorCard from '../../CollaboratorCard';
 import RatingDisplay from '../../RatingDisplay';
 import CardContainer from '../../CardContainer';
+import { ErrorMessage } from '../../ErrorMessage';
 
 const Mentoring: React.FC = () => {
     const { control } = useFormContext();
@@ -15,7 +16,7 @@ const Mentoring: React.FC = () => {
             <Controller
                 name="mentoringRating"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                     <>
                         <div className="flex items-center gap-4 mb-4">
                             <CollaboratorCard
@@ -38,6 +39,7 @@ const Mentoring: React.FC = () => {
                             >
                                 Dê uma avaliação de 1 à 5 ao seu mentor
                             </Typography>
+                            <ErrorMessage error={fieldState.error?.message} />
                         </div>
                         <div className="mb-4">
                             <StarRating
@@ -56,9 +58,7 @@ const Mentoring: React.FC = () => {
                     <TextAreaWithTitle
                         title="Justifique sua nota"
                         placeholder="Justifique sua nota"
-                        minLength={10}
                         maxLength={1000}
-                        showCharCount
                         value={field.value || ''}
                         onChange={field.onChange}
                         error={fieldState.error?.message}

@@ -38,27 +38,12 @@ const Reference: React.FC<ReferenceProps> = ({
                 <Controller
                     name={name}
                     control={control}
-                    rules={{
-                        required: 'A justificativa é obrigatória',
-                        minLength: {
-                            value: 10,
-                            message:
-                                'A justificativa deve ter pelo menos 10 caracteres',
-                        },
-                        maxLength: {
-                            value: 1000,
-                            message:
-                                'A justificativa deve ter no máximo 1000 caracteres',
-                        },
-                    }}
                     render={({ field, fieldState }) => (
                         <TextAreaWithTitle
                             title="Justifique sua escolha"
                             placeholder="Escreva sobre este colaborador como referência..."
                             value={field.value || ''}
                             onChange={field.onChange}
-                            showCharCount
-                            minLength={10}
                             maxLength={1000}
                             error={fieldState.error?.message}
                         />

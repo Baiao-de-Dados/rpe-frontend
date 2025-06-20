@@ -44,7 +44,6 @@ export function SelfAssessmentSection({
         }));
     };
 
-    // Cálculos simples - removido useMemo desnecessário
     const completedCriteriaCount = Object.values(mockEvaluationPillars).map(
         pillar => {
             const completedCount = pillar.criterios.filter(

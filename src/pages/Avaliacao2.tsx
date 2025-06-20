@@ -11,7 +11,7 @@ import FloatingSubmitButton from '../components/FloatingSubmitButton';
 export function Avaliacao2() {
     const methods = useForm<EvaluationFormData>({
         resolver: zodResolver(fullEvaluationSchema),
-        mode: 'onChange',
+        mode: 'onSubmit',
     });
 
     return (

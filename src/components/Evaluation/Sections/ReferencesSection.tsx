@@ -11,7 +11,7 @@ import type { Collaborator } from '../../../data/mockCollaborators';
 import type { EvaluationFormData } from '../../../schemas/evaluation';
 
 export const ReferencesSection = memo(() => {
-    const { control, trigger, setValue, getValues } =
+    const { control, setValue, getValues } =
         useFormContext<EvaluationFormData>();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -74,10 +74,9 @@ export const ReferencesSection = memo(() => {
                 ref => ref.collaboratorId !== collaboratorId,
             );
 
-            setValue('references', newReferences, { shouldValidate: true });
-            await trigger('references');
+            setValue('references', newReferences);
         },
-        [getValues, setValue, trigger],
+        [getValues, setValue],
     );
 
     const renderItem = useCallback(
