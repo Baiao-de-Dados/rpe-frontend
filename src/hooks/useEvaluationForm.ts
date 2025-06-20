@@ -16,7 +16,24 @@ interface CriterionEvaluation {
     justification?: string;
 }
 
-export function useEvaluationForm() {
+export function useEvaluationForm(formValidationData?: {
+    // Mentoring
+    mentoringRating?: number | null;
+    mentoringJustification?: string;
+    mentoringHasErrors?: boolean;
+
+    // Autoavaliação
+    selfAssessmentValues?: Record<string, unknown>;
+    selfAssessmentHasErrors?: boolean;
+
+    // Avaliação 360
+    evaluation360Values?: Record<string, unknown>;
+    evaluation360HasErrors?: boolean;
+
+    // Referências
+    referencesValues?: Record<string, unknown>;
+    referencesHasErrors?: boolean;
+}) {
     const [activeSection, setActiveSection] = useState('Autoavaliação');
     const [evaluations, setEvaluations] = useState<
         Record<string, CriterionEvaluation>
@@ -215,8 +232,19 @@ export function useEvaluationForm() {
 
         updateNotificationCount('referencias', incompleteReferenceEvaluations);
 
+        const currentMentoringRating =
+            formValidationData?.mentoringRating ?? mentoringRating;
+        const currentMentoringJustification =
+            formValidationData?.mentoringJustification ??
+            mentoringJustification;
+        const hasValidationErrors =
+            formValidationData?.mentoringHasErrors ?? false;
+
         const isMentoringIncomplete = !(
-            mentoringRating && mentoringJustification.trim()
+            currentMentoringRating &&
+            currentMentoringJustification?.trim() &&
+            currentMentoringJustification.length >= 10 &&
+            !hasValidationErrors
         );
         updateNotificationCount('mentoring', isMentoringIncomplete ? 1 : 0);
     }, [
@@ -227,6 +255,15 @@ export function useEvaluationForm() {
         collaboratorEvaluationsReference,
         mentoringRating,
         mentoringJustification,
+        formValidationData?.mentoringRating,
+        formValidationData?.mentoringJustification,
+        formValidationData?.mentoringHasErrors,
+        formValidationData?.selfAssessmentValues,
+        formValidationData?.selfAssessmentHasErrors,
+        formValidationData?.evaluation360Values,
+        formValidationData?.evaluation360HasErrors,
+        formValidationData?.referencesValues,
+        formValidationData?.referencesHasErrors,
         updateNotificationCount,
         updateNotificationState,
     ]);

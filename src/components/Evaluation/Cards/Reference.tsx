@@ -1,30 +1,34 @@
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 import CollaboratorCard from '../../CollaboratorCard';
 import TextAreaWithTitle from '../../TextAreaWithTitle';
 import { Trash } from 'lucide-react';
-import {
-    type Collaborator,
-    type CollaboratorEvaluation,
-} from '../../../data/mockCollaborators';
+import { type Collaborator } from '../../../data/mockCollaborators';
 import CardContainer from '../../CardContainer';
 
 interface ReferenceProps {
     collaborator: Collaborator;
-    evaluation?: CollaboratorEvaluation;
     onClearReference: (collaboratorId: string) => void;
-    onFieldChange: (
-        collaboratorId: string,
-        field: 'referencia',
-        value: string,
-    ) => void;
 }
 
 const Reference: React.FC<ReferenceProps> = ({
     collaborator,
-    evaluation,
     onClearReference,
-    onFieldChange,
 }) => {
+    const {
+        setValue,
+        watch,
+        formState: { errors },
+    } = useFormContext();
+
+    const fieldName = `reference.${collaborator.id}`;
+
+    const referencia = watch(fieldName) ?? '';
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setValue(fieldName, e.target.value);
+    };
+
     return (
         <CardContainer>
             <div className="flex items-center justify-between mb-6">
@@ -47,14 +51,22 @@ const Reference: React.FC<ReferenceProps> = ({
                 <TextAreaWithTitle
                     title="Justifique sua escolha"
                     placeholder="Justifique sua escolha"
-                    value={evaluation?.referencia || ''}
-                    onChange={e =>
-                        onFieldChange(
-                            collaborator.id,
-                            'referencia',
-                            e.target.value,
-                        )
+                    value={referencia}
+                    onChange={handleChange}
+                    error={
+                        errors?.reference &&
+                        typeof errors.reference === 'object' &&
+                        collaborator.id in errors.reference
+                            ? (
+                                  errors.reference[
+                                      collaborator.id as keyof typeof errors.reference
+                                  ] as { message?: string }
+                              )?.message
+                            : undefined
                     }
+                    showCharCount
+                    minLength={10}
+                    maxLength={1000}
                 />
             </div>
         </CardContainer>

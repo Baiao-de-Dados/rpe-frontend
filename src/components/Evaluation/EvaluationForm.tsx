@@ -1,21 +1,10 @@
 import { Suspense, lazy } from 'react';
 import { SectionLoadingSpinner } from '../SectionLoadingSpinner';
-import { SectionPreloader } from './Sections/SectionPreloader';
 import {
     type Collaborator,
     type CollaboratorEvaluation,
 } from '../../data/mockCollaborators';
 
-const SelfAssessmentSection = lazy(() =>
-    import('./Sections/SelfAssessmentSection').then(module => ({
-        default: module.SelfAssessmentSection,
-    })),
-);
-const Evaluation360Section = lazy(() =>
-    import('./Sections/Evaluation360Section').then(module => ({
-        default: module.Evaluation360Section,
-    })),
-);
 const MentoringSection = lazy(() =>
     import('./Sections/MentoringSection').then(module => ({
         default: module.MentoringSection,
@@ -73,31 +62,21 @@ interface EvaluationFormProps {
 
 export function EvaluationForm({
     activeSection,
-    evaluations,
-    searchQuery360,
-    setSearchQuery360,
     searchQueryReference,
     setSearchQueryReference,
-    selectedCollaborators360,
-    collaboratorEvaluations360,
     selectedCollaboratorsReference,
     collaboratorEvaluationsReference,
     mentoringRating,
     mentoringJustification,
-    addCollaboratorTo360,
-    removeCollaboratorFrom360,
-    updateCollaboratorRating360,
-    updateCollaboratorField360,
     addCollaboratorToReference,
     removeCollaboratorFromReference,
     updateCollaboratorFieldReference,
     setMentoringRating,
     setMentoringJustification,
-    updateEvaluation,
 }: EvaluationFormProps) {
     return (
         <>
-            <SectionPreloader activeSection={activeSection} />
+            {/* <SectionPreloader activeSection={activeSection} />
             {activeSection === 'Autoavaliação' && (
                 <Suspense fallback={<SectionLoadingSpinner />}>
                     <SelfAssessmentSection
@@ -121,7 +100,7 @@ export function EvaluationForm({
                         updateCollaboratorField360={updateCollaboratorField360}
                     />
                 </Suspense>
-            )}
+            )} */}
             {activeSection === 'Mentoring' && (
                 <Suspense fallback={<SectionLoadingSpinner />}>
                     <MentoringSection

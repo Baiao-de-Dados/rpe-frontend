@@ -5,6 +5,10 @@ interface TextAreaWithTitleProps {
     placeholder: string;
     value: string;
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    error?: string;
+    showCharCount?: boolean;
+    minLength?: number;
+    maxLength?: number;
 }
 
 const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
@@ -12,16 +16,52 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
     placeholder,
     value,
     onChange,
+    error,
+    showCharCount = false,
+    minLength,
+    maxLength,
 }) => {
+    const currentLength = value?.length || 0;
+
+    const getCharCountColor = () => {
+        if (minLength && currentLength < minLength) return 'text-orange-500';
+        if (maxLength && currentLength > maxLength) return 'text-red-500';
+        return 'text-gray-500';
+    };
+
+    const getCharCountText = () => {
+        if (minLength && maxLength) {
+            return `${currentLength}/${maxLength} caracteres (mín. ${minLength})`;
+        }
+        if (minLength) {
+            return `${currentLength} caracteres (mín. ${minLength})`;
+        }
+        if (maxLength) {
+            return `${currentLength}/${maxLength} caracteres`;
+        }
+        return `${currentLength} caracteres`;
+    };
+
     return (
         <div>
-            <p className="text-sm text-gray-600 mb-2">{title}</p>
+            <div className="flex items-center justify-between mb-2">
+                <p className="text-sm text-gray-600">{title}</p>
+                {error && <p className="text-red-500 text-xs">{error}</p>}
+            </div>
             <textarea
-                className="w-full h-21 p-2 border-2 border-gray-300 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-primary-500 resize-none"
+                className={`w-full h-21 p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none border-gray-300 focus:border-primary-500`}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
-            ></textarea>
+                maxLength={maxLength}
+            />
+            {showCharCount && (
+                <div className="flex justify-end mt-1">
+                    <p className={`text-xs ${getCharCountColor()}`}>
+                        {getCharCountText()}
+                    </p>
+                </div>
+            )}
         </div>
     );
 };

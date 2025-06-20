@@ -9,6 +9,7 @@ interface EvaluationHeaderProps {
     getNotification: (
         id: string,
     ) => { active: boolean; count?: number } | undefined;
+    onSubmit?: (e?: React.BaseSyntheticEvent) => Promise<void>;
 }
 
 const sections = ['Autoavaliação', 'Avaliação 360', 'Mentoring', 'Referências'];
@@ -25,6 +26,7 @@ export function EvaluationHeader({
     isFormComplete,
     onNavClick,
     getNotification,
+    onSubmit,
 }: EvaluationHeaderProps) {
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
@@ -36,12 +38,13 @@ export function EvaluationHeader({
                     <Button
                         variant="primary"
                         size="md"
-                        disabled={!isFormComplete}
+                        disabled={isFormComplete}
                         className={`transition-all duration-200 ${
-                            !isFormComplete
+                            isFormComplete
                                 ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200'
                                 : 'bg-primary-500 text-white hover:bg-primary-600'
                         }`}
+                        onClick={onSubmit}
                     >
                         Concluir e enviar
                     </Button>
