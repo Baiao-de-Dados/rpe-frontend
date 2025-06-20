@@ -23,24 +23,6 @@ export const mentoringSchema = z.object({
         ),
 });
 
-export const referenceItemSchema = z.object({
-    collaboratorId: z.string(),
-    referencia: z
-        .string()
-        .min(10, 'A justificativa deve ter pelo menos 10 caracteres')
-        .max(1000, 'A justificativa deve ter no máximo 1000 caracteres')
-        .trim()
-        .refine(
-            value => value.length > 0,
-            'A justificativa não pode conter apenas espaços em branco',
-        ),
-});
-
-export const referencesSchema = z.object({
-    referencias: z.array(referenceItemSchema),
-});
-
 export const fullEvaluationSchema = z.object({
     ...mentoringSchema.shape,
-    ...referencesSchema.shape,
 });

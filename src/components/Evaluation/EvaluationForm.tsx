@@ -1,137 +1,83 @@
-import { Suspense, lazy } from 'react';
-import { SectionLoadingSpinner } from '../SectionLoadingSpinner';
-import {
-    type Collaborator,
-    type CollaboratorEvaluation,
-} from '../../data/mockCollaborators';
+import { useFormContext } from 'react-hook-form';
+import CardContainer from '../CardContainer';
+import CollaboratorCard from '../CollaboratorCard';
+import RatingDisplay from '../RatingDisplay';
+import StarRating from '../StarRating';
+import TextAreaWithTitle from '../TextAreaWithTitle';
+import Typography from '../Typography';
+import { ErrorMessage } from '../ErrorMessage';
 
-const MentoringSection = lazy(() =>
-    import('./Sections/MentoringSection').then(module => ({
-        default: module.MentoringSection,
-    })),
-);
-const ReferencesSection = lazy(() =>
-    import('./Sections/ReferencesSection').then(module => ({
-        default: module.ReferencesSection,
-    })),
-);
+export function EvaluationForm() {
+    const {
+        watch,
+        setValue,
+        formState: { errors, isSubmitted },
+    } = useFormContext();
 
-interface CriterionEvaluation {
-    rating?: number;
-    justification?: string;
-}
+    const currentRating = watch('mentoringRating');
+    const currentJustification = watch('mentoringJustification');
 
-interface EvaluationFormProps {
-    activeSection: string;
-    evaluations: Record<string, CriterionEvaluation>;
-    searchQuery360: string;
-    setSearchQuery360: (query: string) => void;
-    searchQueryReference: string;
-    setSearchQueryReference: (query: string) => void;
-    selectedCollaborators360: Collaborator[];
-    collaboratorEvaluations360: Record<string, CollaboratorEvaluation>;
-    selectedCollaboratorsReference: Collaborator[];
-    collaboratorEvaluationsReference: Record<string, CollaboratorEvaluation>;
-    mentoringRating: number | null;
-    mentoringJustification: string;
-    addCollaboratorTo360: (collaborator: Collaborator) => void;
-    removeCollaboratorFrom360: (collaboratorId: string) => void;
-    updateCollaboratorRating360: (
-        collaboratorId: string,
-        rating: number | null,
-    ) => void;
-    updateCollaboratorField360: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
-        value: string,
-    ) => void;
-    addCollaboratorToReference: (collaborator: Collaborator) => void;
-    removeCollaboratorFromReference: (collaboratorId: string) => void;
-    updateCollaboratorFieldReference: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
-        value: string,
-    ) => void;
-    setMentoringRating: (rating: number | null) => void;
-    setMentoringJustification: (justification: string) => void;
-    updateEvaluation: (
-        criterionId: string,
-        evaluation: CriterionEvaluation,
-    ) => void;
-}
+    const handleRatingChange = (rating: number | null) => {
+        setValue('mentoringRating', rating, { shouldValidate: true });
+    };
 
-export function EvaluationForm({
-    activeSection,
-    searchQueryReference,
-    setSearchQueryReference,
-    selectedCollaboratorsReference,
-    collaboratorEvaluationsReference,
-    mentoringRating,
-    mentoringJustification,
-    addCollaboratorToReference,
-    removeCollaboratorFromReference,
-    updateCollaboratorFieldReference,
-    setMentoringRating,
-    setMentoringJustification,
-}: EvaluationFormProps) {
     return (
         <>
-            {/* <SectionPreloader activeSection={activeSection} />
-            {activeSection === 'Autoavaliação' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <SelfAssessmentSection
-                        evaluations={evaluations}
-                        updateEvaluation={updateEvaluation}
+            <CardContainer>
+                <div className="flex items-center gap-4 mb-4">
+                    <CollaboratorCard
+                        collaborator={{
+                            id: '1',
+                            nome: 'Fulano de Tal',
+                            cargo: 'Mentor',
+                        }}
+                        variant="compact"
                     />
-                </Suspense>
-            )}
-            {activeSection === 'Avaliação 360' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <Evaluation360Section
-                        searchQuery360={searchQuery360}
-                        setSearchQuery360={setSearchQuery360}
-                        selectedCollaborators360={selectedCollaborators360}
-                        collaboratorEvaluations360={collaboratorEvaluations360}
-                        addCollaboratorTo360={addCollaboratorTo360}
-                        removeCollaboratorFrom360={removeCollaboratorFrom360}
-                        updateCollaboratorRating360={
-                            updateCollaboratorRating360
-                        }
-                        updateCollaboratorField360={updateCollaboratorField360}
+                    <RatingDisplay
+                        rating={currentRating || null}
+                        className="ml-auto"
                     />
-                </Suspense>
-            )} */}
-            {activeSection === 'Mentoring' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <MentoringSection
-                        mentoringRating={mentoringRating}
-                        mentoringJustification={mentoringJustification}
-                        setMentoringRating={setMentoringRating}
-                        setMentoringJustification={setMentoringJustification}
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                    <Typography
+                        variant="body"
+                        className="text-sm text-gray-600"
+                    >
+                        Dê uma avaliação de 1 à 5 ao seu mentor
+                    </Typography>
+                    <ErrorMessage
+                        error={errors.mentoringRating?.message as string}
+                        show={isSubmitted}
                     />
-                </Suspense>
-            )}
-            {activeSection === 'Referências' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <ReferencesSection
-                        searchQueryReference={searchQueryReference}
-                        setSearchQueryReference={setSearchQueryReference}
-                        selectedCollaboratorsReference={
-                            selectedCollaboratorsReference
+                </div>
+                <div className="mb-4">
+                    <StarRating
+                        value={currentRating || null}
+                        onChange={handleRatingChange}
+                    />
+                </div>
+                <div>
+                    <TextAreaWithTitle
+                        title="Justifique sua nota"
+                        placeholder="Justifique sua nota"
+                        minLength={10}
+                        maxLength={1000}
+                        showCharCount
+                        value={currentJustification}
+                        onChange={e =>
+                            setValue('mentoringJustification', e.target.value, {
+                                shouldValidate: true,
+                            })
                         }
-                        collaboratorEvaluationsReference={
-                            collaboratorEvaluationsReference
-                        }
-                        addCollaboratorToReference={addCollaboratorToReference}
-                        removeCollaboratorFromReference={
-                            removeCollaboratorFromReference
-                        }
-                        updateCollaboratorFieldReference={
-                            updateCollaboratorFieldReference
+                        error={
+                            isSubmitted
+                                ? (errors.mentoringJustification
+                                      ?.message as string)
+                                : undefined
                         }
                     />
-                </Suspense>
-            )}
+                </div>
+            </CardContainer>
         </>
     );
 }

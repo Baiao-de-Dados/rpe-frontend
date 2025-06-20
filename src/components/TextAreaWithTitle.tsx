@@ -1,4 +1,5 @@
 import React from 'react';
+import { ErrorMessage } from './ErrorMessage';
 
 interface TextAreaWithTitleProps {
     title: string;
@@ -46,7 +47,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
         <div>
             <div className="flex items-center justify-between mb-2">
                 <p className="text-sm text-gray-600">{title}</p>
-                {error && <p className="text-red-500 text-xs">{error}</p>}
+                <ErrorMessage error={error} />
             </div>
             <textarea
                 className={`w-full h-21 p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none border-gray-300 focus:border-primary-500`}

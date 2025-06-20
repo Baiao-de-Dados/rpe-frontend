@@ -6,9 +6,10 @@ import {
     Outlet,
 } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
-import { Dashboard, Avaliacao, Evolucao } from '../pages';
+
 import LoginPage from '../pages/LoginPage';
 import { useAuth } from '../contexts/AuthContext';
+import { Dashboard, Evolucao, Avaliacao2 } from '../pages';
 
 // Componente de carregamento
 function LoadingScreen() {
@@ -71,7 +72,7 @@ export function Router() {
                 <Route element={<PrivateRoute />}>
                     <Route element={<DefaultLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/avaliacao" element={<Avaliacao />} />
+                        <Route path="/avaliacao" element={<Avaliacao2 />} />
                         <Route path="/evolucao" element={<Evolucao />} />
                     </Route>
                 </Route>
