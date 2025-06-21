@@ -1,73 +1,115 @@
-import React, { createContext } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../services/api';
+import React, { useEffect, useState } from 'react';
 import type { User, LoginRequest } from '../types/auth';
-
-interface AuthContextType {
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    login: (credentials: LoginRequest) => Promise<void>;
-    logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(
-    undefined,
-);
-
-const USER_QUERY_KEY = ['auth', 'me'];
+import { authEndpoints } from '../services/api';
+import { AuthContext, type AuthContextType } from './AuthContextDefinition';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const queryClient = useQueryClient();
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    // Busca o usuário autenticado se houver token salvo
-    const { data: user, isLoading } = useQuery<User | null>({
-        queryKey: USER_QUERY_KEY,
-        queryFn: async () => {
-            const token = localStorage.getItem('@rpe:token');
-            if (!token) return null;
-            const res = await api.get('/auth/me');
-            return res.data;
-        },
-        staleTime: 1000 * 60 * 5, // 5 minutos
-        retry: false,
-    });
+    const isAuthenticated = !!user;
 
-    // Mutation para login
-    const loginMutation = useMutation({
-        mutationFn: async (credentials: LoginRequest) => {
-            const res = await api.post('/auth/login', credentials);
-            return res.data;
-        },
-        onSuccess: data => {
-            localStorage.setItem('@rpe:token', data.access_token);
-            queryClient.setQueryData(USER_QUERY_KEY, data.user);
-        },
-    });
+    const login = async (credentials: LoginRequest) => {
+        try {
+            const response = await authEndpoints.login(
+                credentials.email,
+                credentials.password,
+            );
+            const { access_token, user: userData } = response.data;
 
-    // Função de login
-    async function login(credentials: LoginRequest) {
-        await loginMutation.mutateAsync(credentials);
-    }
+            // Salvar token e dados do usuário
+            localStorage.setItem('@rpe:token', access_token);
+            //   localStorage.setItem('@rpe:user', JSON.stringify(userData));
 
-    // Função de logout
-    function logout() {
+            setUser(userData);
+
+            console.log('[AUTH] Login bem-sucedido:', userData);
+        } catch (error: unknown) {
+            console.error('[AUTH] Erro no login:', error);
+            let message = 'Erro ao fazer login';
+            if (error && typeof error === 'object' && 'response' in error) {
+                const axiosError = error as {
+                    response?: { data?: { message?: string } };
+                };
+                message =
+                    axiosError.response?.data?.message || 'Erro ao fazer login';
+            }
+            throw new Error(message);
+        }
+    };
+
+    const logout = () => {
         localStorage.removeItem('@rpe:token');
-        queryClient.setQueryData(USER_QUERY_KEY, null);
-        queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
-    }
+        // localStorage.removeItem('@rpe:user');
+        setUser(null);
+        console.log('[AUTH] Logout realizado');
+    };
+
+    const checkAuth = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('@rpe:token');
+
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
+            // Verificar se o token ainda é válido
+            const response = await authEndpoints.me();
+            const userData = response.data;
+
+            setUser(userData);
+            //   localStorage.setItem('@rpe:user', JSON.stringify(userData));
+
+            console.log('[AUTH] Token válido, usuário autenticado:', userData);
+        } catch (error) {
+            console.error('[AUTH] Token inválido, fazendo logout:', error);
+            logout();
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const initAuth = async () => {
+            const token = localStorage.getItem('@rpe:token');
+
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const response = await authEndpoints.me();
+                const userData = response.data;
+                setUser(userData);
+                console.log(
+                    '[AUTH] Token válido, usuário autenticado:',
+                    userData,
+                );
+            } catch (error) {
+                console.error('[AUTH] Token inválido, fazendo logout:', error);
+                localStorage.removeItem('@rpe:token');
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initAuth();
+    }, []);
+
+    const value: AuthContextType = {
+        user,
+        isAuthenticated,
+        loading,
+        login,
+        logout,
+        checkAuth,
+    };
 
     return (
-        <AuthContext.Provider
-            value={{
-                user: user ?? null,
-                isAuthenticated: !!user,
-                isLoading,
-                login,
-                logout,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
+        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     );
 }

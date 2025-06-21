@@ -34,7 +34,7 @@ export function Dashboard() {
     const navigate = useNavigate();
 
     // Encontrar o ciclo atual (assumindo que é o primeiro na lista, que geralmente é o mais recente)
-    const currentCycle = mockCycles[0];
+    const currentCycle = mockCycles[1];
     // Calcular dias restantes (exemplo: no mundo real, isso viria do backend)
     const remainingDays = currentCycle.status === 'Em andamento' ? 15 : 0;
 

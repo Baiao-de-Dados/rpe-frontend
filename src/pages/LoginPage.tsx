@@ -1,4 +1,3 @@
-// src/pages/LoginPage.tsx
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
@@ -42,7 +41,7 @@ export default function LoginPage() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
 
