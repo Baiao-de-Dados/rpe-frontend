@@ -10,9 +10,20 @@ import { UserRoleEnum } from '../types/auth';
 import { Dashboard, Evolucao, Avaliacao } from '../pages/';
 
 // Spinner enquanto o estado de auth é carregado
+const LoadingSpinner = () => (
+    <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+        <span className="sr-only">Carregando...</span>
+    </div>
+);
 
 export function Router() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, loading } = useAuth();
+
+    // Mostrar loading enquanto verifica o estado de autenticação
+    if (loading) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <Routes>
