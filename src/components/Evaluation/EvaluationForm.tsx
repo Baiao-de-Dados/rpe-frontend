@@ -35,6 +35,11 @@ export function EvaluationForm() {
         name: 'evaluation360',
     });
 
+    const watchedReferences = useWatch({
+        control,
+        name: 'references',
+    });
+
     const incompleteSelfAssessmentCount = useMemo(() => {
         if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
             return allCriteria.length;
@@ -124,6 +129,43 @@ export function EvaluationForm() {
         return incompleteCount;
     }, [watchedEvaluation360]);
 
+    // Calcula as referências incompletas
+    const incompleteReferencesCount = useMemo(() => {
+        if (!watchedReferences || !Array.isArray(watchedReferences)) {
+            // Se não há referências, retorna 0 (não é obrigatório)
+            return 0;
+        }
+
+        if (watchedReferences.length === 0) {
+            // Se array existe mas está vazio, retorna 0 (não é obrigatório)
+            return 0;
+        }
+
+        let incompleteCount = 0;
+
+        for (const reference of watchedReferences) {
+            if (!reference) {
+                incompleteCount++;
+                continue;
+            }
+
+            const hasCollaboratorId =
+                reference.collaboratorId &&
+                typeof reference.collaboratorId === 'string' &&
+                reference.collaboratorId.trim().length > 0;
+            const hasJustification =
+                reference.justification &&
+                typeof reference.justification === 'string' &&
+                reference.justification.trim().length > 0;
+
+            if (!hasCollaboratorId || !hasJustification) {
+                incompleteCount++;
+            }
+        }
+
+        return incompleteCount;
+    }, [watchedReferences]);
+
     return (
         <>
             <EvaluationHeader
@@ -133,6 +175,7 @@ export function EvaluationForm() {
                 incompleteSelfAssessmentCount={incompleteSelfAssessmentCount}
                 incompleteMentoringCount={incompleteMentoringCount}
                 incompleteEvaluation360Count={incompleteEvaluation360Count}
+                incompleteReferencesCount={incompleteReferencesCount}
             />
             <main className="p-8 pt-6">
                 <SectionRenderer activeSection={activeSection} />
