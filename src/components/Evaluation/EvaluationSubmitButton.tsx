@@ -34,8 +34,12 @@ const EvaluationSubmitButton = memo(() => {
                 if (validation !== true) {
                     console.error('Erro na validação dos dados:', validation);
                     showToast(
-                        'Erro na validação dos dados do formulário.',
+                        'Alguns campos obrigatórios não foram preenchidos ou contêm dados inválidos.',
                         'error',
+                        {
+                            title: 'Erro de Validação',
+                            duration: 8000,
+                        },
                     );
                     return;
                 }
@@ -53,8 +57,12 @@ const EvaluationSubmitButton = memo(() => {
             } catch (error) {
                 console.error('Erro ao processar dados do formulário:', error);
                 showToast(
-                    'Erro inesperado ao processar o formulário. Tente novamente.',
+                    'Ocorreu um erro inesperado ao processar suas informações. Verifique sua conexão e tente novamente.',
                     'error',
+                    {
+                        title: 'Erro no Processamento',
+                        duration: 7000,
+                    },
                 );
             } finally {
                 setIsSubmitting(false);

@@ -1,15 +1,26 @@
 import { createContext } from 'react';
 
 export interface ToastData {
+    id: string;
     message: string;
-    type: 'success' | 'error' | 'info';
+    type: 'success' | 'error' | 'info' | 'warning';
     show: boolean;
+    duration?: number; // em ms, undefined = persistente
+    title?: string;
 }
 
 export interface ToastContextType {
-    toast: ToastData | null;
-    showToast: (message: string, type: 'success' | 'error' | 'info') => void;
-    hideToast: () => void;
+    toasts: ToastData[];
+    showToast: (
+        message: string,
+        type: 'success' | 'error' | 'info' | 'warning',
+        options?: {
+            duration?: number;
+            title?: string;
+        },
+    ) => string; // retorna o ID do toast
+    hideToast: (id: string) => void;
+    clearAllToasts: () => void;
 }
 
 export const ToastContext = createContext<ToastContextType | undefined>(

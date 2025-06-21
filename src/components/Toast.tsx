@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Info, X } from 'lucide-react';
+import { CheckCircle, XCircle, Info, AlertTriangle, X } from 'lucide-react';
 import Typography from './Typography';
 import Button from './Button';
 
 interface ToastProps {
     message: string;
-    type: 'success' | 'error' | 'info';
+    type: 'success' | 'error' | 'info' | 'warning';
     show: boolean;
+    title?: string;
     onClose: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, type, show, onClose }) => {
+const Toast: React.FC<ToastProps> = ({
+    message,
+    type,
+    show,
+    title,
+    onClose,
+}) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -35,6 +42,8 @@ const Toast: React.FC<ToastProps> = ({ message, type, show, onClose }) => {
                 return <XCircle className="w-5 h-5 text-error-500" />;
             case 'info':
                 return <Info className="w-5 h-5 text-primary-500" />;
+            case 'warning':
+                return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
         }
     };
 
@@ -46,12 +55,14 @@ const Toast: React.FC<ToastProps> = ({ message, type, show, onClose }) => {
                 return 'bg-primary-50 border-error-500/20 shadow-lg';
             case 'info':
                 return 'bg-primary-50 border-primary-200 shadow-lg';
+            case 'warning':
+                return 'bg-primary-50 border-yellow-200 shadow-lg';
         }
     };
 
     return (
         <div
-            className={`fixed bottom-4 right-4 z-[9999] max-w-sm w-full transform transition-all duration-300 ease-in-out ${
+            className={`w-full transform transition-all duration-300 ease-in-out ${
                 isAnimating
                     ? 'translate-y-0 opacity-100 scale-100'
                     : 'translate-y-4 opacity-0 scale-95'
@@ -61,14 +72,19 @@ const Toast: React.FC<ToastProps> = ({ message, type, show, onClose }) => {
                 className={`rounded-xl border-2 p-4 backdrop-blur-sm ${getStyles()}`}
                 role="alert"
             >
-                <div className="flex items-start">
-                    <div className="flex-shrink-0">{getIcon()}</div>
-                    <div className="ml-3 w-0 flex-1">
-                        <Typography variant="body" className="font-semibold">
-                            {message}
-                        </Typography>
-                    </div>
-                    <div className="ml-4 flex-shrink-0 flex">
+                <div className="flex flex-col">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <div className="flex-shrink-0">{getIcon()}</div>
+                            {title && (
+                                <Typography
+                                    variant="body"
+                                    className="font-bold ml-2"
+                                >
+                                    {title}
+                                </Typography>
+                            )}
+                        </div>
                         <Button
                             variant="link"
                             size="sm"
@@ -77,6 +93,15 @@ const Toast: React.FC<ToastProps> = ({ message, type, show, onClose }) => {
                         >
                             <X className="w-4 h-4" />
                         </Button>
+                    </div>
+
+                    <div className="mt-2">
+                        <Typography
+                            variant="body"
+                            className={title ? 'font-normal' : 'font-semibold'}
+                        >
+                            {message}
+                        </Typography>
                     </div>
                 </div>
             </div>

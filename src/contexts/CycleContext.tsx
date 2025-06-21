@@ -70,18 +70,36 @@ export const CycleProvider: React.FC<{ children: ReactNode }> = ({
                 );
                 setEvaluationStatus(newStatus);
 
-                showToast('Avaliação enviada com sucesso! 🎉', 'success');
+                showToast(
+                    'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.',
+                    'success',
+                    {
+                        title: 'Avaliação Enviada! 🎉',
+                        duration: 10000,
+                    },
+                );
                 return true;
             } else {
                 showToast(
-                    'Erro ao enviar avaliação. Tente novamente.',
+                    'Não foi possível enviar sua avaliação no momento. Verifique sua conexão com a internet e tente novamente.',
                     'error',
+                    {
+                        title: 'Falha no Envio',
+                        duration: 8000,
+                    },
                 );
                 return false;
             }
         } catch (error) {
             console.error('Erro no envio:', error);
-            showToast('Erro inesperado. Tente novamente.', 'error');
+            showToast(
+                'Ocorreu um erro técnico durante o envio. Nossa equipe foi notificada. Tente novamente em alguns minutos.',
+                'error',
+                {
+                    title: 'Erro Técnico',
+                    duration: 10000,
+                },
+            );
             return false;
         }
     };
