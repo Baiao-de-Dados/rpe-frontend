@@ -19,7 +19,7 @@ const CycleClosedMessage: React.FC<CycleClosedMessageProps> = ({ cycle }) => {
 
     return (
         <div className="flex items-center justify-center min-h-[60vh] p-6">
-            <CardContainer className="max-w-md mx-auto text-center border-2 border-neutral-200">
+            <CardContainer className="max-w-210 mx-auto text-center border-2 border-neutral-200">
                 <div className="flex justify-center mb-6">
                     <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
                         <Lock className="w-8 h-8 text-primary-500" />
