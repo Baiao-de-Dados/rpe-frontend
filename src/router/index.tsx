@@ -9,7 +9,7 @@ import { DefaultLayout } from '../layouts/DefaultLayout';
 
 import LoginPage from '../pages/LoginPage';
 import { useAuth } from '../contexts/AuthContext';
-import { Dashboard, Evolucao, Avaliacao2 } from '../pages';
+import { Dashboard, Evolucao, Avaliacao } from '../pages';
 
 // Componente de carregamento
 function LoadingScreen() {
@@ -30,7 +30,6 @@ function PrivateRoute() {
 
     // Redireciona para login se não estiver autenticado
     if (!isAuthenticated) {
-        console.log('Redirecionando para login - usuário não autenticado');
         return <Navigate to="/login" replace />;
     }
 
@@ -72,7 +71,7 @@ export function Router() {
                 <Route element={<PrivateRoute />}>
                     <Route element={<DefaultLayout />}>
                         <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/avaliacao" element={<Avaliacao2 />} />
+                        <Route path="/avaliacao" element={<Avaliacao />} />
                         <Route path="/evolucao" element={<Evolucao />} />
                     </Route>
                 </Route>

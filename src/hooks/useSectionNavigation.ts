@@ -17,7 +17,7 @@ export const useSectionNavigation = (
     }, []);
 
     const sections: SectionType[] = useMemo(
-        () => ['Autoavaliação', 'Avaliação 360', 'Referências', 'Mentoring'],
+        () => ['Autoavaliação', 'Avaliação 360', 'Mentoring', 'Referências'],
         [],
     );
 
