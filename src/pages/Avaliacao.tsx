@@ -1,13 +1,26 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, FormProvider } from 'react-hook-form';
+
+import {
+    fullEvaluationSchema,
+    type EvaluationFormData,
+} from '../schemas/evaluation';
+
+import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
+import FloatingSubmitButton from '../components/FloatingSubmitButton';
+
 export function Avaliacao() {
+    const methods = useForm<EvaluationFormData>({
+        resolver: zodResolver(fullEvaluationSchema),
+        mode: 'onSubmit',
+    });
+
     return (
-        <>
-            <header
-                className="p-8 pt-12 pb-12 bg-white"
-                style={{ boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)' }}
-            >
-                <h1 className="text-4xl font-bold">Ciclo 2025.1</h1>
-            </header>
-            <main className="p-8 pt-6">{/* Conteúdo da página */}</main>
-        </>
+        <FormProvider {...methods}>
+            <FloatingSubmitButton />
+            <form>
+                <EvaluationForm />
+            </form>
+        </FormProvider>
     );
 }

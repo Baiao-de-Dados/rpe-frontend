@@ -1,0 +1,50 @@
+export const mockCycles = [
+    {
+        cycleName: '2025.1',
+        score: 0,
+        status: 'Em andamento',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2024.2',
+        score: 4.5,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2024.1',
+        score: 4.1,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2023.2',
+        score: 3.7,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2023.1',
+        score: 5,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2022.2',
+        score: 1.6,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2022.1',
+        score: 4.7,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+    {
+        cycleName: '2021.2',
+        score: 5,
+        status: 'Finalizado',
+        summary: 'Você se saiu muito bem por conta disso e isso',
+    },
+];

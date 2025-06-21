@@ -23,7 +23,7 @@ export default tseslint.config(
                 'warn',
                 { allowConstantExport: true },
             ],
-            indent: ['error', 4],
+            // indent: ['error', 4], - uncomment if you want to enforce 4 spaces indentation (but it conflicts with Prettier)
         },
     },
 );
