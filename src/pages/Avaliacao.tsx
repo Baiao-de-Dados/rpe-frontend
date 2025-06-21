@@ -1,22 +1,26 @@
-import { useEvaluationForm } from '../hooks/useEvaluationForm';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, FormProvider } from 'react-hook-form';
+
+import {
+    fullEvaluationSchema,
+    type EvaluationFormData,
+} from '../schemas/evaluation';
 
 import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
-import { EvaluationHeader } from '../components/Evaluation/EvaluationHeader';
+import FloatingSubmitButton from '../components/FloatingSubmitButton';
 
 export function Avaliacao() {
-    const evaluationForm = useEvaluationForm();
+    const methods = useForm<EvaluationFormData>({
+        resolver: zodResolver(fullEvaluationSchema),
+        mode: 'onSubmit',
+    });
 
     return (
-        <>
-            <EvaluationHeader
-                activeSection={evaluationForm.activeSection}
-                isFormComplete={evaluationForm.isFormComplete}
-                onNavClick={evaluationForm.handleNavClick}
-                getNotification={evaluationForm.getNotification}
-            />
-            <main className="p-8 pt-6">
-                <EvaluationForm {...evaluationForm.formProps} />
-            </main>
-        </>
+        <FormProvider {...methods}>
+            <FloatingSubmitButton />
+            <form>
+                <EvaluationForm />
+            </form>
+        </FormProvider>
     );
 }

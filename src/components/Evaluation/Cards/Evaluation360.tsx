@@ -1,118 +1,117 @@
-import React, { memo } from 'react';
-import CollaboratorCard from '../../CollaboratorCard';
-import StarRating from '../../StarRating';
-import TextAreaWithTitle from '../../TextAreaWithTitle';
-import Typography from '../../Typography';
+import React from 'react';
 import { Trash } from 'lucide-react';
-import {
-    type Collaborator,
-    type CollaboratorEvaluation,
-} from '../../../data/mockCollaborators';
-import RatingDisplay from '../../RatingDisplay';
 import CardContainer from '../../CardContainer';
+import CollaboratorCard from '../../CollaboratorCard';
+import TextAreaWithTitle from '../../TextAreaWithTitle';
+import StarRating from '../../StarRating';
+import RatingDisplay from '../../RatingDisplay';
+import { ErrorMessage } from '../../ErrorMessage';
+import { Controller, useFormContext } from 'react-hook-form';
+import type { Collaborator } from '../../../data/mockCollaborators';
 
-interface CollaboratorEvaluation360Props {
+interface Evaluation360Props {
     collaborator: Collaborator;
-    evaluation?: CollaboratorEvaluation;
-    onClearEvaluation: (collaboratorId: string) => void;
-    onRatingChange: (collaboratorId: string, rating: number | null) => void;
-    onFieldChange: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria',
-        value: string,
-    ) => void;
+    onRemove: () => void;
+    name: string;
 }
 
-const CollaboratorEvaluation360: React.FC<CollaboratorEvaluation360Props> = ({
+const Evaluation360: React.FC<Evaluation360Props> = ({
     collaborator,
-    evaluation,
-    onClearEvaluation,
-    onRatingChange,
-    onFieldChange,
+    onRemove,
+    name,
 }) => {
+    const { control } = useFormContext();
+
     return (
         <CardContainer>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
                 <CollaboratorCard
                     collaborator={collaborator}
-                    variant="detailed"
+                    variant="compact"
                 />
-                <div className="flex items-center gap-4">
-                    <RatingDisplay
-                        rating={evaluation?.ratings?.general || null}
+                <div className="flex items-center gap-2">
+                    <Controller
+                        name={`${name}.rating`}
+                        control={control}
+                        render={({ field }) => (
+                            <RatingDisplay
+                                rating={field.value}
+                                className="ml-auto"
+                            />
+                        )}
                     />
                     <button
-                        title="Apagar avaliação"
-                        onClick={() => onClearEvaluation(collaborator.id)}
+                        type="button"
+                        onClick={onRemove}
+                        className="text-red-500 hover:text-red-700 cursor-pointer p-2"
                     >
-                        <Trash
-                            className="w-6 h-6 text-red-500 cursor-pointer hover:text-red-700"
-                            strokeWidth={2}
-                        />
+                        <Trash size={20} />
                     </button>
                 </div>
             </div>
 
             <div className="mb-6">
-                <Typography
-                    variant="body"
-                    className="text-sm text-gray-600 mb-3"
-                >
-                    Dê uma avaliação de 1 a 5 ao colaborador
-                </Typography>
-                <StarRating
-                    value={evaluation?.ratings?.general || null}
-                    onChange={rating => onRatingChange(collaborator.id, rating)}
+                <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-medium text-gray-700">
+                        Dê uma avaliação de 1 a 5 ao colaborador
+                    </p>
+                    <Controller
+                        name={`${name}.rating`}
+                        control={control}
+                        render={({ fieldState }) => (
+                            <ErrorMessage error={fieldState.error?.message} />
+                        )}
+                    />
+                </div>
+                <Controller
+                    name={`${name}.rating`}
+                    control={control}
+                    render={({ field }) => (
+                        <StarRating
+                            value={field.value}
+                            onChange={field.onChange}
+                        />
+                    )}
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <TextAreaWithTitle
-                    title="Pontos fortes"
-                    placeholder="Justifique sua nota"
-                    value={evaluation?.pontosFortes || ''}
-                    onChange={e =>
-                        onFieldChange(
-                            collaborator.id,
-                            'pontosFortes',
-                            e.target.value,
-                        )
-                    }
-                />
-                <TextAreaWithTitle
-                    title="Pontos de melhoria"
-                    placeholder="Justifique sua nota"
-                    value={evaluation?.pontosMelhoria || ''}
-                    onChange={e =>
-                        onFieldChange(
-                            collaborator.id,
-                            'pontosMelhoria',
-                            e.target.value,
-                        )
-                    }
-                />
+            <div className="flex gap-4">
+                <div className="flex-1">
+                    <Controller
+                        name={`${name}.strengths`}
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <TextAreaWithTitle
+                                title="Pontos fortes"
+                                placeholder="Descreva os principais pontos fortes deste colaborador..."
+                                value={field.value || ''}
+                                onChange={field.onChange}
+                                maxLength={1000}
+                                error={fieldState.error?.message}
+                            />
+                        )}
+                    />
+                </div>
+
+                <div className="flex-1">
+                    <Controller
+                        name={`${name}.improvements`}
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <TextAreaWithTitle
+                                title="Pontos de melhoria"
+                                placeholder="Descreva os principais pontos de melhoria para este colaborador..."
+                                value={field.value || ''}
+                                onChange={field.onChange}
+                                maxLength={1000}
+                                error={fieldState.error?.message}
+                            />
+                        )}
+                    />
+                </div>
             </div>
         </CardContainer>
     );
 };
 
-const arePropsEqual = (
-    prevProps: CollaboratorEvaluation360Props,
-    nextProps: CollaboratorEvaluation360Props,
-): boolean => {
-    if (prevProps.collaborator.id !== nextProps.collaborator.id) {
-        return false;
-    }
-
-    const prevEvaluationStr = JSON.stringify(prevProps.evaluation);
-    const nextEvaluationStr = JSON.stringify(nextProps.evaluation);
-
-    return (
-        prevEvaluationStr === nextEvaluationStr &&
-        prevProps.onClearEvaluation === nextProps.onClearEvaluation &&
-        prevProps.onRatingChange === nextProps.onRatingChange &&
-        prevProps.onFieldChange === nextProps.onFieldChange
-    );
-};
-
-export default memo(CollaboratorEvaluation360, arePropsEqual);
+export default Evaluation360;

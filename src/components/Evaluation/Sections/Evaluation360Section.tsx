@@ -1,108 +1,166 @@
+import { useEffect, useState, useCallback, useMemo, memo } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import SearchBar from '../../Searchbar';
-import Typography from '../../Typography';
-import AnimatedCard from '../../AnimatedCard';
 import CollaboratorCard from '../../CollaboratorCard';
-import CollaboratorEvaluation360 from '../Cards/Evaluation360';
-import {
-    searchCollaborators,
-    type Collaborator,
-    type CollaboratorEvaluation,
-} from '../../../data/mockCollaborators';
+import AnimatedCard from '../../AnimatedCard';
+import Typography from '../../Typography';
+import Evaluation360 from '../Cards/Evaluation360';
+import { searchCollaborators } from '../../../data/mockCollaborators';
+import type { Collaborator } from '../../../data/mockCollaborators';
+import type { EvaluationFormData } from '../../../schemas/evaluation';
 
-interface Evaluation360SectionProps {
-    searchQuery360: string;
-    setSearchQuery360: (query: string) => void;
-    selectedCollaborators360: Collaborator[];
-    collaboratorEvaluations360: Record<string, CollaboratorEvaluation>;
-    addCollaboratorTo360: (collaborator: Collaborator) => void;
-    removeCollaboratorFrom360: (collaboratorId: string) => void;
-    updateCollaboratorRating360: (
-        collaboratorId: string,
-        rating: number | null,
-    ) => void;
-    updateCollaboratorField360: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
-        value: string,
-    ) => void;
-}
+export const Evaluation360Section = memo(() => {
+    const { control, setValue, getValues } =
+        useFormContext<EvaluationFormData>();
+    const [searchQuery, setSearchQuery] = useState('');
 
-export function Evaluation360Section({
-    searchQuery360,
-    setSearchQuery360,
-    selectedCollaborators360,
-    collaboratorEvaluations360,
-    addCollaboratorTo360,
-    removeCollaboratorFrom360,
-    updateCollaboratorRating360,
-    updateCollaboratorField360,
-}: Evaluation360SectionProps) {
+    const { fields, append } = useFieldArray({
+        control,
+        name: 'evaluation360',
+    });
+
+    const validFields = useMemo(
+        () => fields.filter(field => field.collaboratorId),
+        [fields],
+    );
+
+    const selectedCollaboratorIds = useMemo(
+        () => validFields.map(f => f.collaboratorId),
+        [validFields],
+    );
+
+    const [showCards, setShowCards] = useState(validFields.length > 0);
+    const [showEmptyMessage, setShowEmptyMessage] = useState(
+        validFields.length === 0,
+    );
+
+    useEffect(() => {
+        if (validFields.length > 0) {
+            setShowCards(true);
+            setShowEmptyMessage(false);
+        } else {
+            const timeout = setTimeout(() => {
+                setShowCards(false);
+                setShowEmptyMessage(true);
+            }, 300);
+            return () => clearTimeout(timeout);
+        }
+    }, [validFields.length]);
+
+    const selectedCollaborators = useCallback(
+        (searchCollaboratorIds: string[]) =>
+            searchCollaborators('').filter(c =>
+                searchCollaboratorIds.includes(c.id),
+            ),
+        [],
+    );
+
+    const addCollaborator = useCallback(
+        (collaborator: Collaborator) => {
+            append({
+                collaboratorId: collaborator.id,
+                rating: null,
+                strengths: '',
+                improvements: '',
+            });
+            setSearchQuery('');
+        },
+        [append],
+    );
+
+    const removeCollaborator = useCallback(
+        async (collaboratorId: string) => {
+            const currentEvaluations = getValues('evaluation360') || [];
+            const newEvaluations = currentEvaluations.filter(
+                evaluation => evaluation.collaboratorId !== collaboratorId,
+            );
+
+            setValue('evaluation360', newEvaluations);
+        },
+        [getValues, setValue],
+    );
+
+    const renderItem = useCallback(
+        (collaborator: Collaborator) => (
+            <CollaboratorCard collaborator={collaborator} variant="compact" />
+        ),
+        [],
+    );
+
+    const excludeItems = useMemo(
+        () => selectedCollaborators(selectedCollaboratorIds),
+        [selectedCollaborators, selectedCollaboratorIds],
+    );
+
     return (
         <section>
             <div className="mb-8">
-                <div className="mb-6 relative">
-                    <SearchBar<Collaborator>
-                        value={searchQuery360}
-                        onChange={setSearchQuery360}
-                        placeholder="Buscar por colaboradores"
-                        className="w-full"
-                        searchFunction={searchCollaborators}
-                        onItemSelect={addCollaboratorTo360}
-                        renderItem={collaborator => (
-                            <CollaboratorCard
-                                collaborator={collaborator}
-                                variant="compact"
-                            />
-                        )}
-                        excludeItems={selectedCollaborators360}
-                        getItemKey={collaborator => collaborator.id}
-                        noResultsMessage="Nenhum colaborador encontrado"
-                    />
-                </div>
+                <SearchBar<Collaborator>
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Buscar colaboradores"
+                    className="w-full"
+                    searchFunction={searchCollaborators}
+                    onItemSelect={addCollaborator}
+                    renderItem={renderItem}
+                    excludeItems={excludeItems}
+                    getItemKey={collaborator => collaborator.id}
+                    noResultsMessage="Nenhum colaborador encontrado"
+                />
             </div>
 
-            {selectedCollaborators360.length > 0 ? (
+            {showCards && (
                 <div className="space-y-6">
                     <AnimatePresence>
-                        {selectedCollaborators360.map((collaborator, index) => {
-                            const evaluation =
-                                collaboratorEvaluations360[collaborator.id];
+                        {validFields.map((field, validIndex) => {
+                            const collaborator = searchCollaborators('').find(
+                                c => c.id === field.collaboratorId,
+                            );
+                            if (!collaborator) return null;
+
+                            const originalIndex = fields.findIndex(
+                                f => f.id === field.id,
+                            );
+                            const fieldName = `evaluation360.${originalIndex}`;
+
                             return (
                                 <AnimatedCard
-                                    key={collaborator.id}
-                                    index={index}
+                                    key={`eval360-${field.collaboratorId}`}
+                                    index={validIndex}
                                 >
-                                    <CollaboratorEvaluation360
+                                    <Evaluation360
                                         collaborator={collaborator}
-                                        evaluation={evaluation}
-                                        onClearEvaluation={
-                                            removeCollaboratorFrom360
+                                        onRemove={() =>
+                                            removeCollaborator(
+                                                field.collaboratorId,
+                                            )
                                         }
-                                        onRatingChange={
-                                            updateCollaboratorRating360
-                                        }
-                                        onFieldChange={
-                                            updateCollaboratorField360
-                                        }
+                                        name={fieldName}
                                     />
                                 </AnimatedCard>
                             );
                         })}
                     </AnimatePresence>
                 </div>
-            ) : (
-                <motion.div
-                    className="text-center py-12"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <Typography variant="body" className="text-gray-500">
-                        Busque um colaborador para começar a Avaliação 360
-                    </Typography>
-                </motion.div>
             )}
+
+            <AnimatePresence>
+                {showEmptyMessage && (
+                    <motion.div
+                        key="empty-message"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 12 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        className="text-center py-12"
+                    >
+                        <Typography variant="body" className="text-gray-500">
+                            Nenhuma avaliação adicionada
+                        </Typography>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
-}
+});

@@ -1,7 +1,7 @@
 // src/router/index.tsx
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
-import { Dashboard, Avaliacao, Evolucao } from '../pages';
+
 import LoginPage from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
 import { ProtectedRoute, RoleRoute } from '../components/ProtectedRoute';
