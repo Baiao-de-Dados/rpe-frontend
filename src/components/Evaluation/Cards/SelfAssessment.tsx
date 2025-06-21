@@ -68,8 +68,9 @@ const SelfAssessment: React.FC<SelfAssessmentProps> = memo(
                             <h1 className="text-lg font-semibold text-gray-800">
                                 {criterionName}
                             </h1>
+                            <span className="ml-4"></span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-1">
                             <Controller
                                 name={`${name}.rating`}
                                 control={control}
@@ -78,7 +79,7 @@ const SelfAssessment: React.FC<SelfAssessmentProps> = memo(
                                 )}
                             />
                             <div
-                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ml-auto ${
                                     isMinimized ? 'rotate-0' : '-rotate-180'
                                 }`}
                             >

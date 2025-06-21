@@ -40,7 +40,7 @@ export default function AsideMenu() {
         <>
             {isMenuOpened && (
                 <div
-                    className="hidden max-lg:block fixed inset-0 bg-black bg-opacity-50 z-[998]"
+                    className="hidden max-lg:block fixed inset-0 bg-white bg-opacity-100 z-[998]"
                     onClick={closeMenu}
                 />
             )}
@@ -90,32 +90,33 @@ export default function AsideMenu() {
                     />
                 </div>
 
-                <div className="flex justify-center items-center w-full mb-4">
+                {/* MOBILE: Alinhamento vertical, logo mais acima, itens centralizados e espaçados */}
+                <div className="flex justify-center items-center w-full mb-4 max-lg:mb-10 max-lg:mt-8">
                     <Link to="/">
                         <img
-                            className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-32 max-lg:h-32 max-lg:mt-8"
+                            className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-24 max-lg:h-24 max-lg:mt-0"
                             src="/rpe-logo.png"
                             alt="Logo"
                         />
                     </Link>
                 </div>
 
-                <nav className="mt-4 w-full h-full mb-5 flex flex-col justify-start">
-                    <ul className="flex flex-col gap-4 pl-0 w-full max-lg:justify-start max-lg:gap-8 max-lg:mt-8 max-lg:pl-20 max-lg:w-auto">
-                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                <nav className="mt-4 w-full h-full mb-5 flex flex-col justify-start max-lg:justify-between max-lg:flex-1">
+                    <ul className="flex flex-col gap-4 pl-0 w-full max-lg:gap-8 max-lg:mt-0 max-lg:pl-0 max-lg:w-full max-lg:items-center">
+                        <li className="list-none w-full max-lg:w-full">
                             <NavLink
                                 to="/dashboard"
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
                                     transition-all duration-200 ease-in-out hover:text-secondary-600
-                                    max-lg:text-2xl max-lg:gap-4
+                                    max-lg:text-2xl max-lg:gap-4 max-lg:w-full max-lg:justify-center max-lg:py-4 max-lg:rounded-xl max-lg:hover:bg-primary-50
                                     ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
                             >
                                 <LayoutGrid
                                     size={32}
-                                    className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    className="flex-shrink-0 ml-3.5 max-lg:w-10 max-lg:h-10 max-lg:ml-0 self-center"
                                 />
                                 <span
                                     className={`
@@ -128,21 +129,20 @@ export default function AsideMenu() {
                                 </span>
                             </NavLink>
                         </li>
-
-                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                        <li className="list-none w-full max-lg:w-full">
                             <NavLink
                                 to="/avaliacao"
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
                                     transition-all duration-200 ease-in-out hover:text-secondary-600
-                                    max-lg:text-2xl max-lg:gap-4
+                                    max-lg:text-2xl max-lg:gap-4 max-lg:w-full max-lg:justify-center max-lg:py-4 max-lg:rounded-xl max-lg:hover:bg-primary-50
                                     ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
                             >
                                 <ClipboardPen
                                     size={32}
-                                    className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    className="flex-shrink-0 ml-3.5 max-lg:w-10 max-lg:h-10 max-lg:ml-0 self-center"
                                 />
                                 <span
                                     className={`
@@ -155,21 +155,20 @@ export default function AsideMenu() {
                                 </span>
                             </NavLink>
                         </li>
-
-                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                        <li className="list-none w-full max-lg:w-full">
                             <NavLink
                                 to="/evolucao"
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
                                     transition-all duration-200 ease-in-out hover:text-secondary-600
-                                    max-lg:text-2xl max-lg:gap-4
+                                    max-lg:text-2xl max-lg:gap-4 max-lg:w-full max-lg:justify-center max-lg:py-4 max-lg:rounded-xl max-lg:hover:bg-primary-50
                                     ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
                             >
                                 <ChartNoAxesCombined
                                     size={32}
-                                    className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    className="flex-shrink-0 ml-3.5 max-lg:w-10 max-lg:h-10 max-lg:ml-0 self-center"
                                 />
                                 <span
                                     className={`
@@ -183,16 +182,16 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
                     </ul>
-
-                    <div className="flex w-full mt-auto max-lg:mb-4 max-lg:justify-center">
+                    {/* Botão sair alinhado embaixo no mobile */}
+                    <div className="flex w-full mt-auto max-lg:mb-8 max-lg:justify-center max-lg:items-end">
                         <div
                             onClick={handleLogout}
-                            className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0"
+                            className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0 max-lg:w-full max-lg:justify-center max-lg:py-4 max-lg:rounded-xl max-lg:hover:bg-primary-50"
                         >
                             <LogOut
                                 size={32}
                                 strokeWidth={2.5}
-                                className="flex-shrink-0 max-lg:w-12 max-lg:h-12"
+                                className="flex-shrink-0 max-lg:w-10 max-lg:h-10"
                             />
                             <span
                                 className={`
