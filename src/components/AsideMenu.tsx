@@ -94,7 +94,7 @@ export default function AsideMenu() {
                     <Link to="/">
                         <img
                             className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-32 max-lg:h-32 max-lg:mt-8"
-                            src="public/rpe-logo.png"
+                            src="/rpe-logo.png"
                             alt="Logo"
                         />
                     </Link>
