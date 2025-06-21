@@ -5,6 +5,7 @@ import StarRating from '../../StarRating';
 import TextAreaWithTitle from '../../TextAreaWithTitle';
 import RatingDisplay from '../../RatingDisplay';
 import { ErrorMessage } from '../../ErrorMessage';
+import NotificationBadge from '../../NotificationBadge';
 
 interface SelfAssessmentProps {
     criterionName: string;
@@ -24,8 +25,31 @@ const SelfAssessment: React.FC<SelfAssessmentProps> = memo(
 
         return (
             <div
-                className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}
+                className={`bg-white overflow-hidden relative ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}
             >
+                <Controller
+                    name={`${name}.rating`}
+                    control={control}
+                    render={({ field: ratingField }) => (
+                        <Controller
+                            name={`${name}.justification`}
+                            control={control}
+                            render={({ field: justificationField }) => {
+                                const isCompleted =
+                                    ratingField.value &&
+                                    justificationField.value?.trim();
+
+                                return (
+                                    <NotificationBadge
+                                        show={!isCompleted}
+                                        position="top-right"
+                                        variant="small"
+                                    />
+                                );
+                            }}
+                        />
+                    )}
+                />
                 <div className="p-4 pl-0" onClick={toggleMinimized}>
                     <div className="flex items-center justify-between cursor-pointer">
                         <div className="flex items-center gap-2">

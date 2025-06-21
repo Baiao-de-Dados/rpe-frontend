@@ -1,10 +1,13 @@
-import { memo, useState } from 'react';
+import { memo, useState, useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import CardContainer from '../CardContainer';
 import Typography from '../Typography';
 import SelfAssessment from './Cards/SelfAssessment';
 import { PillarRatingDisplay } from './PillarRatingDisplay';
+import NotificationBadge from '../NotificationBadge';
 import type { Criterion } from '../../data/mockEvaluationPIllars';
+import type { EvaluationFormData } from '../../schemas/evaluation';
 
 interface PillarSectionProps {
     pillarTitle: string;
@@ -15,18 +18,61 @@ interface PillarSectionProps {
 export const PillarSection = memo(
     ({ pillarTitle, criteria, validFields }: PillarSectionProps) => {
         const [isMinimized, setIsMinimized] = useState(true);
+        const { control } = useFormContext<EvaluationFormData>();
+
+        const fieldIndices = useMemo(() => {
+            return criteria
+                .map(criterion =>
+                    validFields.findIndex(f => f.criterionId === criterion.id),
+                )
+                .filter(index => index !== -1);
+        }, [criteria, validFields]);
+
+        const watchedData = useWatch({
+            control,
+            name: fieldIndices.flatMap(index => [
+                `selfAssessment.${index}.rating` as const,
+                `selfAssessment.${index}.justification` as const,
+            ]),
+        });
+
+        const incompleteCriteriaCount = useMemo(() => {
+            if (!watchedData || fieldIndices.length === 0)
+                return criteria.length;
+
+            let incompleteCount = 0;
+
+            for (let i = 0; i < fieldIndices.length; i++) {
+                const ratingIndex = i * 2;
+                const justificationIndex = i * 2 + 1;
+
+                const rating = watchedData[ratingIndex];
+                const justification = watchedData[justificationIndex];
+
+                const hasRating = typeof rating === 'number' && rating > 0;
+                const hasJustification =
+                    typeof justification === 'string' &&
+                    justification.trim().length > 0;
+
+                if (!hasRating || !hasJustification) {
+                    incompleteCount++;
+                }
+            }
+
+            return incompleteCount;
+        }, [watchedData, fieldIndices.length, criteria.length]);
 
         const toggleMinimized = () => {
             setIsMinimized(!isMinimized);
         };
 
         return (
-            <CardContainer className="pt-14 p-10 mb-5">
+            <CardContainer className="pt-14 p-10 mb-5 relative">
                 <div
                     className="flex items-center justify-between mb-4 cursor-pointer"
                     onClick={toggleMinimized}
                 >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 relative">
                         <Typography
                             variant="h3"
                             color="primary500"
@@ -34,6 +80,13 @@ export const PillarSection = memo(
                         >
                             Critérios de {pillarTitle}
                         </Typography>
+                        <NotificationBadge
+                            show={incompleteCriteriaCount > 0}
+                            count={incompleteCriteriaCount}
+                            position="center-right"
+                            variant="medium"
+                            className="-right-6.5"
+                        />
                     </div>
                     <div className="flex items-center gap-4">
                         <PillarRatingDisplay
