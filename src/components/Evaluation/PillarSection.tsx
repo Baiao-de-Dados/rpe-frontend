@@ -14,7 +14,7 @@ interface PillarSectionProps {
 
 export const PillarSection = memo(
     ({ pillarTitle, criteria, validFields }: PillarSectionProps) => {
-        const [isMinimized, setIsMinimized] = useState(false);
+        const [isMinimized, setIsMinimized] = useState(true);
 
         const toggleMinimized = () => {
             setIsMinimized(!isMinimized);
