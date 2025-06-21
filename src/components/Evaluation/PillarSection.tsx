@@ -12,7 +12,12 @@ import type { EvaluationFormData } from '../../schemas/evaluation';
 interface PillarSectionProps {
     pillarTitle: string;
     criteria: Criterion[];
-    validFields: Array<{ id: string; criterionId: string; index: number }>;
+    validFields: Array<{
+        id: string;
+        pilarId: string;
+        criterionId: string;
+        index: number;
+    }>;
 }
 
 export const PillarSection = memo(

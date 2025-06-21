@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
 export const mentoringSchema = z.object({
+    mentorId: z.string({
+        required_error: 'O ID do mentor é obrigatório',
+    }),
     mentoringRating: z
         .number({
             required_error: 'A nota é obrigatória',
@@ -80,6 +83,9 @@ export const evaluation360Schema = z.object({
 });
 
 export const selfAssessmentSchema = z.object({
+    pilarId: z.string({
+        required_error: 'O ID do pilar é obrigatório',
+    }),
     criterionId: z.string({
         required_error: 'O ID do critério é obrigatório',
     }),

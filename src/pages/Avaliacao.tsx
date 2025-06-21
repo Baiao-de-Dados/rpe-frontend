@@ -7,7 +7,7 @@ import {
 } from '../schemas/evaluation';
 
 import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
-import FloatingSubmitButton from '../components/FloatingSubmitButton';
+import FloatingSubmitButton from '../components/Evaluation/FloatingSubmitButton';
 
 export function Avaliacao() {
     const methods = useForm<EvaluationFormData>({

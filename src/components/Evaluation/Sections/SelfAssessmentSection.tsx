@@ -21,6 +21,7 @@ export const SelfAssessmentSection = memo(() => {
             const allCriteria = Object.values(mockEvaluationPillars).flatMap(
                 pillar =>
                     pillar.criterios.map((criterion: Criterion) => ({
+                        pilarId: pillar.id,
                         criterionId: criterion.id,
                         rating: null,
                         justification: '',
@@ -36,6 +37,7 @@ export const SelfAssessmentSection = memo(() => {
         () =>
             fields.map((field, index) => ({
                 id: field.id,
+                pilarId: field.pilarId,
                 criterionId: field.criterionId,
                 index: index,
             })),
