@@ -107,7 +107,7 @@ export default function LoginPage() {
                     <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
                         <div className="text-center mb-8">
                             <img
-                                src="src/assets/rpe-logo.png"
+                                src="/rpe-logo.png"
                                 alt="RPE Logo"
                                 className="w-20 h-20 mx-auto mb-2"
                             />
