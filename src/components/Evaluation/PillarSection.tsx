@@ -62,6 +62,9 @@ export const PillarSection = memo(
             return incompleteCount;
         }, [watchedData, fieldIndices.length, criteria.length]);
 
+        const completedCriteriaCount =
+            criteria.length - incompleteCriteriaCount;
+
         const toggleMinimized = () => {
             setIsMinimized(!isMinimized);
         };
@@ -93,6 +96,10 @@ export const PillarSection = memo(
                             criteria={criteria}
                             validFields={validFields}
                         />
+                        <span className="text-sm text-gray-500">
+                            {completedCriteriaCount}/{criteria.length}{' '}
+                            preenchidos
+                        </span>
                         <div
                             className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${
                                 isMinimized ? 'rotate-180' : 'rotate-0'
