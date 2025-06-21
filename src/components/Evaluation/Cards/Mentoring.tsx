@@ -9,10 +9,28 @@ import CardContainer from '../../CardContainer';
 import { ErrorMessage } from '../../ErrorMessage';
 
 const Mentoring: React.FC = () => {
-    const { control } = useFormContext();
+    const { control, setValue } = useFormContext();
+
+    const mentor = {
+        id: '3',
+        nome: 'Fulano de Tal',
+        cargo: 'Mentor',
+    };
+
+    React.useEffect(() => {
+        setValue('mentorId', mentor.id);
+    }, [setValue, mentor.id]);
 
     return (
         <CardContainer>
+            <Controller
+                name="mentorId"
+                control={control}
+                render={({ field }) => (
+                    <input type="hidden" {...field} value={mentor.id} />
+                )}
+            />
+
             <Controller
                 name="mentoringRating"
                 control={control}
@@ -20,11 +38,7 @@ const Mentoring: React.FC = () => {
                     <>
                         <div className="flex items-center gap-4 mb-4">
                             <CollaboratorCard
-                                collaborator={{
-                                    id: '1',
-                                    nome: 'Fulano de Tal',
-                                    cargo: 'Mentor',
-                                }}
+                                collaborator={mentor}
                                 variant="compact"
                             />
                             <RatingDisplay

@@ -21,7 +21,6 @@ const SelfAssessment: React.FC<SelfAssessmentProps> = memo(
         const toggleMinimized = () => {
             setIsMinimized(!isMinimized);
         };
-
         return (
             <div
                 className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}

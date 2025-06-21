@@ -6,7 +6,12 @@ import type { EvaluationFormData } from '../../schemas/evaluation';
 
 interface PillarRatingDisplayProps {
     criteria: Criterion[];
-    validFields: Array<{ id: string; criterionId: string }>;
+    validFields: Array<{
+        id: string;
+        pilarId: string;
+        criterionId: string;
+        index: number;
+    }>;
 }
 
 export const PillarRatingDisplay = memo(

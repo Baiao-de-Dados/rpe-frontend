@@ -1,17 +1,26 @@
 import { memo } from 'react';
 import Typography from '../Typography';
+import NotificationBadge from '../NotificationBadge';
 import { type SectionType } from '../../hooks/useSectionNavigation';
 
 interface EvaluationHeaderProps {
     activeSection: SectionType;
     onSectionChange: (section: SectionType) => void;
     sections: SectionType[];
+    incompleteSelfAssessmentCount?: number;
+    incompleteMentoringCount?: number;
+    incompleteEvaluation360Count?: number | null;
+    incompleteReferencesCount?: number;
 }
 
 function EvaluationHeaderComponent({
     activeSection,
     onSectionChange,
     sections,
+    incompleteSelfAssessmentCount = 0,
+    incompleteMentoringCount = 0,
+    incompleteEvaluation360Count = null,
+    incompleteReferencesCount = 0,
 }: EvaluationHeaderProps) {
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
@@ -43,6 +52,45 @@ function EvaluationHeaderComponent({
                                 </span>
                                 {section}
                             </Typography>
+                            {section === 'Autoavaliação' && (
+                                <NotificationBadge
+                                    show={incompleteSelfAssessmentCount > 0}
+                                    count={incompleteSelfAssessmentCount}
+                                    position="top-right"
+                                    variant="small"
+                                />
+                            )}
+                            {section === 'Mentoring' && (
+                                <NotificationBadge
+                                    show={incompleteMentoringCount > 0}
+                                    count={incompleteMentoringCount}
+                                    position="top-right"
+                                    variant="small"
+                                />
+                            )}
+                            {section === 'Avaliação 360' && (
+                                <NotificationBadge
+                                    show={
+                                        incompleteEvaluation360Count === null ||
+                                        incompleteEvaluation360Count > 0
+                                    }
+                                    count={
+                                        incompleteEvaluation360Count === null
+                                            ? undefined
+                                            : incompleteEvaluation360Count
+                                    }
+                                    position="top-right"
+                                    variant="small"
+                                />
+                            )}
+                            {section === 'Referências' && (
+                                <NotificationBadge
+                                    show={incompleteReferencesCount > 0}
+                                    count={incompleteReferencesCount}
+                                    position="top-right"
+                                    variant="small"
+                                />
+                            )}
                         </div>
                     );
                 })}

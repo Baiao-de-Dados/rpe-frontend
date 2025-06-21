@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SectionLoadingSpinner } from '../SectionLoadingSpinner';
+import { SectionLoadingSpinner } from './Sections/SectionLoadingSpinner';
 import { SectionPreloader } from './Sections/SectionPreloader';
 import { type SectionType } from '../../hooks/useSectionNavigation';
 

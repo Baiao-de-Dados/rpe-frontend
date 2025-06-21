@@ -7,6 +7,7 @@ export interface Criterion {
 }
 
 export interface Pillar {
+    id: string;
     titulo: string;
     criterios: Criterion[];
 }
@@ -19,6 +20,7 @@ export interface EvaluationPillars {
 
 export const mockEvaluationPillars: EvaluationPillars = {
     comportamento: {
+        id: '10',
         titulo: 'Comportamento',
         criterios: [
             {
@@ -54,6 +56,7 @@ export const mockEvaluationPillars: EvaluationPillars = {
         ],
     },
     execucao: {
+        id: '11',
         titulo: 'Execução',
         criterios: [
             {
@@ -81,6 +84,7 @@ export const mockEvaluationPillars: EvaluationPillars = {
         ],
     },
     gestaoLideranca: {
+        id: '12',
         titulo: 'Gestão e Liderança',
         criterios: [
             {
