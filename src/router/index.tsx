@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import { ProtectedRoute, RoleRoute } from '../components/ProtectedRoute';
 import { MultiRoleRoute } from '../components/MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
+import { Dashboard, Evolucao, Avaliacao } from '../pages/';
 
 // Spinner enquanto o estado de auth é carregado
 
