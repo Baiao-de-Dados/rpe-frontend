@@ -9,6 +9,7 @@ interface EvaluationHeaderProps {
     sections: SectionType[];
     incompleteSelfAssessmentCount?: number;
     incompleteMentoringCount?: number;
+    incompleteEvaluation360Count?: number | null;
 }
 
 function EvaluationHeaderComponent({
@@ -17,6 +18,7 @@ function EvaluationHeaderComponent({
     sections,
     incompleteSelfAssessmentCount = 0,
     incompleteMentoringCount = 0,
+    incompleteEvaluation360Count = null,
 }: EvaluationHeaderProps) {
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
@@ -60,6 +62,21 @@ function EvaluationHeaderComponent({
                                 <NotificationBadge
                                     show={incompleteMentoringCount > 0}
                                     count={incompleteMentoringCount}
+                                    position="top-right"
+                                    variant="small"
+                                />
+                            )}
+                            {section === 'Avaliação 360' && (
+                                <NotificationBadge
+                                    show={
+                                        incompleteEvaluation360Count === null ||
+                                        incompleteEvaluation360Count > 0
+                                    }
+                                    count={
+                                        incompleteEvaluation360Count === null
+                                            ? undefined
+                                            : incompleteEvaluation360Count
+                                    }
                                     position="top-right"
                                     variant="small"
                                 />

@@ -30,6 +30,11 @@ export function EvaluationForm() {
         name: ['mentoringRating', 'mentoringJustification'],
     });
 
+    const watchedEvaluation360 = useWatch({
+        control,
+        name: 'evaluation360',
+    });
+
     const incompleteSelfAssessmentCount = useMemo(() => {
         if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
             return allCriteria.length;
@@ -56,10 +61,9 @@ export function EvaluationForm() {
         return incompleteCount;
     }, [watchedSelfAssessment, allCriteria.length]);
 
-    // Calcula quantos campos de mentoring estão incompletos
     const incompleteMentoringCount = useMemo(() => {
         if (!watchedMentoring || !Array.isArray(watchedMentoring)) {
-            return 1; // 1 card de mentoring incompleto
+            return 1;
         }
 
         const [rating, justification] = watchedMentoring;
@@ -70,9 +74,55 @@ export function EvaluationForm() {
             typeof justification === 'string' &&
             justification.trim().length > 0;
 
-        // Se ambos estão preenchidos, retorna 0, senão retorna 1 (card incompleto)
         return hasRating && hasJustification ? 0 : 1;
     }, [watchedMentoring]);
+
+    const incompleteEvaluation360Count = useMemo(() => {
+        if (!watchedEvaluation360 || !Array.isArray(watchedEvaluation360)) {
+            return null;
+        }
+
+        if (watchedEvaluation360.length === 0) {
+            return null;
+        }
+
+        let incompleteCount = 0;
+
+        for (const evaluation of watchedEvaluation360) {
+            if (!evaluation) {
+                incompleteCount++;
+                continue;
+            }
+
+            const hasCollaboratorId =
+                evaluation.collaboratorId &&
+                typeof evaluation.collaboratorId === 'string' &&
+                evaluation.collaboratorId.trim().length > 0;
+            const hasRating =
+                evaluation.rating &&
+                typeof evaluation.rating === 'number' &&
+                evaluation.rating > 0;
+            const hasStrengths =
+                evaluation.strengths &&
+                typeof evaluation.strengths === 'string' &&
+                evaluation.strengths.trim().length > 0;
+            const hasImprovements =
+                evaluation.improvements &&
+                typeof evaluation.improvements === 'string' &&
+                evaluation.improvements.trim().length > 0;
+
+            if (
+                !hasCollaboratorId ||
+                !hasRating ||
+                !hasStrengths ||
+                !hasImprovements
+            ) {
+                incompleteCount++;
+            }
+        }
+
+        return incompleteCount;
+    }, [watchedEvaluation360]);
 
     return (
         <>
@@ -82,6 +132,7 @@ export function EvaluationForm() {
                 sections={sections}
                 incompleteSelfAssessmentCount={incompleteSelfAssessmentCount}
                 incompleteMentoringCount={incompleteMentoringCount}
+                incompleteEvaluation360Count={incompleteEvaluation360Count}
             />
             <main className="p-8 pt-6">
                 <SectionRenderer activeSection={activeSection} />
