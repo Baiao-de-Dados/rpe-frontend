@@ -1,158 +1,185 @@
-import { Suspense, lazy } from 'react';
-import { SectionLoadingSpinner } from '../SectionLoadingSpinner';
-import { SectionPreloader } from './Sections/SectionPreloader';
-import {
-    type Collaborator,
-    type CollaboratorEvaluation,
-} from '../../data/mockCollaborators';
+import { useMemo } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { SectionRenderer } from './SectionRenderer';
+import { EvaluationHeader } from './EvaluationHeader';
+import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
+import { useSectionNavigation } from '../../hooks/useSectionNavigation';
+import type { EvaluationFormData } from '../../schemas/evaluation';
 
-const SelfAssessmentSection = lazy(() =>
-    import('./Sections/SelfAssessmentSection').then(module => ({
-        default: module.SelfAssessmentSection,
-    })),
-);
-const Evaluation360Section = lazy(() =>
-    import('./Sections/Evaluation360Section').then(module => ({
-        default: module.Evaluation360Section,
-    })),
-);
-const MentoringSection = lazy(() =>
-    import('./Sections/MentoringSection').then(module => ({
-        default: module.MentoringSection,
-    })),
-);
-const ReferencesSection = lazy(() =>
-    import('./Sections/ReferencesSection').then(module => ({
-        default: module.ReferencesSection,
-    })),
-);
+export function EvaluationForm() {
+    const { activeSection, navigateToSection, sections } =
+        useSectionNavigation();
 
-interface CriterionEvaluation {
-    rating?: number;
-    justification?: string;
-}
+    const { control } = useFormContext<EvaluationFormData>();
 
-interface EvaluationFormProps {
-    activeSection: string;
-    evaluations: Record<string, CriterionEvaluation>;
-    searchQuery360: string;
-    setSearchQuery360: (query: string) => void;
-    searchQueryReference: string;
-    setSearchQueryReference: (query: string) => void;
-    selectedCollaborators360: Collaborator[];
-    collaboratorEvaluations360: Record<string, CollaboratorEvaluation>;
-    selectedCollaboratorsReference: Collaborator[];
-    collaboratorEvaluationsReference: Record<string, CollaboratorEvaluation>;
-    mentoringRating: number | null;
-    mentoringJustification: string;
-    addCollaboratorTo360: (collaborator: Collaborator) => void;
-    removeCollaboratorFrom360: (collaboratorId: string) => void;
-    updateCollaboratorRating360: (
-        collaboratorId: string,
-        rating: number | null,
-    ) => void;
-    updateCollaboratorField360: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
-        value: string,
-    ) => void;
-    addCollaboratorToReference: (collaborator: Collaborator) => void;
-    removeCollaboratorFromReference: (collaboratorId: string) => void;
-    updateCollaboratorFieldReference: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
-        value: string,
-    ) => void;
-    setMentoringRating: (rating: number | null) => void;
-    setMentoringJustification: (justification: string) => void;
-    updateEvaluation: (
-        criterionId: string,
-        evaluation: CriterionEvaluation,
-    ) => void;
-}
+    const allCriteria = useMemo(() => {
+        return [
+            ...mockEvaluationPillars.comportamento.criterios,
+            ...mockEvaluationPillars.execucao.criterios,
+            ...mockEvaluationPillars.gestaoLideranca.criterios,
+        ];
+    }, []);
 
-export function EvaluationForm({
-    activeSection,
-    evaluations,
-    searchQuery360,
-    setSearchQuery360,
-    searchQueryReference,
-    setSearchQueryReference,
-    selectedCollaborators360,
-    collaboratorEvaluations360,
-    selectedCollaboratorsReference,
-    collaboratorEvaluationsReference,
-    mentoringRating,
-    mentoringJustification,
-    addCollaboratorTo360,
-    removeCollaboratorFrom360,
-    updateCollaboratorRating360,
-    updateCollaboratorField360,
-    addCollaboratorToReference,
-    removeCollaboratorFromReference,
-    updateCollaboratorFieldReference,
-    setMentoringRating,
-    setMentoringJustification,
-    updateEvaluation,
-}: EvaluationFormProps) {
+    const watchedSelfAssessment = useWatch({
+        control,
+        name: 'selfAssessment',
+    });
+
+    const watchedMentoring = useWatch({
+        control,
+        name: ['mentoringRating', 'mentoringJustification'],
+    });
+
+    const watchedEvaluation360 = useWatch({
+        control,
+        name: 'evaluation360',
+    });
+
+    const watchedReferences = useWatch({
+        control,
+        name: 'references',
+    });
+
+    const incompleteSelfAssessmentCount = useMemo(() => {
+        if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
+            return allCriteria.length;
+        }
+
+        let incompleteCount = 0;
+
+        for (let i = 0; i < allCriteria.length; i++) {
+            const assessment = watchedSelfAssessment[i];
+            const hasRating =
+                assessment?.rating &&
+                typeof assessment.rating === 'number' &&
+                assessment.rating > 0;
+            const hasJustification =
+                assessment?.justification &&
+                typeof assessment.justification === 'string' &&
+                assessment.justification.trim().length > 0;
+
+            if (!hasRating || !hasJustification) {
+                incompleteCount++;
+            }
+        }
+
+        return incompleteCount;
+    }, [watchedSelfAssessment, allCriteria.length]);
+
+    const incompleteMentoringCount = useMemo(() => {
+        if (!watchedMentoring || !Array.isArray(watchedMentoring)) {
+            return 1;
+        }
+
+        const [rating, justification] = watchedMentoring;
+
+        const hasRating = rating && typeof rating === 'number' && rating > 0;
+        const hasJustification =
+            justification &&
+            typeof justification === 'string' &&
+            justification.trim().length > 0;
+
+        return hasRating && hasJustification ? 0 : 1;
+    }, [watchedMentoring]);
+
+    const incompleteEvaluation360Count = useMemo(() => {
+        if (!watchedEvaluation360 || !Array.isArray(watchedEvaluation360)) {
+            return null;
+        }
+
+        if (watchedEvaluation360.length === 0) {
+            return null;
+        }
+
+        let incompleteCount = 0;
+
+        for (const evaluation of watchedEvaluation360) {
+            if (!evaluation) {
+                incompleteCount++;
+                continue;
+            }
+
+            const hasCollaboratorId =
+                evaluation.collaboratorId &&
+                typeof evaluation.collaboratorId === 'string' &&
+                evaluation.collaboratorId.trim().length > 0;
+            const hasRating =
+                evaluation.rating &&
+                typeof evaluation.rating === 'number' &&
+                evaluation.rating > 0;
+            const hasStrengths =
+                evaluation.strengths &&
+                typeof evaluation.strengths === 'string' &&
+                evaluation.strengths.trim().length > 0;
+            const hasImprovements =
+                evaluation.improvements &&
+                typeof evaluation.improvements === 'string' &&
+                evaluation.improvements.trim().length > 0;
+
+            if (
+                !hasCollaboratorId ||
+                !hasRating ||
+                !hasStrengths ||
+                !hasImprovements
+            ) {
+                incompleteCount++;
+            }
+        }
+
+        return incompleteCount;
+    }, [watchedEvaluation360]);
+
+    // Calcula as referências incompletas
+    const incompleteReferencesCount = useMemo(() => {
+        if (!watchedReferences || !Array.isArray(watchedReferences)) {
+            // Se não há referências, retorna 0 (não é obrigatório)
+            return 0;
+        }
+
+        if (watchedReferences.length === 0) {
+            // Se array existe mas está vazio, retorna 0 (não é obrigatório)
+            return 0;
+        }
+
+        let incompleteCount = 0;
+
+        for (const reference of watchedReferences) {
+            if (!reference) {
+                incompleteCount++;
+                continue;
+            }
+
+            const hasCollaboratorId =
+                reference.collaboratorId &&
+                typeof reference.collaboratorId === 'string' &&
+                reference.collaboratorId.trim().length > 0;
+            const hasJustification =
+                reference.justification &&
+                typeof reference.justification === 'string' &&
+                reference.justification.trim().length > 0;
+
+            if (!hasCollaboratorId || !hasJustification) {
+                incompleteCount++;
+            }
+        }
+
+        return incompleteCount;
+    }, [watchedReferences]);
+
     return (
         <>
-            <SectionPreloader activeSection={activeSection} />
-            {activeSection === 'Autoavaliação' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <SelfAssessmentSection
-                        evaluations={evaluations}
-                        updateEvaluation={updateEvaluation}
-                    />
-                </Suspense>
-            )}
-            {activeSection === 'Avaliação 360' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <Evaluation360Section
-                        searchQuery360={searchQuery360}
-                        setSearchQuery360={setSearchQuery360}
-                        selectedCollaborators360={selectedCollaborators360}
-                        collaboratorEvaluations360={collaboratorEvaluations360}
-                        addCollaboratorTo360={addCollaboratorTo360}
-                        removeCollaboratorFrom360={removeCollaboratorFrom360}
-                        updateCollaboratorRating360={
-                            updateCollaboratorRating360
-                        }
-                        updateCollaboratorField360={updateCollaboratorField360}
-                    />
-                </Suspense>
-            )}
-            {activeSection === 'Mentoring' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <MentoringSection
-                        mentoringRating={mentoringRating}
-                        mentoringJustification={mentoringJustification}
-                        setMentoringRating={setMentoringRating}
-                        setMentoringJustification={setMentoringJustification}
-                    />
-                </Suspense>
-            )}
-            {activeSection === 'Referências' && (
-                <Suspense fallback={<SectionLoadingSpinner />}>
-                    <ReferencesSection
-                        searchQueryReference={searchQueryReference}
-                        setSearchQueryReference={setSearchQueryReference}
-                        selectedCollaboratorsReference={
-                            selectedCollaboratorsReference
-                        }
-                        collaboratorEvaluationsReference={
-                            collaboratorEvaluationsReference
-                        }
-                        addCollaboratorToReference={addCollaboratorToReference}
-                        removeCollaboratorFromReference={
-                            removeCollaboratorFromReference
-                        }
-                        updateCollaboratorFieldReference={
-                            updateCollaboratorFieldReference
-                        }
-                    />
-                </Suspense>
-            )}
+            <EvaluationHeader
+                activeSection={activeSection}
+                onSectionChange={navigateToSection}
+                sections={sections}
+                incompleteSelfAssessmentCount={incompleteSelfAssessmentCount}
+                incompleteMentoringCount={incompleteMentoringCount}
+                incompleteEvaluation360Count={incompleteEvaluation360Count}
+                incompleteReferencesCount={incompleteReferencesCount}
+            />
+            <main className="p-8 pt-6">
+                <SectionRenderer activeSection={activeSection} />
+            </main>
         </>
     );
 }

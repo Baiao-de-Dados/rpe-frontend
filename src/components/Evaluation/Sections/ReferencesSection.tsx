@@ -1,104 +1,164 @@
+import { useEffect, useState, useCallback, useMemo, memo } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import SearchBar from '../../Searchbar';
-import Typography from '../../Typography';
-import AnimatedCard from '../../AnimatedCard';
 import CollaboratorCard from '../../CollaboratorCard';
-import ReferenceCard from '../Cards/Reference';
-import {
-    searchCollaborators,
-    type Collaborator,
-    type CollaboratorEvaluation,
-} from '../../../data/mockCollaborators';
+import AnimatedCard from '../../AnimatedCard';
+import Typography from '../../Typography';
+import Reference from '../Cards/Reference';
+import { searchCollaborators } from '../../../data/mockCollaborators';
+import type { Collaborator } from '../../../data/mockCollaborators';
+import type { EvaluationFormData } from '../../../schemas/evaluation';
 
-interface ReferencesSectionProps {
-    searchQueryReference: string;
-    setSearchQueryReference: (query: string) => void;
-    selectedCollaboratorsReference: Collaborator[];
-    collaboratorEvaluationsReference: Record<string, CollaboratorEvaluation>;
-    addCollaboratorToReference: (collaborator: Collaborator) => void;
-    removeCollaboratorFromReference: (collaboratorId: string) => void;
-    updateCollaboratorFieldReference: (
-        collaboratorId: string,
-        field: 'pontosFortes' | 'pontosMelhoria' | 'referencia',
-        value: string,
-    ) => void;
-}
+export const ReferencesSection = memo(() => {
+    const { control, setValue, getValues } =
+        useFormContext<EvaluationFormData>();
+    const [searchQuery, setSearchQuery] = useState('');
 
-export function ReferencesSection({
-    searchQueryReference,
-    setSearchQueryReference,
-    selectedCollaboratorsReference,
-    collaboratorEvaluationsReference,
-    addCollaboratorToReference,
-    removeCollaboratorFromReference,
-    updateCollaboratorFieldReference,
-}: ReferencesSectionProps) {
+    const { fields, append } = useFieldArray({
+        control,
+        name: 'references',
+    });
+
+    const validFields = useMemo(
+        () => fields.filter(field => field.collaboratorId),
+        [fields],
+    );
+
+    const selectedCollaboratorIds = useMemo(
+        () => validFields.map(f => f.collaboratorId),
+        [validFields],
+    );
+
+    const [showCards, setShowCards] = useState(validFields.length > 0);
+    const [showEmptyMessage, setShowEmptyMessage] = useState(
+        validFields.length === 0,
+    );
+
+    useEffect(() => {
+        if (validFields.length > 0) {
+            setShowCards(true);
+            setShowEmptyMessage(false);
+        } else {
+            const timeout = setTimeout(() => {
+                setShowCards(false);
+                setShowEmptyMessage(true);
+            }, 300);
+            return () => clearTimeout(timeout);
+        }
+    }, [validFields.length]);
+
+    const selectedCollaborators = useCallback(
+        (searchCollaboratorIds: string[]) =>
+            searchCollaborators('').filter(c =>
+                searchCollaboratorIds.includes(c.id),
+            ),
+        [],
+    );
+
+    const addCollaborator = useCallback(
+        (collaborator: Collaborator) => {
+            append({
+                collaboratorId: collaborator.id,
+                justification: '',
+            });
+            setSearchQuery('');
+        },
+        [append],
+    );
+
+    const removeCollaborator = useCallback(
+        async (collaboratorId: string) => {
+            const currentReferences = getValues('references') || [];
+            const newReferences = currentReferences.filter(
+                ref => ref.collaboratorId !== collaboratorId,
+            );
+
+            setValue('references', newReferences);
+        },
+        [getValues, setValue],
+    );
+
+    const renderItem = useCallback(
+        (collaborator: Collaborator) => (
+            <CollaboratorCard collaborator={collaborator} variant="compact" />
+        ),
+        [],
+    );
+
+    const excludeItems = useMemo(
+        () => selectedCollaborators(selectedCollaboratorIds),
+        [selectedCollaborators, selectedCollaboratorIds],
+    );
+
     return (
         <section>
             <div className="mb-8">
-                <div className="mb-6 relative">
-                    <SearchBar<Collaborator>
-                        value={searchQueryReference}
-                        onChange={setSearchQueryReference}
-                        placeholder="Buscar por colaboradores"
-                        className="w-full"
-                        searchFunction={searchCollaborators}
-                        onItemSelect={addCollaboratorToReference}
-                        renderItem={collaborator => (
-                            <CollaboratorCard
-                                collaborator={collaborator}
-                                variant="compact"
-                            />
-                        )}
-                        excludeItems={selectedCollaboratorsReference}
-                        getItemKey={collaborator => collaborator.id}
-                        noResultsMessage="Nenhum colaborador encontrado"
-                    />
-                </div>
+                <SearchBar<Collaborator>
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Buscar por colaboradores"
+                    className="w-full"
+                    searchFunction={searchCollaborators}
+                    onItemSelect={addCollaborator}
+                    renderItem={renderItem}
+                    excludeItems={excludeItems}
+                    getItemKey={collaborator => collaborator.id}
+                    noResultsMessage="Nenhum colaborador encontrado"
+                />
             </div>
 
-            {selectedCollaboratorsReference.length > 0 ? (
+            {showCards && (
                 <div className="space-y-6">
                     <AnimatePresence>
-                        {selectedCollaboratorsReference.map(
-                            (collaborator, index) => {
-                                const evaluation =
-                                    collaboratorEvaluationsReference[
-                                        collaborator.id
-                                    ];
-                                return (
-                                    <AnimatedCard
-                                        key={collaborator.id}
-                                        index={index}
-                                    >
-                                        <ReferenceCard
-                                            collaborator={collaborator}
-                                            evaluation={evaluation}
-                                            onClearReference={
-                                                removeCollaboratorFromReference
-                                            }
-                                            onFieldChange={
-                                                updateCollaboratorFieldReference
-                                            }
-                                        />
-                                    </AnimatedCard>
-                                );
-                            },
-                        )}
+                        {validFields.map((field, validIndex) => {
+                            const collaborator = searchCollaborators('').find(
+                                c => c.id === field.collaboratorId,
+                            );
+                            if (!collaborator) return null;
+
+                            const originalIndex = fields.findIndex(
+                                f => f.id === field.id,
+                            );
+                            const fieldName = `references.${originalIndex}.justification`;
+
+                            return (
+                                <AnimatedCard
+                                    key={`ref-${field.collaboratorId}`}
+                                    index={validIndex}
+                                >
+                                    <Reference
+                                        collaborator={collaborator}
+                                        onRemove={() =>
+                                            removeCollaborator(
+                                                field.collaboratorId,
+                                            )
+                                        }
+                                        name={fieldName}
+                                    />
+                                </AnimatedCard>
+                            );
+                        })}
                     </AnimatePresence>
                 </div>
-            ) : (
-                <motion.div
-                    className="text-center py-12"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                >
-                    <Typography variant="body" className="text-gray-500">
-                        Indique colaboradores como referências
-                    </Typography>
-                </motion.div>
             )}
+
+            <AnimatePresence>
+                {showEmptyMessage && (
+                    <motion.div
+                        key="empty-message"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 12 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        className="text-center py-12"
+                    >
+                        <Typography variant="body" className="text-gray-500">
+                            Nenhuma referência adicionada
+                        </Typography>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
-}
+});

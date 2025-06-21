@@ -1,129 +1,142 @@
 import React, { useState, memo } from 'react';
-import StarRating from '../../StarRating';
+import { Controller, useFormContext } from 'react-hook-form';
 import { ChevronDown, Check } from 'lucide-react';
+import StarRating from '../../StarRating';
 import TextAreaWithTitle from '../../TextAreaWithTitle';
 import RatingDisplay from '../../RatingDisplay';
+import { ErrorMessage } from '../../ErrorMessage';
 
-interface TopicProps {
-    topicName: string;
+interface SelfAssessmentProps {
+    criterionName: string;
+    name: string;
     topicNumber?: number;
     isLast?: boolean;
-    rating?: number;
-    justification?: string;
-    onEvaluationChange?: (rating: number | null, justification: string) => void;
 }
 
-const SelfAssessment: React.FC<TopicProps> = ({
-    topicName,
-    topicNumber,
-    isLast = false,
-    rating: initialRating,
-    justification: initialJustification = '',
-    onEvaluationChange,
-}) => {
-    const [isMinimized, setIsMinimized] = useState(false);
-    const [rating, setRating] = useState<number | null>(initialRating || null);
-    const [isJustified, setIsJustified] = useState(
-        initialJustification.trim() !== '',
-    );
-    const [justification, setJustification] = useState(initialJustification);
+const SelfAssessment: React.FC<SelfAssessmentProps> = memo(
+    ({ criterionName, name, topicNumber, isLast = false }) => {
+        const { control } = useFormContext();
+        const [isMinimized, setIsMinimized] = useState(false);
 
-    const toggleMinimized = () => {
-        setIsMinimized(!isMinimized);
-    };
+        const toggleMinimized = () => {
+            setIsMinimized(!isMinimized);
+        };
+        return (
+            <div
+                className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}
+            >
+                <div className="p-4 pl-0" onClick={toggleMinimized}>
+                    <div className="flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center gap-2">
+                            <Controller
+                                name={`${name}.rating`}
+                                control={control}
+                                render={({ field: ratingField }) => (
+                                    <Controller
+                                        name={`${name}.justification`}
+                                        control={control}
+                                        render={({
+                                            field: justificationField,
+                                        }) => {
+                                            const isCompleted =
+                                                ratingField.value &&
+                                                justificationField.value?.trim();
+                                            return (
+                                                <div
+                                                    className={`w-6 h-6 rounded-full border-1 text-gray-600 flex items-center justify-center ${
+                                                        !isCompleted
+                                                            ? 'border-gray-600'
+                                                            : 'bg-check-color border-check-color'
+                                                    }`}
+                                                >
+                                                    {!isCompleted ? (
+                                                        topicNumber
+                                                    ) : (
+                                                        <Check
+                                                            fill="none"
+                                                            stroke="white"
+                                                            strokeWidth={2}
+                                                            size={20}
+                                                        />
+                                                    )}
+                                                </div>
+                                            );
+                                        }}
+                                    />
+                                )}
+                            />
+                            <h1 className="text-lg font-semibold text-gray-800">
+                                {criterionName}
+                            </h1>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Controller
+                                name={`${name}.rating`}
+                                control={control}
+                                render={({ field }) => (
+                                    <RatingDisplay rating={field.value} />
+                                )}
+                            />
+                            <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                                    isMinimized ? 'rotate-0' : '-rotate-180'
+                                }`}
+                            >
+                                <ChevronDown size={24} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    const handleJustificationChange = (
-        e: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
-        const text = e.target.value;
-        setJustification(text);
-        const justified = text.trim() !== '';
-        setIsJustified(justified);
-        onEvaluationChange?.(rating, text);
-    };
+                <div
+                    className={`transition-all duration-300 ease-in-out origin-top ${
+                        isMinimized
+                            ? 'max-h-0 opacity-0 scale-y-0'
+                            : 'max-h-[500px] opacity-100 scale-y-100'
+                    }`}
+                >
+                    <div className="p-4 pt-0 pl-0">
+                        <Controller
+                            name={`${name}.rating`}
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <div className="mb-6">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <p className="text-sm font-medium text-gray-700">
+                                            Dê uma avaliação de 1 a 5 com base
+                                            no critério
+                                        </p>
+                                        <ErrorMessage
+                                            error={fieldState.error?.message}
+                                        />
+                                    </div>
+                                    <StarRating
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
+                                </div>
+                            )}
+                        />
 
-    const handleRatingChange = (newRating: number | null) => {
-        setRating(newRating);
-        onEvaluationChange?.(newRating, justification);
-    };
-
-    return (
-        <div
-            className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}
-        >
-            <div className="p-4 pl-0" onClick={toggleMinimized}>
-                <div className="flex items-center justify-between cursor-pointer">
-                    <div className="flex items-center gap-2">
-                        <div
-                            className={`w-6 h-6 rounded-full border-1 text-gray-600 flex items-center justify-center ${!rating || !isJustified ? 'border-gray-600' : 'bg-check-color border-check-color'}`}
-                        >
-                            {!rating || !isJustified ? (
-                                topicNumber
-                            ) : (
-                                <Check
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth={2}
-                                    size={20}
+                        <Controller
+                            name={`${name}.justification`}
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <TextAreaWithTitle
+                                    title="Justifique sua nota"
+                                    placeholder="Justifique sua nota"
+                                    value={field.value || ''}
+                                    onChange={field.onChange}
+                                    maxLength={1000}
+                                    error={fieldState.error?.message}
                                 />
                             )}
-                        </div>
-                        <h1 className="text-lg font-semibold text-gray-800">
-                            {topicName}
-                        </h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <RatingDisplay rating={rating} />
-                        <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${isMinimized ? 'rotate-0' : '-rotate-180'}`}
-                        >
-                            <ChevronDown size={24} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                className={`transition-all duration-300 ease-in-out origin-top ${
-                    isMinimized
-                        ? 'max-h-0 opacity-0 scale-y-0'
-                        : 'max-h-[500px] opacity-100 scale-y-100'
-                }`}
-            >
-                <div className="p-4 pt-0 pl-0">
-                    <p className="text-sm text-gray-600 mb-2">
-                        Dê uma avaliação de 1 à 5 com base no critério
-                    </p>
-                    <div className="mb-2">
-                        <StarRating
-                            value={rating}
-                            onChange={handleRatingChange}
                         />
                     </div>
-                    <TextAreaWithTitle
-                        title="Justifique sua nota"
-                        placeholder="Justifique sua nota"
-                        value={justification}
-                        onChange={handleJustificationChange}
-                    />
                 </div>
             </div>
-        </div>
-    );
-};
+        );
+    },
+);
 
-const arePropsEqual = (
-    prevProps: TopicProps,
-    nextProps: TopicProps,
-): boolean => {
-    return (
-        prevProps.topicName === nextProps.topicName &&
-        prevProps.topicNumber === nextProps.topicNumber &&
-        prevProps.isLast === nextProps.isLast &&
-        prevProps.rating === nextProps.rating &&
-        prevProps.justification === nextProps.justification &&
-        prevProps.onEvaluationChange === nextProps.onEvaluationChange
-    );
-};
-
-export default memo(SelfAssessment, arePropsEqual);
+export default SelfAssessment;

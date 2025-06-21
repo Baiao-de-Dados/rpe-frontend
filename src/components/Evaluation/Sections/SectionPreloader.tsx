@@ -1,70 +1,30 @@
-import { useEffect, lazy } from 'react';
-
-// Pre-load dos componentes lazy para melhorar UX
-const preloadSelfAssessment = () =>
-    lazy(() =>
-        import('./SelfAssessmentSection').then(module => ({
-            default: module.SelfAssessmentSection,
-        })),
-    );
-const preloadEvaluation360 = () =>
-    lazy(() =>
-        import('./Evaluation360Section').then(module => ({
-            default: module.Evaluation360Section,
-        })),
-    );
-const preloadMentoring = () =>
-    lazy(() =>
-        import('./MentoringSection').then(module => ({
-            default: module.MentoringSection,
-        })),
-    );
-const preloadReferences = () =>
-    lazy(() =>
-        import('./ReferencesSection').then(module => ({
-            default: module.ReferencesSection,
-        })),
-    );
+import { useEffect } from 'react';
+import { type SectionType } from '../../../hooks/useSectionNavigation';
 
 interface SectionPreloaderProps {
-    activeSection: string;
+    activeSection: SectionType;
 }
 
 export function SectionPreloader({ activeSection }: SectionPreloaderProps) {
     useEffect(() => {
-        // Pre-carregar a próxima seção baseada na seção ativa
-        const sectionOrder = [
+        const sectionOrder: SectionType[] = [
             'Autoavaliação',
             'Avaliação 360',
-            'Mentoring',
             'Referências',
+            'Mentoring',
         ];
         const currentIndex = sectionOrder.indexOf(activeSection);
 
         if (currentIndex >= 0 && currentIndex < sectionOrder.length - 1) {
             const nextSection = sectionOrder[currentIndex + 1];
 
-            // Pre-carrega a próxima seção com um pequeno delay
             const preloadTimer = setTimeout(() => {
-                switch (nextSection) {
-                    case 'Autoavaliação':
-                        preloadSelfAssessment();
-                        break;
-                    case 'Avaliação 360':
-                        preloadEvaluation360();
-                        break;
-                    case 'Mentoring':
-                        preloadMentoring();
-                        break;
-                    case 'Referências':
-                        preloadReferences();
-                        break;
-                }
-            }, 1000); // Delay de 1 segundo para não interferir com o carregamento da seção atual
+                console.log(`Preparando para carregar: ${nextSection}`);
+            }, 1000);
 
             return () => clearTimeout(preloadTimer);
         }
     }, [activeSection]);
 
-    return null; // Este componente não renderiza nada
+    return null;
 }

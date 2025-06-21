@@ -1,4 +1,3 @@
-// src/pages/LoginPage.tsx
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
@@ -42,7 +41,7 @@ export default function LoginPage() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) return;
 
@@ -85,18 +84,18 @@ export default function LoginPage() {
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/70" />
-                <div className="relative z-10 flex flex-col justify-between h-full px-12 xl:px-16 text-white py-12">
+                <div className="relative z-10 flex flex-col justify-start h-full xl:px-16 text-white py-12">
                     <Typography
                         variant="h1"
                         color="gradient"
-                        className="text-7xl font-black mb-4"
+                        className="text-8xl font-black mb-5"
                     >
                         Rocket Performance & Engagement
                     </Typography>
                     <Typography
                         variant="h2"
                         color="white"
-                        className="text-xl font-medium max-w-md"
+                        className="px-2 text-xl font-semibold max-w-md"
                     >
                         A nova era da avaliação de desempenho começa aqui!
                     </Typography>
@@ -139,7 +138,7 @@ export default function LoginPage() {
                             <div>
                                 <Typography
                                     variant="caption"
-                                    className="block mb-2 text-gray-700"
+                                    className="block mb-1 text-gray-700"
                                 >
                                     Email
                                 </Typography>
@@ -156,7 +155,7 @@ export default function LoginPage() {
                             <div>
                                 <Typography
                                     variant="caption"
-                                    className="block mb-2 text-gray-700"
+                                    className="block mb-1 text-gray-700"
                                 >
                                     Senha
                                 </Typography>

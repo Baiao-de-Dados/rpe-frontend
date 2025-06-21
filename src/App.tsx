@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { Suspense } from 'react';
 import { Router } from './router';
 import { AuthProvider } from './contexts/AuthContext';
+import { CycleProvider } from './contexts/CycleContext';
+import { ToastProvider } from './contexts/ToastContext';
+import GlobalToast from './components/GlobalToast';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -34,7 +37,12 @@ export default function App() {
             <BrowserRouter>
                 <Suspense fallback={<LoadingFallback />}>
                     <AuthProvider>
-                        <Router />
+                        <ToastProvider>
+                            <CycleProvider>
+                                <Router />
+                                <GlobalToast />
+                            </CycleProvider>
+                        </ToastProvider>
                     </AuthProvider>
                 </Suspense>
                 {import.meta.env.DEV && (
