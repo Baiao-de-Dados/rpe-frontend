@@ -11,27 +11,29 @@ export const SelfAssessmentSection = memo(() => {
     const { control } = useFormContext<EvaluationFormData>();
     const isInitialized = useRef(false);
 
-    const { fields, append } = useFieldArray({
+    const { fields, replace } = useFieldArray({
         control,
         name: 'selfAssessment',
     });
 
     useEffect(() => {
-        if (fields.length === 0 && !isInitialized.current) {
-            const allCriteria = Object.values(mockEvaluationPillars).flatMap(
-                pillar =>
-                    pillar.criterios.map((criterion: Criterion) => ({
-                        pilarId: pillar.id,
-                        criterionId: criterion.id,
-                        rating: null,
-                        justification: '',
-                    })),
-            );
-
-            allCriteria.forEach(criterion => append(criterion));
+        const allCriteria = Object.values(mockEvaluationPillars).flatMap(
+            pillar =>
+                pillar.criterios.map((criterion: Criterion) => ({
+                    pilarId: pillar.id,
+                    criterionId: criterion.id,
+                    rating: null,
+                    justification: '',
+                })),
+        );
+        if (
+            (!fields || fields.length !== allCriteria.length) &&
+            !isInitialized.current
+        ) {
+            replace(allCriteria);
             isInitialized.current = true;
         }
-    }, [fields.length, append]);
+    }, [fields, replace]);
 
     const validFields = useMemo(
         () =>
