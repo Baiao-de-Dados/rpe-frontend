@@ -72,26 +72,25 @@ export const PillarSection = memo(
         return (
             <CardContainer className="pt-14 p-10 mb-5 relative">
                 <div
-                    className="flex items-center justify-between mb-4 cursor-pointer"
+                    className="flex items-center justify-between mb-4 cursor-pointer flex-wrap"
                     onClick={toggleMinimized}
                 >
-                    <div className="flex items-center gap-2 relative">
+                    <div className="flex items-center gap-2 min-w-0">
                         <Typography
                             variant="h3"
                             color="primary500"
-                            className="text-xl font-bold"
+                            className="text-xl font-bold whitespace-normal break-words min-w-0"
                         >
                             Critérios de {pillarTitle}
                         </Typography>
                         <NotificationBadge
                             show={incompleteCriteriaCount > 0}
                             count={incompleteCriteriaCount}
-                            position="center-right"
                             variant="medium"
-                            className="-right-6.5"
+                            className="ml-2 static"
                         />
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 flex-shrink-0 mt-2 md:mt-0">
                         <PillarRatingDisplay
                             criteria={criteria}
                             validFields={validFields}
