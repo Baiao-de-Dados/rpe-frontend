@@ -2,8 +2,6 @@ import { memo, useState, useRef, useEffect } from 'react';
 import Typography from '../Typography';
 import NotificationBadge from '../NotificationBadge';
 import { type SectionType } from '../../hooks/useSectionNavigation';
-// Se quiser usar o FloatingSubmitButton no mobile, descomente a linha abaixo
-// import FloatingSubmitButton from '../FloatingSubmitButton';
 
 interface EvaluationHeaderProps {
     activeSection: SectionType;
@@ -100,20 +98,15 @@ function EvaluationHeaderComponent({
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
             {/* Linha principal do header */}
-            <div className="p-4 md:p-8 flex items-center justify-between w-full">
-                <div className="flex-1 flex items-center gap-2">
+            <div className="p-4 md:p-8 flex flex-row items-center justify-between w-full">
+                <div className="flex items-center gap-2">
                     <Typography
                         variant="h1"
-                        className="text-2xl md:text-4xl font-bold leading-none"
+                        className="text-4xl font-bold leading-none"
                     >
                         Ciclo 2025.1
                     </Typography>
-                    {/* Botão só aparece no mobile aqui */}
-                    {/* <div className="md:hidden ml-2">
-                        <FloatingSubmitButton mobile />
-                    </div> */}
                 </div>
-                {/* Desktop: espaço para alinhar com botão flutuante */}
                 <div className="hidden md:flex gap-4 items-center">
                     <div className="h-8 md:h-10 lg:h-12 w-24 md:w-32 lg:w-40"></div>
                 </div>
@@ -157,7 +150,7 @@ function EvaluationHeaderComponent({
                 <div className="relative w-full" ref={dropdownRef}>
                     <button
                         onClick={() => setIsDropdownOpen(v => !v)}
-                        className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+                        className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
                         type="button"
                     >
                         <span className="flex items-center justify-between w-full">
