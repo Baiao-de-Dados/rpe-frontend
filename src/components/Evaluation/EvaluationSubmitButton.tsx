@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import Button from '../Button';
 import type { EvaluationFormData } from '../../schemas/evaluation';
@@ -6,34 +6,37 @@ import {
     transformFormData,
     validateTransformedData,
 } from '../../utils/evaluationTransform';
+import { useCycle } from '../../hooks/useCycle';
+import { useToast } from '../../hooks/useToast';
 
-const FloatingSubmitButton = memo(() => {
+const EvaluationSubmitButton = memo(() => {
     const {
         handleSubmit,
         formState: { isValid },
     } = useFormContext<EvaluationFormData>();
 
+    const { currentCycle, submitEvaluation } = useCycle();
+    const { showToast } = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const onSubmit = () => {
-        handleSubmit(data => {
+        handleSubmit(async data => {
             try {
-                const transformedDataMock = {
-                    cicle: '2025.1',
-                    collaboratorId: '1',
-                };
+                setIsSubmitting(true);
+
                 const transformedData = transformFormData(
                     data,
-                    transformedDataMock.cicle,
-                    transformedDataMock.collaboratorId,
-                );
-
-                console.log(
-                    'Dados do formulário:',
-                    JSON.stringify(data, null, 2),
+                    currentCycle?.id || '2025.1',
+                    '1',
                 );
 
                 const validation = validateTransformedData(transformedData);
                 if (validation !== true) {
                     console.error('Erro na validação dos dados:', validation);
+                    showToast(
+                        'Erro na validação dos dados do formulário.',
+                        'error',
+                    );
                     return;
                 }
 
@@ -41,8 +44,20 @@ const FloatingSubmitButton = memo(() => {
                     'Dados formatados para API:',
                     JSON.stringify(transformedData, null, 2),
                 );
+
+                const success = await submitEvaluation();
+
+                if (success) {
+                    console.log('Avaliação enviada com sucesso!');
+                }
             } catch (error) {
                 console.error('Erro ao processar dados do formulário:', error);
+                showToast(
+                    'Erro inesperado ao processar o formulário. Tente novamente.',
+                    'error',
+                );
+            } finally {
+                setIsSubmitting(false);
             }
         })();
     };
@@ -52,18 +67,18 @@ const FloatingSubmitButton = memo(() => {
             <Button
                 variant="primary"
                 size="md"
-                disabled={!isValid}
+                disabled={!isValid || isSubmitting}
                 onClick={onSubmit}
                 className={`transition-all duration-200 ${
-                    !isValid
+                    !isValid || isSubmitting
                         ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200'
                         : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
                 }`}
             >
-                Concluir e enviar
+                {isSubmitting ? 'Enviando...' : 'Concluir e enviar'}
             </Button>
         </div>
     );
 });
 
-export default FloatingSubmitButton;
+export default EvaluationSubmitButton;
