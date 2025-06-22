@@ -9,6 +9,7 @@ export async function avaliarComIA(texto: string, signal?: AbortSignal) {
 
     const raw = await res.text();
     let geminiResponse = null;
+    let semInsight = false;
     try {
         let jsonString = raw;
         // Se vier um objeto com campo resumo, use ele
@@ -24,7 +25,9 @@ export async function avaliarComIA(texto: string, signal?: AbortSignal) {
         jsonString = jsonString.replace(/```json|```/g, '').trim();
         // Faz o parse do JSON limpo
         const parsed = JSON.parse(jsonString);
-        if (
+        if (parsed.codigo === 'SEM_INSIGHT') {
+            semInsight = true;
+        } else if (
             typeof parsed.nota === 'number' &&
             Number.isInteger(parsed.nota) &&
             parsed.nota >= 1 &&
@@ -39,5 +42,5 @@ export async function avaliarComIA(texto: string, signal?: AbortSignal) {
     } catch (e) {
         console.log('Erro ao fazer parse do JSON da IA:', e, raw);
     }
-    return { geminiResponse, raw };
+    return { geminiResponse, semInsight, raw };
 }

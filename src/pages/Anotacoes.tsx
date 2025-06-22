@@ -6,6 +6,8 @@ import { Sparkles } from 'lucide-react';
 import CardContainer from '../components/CardContainer';
 import { avaliarComIA } from '../services/iaService';
 import AnotacoesStepsModal from '../components/AnotacoesStepsModal';
+import { useCycle } from '../hooks/useCycle';
+import { useToast } from '../hooks/useToast';
 
 export default function Anotacoes() {
     const [texto, setTexto] = useState('');
@@ -17,8 +19,21 @@ export default function Anotacoes() {
     const [avaliacaoSections, setAvaliacaoSections] = useState<string[]>([]);
     const navigate = useNavigate();
     const abortControllerRef = useRef<AbortController | null>(null);
+    const { currentCycle } = useCycle();
+    const { showToast } = useToast();
 
     async function handleAvaliarComIA() {
+        if (!currentCycle || !currentCycle.isOpen) {
+            showToast(
+                'Não há ciclo de avaliação aberto no momento. Aguarde a abertura de um novo ciclo.',
+                'error',
+                {
+                    title: 'Ciclo de Avaliação Fechado',
+                    duration: 8000,
+                },
+            );
+            return;
+        }
         setModalOpen(true);
         setStepErrors([false, false, false]);
         setAvaliacaoSections([]);
@@ -26,7 +41,8 @@ export default function Anotacoes() {
         abortControllerRef.current = new AbortController();
         try {
             errorStep = 1;
-            const { geminiResponse } = await avaliarComIA(
+            await new Promise(r => setTimeout(r, 1000));
+            const { geminiResponse, semInsight } = await avaliarComIA(
                 texto,
                 abortControllerRef.current.signal,
             );
@@ -34,7 +50,12 @@ export default function Anotacoes() {
             setModalStep(1);
             errorStep = 2;
             await new Promise(r => setTimeout(r, 2000));
+            if (semInsight) {
+                setAvaliacaoGerada(null);
+                throw new Error('Sem insight');
+            }
             setModalStep(2);
+
             setAvaliacaoGerada(geminiResponse || null);
             setAvaliacaoSections(['Mentoring']);
             errorStep = 3;
@@ -128,7 +149,7 @@ export default function Anotacoes() {
                         </Typography>
                         <div className="flex gap-3">
                             <Button
-                                variant="secondary"
+                                variant="primary"
                                 size="md"
                                 disabled={
                                     texto.trim().length === 0 ||
