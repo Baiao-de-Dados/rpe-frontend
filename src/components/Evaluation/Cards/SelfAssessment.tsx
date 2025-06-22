@@ -1,10 +1,11 @@
-import React, { useState, memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { ChevronDown, Check } from 'lucide-react';
 import StarRating from '../../StarRating';
 import TextAreaWithTitle from '../../TextAreaWithTitle';
 import RatingDisplay from '../../RatingDisplay';
 import { ErrorMessage } from '../../ErrorMessage';
+import { useQueryState } from 'nuqs';
 
 interface SelfAssessmentProps {
     criterionName: string;
@@ -16,11 +17,29 @@ interface SelfAssessmentProps {
 const SelfAssessment: React.FC<SelfAssessmentProps> = memo(
     ({ criterionName, name, topicNumber, isLast = false }) => {
         const { control } = useFormContext();
-        const [isMinimized, setIsMinimized] = useState(false);
+
+        const [minimizedList, setMinimizedList] = useQueryState('self_min', {
+            defaultValue: '',
+            history: 'replace',
+        });
+
+        const cardId = name;
+
+        const minimizedArray = minimizedList ? minimizedList.split(',') : [];
+        const isMinimized = minimizedArray.includes(cardId);
 
         const toggleMinimized = () => {
-            setIsMinimized(!isMinimized);
+            let newArray: string[];
+            if (isMinimized) {
+                newArray = minimizedArray.filter(id => id !== cardId);
+            } else {
+                newArray = [...minimizedArray, cardId];
+            }
+            setMinimizedList(newArray.join(','));
         };
+
+        useEffect(() => {}, [minimizedList]);
+
         return (
             <div
                 className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}
