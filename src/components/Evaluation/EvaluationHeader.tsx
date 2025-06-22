@@ -2,6 +2,7 @@ import { memo } from 'react';
 import Typography from '../Typography';
 import NotificationBadge from '../NotificationBadge';
 import { type SectionType } from '../../hooks/useSectionNavigation';
+import EvaluationSubmitButton from './EvaluationSubmitButton';
 
 interface EvaluationHeaderProps {
     activeSection: SectionType;
@@ -28,7 +29,9 @@ function EvaluationHeaderComponent({
                 <Typography variant="h1" className="text-4xl font-bold">
                     Ciclo 2025.1
                 </Typography>
-                <div className="flex gap-4 items-center"></div>
+                <div className="flex gap-4 items-center">
+                    <EvaluationSubmitButton />
+                </div>
             </div>
             <nav className="flex space-x-20 mt-2 border-t-3 pt-5 pl-14 bg border-gray-50">
                 {sections.map(section => {

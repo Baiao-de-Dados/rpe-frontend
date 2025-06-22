@@ -5,7 +5,6 @@ import {
     type EvaluationFormData,
 } from '../schemas/evaluation';
 import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
-import EvaluationSubmitButton from '../components/Evaluation/EvaluationSubmitButton';
 import CycleClosedMessage from '../components/Evaluation/CycleClosedMessage';
 import EvaluationSubmittedMessage from '../components/Evaluation/EvaluationSubmittedMessage';
 import CycleLoadErrorMessage from '../components/Evaluation/CycleLoadErrorMessage';
@@ -56,7 +55,6 @@ export function Avaliacao() {
 
     return (
         <FormProvider {...methods}>
-            <EvaluationSubmitButton />
             <form>
                 <EvaluationForm />
             </form>

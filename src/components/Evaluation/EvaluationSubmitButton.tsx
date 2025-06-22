@@ -71,21 +71,19 @@ const EvaluationSubmitButton = memo(() => {
     };
 
     return (
-        <div className="fixed top-[5.5rem] right-8 z-[100]">
-            <Button
-                variant="primary"
-                size="md"
-                disabled={!isValid || isSubmitting}
-                onClick={onSubmit}
-                className={`transition-all duration-200 ${
-                    !isValid || isSubmitting
-                        ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200'
-                        : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
-                }`}
-            >
-                {isSubmitting ? 'Enviando...' : 'Concluir e enviar'}
-            </Button>
-        </div>
+        <Button
+            variant="primary"
+            size="md"
+            disabled={!isValid || isSubmitting}
+            onClick={onSubmit}
+            className={`transition-all duration-200 ${
+                !isValid || isSubmitting
+                    ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200'
+                    : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
+            }`}
+        >
+            {isSubmitting ? 'Enviando...' : 'Concluir e enviar'}
+        </Button>
     );
 });
 
