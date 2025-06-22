@@ -106,41 +106,79 @@ function EvaluationHeaderComponent({
                     <EvaluationSubmitButton />
                 </div>
             </div>
-
             {/* Navegação Desktop/Tablets */}
-            <nav className="hidden md:flex mt-2 border-t-3 pt-5 pl-0 bg border-gray-50 w-full">
-                {sections.map(section => {
-                    const isActive = section === activeSection;
-                    return (
-                        <div
-                            key={section}
-                            className="flex-1 min-w-0 flex flex-col items-center justify-center text-center relative"
-                        >
-                            <Typography
-                                variant="body"
-                                className={`cursor-pointer pb-4 px-2 md:px-5 transition-all duration-200 relative w-full truncate ${
-                                    isActive
-                                        ? 'text-primary-600 font-semibold border-b-2 border-primary-600'
-                                        : 'text-gray-600 font-normal hover:text-primary-500'
-                                }`}
-                                onClick={() => onSectionChange(section)}
+            <nav className="hidden md:flex w-full mt-2 border-t-3 pt-5 bg border-gray-50 overflow-x-auto">
+                {/* Alterações aqui: min-w e max-w ajustados, gap-x-4 adicionado */}
+                <div className="flex max-w-5xl w-full mx-auto items-stretch gap-x-4">
+                    {sections.map(section => {
+                        const isActive = section === activeSection;
+                        return (
+                            <div
+                                key={section}
+                                // min-w foi reduzido, max-w-xs foi removido
+                                className="flex-1 min-w-[100px] flex flex-col justify-center items-center text-center relative"
                             >
-                                <span className="invisible font-semibold absolute inset-0">
-                                    {section}
-                                </span>
-                                <span className="flex items-center justify-center gap-2 md:gap-3 w-full">
-                                    {section}
-                                    <span className="relative -top-1 md:-top-0.5 ml-2 md:ml-3 flex items-center">
-                                        {renderBadge(section)}
+                                <Typography
+                                    variant="body"
+                                    className={`cursor-pointer pb-4 px-4 transition-all duration-200 relative w-full truncate ${
+                                        isActive
+                                            ? 'text-primary-600 font-semibold border-b-2 border-primary-600'
+                                            : 'text-gray-600 font-normal hover:text-primary-500'
+                                    }`}
+                                    onClick={() => onSectionChange(section)}
+                                >
+                                    <span className="invisible font-semibold absolute inset-0">
+                                        {section}
                                     </span>
-                                </span>
-                            </Typography>
-                        </div>
-                    );
-                })}
+                                    {section}
+                                </Typography>
+                                {section === 'Autoavaliação' && (
+                                    <NotificationBadge
+                                        show={incompleteSelfAssessmentCount > 0}
+                                        count={incompleteSelfAssessmentCount}
+                                        position="top-right"
+                                        variant="small"
+                                    />
+                                )}
+                                {section === 'Mentoring' && (
+                                    <NotificationBadge
+                                        show={incompleteMentoringCount > 0}
+                                        count={incompleteMentoringCount}
+                                        position="top-right"
+                                        variant="small"
+                                    />
+                                )}
+                                {section === 'Avaliação 360' && (
+                                    <NotificationBadge
+                                        show={
+                                            incompleteEvaluation360Count ===
+                                                null ||
+                                            incompleteEvaluation360Count > 0
+                                        }
+                                        count={
+                                            incompleteEvaluation360Count ===
+                                            null
+                                                ? undefined
+                                                : incompleteEvaluation360Count
+                                        }
+                                        position="top-right"
+                                        variant="small"
+                                    />
+                                )}
+                                {section === 'Referências' && (
+                                    <NotificationBadge
+                                        show={incompleteReferencesCount > 0}
+                                        count={incompleteReferencesCount}
+                                        position="top-right"
+                                        variant="small"
+                                    />
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </nav>
-
-            {/* Navegação Mobile */}
+            {/* Navegação Mobile (SEM ALTERAÇÕES) */}
             <div className="md:hidden mt-2 pt-5 bg border-gray-50">
                 <div className="relative w-full" ref={dropdownRef}>
                     <button
