@@ -8,6 +8,7 @@ import { ProtectedRoute, RoleRoute } from '../components/ProtectedRoute';
 import { MultiRoleRoute } from '../components/MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
 import { Dashboard, Evolucao, Avaliacao } from '../pages/';
+import Anotacoes from '../pages/Anotacoes';
 
 // Spinner enquanto o estado de auth é carregado
 const LoadingSpinner = () => (
@@ -50,6 +51,7 @@ export function Router() {
 
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="avaliacao" element={<Avaliacao />} />
+                    <Route path="anotacoes" element={<Anotacoes />} />
 
                     <Route
                         path="evolucao"

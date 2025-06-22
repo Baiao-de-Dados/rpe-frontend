@@ -38,6 +38,7 @@
         "chart.js": "^4.5.0",
         "clsx": "^2.1.1",
         "crypto-js": "^4.2.0",
+        "event-source-polyfill": "^1.0.31",
         "framer-motion": "^12.18.1",
         "lucide-react": "^0.515.0",
         "nuqs": "^2.4.3",

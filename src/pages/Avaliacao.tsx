@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import {
@@ -10,14 +11,45 @@ import EvaluationSubmittedMessage from '../components/Evaluation/EvaluationSubmi
 import CycleLoadErrorMessage from '../components/Evaluation/CycleLoadErrorMessage';
 import Typography from '../components/Typography';
 import { useCycle } from '../hooks/useCycle';
+import { useLocation } from 'react-router-dom';
 
 export function Avaliacao() {
     const { currentCycle, evaluationStatus, isLoading } = useCycle();
+    const location = useLocation();
 
     const methods = useForm<EvaluationFormData>({
         resolver: zodResolver(fullEvaluationSchema),
         mode: 'onSubmit',
     });
+
+    // Preenche mentoring automaticamente se vier no state
+    useEffect(() => {
+        if (location.state) {
+            const {
+                mentoringNota,
+                mentoringJustificativa,
+                nota,
+                justificativa,
+            } = location.state;
+            if (mentoringNota || nota) {
+                methods.setValue('mentoringRating', mentoringNota ?? nota);
+            }
+            if (mentoringJustificativa || justificativa) {
+                let justificativaDecoded = mentoringJustificativa ?? justificativa;
+                // Remove chaves extras do início/fim, se houver
+                justificativaDecoded = justificativaDecoded.trim().replace(/^\{+/, '').replace(/\}+$/, '');
+                try {
+                    // Decodifica unicode se necessário
+                    justificativaDecoded = JSON.parse('"' + justificativaDecoded.replace(/"/g, '\\"') + '"');
+                } catch {}
+                methods.setValue(
+                    'mentoringJustification',
+                    justificativaDecoded
+                );
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.state]);
 
     if (isLoading) {
         return (
