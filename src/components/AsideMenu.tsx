@@ -59,13 +59,14 @@ export default function AsideMenu() {
                     bg-white flex flex-col p-4 h-screen border-r-4 border-neutral-300 relative
                     transition-all duration-300 ease-in-out overflow-hidden overflow-y-auto
                     ${isNavExpanded ? 'w-60' : 'w-24'}
-                    max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:h-screen max-lg:bg-white max-lg:border-r-0 max-lg:z-[999]
+                    max-lg:fixed max-lg:left-0 max-lg:h-screen max-lg:bg-white max-lg:border-r-0 max-lg:z-[999]
                     ${isMenuOpened ? 'max-lg:w-full max-lg:flex max-lg:flex-col' : 'max-lg:w-0 max-lg:hidden'}
                 `}
                 style={{
                     boxShadow: isNavExpanded
                         ? '0 1px 3px 0 rgba(0, 0, 0, 0.05)'
                         : 'none',
+                    top: isMenuOpened ? 104 : undefined, // 104px = header height (pt-8 pb-6 px-8)
                 }}
             >
                 <button
