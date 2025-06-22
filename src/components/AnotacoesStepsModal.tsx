@@ -39,6 +39,7 @@ interface AnotacoesStepsModalProps {
     onCancel: () => void;
     onContinue: () => void;
     canContinue?: boolean;
+    avaliacaoSections?: string[];
 }
 
 const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
@@ -47,6 +48,7 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
     onCancel,
     onContinue,
     canContinue,
+    avaliacaoSections = [],
 }) => {
     return (
         <div
@@ -54,15 +56,12 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
             style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
         >
             <div
-                className={`bg-white rounded-lg shadow-lg p-8 min-w-[320px] max-w-[90vw] transition-transform duration-300 ${open ? 'scale-100' : 'scale-95'}`}
+                className={`bg-white rounded-lg shadow-lg p-10 min-w-[480px] max-w-[600px] min-h-[380px] flex flex-col transition-transform duration-300 ${open ? 'scale-100' : 'scale-95'}`}
             >
-                <Typography
-                    variant="h2"
-                    className="mb-6 text-xl font-semibold text-center"
-                >
+                <Typography variant="h2" className="mb-6 text-xl font-semibold">
                     Processando avaliações
                 </Typography>
-                <div className="flex flex-col gap-4 mb-8">
+                <div className="flex flex-col gap-4 mb-6 border-b border-gray-200 pb-8">
                     {steps.map((step, idx) => {
                         const isCurrent =
                             !step.completed &&
@@ -103,6 +102,28 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
                             </div>
                         );
                     })}
+                </div>
+                <div className="mb-6 min-h-[70px] flex flex-col justify-center">
+                    {avaliacaoSections.length > 0 && (
+                        <>
+                            <Typography
+                                variant="h3"
+                                className="mb-2 text-lg font-semibold text-primary-500"
+                            >
+                                Seções avaliadas:
+                            </Typography>
+                            <ul className="list-disc pl-6">
+                                {avaliacaoSections.map(section => (
+                                    <li
+                                        key={section}
+                                        className="text-base text-primary-500"
+                                    >
+                                        {section}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
                 </div>
                 <div className="flex justify-end gap-3 mt-8">
                     <Button variant="secondary" size="md" onClick={onCancel}>

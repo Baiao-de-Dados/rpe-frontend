@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
@@ -14,30 +14,31 @@ export default function Anotacoes() {
     const [modalStep, setModalStep] = useState(0);
     const [avaliacaoGerada, setAvaliacaoGerada] = useState<unknown>(null);
     const [stepErrors, setStepErrors] = useState([false, false, false]);
+    const [avaliacaoSections, setAvaliacaoSections] = useState<string[]>([]);
     const navigate = useNavigate();
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     async function handleAvaliarComIA() {
         setModalOpen(true);
         setStepErrors([false, false, false]);
+        setAvaliacaoSections([]);
         let errorStep = 0;
+        abortControllerRef.current = new AbortController();
         try {
             errorStep = 1;
-
-            const { geminiResponse } = await avaliarComIA(texto);
-
+            const { geminiResponse } = await avaliarComIA(
+                texto,
+                abortControllerRef.current.signal,
+            );
             setIsAvaliando(true);
-            // throw new Error('Erro');
             setModalStep(1);
-
             errorStep = 2;
             await new Promise(r => setTimeout(r, 2000));
-            // throw new Error('Error');
             setModalStep(2);
             setAvaliacaoGerada(geminiResponse || null);
-
+            setAvaliacaoSections(['Mentoring']);
             errorStep = 3;
             await new Promise(r => setTimeout(r, 2000));
-            // throw new Error('3');
             setModalStep(3);
         } catch (e: unknown) {
             switch (errorStep) {
@@ -58,6 +59,7 @@ export default function Anotacoes() {
             console.log('Erro ao avaliar com IA', e);
         } finally {
             setIsAvaliando(false);
+            abortControllerRef.current = null;
         }
     }
 
@@ -94,13 +96,26 @@ export default function Anotacoes() {
             <AnotacoesStepsModal
                 open={modalOpen}
                 steps={steps}
+                avaliacaoSections={
+                    modalStep === 3 && stepErrors.every(e => !e)
+                        ? avaliacaoSections
+                        : []
+                }
                 onCancel={() => {
                     setModalOpen(false);
                     setModalStep(0);
                     setAvaliacaoGerada(null);
+                    setIsAvaliando(false);
+                    if (abortControllerRef.current) {
+                        abortControllerRef.current.abort();
+                    }
                 }}
                 onContinue={handleModalContinue}
-                canContinue={modalStep === 3 && !!avaliacaoGerada}
+                canContinue={
+                    modalStep === 3 &&
+                    !!avaliacaoGerada &&
+                    stepErrors.every(e => !e)
+                }
             />
             <div className="w-full flex justify-center py-9 px-2 md:px-8">
                 <CardContainer className="w-full min-h-[800px] p-15 pb-0">

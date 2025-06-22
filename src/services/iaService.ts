@@ -1,9 +1,10 @@
 // Serviço para comunicação com a IA
-export async function avaliarComIA(texto: string) {
+export async function avaliarComIA(texto: string, signal?: AbortSignal) {
     const res = await fetch('http://localhost:5000/avaliar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ texto }),
+        signal,
     });
 
     const raw = await res.text();
