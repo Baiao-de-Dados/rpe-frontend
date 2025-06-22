@@ -44,19 +44,17 @@ export function Evolucao() {
                 selectedCycle={selectedCycle}
                 onSelectCycle={setSelectedCycle}
             />
-            <div className="pt-4 md:pt-8">
-                <main className="p-8 pt-6 space-y-6">
-                    <PerfomanceEvolution
-                        displayedScore={displayedScore}
-                        displayedCycleName={displayedCycleName}
-                        growth={growth}
-                        previousCycleName={previousCycle?.cycleName || 'N/A'}
-                        finalizedCyclesCount={finalizedCyclesCount}
-                        sortedCycles={filteredCycles}
-                    />
-                    <CyclesEvolution sortedCycles={filteredCycles} />
-                </main>
-            </div>
+            <main className="p-4 sm:p-8 space-y-6">
+                <PerfomanceEvolution
+                    displayedScore={displayedScore}
+                    displayedCycleName={displayedCycleName}
+                    growth={growth}
+                    previousCycleName={previousCycle?.cycleName || 'N/A'}
+                    finalizedCyclesCount={finalizedCyclesCount}
+                    sortedCycles={filteredCycles}
+                />
+                <CyclesEvolution sortedCycles={filteredCycles} />
+            </main>
         </>
     );
 }

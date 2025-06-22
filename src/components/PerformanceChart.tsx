@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -30,7 +30,19 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
     const [filter, setFilter] = useState<FilterOption>('last3');
     const [showFilterMenu, setShowFilterMenu] = useState(false);
     const [customNumber, setCustomNumber] = useState<number>(3);
+    const [isMobile, setIsMobile] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleFilterChange = (newFilter: FilterOption) => {
         setFilter(newFilter);
@@ -86,9 +98,10 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                 ),
                 borderWidth: 0,
                 borderRadius: 6,
-                // Barras com tamanho adequado para o gráfico
-                barThickness: 100,
-                maxBarThickness: 120,
+                // Barras responsivas - menores no mobile
+                barThickness: isMobile ? ('flex' as const) : 100,
+                maxBarThickness: isMobile ? 50 : 120,
+                minBarLength: 2,
             },
         ],
     };
@@ -117,9 +130,9 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                 ticks: {
                     stepSize: 1,
                     font: {
-                        size: 12,
+                        size: isMobile ? 10 : 12,
                     },
-                    color: '#555', // Cor mais escura para melhor leitura
+                    color: '#555',
                 },
                 grid: {
                     color: '#e0e0e0',
@@ -134,18 +147,20 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                 },
                 ticks: {
                     font: {
-                        size: 12,
+                        size: isMobile ? 10 : 12,
                     },
                     color: '#444',
+                    maxRotation: isMobile ? 45 : 0,
+                    minRotation: isMobile ? 45 : 0,
                 },
             },
         },
         layout: {
             padding: {
                 left: 0,
-                right: 10,
-                top: 10,
-                bottom: 0,
+                right: isMobile ? 5 : 10,
+                top: isMobile ? 5 : 10,
+                bottom: isMobile ? 5 : 0,
             },
         },
     };
@@ -166,11 +181,13 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
 
     return (
         <div className="w-full h-full relative">
-            {/* Posicionar o filtro no canto superior direito */}
-            <div className="absolute top-[-60px] right-0">
+            {/* Botão de filtro - posicionamento responsivo */}
+            <div
+                className={`${isMobile ? 'relative mb-4' : 'absolute top-[-60px] right-0'}`}
+            >
                 <div className="relative">
                     <button
-                        className="flex items-center space-x-2 text-sm text-neutral-500 border border-neutral-300 rounded-md px-3 py-1.5"
+                        className={`flex items-center space-x-2 text-sm text-neutral-500 border border-neutral-300 rounded-md px-3 py-1.5 ${isMobile ? 'w-full justify-between' : ''}`}
                         onClick={() => setShowFilterMenu(!showFilterMenu)}
                     >
                         <span>{getFilterButtonText()}</span>
@@ -189,7 +206,9 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                     </button>
 
                     {showFilterMenu && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md py-2 z-10">
+                        <div
+                            className={`${isMobile ? 'absolute left-0 right-0' : 'absolute right-0'} mt-2 ${isMobile ? 'w-full' : 'w-64'} bg-white shadow-lg rounded-md py-2 z-10`}
+                        >
                             <button
                                 className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${filter === 'last3' ? 'text-primary-600 font-medium' : ''}`}
                                 onClick={() => handleFilterChange('last3')}
@@ -205,23 +224,29 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                             <div className="px-4 py-2 border-t border-gray-100">
                                 <form
                                     onSubmit={handleCustomNumberSubmit}
-                                    className="flex items-center"
+                                    className={`flex items-center ${isMobile ? 'flex-col space-y-2' : ''}`}
                                 >
-                                    <span className="text-sm mr-2">
-                                        Últimos
-                                    </span>
-                                    <input
-                                        ref={inputRef}
-                                        type="number"
-                                        min="1"
-                                        max={cycles.length}
-                                        defaultValue={customNumber}
-                                        className="w-16 p-1 border border-gray-300 rounded text-sm"
-                                    />
-                                    <span className="text-sm mx-2">ciclos</span>
+                                    <div
+                                        className={`flex items-center ${isMobile ? 'w-full justify-center' : ''}`}
+                                    >
+                                        <span className="text-sm mr-2">
+                                            Últimos
+                                        </span>
+                                        <input
+                                            ref={inputRef}
+                                            type="number"
+                                            min="1"
+                                            max={cycles.length}
+                                            defaultValue={customNumber}
+                                            className="w-16 p-1 border border-gray-300 rounded text-sm"
+                                        />
+                                        <span className="text-sm mx-2">
+                                            ciclos
+                                        </span>
+                                    </div>
                                     <button
                                         type="submit"
-                                        className="ml-auto text-xs bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-600"
+                                        className={`text-xs bg-primary-500 text-white px-3 py-1 rounded hover:bg-primary-600 ${isMobile ? 'w-full' : 'ml-auto'}`}
                                     >
                                         Aplicar
                                     </button>
@@ -231,8 +256,11 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                     )}
                 </div>
             </div>
-            {/* Chart container - removed unnecessary margin-top since filter is absolute positioned */}
-            <div className="flex items-center justify-center h-[450px]">
+
+            {/* Container do gráfico */}
+            <div
+                className={`flex items-center justify-center ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}
+            >
                 <Bar data={data} options={options} />
             </div>
         </div>

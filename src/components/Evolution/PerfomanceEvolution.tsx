@@ -76,15 +76,15 @@ export function PerfomanceEvolution({
                             </Typography>
                             <Typography
                                 variant="caption"
-                                className={`$ {
-                  Number(displayedScore) >= 4.5
-                    ? 'text-green-600'
-                    : Number(displayedScore) >= 3.5
-                    ? 'text-yellow-600'
-                    : Number(displayedScore) >= 2.5
-                    ? 'text-orange-600'
-                    : 'text-red-600'
-                }`}
+                                className={`${
+                                    Number(displayedScore) >= 4.5
+                                        ? 'text-green-600'
+                                        : Number(displayedScore) >= 3.5
+                                          ? 'text-yellow-600'
+                                          : Number(displayedScore) >= 2.5
+                                            ? 'text-orange-600'
+                                            : 'text-red-600'
+                                }`}
                             >
                                 {Number(displayedScore) >= 4.5
                                     ? 'Great'
