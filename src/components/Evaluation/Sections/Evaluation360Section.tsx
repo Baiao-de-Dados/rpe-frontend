@@ -9,11 +9,16 @@ import Evaluation360 from '../Cards/Evaluation360';
 import { searchCollaborators } from '../../../data/mockCollaborators';
 import type { Collaborator } from '../../../data/mockCollaborators';
 import type { EvaluationFormData } from '../../../schemas/evaluation';
+import { useQueryState } from 'nuqs';
 
 export const Evaluation360Section = memo(() => {
     const { control, setValue, getValues } =
         useFormContext<EvaluationFormData>();
-    const [searchQuery, setSearchQuery] = useState('');
+
+    const [searchQuery, setSearchQuery] = useQueryState('eval360_search', {
+        defaultValue: '',
+        history: 'replace',
+    });
 
     const { fields, append } = useFieldArray({
         control,
@@ -66,7 +71,7 @@ export const Evaluation360Section = memo(() => {
             });
             setSearchQuery('');
         },
-        [append],
+        [append, setSearchQuery],
     );
 
     const removeCollaborator = useCallback(

@@ -2,6 +2,7 @@ import { memo, useState, useRef, useEffect } from 'react';
 import Typography from '../Typography';
 import NotificationBadge from '../NotificationBadge';
 import { type SectionType } from '../../hooks/useSectionNavigation';
+import EvaluationSubmitButton from './EvaluationSubmitButton';
 
 interface EvaluationHeaderProps {
     activeSection: SectionType;
@@ -97,18 +98,12 @@ function EvaluationHeaderComponent({
 
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
-            {/* Linha principal do header */}
-            <div className="p-4 md:p-8 flex flex-row items-center justify-between w-full">
-                <div className="flex items-center gap-2">
-                    <Typography
-                        variant="h1"
-                        className="text-4xl font-bold leading-none"
-                    >
-                        Ciclo 2025.1
-                    </Typography>
-                </div>
-                <div className="hidden md:flex gap-4 items-center">
-                    <div className="h-8 md:h-10 lg:h-12 w-24 md:w-32 lg:w-40"></div>
+            <div className="p-8 flex items-center justify-between">
+                <Typography variant="h1" className="text-4xl font-bold">
+                    Ciclo 2025.1
+                </Typography>
+                <div className="flex gap-4 items-center">
+                    <EvaluationSubmitButton />
                 </div>
             </div>
 
