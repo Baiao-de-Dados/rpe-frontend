@@ -1,4 +1,4 @@
-import { memo, useState, useMemo } from 'react';
+import { memo, useMemo, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import CardContainer from '../CardContainer';
@@ -6,6 +6,7 @@ import Typography from '../Typography';
 import SelfAssessment from './Cards/SelfAssessment';
 import { PillarRatingDisplay } from './PillarRatingDisplay';
 import NotificationBadge from '../NotificationBadge';
+import { useQueryState } from 'nuqs';
 import type { Criterion } from '../../data/mockEvaluationPIllars';
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
@@ -22,7 +23,17 @@ interface PillarSectionProps {
 
 export const PillarSection = memo(
     ({ pillarTitle, criteria, validFields }: PillarSectionProps) => {
-        const [isMinimized, setIsMinimized] = useState(true);
+        const [pillarOpenList, setPillarOpenList] = useQueryState(
+            'pillar_open',
+            {
+                defaultValue: '',
+                history: 'replace',
+            },
+        );
+        const pillarId = pillarTitle;
+        const openArray = pillarOpenList ? pillarOpenList.split(',') : [];
+        const isOpen = openArray.includes(pillarId);
+
         const { control } = useFormContext<EvaluationFormData>();
 
         const fieldIndices = useMemo(() => {
@@ -71,8 +82,16 @@ export const PillarSection = memo(
             criteria.length - incompleteCriteriaCount;
 
         const toggleMinimized = () => {
-            setIsMinimized(!isMinimized);
+            let newArray: string[];
+            if (isOpen) {
+                newArray = openArray.filter(id => id !== pillarId);
+            } else {
+                newArray = [...openArray, pillarId];
+            }
+            setPillarOpenList(newArray.join(','));
         };
+
+        useEffect(() => {}, [pillarOpenList]);
 
         return (
             <CardContainer className="pt-14 p-10 mb-5 relative">
@@ -107,7 +126,7 @@ export const PillarSection = memo(
                         </span>
                         <div
                             className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${
-                                isMinimized ? 'rotate-180' : 'rotate-0'
+                                isOpen ? 'rotate-0' : 'rotate-180'
                             }`}
                         >
                             <ChevronDown size={24} className="text-gray-600" />
@@ -117,9 +136,9 @@ export const PillarSection = memo(
 
                 <div
                     className={`transition-all duration-300 ease-out overflow-hidden ${
-                        isMinimized
-                            ? 'max-h-0 opacity-0'
-                            : 'max-h-[2000px] opacity-100'
+                        isOpen
+                            ? 'max-h-[2000px] opacity-100'
+                            : 'max-h-0 opacity-0'
                     }`}
                 >
                     <div className="space-y-4">

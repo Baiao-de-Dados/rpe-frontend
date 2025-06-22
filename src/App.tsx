@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 import { BrowserRouter } from 'react-router-dom';
 import { Suspense } from 'react';
 import { Router } from './router';
@@ -34,21 +35,23 @@ const LoadingFallback = () => (
 export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                <Suspense fallback={<LoadingFallback />}>
-                    <AuthProvider>
-                        <ToastProvider>
-                            <CycleProvider>
-                                <Router />
-                                <GlobalToast />
-                            </CycleProvider>
-                        </ToastProvider>
-                    </AuthProvider>
-                </Suspense>
-                {import.meta.env.DEV && (
-                    <ReactQueryDevtools initialIsOpen={false} />
-                )}
-            </BrowserRouter>
+            <NuqsAdapter>
+                <BrowserRouter>
+                    <Suspense fallback={<LoadingFallback />}>
+                        <AuthProvider>
+                            <ToastProvider>
+                                <CycleProvider>
+                                    <Router />
+                                    <GlobalToast />
+                                </CycleProvider>
+                            </ToastProvider>
+                        </AuthProvider>
+                    </Suspense>
+                    {import.meta.env.DEV && (
+                        <ReactQueryDevtools initialIsOpen={false} />
+                    )}
+                </BrowserRouter>
+            </NuqsAdapter>
         </QueryClientProvider>
     );
 }
