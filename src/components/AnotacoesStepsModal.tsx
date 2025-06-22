@@ -1,7 +1,7 @@
 import React from 'react';
 import Typography from './Typography';
 import Button from './Button';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
 function LoadingSpinner() {
     return (
@@ -30,6 +30,7 @@ function LoadingSpinner() {
 interface Step {
     label: string;
     completed: boolean;
+    error?: boolean;
 }
 
 interface AnotacoesStepsModalProps {
@@ -65,6 +66,7 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
                     {steps.map((step, idx) => {
                         const isCurrent =
                             !step.completed &&
+                            !step.error &&
                             (idx === 0 || steps[idx - 1].completed);
                         return (
                             <div
@@ -72,11 +74,17 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
                                 className="flex items-center gap-3"
                             >
                                 <div
-                                    className={`w-6 h-6 rounded-full border-1 flex items-center justify-center transition-colors duration-200 ${step.completed ? 'bg-check-color border-check-color' : 'border-gray-600 text-gray-600'}`}
+                                    className={`w-6 h-6 rounded-full border-1 flex items-center justify-center transition-colors duration-200 ${step.completed ? 'bg-check-color border-check-color' : step.error ? 'bg-red-500 border-red-500 text-white' : 'border-gray-600 text-gray-600'}`}
                                 >
                                     {step.completed ? (
                                         <Check
                                             fill="none"
+                                            stroke="white"
+                                            strokeWidth={2}
+                                            size={20}
+                                        />
+                                    ) : step.error ? (
+                                        <X
                                             stroke="white"
                                             strokeWidth={2}
                                             size={20}
@@ -88,7 +96,7 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
                                     )}
                                 </div>
                                 <span
-                                    className={`text-base ${step.completed ? 'text-primary-500' : isCurrent ? 'font-bold text-primary-500' : 'text-primary-500'}`}
+                                    className={`text-base ${step.completed ? 'text-primary-500' : step.error ? 'font-bold text-red-500' : isCurrent ? 'font-bold text-primary-500' : 'text-primary-500'}`}
                                 >
                                     {step.label}
                                 </span>

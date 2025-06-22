@@ -12,26 +12,50 @@ export default function Anotacoes() {
     const [isAvaliando, setIsAvaliando] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalStep, setModalStep] = useState(0);
-    const [avaliacaoGerada, setAvaliacaoGerada] = useState<unknown>(null); // Ajusta o tipo para unknown, evitando 'any'
+    const [avaliacaoGerada, setAvaliacaoGerada] = useState<unknown>(null);
+    const [stepErrors, setStepErrors] = useState([false, false, false]);
     const navigate = useNavigate();
 
     async function handleAvaliarComIA() {
         setModalOpen(true);
-
+        setStepErrors([false, false, false]);
+        let errorStep = 0;
         try {
+            errorStep = 1;
+
             const { geminiResponse } = await avaliarComIA(texto);
+
             setIsAvaliando(true);
+            // throw new Error('Erro');
             setModalStep(1);
+
+            errorStep = 2;
             await new Promise(r => setTimeout(r, 2000));
+            // throw new Error('Error');
             setModalStep(2);
             setAvaliacaoGerada(geminiResponse || null);
+
+            errorStep = 3;
             await new Promise(r => setTimeout(r, 2000));
+            // throw new Error('3');
             setModalStep(3);
-            // Step 3: Avaliação gerada
-        } catch {
+        } catch (e: unknown) {
+            switch (errorStep) {
+                case 1:
+                    setStepErrors([true, false, false]);
+                    break;
+                case 2:
+                    setStepErrors([false, true, false]);
+                    break;
+                case 3:
+                    setStepErrors([false, false, true]);
+                    break;
+                default:
+                    setStepErrors([true, false, false]);
+            }
             setAvaliacaoGerada(null);
-            setModalStep(3);
-            console.log('Erro ao avaliar com IA');
+            setIsAvaliando(false);
+            console.log('Erro ao avaliar com IA', e);
         } finally {
             setIsAvaliando(false);
         }
@@ -48,9 +72,21 @@ export default function Anotacoes() {
     }
 
     const steps = [
-        { label: 'Analisando anotações', completed: modalStep > 0 },
-        { label: 'Gerando avaliações', completed: modalStep > 1 },
-        { label: 'Avaliação gerada', completed: modalStep > 2 },
+        {
+            label: 'Analisando anotações',
+            completed: modalStep > 0,
+            error: stepErrors[0],
+        },
+        {
+            label: 'Gerando avaliações',
+            completed: modalStep > 1,
+            error: stepErrors[1],
+        },
+        {
+            label: 'Avaliação gerada',
+            completed: modalStep > 2,
+            error: stepErrors[2],
+        },
     ];
 
     return (
