@@ -2,51 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
-import { Sparkles, Check, X, Bot } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import CardContainer from '../components/CardContainer';
 
 export default function Anotacoes() {
     const [texto, setTexto] = useState('');
-    const [resumo, setResumo] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [showActions, setShowActions] = useState(false);
     const [isAvaliando, setIsAvaliando] = useState(false);
     const navigate = useNavigate();
-
-    async function handleGerarResumo() {
-        setIsLoading(true);
-        setResumo('');
-        setShowActions(false);
-        try {
-            const res = await fetch('http://localhost:5000/resumir', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ texto })
-            });
-            const data = await res.json();
-            if (typeof data.resumo === 'string') {
-                const textoResumo = (data.resumo || '').toString();
-                if (!textoResumo) return;
-                let i = 0;
-                let acumulado = '';
-                function animate() {
-                    acumulado += textoResumo.charAt(i);
-                    setResumo(acumulado);
-                    i++;
-                    if (i < textoResumo.length) {
-                        setTimeout(animate, 20);
-                    } else {
-                        setShowActions(true);
-                    }
-                }
-                animate();
-            }
-        } catch {
-            setResumo('[Erro ao gerar resumo]');
-        } finally {
-            setIsLoading(false);
-        }
-    }
 
     async function handleAvaliarComIA() {
         setIsAvaliando(true);
@@ -58,32 +20,43 @@ export default function Anotacoes() {
             });
 
             const raw = await res.text();
-            let nota = null;
-            let justificativa = '';
+
+            let geminiResponse = null;
             try {
-                // Regex para extrair "Nota: <número>" e "Justificativa: <texto>"
-                const notaMatch = raw.match(/Nota:\s*(\d+)/i);
-                const justificativaMatch = raw.match(/Justificativa:\s*([\s\S]*)/i);
-                if (notaMatch) {
-                    nota = parseInt(notaMatch[1], 10);
-                }
-                if (justificativaMatch) {
-                    justificativa = justificativaMatch[1].trim();
+                let jsonString = raw;
+                // Se vier um objeto com campo resumo, use ele
+                try {
+                    const asObj = JSON.parse(raw);
+                    if (typeof asObj.resumo === 'string') {
+                        jsonString = asObj.resumo;
+                    }
+                } catch { /* ignore parse errors, fallback para string bruta */ }
+                // Remove blocos de markdown e whitespace
+                jsonString = jsonString.replace(/```json|```/g, '').trim();
+                // Faz o parse do JSON limpo
+                const parsed = JSON.parse(jsonString);
+                if (
+                    typeof parsed.nota === 'number' &&
+                    Number.isInteger(parsed.nota) &&
+                    parsed.nota >= 1 &&
+                    parsed.nota <= 5 &&
+                    typeof parsed.justificativa === 'string' &&
+                    parsed.justificativa.trim().length > 0
+                ) {
+                    geminiResponse = parsed;
+                } else {
+                    console.log('Resposta da IA fora do padrão esperado:', raw);
                 }
             } catch (e) {
-                console.log('Erro ao extrair nota/justificativa:', e, raw);
+                console.log('Erro ao fazer parse do JSON da IA:', e, raw);
             }
-            if (typeof nota === 'number' && justificativa) {
-                console.log('Enviando para avaliação:', { nota, justificativa });
+            if (geminiResponse) {
+                console.log('Enviando para avaliação:', geminiResponse);
                 navigate('/avaliacao?section=Mentoring', {
-                    state: {
-                        mentoringNota: nota,
-                        mentoringJustificativa: justificativa,
-                        nota,
-                        justificativa
-                    }
+                    state: { geminiResponse }
                 });
             } else {
+                // Aqui você pode exibir um toast de erro se desejar
                 console.log('Resposta inesperada da IA:', raw);
             }
         } catch {
@@ -93,17 +66,6 @@ export default function Anotacoes() {
         }
     }
 
-    function handleAccept() {
-        setShowActions(false);
-        // Aqui você pode adicionar lógica para salvar ou processar o resumo aceito
-    }
-    function handleReject() {
-        setShowActions(false);
-        setResumo('');
-    }
-
-    const textoComResumo = resumo ? texto + '\n\n' + resumo : texto;
-
     return (
         <div className="w-full flex justify-center py-9 px-2 md:px-8">
             <CardContainer className="w-full min-h-[800px] p-15 pb-0">
@@ -112,16 +74,6 @@ export default function Anotacoes() {
                         Anotações
                     </Typography>
                     <div className="flex gap-3">
-                        <Button
-                            variant="primary"
-                            size="md"
-                            disabled={texto.trim().length === 0 || isLoading}
-                            className="flex items-center gap-3"
-                            onClick={handleGerarResumo}
-                        >
-                            {isLoading ? 'Gerando...' : 'Gerar resumo'}
-                            <Sparkles size={18} className="-ml-1" />
-                        </Button>
                         <Button
                             variant="secondary"
                             size="md"
@@ -139,34 +91,12 @@ export default function Anotacoes() {
                         style={{ backgroundColor: '#f8fdfa' }}
                         className="w-full min-h-[600px] border border-green-100 rounded-lg p-4 text-lg mb-8 resize-none focus:outline-primary-500 focus:bg-white transition-colors"
                         placeholder="Escreva suas anotações aqui..."
-                        value={textoComResumo}
+                        value={texto}
                         onChange={e => {
                             setTexto(e.target.value);
-                            setResumo('');
-                            setShowActions(false);
                         }}
-                        readOnly={isLoading || !!resumo}
+                        readOnly={isAvaliando}
                     />
-                    {showActions && (
-                        <div className="absolute right-8 top-8 flex gap-3 z-10">
-                            <button
-                                onClick={handleAccept}
-                                className="transition-colors p-0 bg-transparent border-none focus:outline-none"
-                                style={{ lineHeight: 0, background: 'none', border: 'none', cursor: 'pointer' }}
-                                title="Aceitar resumo"
-                            >
-                                <Check size={28} className="text-primary-500 hover:text-primary-700 transition-colors cursor-pointer" />
-                            </button>
-                            <button
-                                onClick={handleReject}
-                                className="transition-colors p-0 bg-transparent border-none focus:outline-none"
-                                style={{ lineHeight: 0, background: 'none', border: 'none', cursor: 'pointer' }}
-                                title="Rejeitar resumo"
-                            >
-                                <X size={28} className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" />
-                            </button>
-                        </div>
-                    )}
                 </div>
             </CardContainer>
         </div>

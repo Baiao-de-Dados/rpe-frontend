@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import {
@@ -25,27 +25,20 @@ export function Avaliacao() {
     // Preenche mentoring automaticamente se vier no state
     useEffect(() => {
         if (location.state) {
-            const {
-                mentoringNota,
-                mentoringJustificativa,
-                nota,
-                justificativa,
-            } = location.state;
-            if (mentoringNota || nota) {
-                methods.setValue('mentoringRating', mentoringNota ?? nota);
+            const { mentoringNota, mentoringJustificativa, nota, justificativa, geminiResponse } = location.state;
+            let finalNota = mentoringNota ?? nota;
+            let finalJustificativa = mentoringJustificativa ?? justificativa;
+            // Se vier um objeto Gemini já validado, use direto
+            if (geminiResponse) {
+                const gemini = typeof geminiResponse === 'string' ? JSON.parse(geminiResponse) : geminiResponse;
+                finalNota = gemini.nota;
+                finalJustificativa = gemini.justificativa;
             }
-            if (mentoringJustificativa || justificativa) {
-                let justificativaDecoded = mentoringJustificativa ?? justificativa;
-                // Remove chaves extras do início/fim, se houver
-                justificativaDecoded = justificativaDecoded.trim().replace(/^\{+/, '').replace(/\}+$/, '');
-                try {
-                    // Decodifica unicode se necessário
-                    justificativaDecoded = JSON.parse('"' + justificativaDecoded.replace(/"/g, '\\"') + '"');
-                } catch {}
-                methods.setValue(
-                    'mentoringJustification',
-                    justificativaDecoded
-                );
+            if (finalNota) {
+                methods.setValue('mentoringRating', finalNota);
+            }
+            if (finalJustificativa) {
+                methods.setValue('mentoringJustification', finalJustificativa);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
