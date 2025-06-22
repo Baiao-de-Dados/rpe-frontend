@@ -20,7 +20,7 @@ interface EvolucaoDesempenhoProps {
     sortedCycles: Cycle[];
 }
 
-export function EvolucaoDesempenho({
+export function PerfomanceEvolution({
     displayedScore,
     displayedCycleName,
     growth,

@@ -13,7 +13,7 @@ interface EvolucaoCiclosProps {
     sortedCycles: Cycle[];
 }
 
-export function EvolucaoCiclos({ sortedCycles }: EvolucaoCiclosProps) {
+export function CyclesEvolution({ sortedCycles }: EvolucaoCiclosProps) {
     return (
         <CardContainer>
             <Typography variant="h2" className="text-lg font-bold mb-4 ">

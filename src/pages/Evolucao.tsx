@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { mockCycles } from '../data/mockCycles';
 import { EvolutionHeader } from '../components/Evolution/EvolutionHeader';
-import { EvolucaoDesempenho } from '../components/Evolution/EvolucaoDesempenho';
-import { EvolucaoCiclos } from '../components/Evolution/EvolucaoCiclos';
+import { PerfomanceEvolution } from '../components/Evolution/PerfomanceEvolution';
+import { CyclesEvolution } from '../components/Evolution/CyclesEvolution';
 
 export function Evolucao() {
     const [selectedCycle, setSelectedCycle] = useState('all');
@@ -44,9 +44,9 @@ export function Evolucao() {
                 selectedCycle={selectedCycle}
                 onSelectCycle={setSelectedCycle}
             />
-            <div className="pt-32">
+            <div className="pt-4 md:pt-8">
                 <main className="p-8 pt-6 space-y-6">
-                    <EvolucaoDesempenho
+                    <PerfomanceEvolution
                         displayedScore={displayedScore}
                         displayedCycleName={displayedCycleName}
                         growth={growth}
@@ -54,7 +54,7 @@ export function Evolucao() {
                         finalizedCyclesCount={finalizedCyclesCount}
                         sortedCycles={filteredCycles}
                     />
-                    <EvolucaoCiclos sortedCycles={filteredCycles} />
+                    <CyclesEvolution sortedCycles={filteredCycles} />
                 </main>
             </div>
         </>
