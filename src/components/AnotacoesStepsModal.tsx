@@ -2,30 +2,9 @@ import React from 'react';
 import Typography from './Typography';
 import Button from './Button';
 import { Check, X } from 'lucide-react';
-
-function LoadingSpinner() {
-    return (
-        <svg
-            className="animate-spin h-4 w-4 text-primary-500"
-            viewBox="0 0 24 24"
-        >
-            <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-            />
-            <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            />
-        </svg>
-    );
-}
+import LoadingSpinner from './LoadingSpinner';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useOptimizedAnimation } from '../hooks/useOptimizedAnimation';
 
 interface Step {
     label: string;
@@ -40,6 +19,7 @@ interface AnotacoesStepsModalProps {
     onContinue: () => void;
     canContinue?: boolean;
     avaliacaoSections?: string[];
+    wasAborted?: boolean;
 }
 
 const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
@@ -49,10 +29,11 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
     onContinue,
     canContinue,
     avaliacaoSections = [],
+    wasAborted = false,
 }) => {
-    // Detecta se há erro na step 2 (Gerando avaliações)
-    const hasInsightError = steps[1]?.error;
-    const hasConnectionError = steps[0]?.error;
+    const hasInsightError = open && steps[1]?.error;
+    const hasConnectionError = open && steps[0]?.error && !wasAborted;
+    const { shouldReduceMotion } = useOptimizedAnimation();
 
     return (
         <div
@@ -60,7 +41,7 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
             style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
         >
             <div
-                className={`bg-white rounded-lg shadow-lg p-10 min-w-[600px] max-w-[800px] min-h-[520px] flex flex-col transition-transform duration-300 ${open ? 'scale-100' : 'scale-95'}`}
+                className={`bg-white rounded-lg shadow-lg p-10 min-w-[600px] max-w-[800px] min-h-[540px] flex flex-col transition-transform duration-300 ${open ? 'scale-100' : 'scale-95'}`}
                 style={{ maxHeight: '90vh' }}
             >
                 <Typography variant="h2" className="mb-6 text-xl font-semibold">
@@ -101,7 +82,20 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
                                         )}
                                     </div>
                                     <span
-                                        className={`text-base ${step.completed ? 'text-primary-500' : step.error ? 'font-bold text-red-500' : isCurrent ? 'font-bold text-primary-500' : 'text-primary-500'}`}
+                                        className={
+                                            `text-base transition-all duration-300 ease-in-out ` +
+                                            (step.completed
+                                                ? 'text-primary-500 font-normal'
+                                                : step.error
+                                                  ? 'font-bold text-red-500'
+                                                  : isCurrent
+                                                    ? 'font-bold text-primary-500'
+                                                    : 'text-primary-500 font-normal')
+                                        }
+                                        style={{
+                                            transitionProperty:
+                                                'color, font-weight',
+                                        }}
                                     >
                                         {step.label}
                                     </span>
@@ -148,24 +142,81 @@ const AnotacoesStepsModal: React.FC<AnotacoesStepsModalProps> = ({
                                 </div>
                             )}
                         </div>
-                        <div className="w-full min-h-[30px] flex flex-col justify-center">
+                        <div className="w-full -mt-12 min-h-[30px] flex flex-col justify-center">
                             {avaliacaoSections.length > 0 && (
                                 <>
-                                    <Typography
-                                        variant="h3"
-                                        className="mb-2 text-lg font-semibold text-primary-500"
-                                    >
-                                        Seções avaliadas:
-                                    </Typography>
-                                    <ul className="list-disc pl-6">
-                                        {avaliacaoSections.map(section => (
-                                            <li
-                                                key={section}
-                                                className="text-base text-primary-500"
+                                    <AnimatePresence>
+                                        <motion.div
+                                            initial={
+                                                shouldReduceMotion
+                                                    ? { opacity: 0 }
+                                                    : { opacity: 0, x: 0 }
+                                            }
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={
+                                                shouldReduceMotion
+                                                    ? { opacity: 0 }
+                                                    : { opacity: 0, x: 0 }
+                                            }
+                                            transition={{
+                                                duration: shouldReduceMotion
+                                                    ? 0.01
+                                                    : 0.5,
+                                                delay: shouldReduceMotion
+                                                    ? 0
+                                                    : 0,
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="h3"
+                                                className="mb-2 text-lg font-semibold text-primary-500"
                                             >
-                                                {section}
-                                            </li>
-                                        ))}
+                                                Seções avaliadas:
+                                            </Typography>
+                                        </motion.div>
+                                    </AnimatePresence>
+                                    <ul className="list-disc pl-6 overflow-x-hidden">
+                                        <AnimatePresence>
+                                            {avaliacaoSections.map(
+                                                (section, idx) => (
+                                                    <motion.li
+                                                        key={section}
+                                                        initial={
+                                                            shouldReduceMotion
+                                                                ? { opacity: 0 }
+                                                                : {
+                                                                      opacity: 0,
+                                                                      x: 16,
+                                                                  }
+                                                        }
+                                                        animate={{
+                                                            opacity: 1,
+                                                            x: 0,
+                                                        }}
+                                                        exit={
+                                                            shouldReduceMotion
+                                                                ? { opacity: 0 }
+                                                                : {
+                                                                      opacity: 0,
+                                                                      x: 16,
+                                                                  }
+                                                        }
+                                                        transition={{
+                                                            duration:
+                                                                shouldReduceMotion
+                                                                    ? 0.01
+                                                                    : 0.5,
+                                                            delay: shouldReduceMotion
+                                                                ? 0
+                                                                : idx * 0.12,
+                                                        }}
+                                                        className="text-base text-primary-500"
+                                                    >
+                                                        {section}
+                                                    </motion.li>
+                                                ),
+                                            )}
+                                        </AnimatePresence>
                                     </ul>
                                 </>
                             )}

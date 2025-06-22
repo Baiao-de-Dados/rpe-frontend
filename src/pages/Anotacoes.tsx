@@ -57,9 +57,14 @@ export default function Anotacoes() {
             setModalStep(2);
 
             setAvaliacaoGerada(geminiResponse || null);
-            setAvaliacaoSections(['Mentoring']);
+            setAvaliacaoSections([
+                'Mentoring',
+                'Avaliação 360',
+                'Autoavaliação',
+                'Referências',
+            ]);
             errorStep = 3;
-            await new Promise(r => setTimeout(r, 2000));
+            await new Promise(r => setTimeout(r, 1000));
             setModalStep(3);
         } catch (e: unknown) {
             switch (errorStep) {
