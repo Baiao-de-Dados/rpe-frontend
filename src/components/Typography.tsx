@@ -1,5 +1,5 @@
 interface TypographyProps {
-    variant: 'h1' | 'h2' | 'h3' | 'body' | 'caption';
+    variant: 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'caption';
     children: React.ReactNode;
     className?: string;
     color?:
@@ -27,6 +27,7 @@ export default function Typography({
         h1: 'text-3xl font-bold',
         h2: 'text-2xl font-semibold',
         h3: 'text-xl',
+        h4: 'text-base',
         body: 'text-base',
         caption: 'text-sm',
     };
@@ -45,11 +46,19 @@ export default function Typography({
     };
 
     const Tag =
-        variant === 'body' ? 'p' : variant === 'caption' ? 'span' : variant;
+        variant === 'body'
+            ? 'p'
+            : variant === 'caption'
+              ? 'span'
+              : variant === 'h4'
+                ? 'h4'
+                : variant;
 
     return (
         <Tag
-            className={`${variants[variant]} ${colors[color]} ${className} ${onClick ? 'cursor-pointer' : ''}`}
+            className={`${variants[variant]} ${colors[color]}${
+                onClick ? ' cursor-pointer' : ''
+            } ${className}`}
             onClick={onClick}
         >
             {children}

@@ -11,6 +11,7 @@ interface NotificationBadgeProps {
         | 'center-right';
     className?: string;
     count?: number;
+    absolute?: boolean;
 }
 
 const variantStyles = {
@@ -34,6 +35,7 @@ export default function NotificationBadge({
     position = 'top-right',
     className,
     count,
+    absolute = true,
 }: NotificationBadgeProps) {
     if (!show) return null;
 
@@ -42,9 +44,10 @@ export default function NotificationBadge({
     return (
         <div
             className={cn(
-                'absolute bg-red-500 rounded-full flex items-center justify-center',
+                absolute && 'absolute',
+                'bg-red-500 rounded-full flex items-center justify-center',
                 variantStyles[variant],
-                positionStyles[position],
+                absolute && positionStyles[position],
                 hasCount && 'min-w-5 h-5 px-1',
                 className,
             )}

@@ -95,41 +95,89 @@ export const PillarSection = memo(
 
         return (
             <CardContainer className="pt-14 p-10 mb-5 relative">
+                {/* Header responsivo: mobile = coluna, desktop = linha única */}
                 <div
-                    className="flex items-center justify-between mb-4 cursor-pointer"
+                    className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 cursor-pointer gap-2 md:gap-0"
                     onClick={toggleMinimized}
                 >
-                    <div className="flex items-center gap-2 relative">
-                        <Typography
-                            variant="h3"
-                            color="primary500"
-                            className="text-xl font-bold"
-                        >
-                            Critérios de {pillarTitle}
-                        </Typography>
-                        <NotificationBadge
-                            show={incompleteCriteriaCount > 0}
-                            count={incompleteCriteriaCount}
-                            position="center-right"
-                            variant="medium"
-                            className="-right-6.5"
-                        />
+                    {/* MOBILE HEADER */}
+                    <div className="flex flex-col min-w-0 w-full md:hidden">
+                        <div className="flex items-center gap-2">
+                            <Typography
+                                variant="h4"
+                                color="primary500"
+                                className="font-bold break-words whitespace-normal"
+                            >
+                                Critérios de {pillarTitle}
+                            </Typography>
+                            <NotificationBadge
+                                show={incompleteCriteriaCount > 0}
+                                count={incompleteCriteriaCount}
+                                variant="small"
+                                className="ml-1"
+                                absolute={false}
+                            />
+                        </div>
+                        <div className="flex flex-row items-center gap-2 mt-2">
+                            <div className="min-w-[40px] ml-2">
+                                <PillarRatingDisplay
+                                    criteria={criteria}
+                                    validFields={validFields}
+                                />
+                            </div>
+                            <span className="text-sm text-gray-500 min-w-[90px] ml-2">
+                                {completedCriteriaCount}/{criteria.length}{' '}
+                                preenchidos
+                            </span>
+                            <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ml-2 ${
+                                    isOpen ? 'rotate-180' : 'rotate-0'
+                                }`}
+                            >
+                                <ChevronDown
+                                    size={24}
+                                    className="text-gray-600"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <PillarRatingDisplay
-                            criteria={criteria}
-                            validFields={validFields}
-                        />
-                        <span className="text-sm text-gray-500">
-                            {completedCriteriaCount}/{criteria.length}{' '}
-                            preenchidos
-                        </span>
-                        <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${
-                                isOpen ? 'rotate-0' : 'rotate-180'
-                            }`}
-                        >
-                            <ChevronDown size={24} className="text-gray-600" />
+                    {/* DESKTOP HEADER */}
+                    <div className="hidden md:flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2 relative">
+                            <Typography
+                                variant="h4"
+                                color="primary500"
+                                className="md:text-xl font-bold"
+                            >
+                                Critérios de {pillarTitle}
+                            </Typography>
+                            <NotificationBadge
+                                show={incompleteCriteriaCount > 0}
+                                count={incompleteCriteriaCount}
+                                position="center-right"
+                                variant="medium"
+                                className="-right-6.5"
+                            />
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <PillarRatingDisplay
+                                criteria={criteria}
+                                validFields={validFields}
+                            />
+                            <span className="text-sm text-gray-500">
+                                {completedCriteriaCount}/{criteria.length}{' '}
+                                preenchidos
+                            </span>
+                            <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ease-out ${
+                                    isOpen ? 'rotate-0' : 'rotate-180'
+                                }`}
+                            >
+                                <ChevronDown
+                                    size={24}
+                                    className="text-gray-600"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
