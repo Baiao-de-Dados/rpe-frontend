@@ -14,8 +14,6 @@ export function EvaluationForm() {
 
     const allCriteria = useMemo(() => {
         return [
-            ...mockEvaluationPillars.comportamento.criterios,
-            ...mockEvaluationPillars.execucao.criterios,
             ...mockEvaluationPillars.gestaoLideranca.criterios,
         ];
     }, []);
@@ -39,6 +37,8 @@ export function EvaluationForm() {
         control,
         name: 'references',
     });
+
+    const mentoringIAValid = useWatch({ control, name: 'mentoringIAValid' });
 
     const incompleteSelfAssessmentCount = useMemo(() => {
         if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
@@ -70,17 +70,15 @@ export function EvaluationForm() {
         if (!watchedMentoring || !Array.isArray(watchedMentoring)) {
             return 1;
         }
-
         const [rating, justification] = watchedMentoring;
-
         const hasRating = rating && typeof rating === 'number' && rating > 0;
         const hasJustification =
             justification &&
             typeof justification === 'string' &&
             justification.trim().length > 0;
 
-        return hasRating && hasJustification ? 0 : 1;
-    }, [watchedMentoring]);
+        return hasRating && hasJustification && mentoringIAValid === true ? 0 : 1;
+    }, [watchedMentoring, mentoringIAValid]);
 
     const incompleteEvaluation360Count = useMemo(() => {
         if (!watchedEvaluation360 || !Array.isArray(watchedEvaluation360)) {
@@ -129,15 +127,12 @@ export function EvaluationForm() {
         return incompleteCount;
     }, [watchedEvaluation360]);
 
-    // Calcula as referências incompletas
     const incompleteReferencesCount = useMemo(() => {
         if (!watchedReferences || !Array.isArray(watchedReferences)) {
-            // Se não há referências, retorna 0 (não é obrigatório)
             return 0;
         }
 
         if (watchedReferences.length === 0) {
-            // Se array existe mas está vazio, retorna 0 (não é obrigatório)
             return 0;
         }
 

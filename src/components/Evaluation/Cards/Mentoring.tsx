@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import StarRating from '../../StarRating';
 import TextAreaWithTitle from '../../TextAreaWithTitle';
@@ -11,18 +11,33 @@ import { ErrorMessage } from '../../ErrorMessage';
 const Mentoring: React.FC = () => {
     const { control, setValue } = useFormContext();
 
+    const [isIAValid, setIsIAValid] = React.useState(false);
+
     const mentor = {
         id: '3',
         nome: 'Fulano de Tal',
         cargo: 'Mentor',
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         setValue('mentorId', mentor.id);
     }, [setValue, mentor.id]);
 
+    useEffect(() => {
+        setValue('mentoringIAValid', isIAValid, { shouldValidate: true });
+    }, [isIAValid, setValue]);
+
     return (
         <CardContainer>
+            <Controller
+                name="mentoringIAValid"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                    <input type="hidden" {...field} value={isIAValid ? 'true' : 'false'} />
+                )}
+            />
+
             <Controller
                 name="mentorId"
                 control={control}
