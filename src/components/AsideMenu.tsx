@@ -199,7 +199,8 @@ export default function AsideMenu() {
                         </li>
                     </ul>
 
-                    <div className="flex w-full mt-auto max-lg:mb-4 max-lg:justify-center">
+                    {/* Botão de logout - desktop no final, mobile junto com os outros */}
+                    <div className="flex w-full mt-auto lg:mt-auto max-lg:mt-8 max-lg:mb-32 max-lg:justify-start max-lg:pl-20">
                         <div
                             onClick={handleLogout}
                             className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0"
