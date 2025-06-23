@@ -57,15 +57,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const logout = async () => {
+        // Limpa estado local IMEDIATAMENTE
+        localStorage.removeItem('@rpe:token');
+        localStorage.removeItem('@rpe:user');
+        setUser(null);
+
+        // Tenta logout no backend em background (não bloqueia UI)
         try {
             await authEndpoints.logout();
         } catch {
-            // Ignora erros do logout no backend
-            console.error('Erro no logout no servidor');
-        } finally {
-            localStorage.removeItem('@rpe:token');
-            localStorage.removeItem('@rpe:user');
-            setUser(null);
+            // Ignora erros - o importante é que o frontend já fez logout
+            console.warn('Erro no logout no servidor (ignorado)');
         }
     };
 

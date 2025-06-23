@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Menu,
     LayoutGrid,
@@ -35,6 +35,21 @@ export default function AsideMenu() {
         logout();
         navigate('/login');
     };
+
+    useEffect(() => {
+        if (isMenuOpened) {
+            // Bloqueia scroll quando menu abre
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Libera scroll quando menu fecha
+            document.body.style.overflow = 'unset';
+        }
+
+        // Cleanup
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMenuOpened]);
 
     return (
         <>
