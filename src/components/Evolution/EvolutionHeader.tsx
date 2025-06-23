@@ -17,11 +17,11 @@ export function EvolutionHeader({
     return (
         <header className="sticky top-0 z-50 bg-white flex flex-col justify-start shadow-sm">
             {/* Layout para desktop */}
-            <div className="hidden lg:flex px-6 pt-12 pb-12 items-center justify-between">
+            <div className="hidden lg:flex px-12 pt-12 pb-12 items-center justify-between">
                 <Typography
                     variant="h1"
                     color="primary500"
-                    className="text-2xl md:text-4xl font-bold"
+                    className="text-4xl lg:text-4xl font-bold"
                 >
                     Evolução
                 </Typography>
@@ -42,7 +42,7 @@ export function EvolutionHeader({
             {/* Layout para mobile */}
             <div className="lg:hidden flex flex-col pt-6 pb-6">
                 {/* Título ao lado do ícone hambúrguer */}
-                <div className="flex items-center mb-8 px-4">
+                <div className="flex items-center mb-8 px-6">
                     <Typography
                         variant="h1"
                         color="primary500"

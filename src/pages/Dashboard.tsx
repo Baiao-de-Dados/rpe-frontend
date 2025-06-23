@@ -3,8 +3,8 @@ import { useAuth } from '../hooks/useAuth';
 import { CycleBanner } from '../components/CycleBanner';
 import { CycleCard } from '../components/CycleCard';
 import { PerformanceChart } from '../components/PerformanceChart';
+import { DashboardHeader } from '../components/DashboardHeader';
 import Typography from '../components/Typography';
-import Avatar from '../components/Avatar';
 import CardContainer from '../components/CardContainer';
 import Button from '../components/Button';
 import { mockCycles } from '../data/mockCycles';
@@ -39,104 +39,90 @@ export function Dashboard() {
     const remainingDays = currentCycle.status === 'Em andamento' ? 15 : 0;
 
     return (
-        <div className="py-4 min-h-screen bg-neutral-100 px-5">
+        <div className="min-h-screen bg-neutral-100">
             {/* Header */}
-            <header className="p-8 pt-6 pb-6 flex items-center justify-between mb-4">
-                <div className="flex items-center">
-                    <Typography
-                        variant="h1"
-                        color="primary"
-                        className="font-bold mr-2"
-                    >
-                        Olá,
-                    </Typography>
-                    <Typography
-                        variant="h1"
-                        color="primary"
-                        className="font-normal"
-                    >
-                        {user?.name || 'Usuário Teste'}
-                    </Typography>
+            <DashboardHeader userName={user?.name || 'Usuário Teste'} />
+
+            <div className="py-4 px-3 sm:px-5">
+                <div className="px-4 sm:px-8 pb-4 mb-4">
+                    <CycleBanner
+                        status={mapStatusToCycleBanner(currentCycle.status)}
+                        cycleName={`Ciclo ${currentCycle.cycleName}`}
+                        remainingDays={remainingDays}
+                        linkTo="/avaliacao"
+                    />
                 </div>
-                <Avatar name={user?.name || 'UT'} />
-            </header>
 
-            <div className="px-8 pb-4 mb-4">
-                <CycleBanner
-                    status={mapStatusToCycleBanner(currentCycle.status)}
-                    cycleName={`Ciclo ${currentCycle.cycleName}`}
-                    remainingDays={remainingDays}
-                    linkTo="/avaliacao"
-                />
-            </div>
-
-            {/* Layout principal */}
-            <main className="px-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Coluna da esquerda - Avaliações */}
-                <section className="lg:col-span-5 xl:col-span-4">
-                    <CardContainer>
-                        {/* Cabeçalho da seção */}
-                        <div className="flex items-center justify-between mb-6">
-                            <Typography
-                                variant="h2"
-                                color="primary"
-                                className="font-bold"
-                            >
-                                Suas avaliações
-                            </Typography>
-                            <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => navigate('/evolucao')}
-                            >
-                                Ver mais
-                            </Button>
-                        </div>
-
-                        {/* Container com altura fixa e scrollbar */}
-                        <div className="h-[500px] overflow-y-auto pr-2">
-                            <div className="space-y-4">
-                                {mockCycles.map(cycle => (
-                                    <CycleCard
-                                        key={cycle.cycleName}
-                                        score={cycle.score}
-                                        status={
-                                            cycle.status as
-                                                | 'Finalizado'
-                                                | 'Em andamento'
-                                                | 'Pendente'
-                                        }
-                                        cycleName={`Ciclo ${cycle.cycleName}`}
-                                        summary={cycle.summary}
-                                        onClick={() => navigate('/avaliacao')}
-                                    />
-                                ))}
+                {/* Layout principal */}
+                <main className="px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Coluna da esquerda - Avaliações */}
+                    <section className="lg:col-span-5 xl:col-span-4">
+                        <CardContainer>
+                            {/* Cabeçalho da seção */}
+                            <div className="flex items-center justify-between mb-6">
+                                <Typography
+                                    variant="h2"
+                                    color="primary"
+                                    className="font-bold text-lg sm:text-xl"
+                                >
+                                    Suas avaliações
+                                </Typography>
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    onClick={() => navigate('/evolucao')}
+                                >
+                                    Ver mais
+                                </Button>
                             </div>
-                        </div>
-                    </CardContainer>
-                </section>
 
-                {/* Coluna da direita - Desempenho */}
-                <section className="lg:col-span-7 xl:col-span-8">
-                    <CardContainer>
-                        {/* Cabeçalho da seção - o filtro está dentro do componente PerformanceChart */}
-                        <div className="mb-6">
-                            <Typography
-                                variant="h2"
-                                color="primary"
-                                className="font-bold"
-                            >
-                                Desempenho
-                            </Typography>
-                        </div>
+                            {/* Container com altura fixa e scrollbar */}
+                            <div className="h-[400px] sm:h-[500px] overflow-y-auto pr-2">
+                                <div className="space-y-4">
+                                    {mockCycles.map(cycle => (
+                                        <CycleCard
+                                            key={cycle.cycleName}
+                                            score={cycle.score}
+                                            status={
+                                                cycle.status as
+                                                    | 'Finalizado'
+                                                    | 'Em andamento'
+                                                    | 'Pendente'
+                                            }
+                                            cycleName={`Ciclo ${cycle.cycleName}`}
+                                            summary={cycle.summary}
+                                            onClick={() =>
+                                                navigate('/avaliacao')
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </CardContainer>
+                    </section>
 
-                        {/* Container com altura fixa para o gráfico */}
-                        <div className="h-[500px]">
-                            <PerformanceChart cycles={chartData} />
-                        </div>
-                    </CardContainer>
-                </section>
-            </main>
+                    {/* Coluna da direita - Desempenho */}
+                    <section className="lg:col-span-7 xl:col-span-8">
+                        <CardContainer>
+                            {/* Cabeçalho da seção - o filtro está dentro do componente PerformanceChart */}
+                            <div className="mb-6">
+                                <Typography
+                                    variant="h2"
+                                    color="primary"
+                                    className="font-bold text-lg sm:text-xl"
+                                >
+                                    Desempenho
+                                </Typography>
+                            </div>
+
+                            {/* Container com altura fixa para o gráfico */}
+                            <div className="h-[400px] sm:h-[500px]">
+                                <PerformanceChart cycles={chartData} />
+                            </div>
+                        </CardContainer>
+                    </section>
+                </main>
+            </div>
         </div>
     );
 }
