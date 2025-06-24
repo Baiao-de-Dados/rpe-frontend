@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { UserRoleEnum } from '../types/auth';
-import { hasRequiredRole } from '../utils/roleUtils';
+import { hasAnyRole } from '../utils/roleUtils';
 
 export function ProtectedRoute() {
     const { isAuthenticated } = useAuth();
@@ -12,13 +12,13 @@ export function ProtectedRoute() {
 }
 
 interface RoleRouteProps {
-    requiredRole: UserRoleEnum;
+    requiredRoles: UserRoleEnum[];
     redirectTo?: string;
     children: ReactNode;
 }
 
 export function RoleRoute({
-    requiredRole,
+    requiredRoles,
     redirectTo = '/dashboard',
     children,
 }: RoleRouteProps) {
@@ -26,7 +26,7 @@ export function RoleRoute({
 
     if (!user) return <Navigate to="/login" replace />;
 
-    if (hasRequiredRole(user.roles, requiredRole)) {
+    if (hasAnyRole(user.roles, requiredRoles)) {
         return <>{children}</>;
     }
 
