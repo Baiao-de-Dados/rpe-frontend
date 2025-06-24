@@ -3,6 +3,7 @@ import Typography from '../Typography';
 import NotificationBadge from '../NotificationBadge';
 import { type SectionType } from '../../hooks/useSectionNavigation';
 import EvaluationSubmitButton from './EvaluationSubmitButton';
+import PageHeader from '../PageHeader';
 
 interface EvaluationHeaderProps {
     activeSection: SectionType;
@@ -26,7 +27,6 @@ function EvaluationHeaderComponent({
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Fecha o dropdown ao clicar fora
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -97,30 +97,15 @@ function EvaluationHeaderComponent({
     };
 
     return (
-        <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
-            <div className="p-8 flex items-center justify-between">
-                <Typography
-                    variant="h1"
-                    color="primary500"
-                    className="text-4xl font-bold"
-                >
-                    Ciclo 2025.1
-                </Typography>
-                <div className="flex gap-4 items-center">
-                    <EvaluationSubmitButton />
-                </div>
-            </div>
-            {/* Navegação Desktop/Tablets */}
+        <PageHeader title="Ciclo 2025.1" button={<EvaluationSubmitButton />}>
             <nav className="hidden md:flex w-full mt-2 border-t-3 pt-5 bg border-gray-50 overflow-x-auto">
-                {/* Alterações aqui: min-w e max-w ajustados, gap-x-4 adicionado */}
-                <div className="flex max-w-5xl w-full mx-auto items-stretch gap-x-4">
+                <div className="flex w-full justify-start gap-x-4">
                     {sections.map(section => {
                         const isActive = section === activeSection;
                         return (
                             <div
                                 key={section}
-                                // min-w foi reduzido, max-w-xs foi removido
-                                className="flex-1 min-w-[100px] flex flex-col justify-center items-center text-center relative"
+                                className="ml-14 min-w-[170px] flex flex-col justify-center items-center text-center relative"
                             >
                                 <Typography
                                     variant="body"
@@ -182,7 +167,6 @@ function EvaluationHeaderComponent({
                     })}
                 </div>
             </nav>
-            {/* Navegação Mobile (SEM ALTERAÇÕES) */}
             <div className="md:hidden mt-2 pt-5 bg border-gray-50">
                 <div className="relative w-full" ref={dropdownRef}>
                     <button
@@ -249,7 +233,7 @@ function EvaluationHeaderComponent({
                     )}
                 </div>
             </div>
-        </header>
+        </PageHeader>
     );
 }
 
