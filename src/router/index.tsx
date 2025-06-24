@@ -7,7 +7,12 @@ import { useAuth } from '../hooks/useAuth';
 import { ProtectedRoute, RoleRoute } from '../components/ProtectedRoute';
 import { MultiRoleRoute } from '../components/MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
-import { Dashboard, Evolucao, Avaliacao } from '../pages/';
+import { Dashboard } from '../pages/Dashboard';
+import { Colaboradores } from '../pages/Colaboradores';
+import { Criterios } from '../pages/RH/Criterios';
+import { ImportarHistoricos } from '../pages/RH/ImportarHistoricos';
+import { Avaliacao } from '../pages/Colaborador/Avaliacao';
+import { Evolucao } from '../pages/Colaborador/Evolucao';
 
 // Spinner enquanto o estado de auth é carregado
 const LoadingSpinner = () => (
@@ -54,8 +59,41 @@ export function Router() {
                     <Route
                         path="evolucao"
                         element={
-                            <RoleRoute requiredRole={UserRoleEnum.MANAGER}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.MANAGER]}>
                                 <Evolucao />
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="colaboradores"
+                        element={
+                            <RoleRoute
+                                requiredRoles={[
+                                    UserRoleEnum.RH,
+                                    UserRoleEnum.MENTOR,
+                                    UserRoleEnum.LEADER,
+                                ]}
+                            >
+                                <Colaboradores />
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="criterios"
+                        element={
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                                <Criterios />
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="importar"
+                        element={
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                                <ImportarHistoricos />
                             </RoleRoute>
                         }
                     />
@@ -63,7 +101,7 @@ export function Router() {
                     <Route
                         path="administracao"
                         element={
-                            <RoleRoute requiredRole={UserRoleEnum.RH}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
                                 <div className="p-6">
                                     <h1 className="text-2xl font-bold">
                                         Painel de Administração
@@ -81,7 +119,7 @@ export function Router() {
                         path="dev"
                         element={
                             <RoleRoute
-                                requiredRole={UserRoleEnum.DEVELOPER}
+                                requiredRoles={[UserRoleEnum.DEVELOPER]}
                                 redirectTo="/dashboard"
                             >
                                 <div className="p-6">

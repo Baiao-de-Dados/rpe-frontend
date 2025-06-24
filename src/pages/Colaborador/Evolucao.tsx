@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { mockCycles } from '../data/mockCycles';
-import { EvolutionHeader } from '../components/Evolution/EvolutionHeader';
-import { PerfomanceEvolution } from '../components/Evolution/PerfomanceEvolution';
-import { CyclesEvolution } from '../components/Evolution/CyclesEvolution';
+import { mockCycles } from '../../data/mockCycles';
+import { EvolutionHeader } from '../../components/Evolution/EvolutionHeader';
+import { PerfomanceEvolution } from '../../components/Evolution/PerfomanceEvolution';
+import { CyclesEvolution } from '../../components/Evolution/CyclesEvolution';
 
 export function Evolucao() {
     const [selectedCycle, setSelectedCycle] = useState('all');

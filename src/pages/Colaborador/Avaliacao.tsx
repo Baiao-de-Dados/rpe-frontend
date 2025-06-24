@@ -3,13 +3,13 @@ import { useForm, FormProvider } from 'react-hook-form';
 import {
     fullEvaluationSchema,
     type EvaluationFormData,
-} from '../schemas/evaluation';
-import { EvaluationForm } from '../components/Evaluation/EvaluationForm';
-import CycleClosedMessage from '../components/Evaluation/CycleClosedMessage';
-import EvaluationSubmittedMessage from '../components/Evaluation/EvaluationSubmittedMessage';
-import CycleLoadErrorMessage from '../components/Evaluation/CycleLoadErrorMessage';
-import Typography from '../components/Typography';
-import { useCycle } from '../hooks/useCycle';
+} from '../../schemas/evaluation';
+import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
+import CycleClosedMessage from '../../components/Evaluation/CycleClosedMessage';
+import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
+import Typography from '../../components/Typography';
+import { useCycle } from '../../hooks/useCycle';
 
 export function Avaliacao() {
     const { currentCycle, evaluationStatus, isLoading } = useCycle();

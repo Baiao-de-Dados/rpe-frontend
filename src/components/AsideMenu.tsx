@@ -5,16 +5,19 @@ import {
     LayoutGrid,
     ClipboardPen,
     ChartNoAxesCombined,
+    Settings,
+    Users,
     LogOut,
     X,
     ChevronRight,
     ChevronLeft,
+    FileUp,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function AsideMenu() {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 
     const [isNavExpanded, setIsNavExpanded] = useState(true);
     const [isMenuOpened, setIsMenuOpened] = useState(false);
@@ -38,14 +41,11 @@ export default function AsideMenu() {
 
     useEffect(() => {
         if (isMenuOpened) {
-            // Bloqueia scroll quando menu abre
             document.body.style.overflow = 'hidden';
         } else {
-            // Libera scroll quando menu fecha
             document.body.style.overflow = 'unset';
         }
 
-        // Cleanup
         return () => {
             document.body.style.overflow = 'unset';
         };
@@ -73,7 +73,7 @@ export default function AsideMenu() {
                 className={`
                     bg-white flex flex-col p-4 h-screen border-r-4 border-neutral-300 relative
                     transition-all duration-300 ease-in-out overflow-hidden overflow-y-auto
-                    ${isNavExpanded ? 'w-60' : 'w-24'}
+                    ${isNavExpanded ? 'w-72' : 'w-24'}
                     max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:h-screen max-lg:bg-white max-lg:border-r-0 max-lg:z-[999]
                     ${isMenuOpened ? 'max-lg:w-full max-lg:flex max-lg:flex-col' : 'max-lg:w-0 max-lg:hidden'}
                 `}
@@ -144,62 +144,152 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
 
-                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                            <NavLink
-                                to="/avaliacao"
-                                onClick={closeMenu}
-                                className={({ isActive }) => `
-                                    flex items-center gap-4 no-underline relative 
-                                    transition-all duration-200 ease-in-out hover:text-secondary-600
-                                    max-lg:text-2xl max-lg:gap-4
-                                    ${isActive ? 'text-primary-500' : 'text-secondary-400'}
-                                `}
-                            >
-                                <ClipboardPen
-                                    size={32}
-                                    className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                />
-                                <span
-                                    className={`
-                                    opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
-                                    ${isNavExpanded ? 'opacity-100 visible' : ''}
-                                    max-lg:opacity-100 max-lg:visible
-                                `}
+                        {user?.roles.includes('EMPLOYER') && (
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink
+                                    to="/avaliacao"
+                                    onClick={closeMenu}
+                                    className={({ isActive }) => `
+                                        flex items-center gap-4 no-underline relative 
+                                        transition-all duration-200 ease-in-out hover:text-secondary-600
+                                        max-lg:text-2xl max-lg:gap-4
+                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
+                                    `}
                                 >
-                                    Avaliação de ciclo
-                                </span>
-                            </NavLink>
-                        </li>
+                                    <ClipboardPen
+                                        size={32}
+                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    />
+                                    <span
+                                        className={`
+                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
+                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
+                                        max-lg:opacity-100 max-lg:visible
+                                    `}
+                                    >
+                                        Avaliação de ciclo
+                                    </span>
+                                </NavLink>
+                            </li>
+                        )}
 
-                        <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                            <NavLink
-                                to="/evolucao"
-                                onClick={closeMenu}
-                                className={({ isActive }) => `
-                                    flex items-center gap-4 no-underline relative 
-                                    transition-all duration-200 ease-in-out hover:text-secondary-600
-                                    max-lg:text-2xl max-lg:gap-4
-                                    ${isActive ? 'text-primary-500' : 'text-secondary-400'}
-                                `}
-                            >
-                                <ChartNoAxesCombined
-                                    size={32}
-                                    className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                />
-                                <span
-                                    className={`
-                                    opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
-                                    ${isNavExpanded ? 'opacity-100 visible' : ''}
-                                    max-lg:opacity-100 max-lg:visible
-                                `}
+                        {user?.roles.includes('EMPLOYER') && (
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink
+                                    to="/evolucao"
+                                    onClick={closeMenu}
+                                    className={({ isActive }) => `
+                                        flex items-center gap-4 no-underline relative 
+                                        transition-all duration-200 ease-in-out hover:text-secondary-600
+                                        max-lg:text-2xl max-lg:gap-4
+                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
+                                    `}
                                 >
-                                    Evolução
-                                </span>
-                            </NavLink>
-                        </li>
+                                    <ChartNoAxesCombined
+                                        size={32}
+                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    />
+                                    <span
+                                        className={`
+                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
+                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
+                                        max-lg:opacity-100 max-lg:visible
+                                    `}
+                                    >
+                                        Evolução
+                                    </span>
+                                </NavLink>
+                            </li>
+                        )}
+
+                        {user?.roles.includes('RH') && (
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink
+                                    to="/colaboradores"
+                                    onClick={closeMenu}
+                                    className={({ isActive }) => `
+                                        flex items-center gap-4 no-underline relative 
+                                        transition-all duration-200 ease-in-out hover:text-secondary-600
+                                        max-lg:text-2xl max-lg:gap-4
+                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
+                                    `}
+                                >
+                                    <Users
+                                        size={32}
+                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    />
+                                    <span
+                                        className={`
+                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
+                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
+                                        max-lg:opacity-100 max-lg:visible
+                                    `}
+                                    >
+                                        Colaboradores
+                                    </span>
+                                </NavLink>
+                            </li>
+                        )}
+
+                        {user?.roles.includes('RH') && (
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink
+                                    to="/criterios"
+                                    onClick={closeMenu}
+                                    className={({ isActive }) => `
+                                        flex items-center gap-4 no-underline relative 
+                                        transition-all duration-200 ease-in-out hover:text-secondary-600
+                                        max-lg:text-2xl max-lg:gap-4
+                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
+                                    `}
+                                >
+                                    <Settings
+                                        size={32}
+                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    />
+                                    <span
+                                        className={`
+                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
+                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
+                                        max-lg:opacity-100 max-lg:visible
+                                    `}
+                                    >
+                                        Critérios de Avaliação
+                                    </span>
+                                </NavLink>
+                            </li>
+                        )}
+
+                        {user?.roles.includes('RH') && (
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink
+                                    to="/importar"
+                                    onClick={closeMenu}
+                                    className={({ isActive }) => `
+                                        flex items-center gap-4 no-underline relative 
+                                        transition-all duration-200 ease-in-out hover:text-secondary-600
+                                        max-lg:text-2xl max-lg:gap-4
+                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
+                                    `}
+                                >
+                                    <FileUp
+                                        size={32}
+                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    />
+                                    <span
+                                        className={`
+                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
+                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
+                                        max-lg:opacity-100 max-lg:visible
+                                    `}
+                                    >
+                                        Importar Histórico
+                                    </span>
+                                </NavLink>
+                            </li>
+                        )}
                     </ul>
 
-                    {/* Botão de logout - desktop no final, mobile junto com os outros */}
                     <div className="flex w-full mt-auto lg:mt-auto max-lg:mt-8 max-lg:mb-32 max-lg:justify-start max-lg:pl-20">
                         <div
                             onClick={handleLogout}
