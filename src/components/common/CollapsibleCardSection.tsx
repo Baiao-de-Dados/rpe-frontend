@@ -10,6 +10,7 @@ interface CollapsibleCardSectionProps {
     children: ReactNode;
     defaultOpen?: boolean;
     onHeaderClick?: () => void;
+    isOpen?: boolean; // Permite controle externo
     className?: string;
 }
 
@@ -20,13 +21,20 @@ export default function CollapsibleCardSection({
     children,
     defaultOpen = true,
     onHeaderClick,
+    isOpen: isOpenProp,
     className = '',
 }: CollapsibleCardSectionProps) {
-    const [isOpen, setIsOpen] = useState(defaultOpen);
+    const [internalOpen, setInternalOpen] = useState(defaultOpen);
+    const isControlled = typeof isOpenProp === 'boolean';
+    const isOpen = isControlled ? isOpenProp : internalOpen;
 
     const handleHeaderClick = () => {
-        setIsOpen(prev => !prev);
-        if (onHeaderClick) onHeaderClick();
+        if (isControlled) {
+            if (onHeaderClick) onHeaderClick();
+        } else {
+            setInternalOpen(prev => !prev);
+            if (onHeaderClick) onHeaderClick();
+        }
     };
 
     return (
