@@ -12,9 +12,13 @@ export default function PageHeader({
     button,
     children,
 }: PageHeaderProps) {
+    const hasChildren = !!children;
+
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
-            <div className="p-8 flex items-center justify-between">
+            <div
+                className={`p-8 flex items-center ${hasChildren ? '' : 'mb-10'} justify-between`}
+            >
                 <Typography
                     variant="h1"
                     color="primary500"

@@ -14,16 +14,25 @@ import {
     FileUp,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useQueryState } from 'nuqs';
 
 export default function AsideMenu() {
     const navigate = useNavigate();
     const { logout, user } = useAuth();
 
-    const [isNavExpanded, setIsNavExpanded] = useState(true);
+    const [navState, setNavState] = useQueryState('nav', {
+        defaultValue: 'expanded',
+        history: 'replace',
+    });
+    const [isNavExpanded, setIsNavExpanded] = useState(navState === 'expanded');
     const [isMenuOpened, setIsMenuOpened] = useState(false);
 
     const toggleNav = () => {
-        setIsNavExpanded(!isNavExpanded);
+        setIsNavExpanded(prev => {
+            const newState = !prev;
+            setNavState(newState ? 'expanded' : 'collapsed');
+            return newState;
+        });
     };
 
     const openMenu = () => {
@@ -50,6 +59,11 @@ export default function AsideMenu() {
             document.body.style.overflow = 'unset';
         };
     }, [isMenuOpened]);
+
+    // Sincroniza o estado do menu lateral com a URL ao mudar navState
+    useEffect(() => {
+        setIsNavExpanded(navState === 'expanded');
+    }, [navState]);
 
     return (
         <>

@@ -1,26 +1,22 @@
 import React from 'react';
 import { ErrorMessage } from './ErrorMessage';
 
-interface TextAreaWithTitleProps {
+interface InputWithTitleProps
+    extends React.InputHTMLAttributes<HTMLInputElement> {
     title: string;
-    placeholder: string;
-    value: string;
-    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     error?: string;
     maxLength?: number;
-    readOnly?: boolean;
 }
 
-const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
+const InputWithTitle: React.FC<InputWithTitleProps> = ({
     title,
-    placeholder,
-    value,
-    onChange,
     error,
     maxLength,
-    readOnly,
+    value = '',
+    onChange,
+    ...props
 }) => {
-    const currentLength = value?.length || 0;
+    const currentLength = typeof value === 'string' ? value.length : 0;
 
     const getCharCountColor = () => {
         if (maxLength && currentLength >= maxLength) return 'text-red-500';
@@ -48,16 +44,15 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
                     <ErrorMessage error={error} />
                 </div>
             </div>
-            <textarea
-                className={`w-full h-21 p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none ${getBorderColor()}`}
-                placeholder={placeholder}
+            <input
+                className={`w-full h-10 p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none ${getBorderColor()}`}
                 value={value}
                 onChange={onChange}
                 maxLength={maxLength}
-                readOnly={readOnly}
+                {...props}
             />
         </div>
     );
 };
 
-export default TextAreaWithTitle;
+export default InputWithTitle;
