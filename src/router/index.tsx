@@ -4,8 +4,8 @@ import { DefaultLayout } from '../layouts/DefaultLayout';
 
 import LoginPage from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
-import { ProtectedRoute, RoleRoute } from '../components/ProtectedRoute';
-import { MultiRoleRoute } from '../components/MultiRoleRoute';
+import { ProtectedRoute, RoleRoute } from './ProtectedRoute';
+import { MultiRoleRoute } from './MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
 import { Dashboard } from '../pages/Dashboard';
 import { Colaboradores } from '../pages/Colaboradores';

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import Button from '../Button';
+import Button from '../common/Button';
 import { useToast } from '../../hooks/useToast';
 
 const CriteriosSubmitButton = memo(

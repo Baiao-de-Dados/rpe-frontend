@@ -1,11 +1,11 @@
 import React from 'react';
 import { Trash } from 'lucide-react';
-import CardContainer from '../../CardContainer';
-import CollaboratorCard from '../../CollaboratorCard';
-import TextAreaWithTitle from '../../TextAreaWithTitle';
-import StarRating from '../../StarRating';
-import RatingDisplay from '../../RatingDisplay';
-import { ErrorMessage } from '../../ErrorMessage';
+import CardContainer from '../../common/CardContainer';
+import CollaboratorCard from '../../common/CollaboratorCard';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+import StarRating from '../../common/StarRating';
+import RatingDisplay from '../../common/RatingDisplay';
+import { ErrorMessage } from '../../common/ErrorMessage';
 import { Controller, useFormContext } from 'react-hook-form';
 import type { Collaborator } from '../../../data/mockCollaborators';
 

@@ -1,4 +1,4 @@
-import type { BadgeVariant } from '../components/Badge';
+import type { BadgeVariant } from '../components/common/Badge';
 
 type CycleStatus =
     | 'Finalizado'

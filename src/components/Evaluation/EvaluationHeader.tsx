@@ -1,9 +1,9 @@
 import { memo, useState, useRef, useEffect } from 'react';
-import Typography from '../Typography';
-import NotificationBadge from '../NotificationBadge';
+import Typography from '../common/Typography';
+import NotificationBadge from '../common/NotificationBadge';
 import { type SectionType } from '../../hooks/useSectionNavigation';
 import EvaluationSubmitButton from './EvaluationSubmitButton';
-import PageHeader from '../PageHeader';
+import PageHeader from '../common/PageHeader';
 
 interface EvaluationHeaderProps {
     activeSection: SectionType;

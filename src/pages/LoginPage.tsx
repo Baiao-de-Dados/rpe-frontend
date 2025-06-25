@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Typography from '../components/Typography';
+import Button from '../components/common/Button';
+import Input from '../components/common/Input';
+import Typography from '../components/common/Typography';
 import { useAuth } from '../hooks/useAuth';
 import type { LoginRequest } from '../types/auth';
 

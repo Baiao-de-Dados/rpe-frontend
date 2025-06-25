@@ -1,7 +1,7 @@
-import Typography from '../Typography';
-import { PerformanceChart } from '../PerformanceChart';
+import Typography from '../common/Typography';
+import { PerformanceChart } from '../Charts/PerformanceChart';
 import { FaStar, FaArrowUp } from 'react-icons/fa';
-import CardContainer from '../CardContainer';
+import CardContainer from '../common/CardContainer';
 import { AvaliacoesRealizadas } from './AvaliacoesRealizadas';
 
 interface Cycle {

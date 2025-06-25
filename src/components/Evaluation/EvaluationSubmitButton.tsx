@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import Button from '../Button';
+import Button from '../common/Button';
 import type { EvaluationFormData } from '../../schemas/evaluation';
 import {
     transformFormData,

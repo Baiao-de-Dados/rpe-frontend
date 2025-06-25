@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { CycleBanner } from '../components/CycleBanner';
-import { CycleCard } from '../components/CycleCard';
-import { PerformanceChart } from '../components/PerformanceChart';
-import { DashboardHeader } from '../components/DashboardHeader';
-import Typography from '../components/Typography';
-import CardContainer from '../components/CardContainer';
-import Button from '../components/Button';
+import { CycleBanner } from '../components/Dashboard/CycleBanner';
+import { CycleCard } from '../components/common/CycleCard';
+import { PerformanceChart } from '../components/Charts/PerformanceChart';
+import { DashboardHeader } from '../components/Dashboard/DashboardHeader';
+import Typography from '../components/common/Typography';
+import CardContainer from '../components/common/CardContainer';
+import Button from '../components/common/Button';
 import { mockCycles } from '../data/mockCycles';
 
 // Filtrando os dados para o gráfico de desempenho (apenas ciclos finalizados) - remover isso dps com o back

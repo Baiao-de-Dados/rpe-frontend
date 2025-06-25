@@ -1,6 +1,6 @@
-import CollCycleCard from '../CollCycleCard';
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
+import CollCycleCard from '../common/CollCycleCard';
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
 
 interface Cycle {
     cycleName: string;

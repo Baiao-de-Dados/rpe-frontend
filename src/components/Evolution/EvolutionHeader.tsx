@@ -1,4 +1,4 @@
-import Typography from '../Typography';
+import Typography from '../common/Typography';
 import { mockCycles } from '../../data/mockCycles';
 
 interface EvolutionHeaderProps {

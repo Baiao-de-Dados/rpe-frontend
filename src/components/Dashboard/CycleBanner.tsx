@@ -1,8 +1,8 @@
-import Typography from './Typography';
+import Typography from '../common/Typography';
 import { LuNotebookPen } from 'react-icons/lu';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import CardContainer from './CardContainer';
+import CardContainer from '../common/CardContainer';
 
 interface CycleBannerProps {
     status: string;

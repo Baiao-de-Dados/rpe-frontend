@@ -1,5 +1,5 @@
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
 import { LuNotebookPen } from 'react-icons/lu';
 
 interface AvaliacoesRealizadasProps {

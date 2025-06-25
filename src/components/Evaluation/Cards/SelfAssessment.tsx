@@ -1,10 +1,10 @@
 import React, { useState, memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { ChevronDown, Check } from 'lucide-react';
-import StarRating from '../../StarRating';
-import TextAreaWithTitle from '../../TextAreaWithTitle';
-import RatingDisplay from '../../RatingDisplay';
-import { ErrorMessage } from '../../ErrorMessage';
+import StarRating from '../../common/StarRating';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+import RatingDisplay from '../../common/RatingDisplay';
+import { ErrorMessage } from '../../common/ErrorMessage';
 
 interface SelfAssessmentProps {
     criterionName: string;

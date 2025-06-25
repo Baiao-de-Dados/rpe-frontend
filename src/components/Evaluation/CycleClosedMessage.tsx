@@ -1,7 +1,7 @@
 import React from 'react';
 import { Lock, Calendar, Clock } from 'lucide-react';
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
 import type { Cycle } from '../../contexts/CycleContextDefinition';
 
 interface CycleClosedMessageProps {

@@ -2,7 +2,7 @@ import { memo, useMemo, useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import SelfAssessment from './Cards/SelfAssessment';
 import { PillarRatingDisplay } from './PillarRatingDisplay';
-import NotificationBadge from '../NotificationBadge';
+import NotificationBadge from '../common/NotificationBadge';
 import { useQueryState } from 'nuqs';
 import CollapsibleCardSection from '../common/CollapsibleCardSection';
 import type { Criterion } from '../../data/mockEvaluationPIllars';

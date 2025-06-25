@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback, useMemo, memo } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
-import SearchBar from '../../Searchbar';
-import CollaboratorCard from '../../CollaboratorCard';
-import AnimatedCard from '../../AnimatedCard';
-import Typography from '../../Typography';
+import SearchBar from '../../common/Searchbar';
+import CollaboratorCard from '../../common/CollaboratorCard';
+import AnimatedCard from '../../common/AnimatedCard';
+import Typography from '../../common/Typography';
 import Evaluation360 from '../Cards/Evaluation360';
 import { searchCollaborators } from '../../../data/mockCollaborators';
 import type { Collaborator } from '../../../data/mockCollaborators';

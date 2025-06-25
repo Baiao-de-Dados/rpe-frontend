@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import RatingDisplay from '../RatingDisplay';
+import RatingDisplay from '../common/RatingDisplay';
 import type { Criterion } from '../../data/mockEvaluationPIllars';
 import type { EvaluationFormData } from '../../schemas/evaluation';
 

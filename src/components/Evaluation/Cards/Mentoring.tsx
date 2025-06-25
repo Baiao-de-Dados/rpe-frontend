@@ -1,13 +1,12 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
-import StarRating from '../../StarRating';
-import TextAreaWithTitle from '../../TextAreaWithTitle';
-import Typography from '../../Typography';
-import CollaboratorCard from '../../CollaboratorCard';
-import RatingDisplay from '../../RatingDisplay';
-import CardContainer from '../../CardContainer';
-import { ErrorMessage } from '../../ErrorMessage';
-
+import StarRating from '../../common/StarRating';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+import Typography from '../../common/Typography';
+import CollaboratorCard from '../../common/CollaboratorCard';
+import RatingDisplay from '../../common/RatingDisplay';
+import CardContainer from '../../common/CardContainer';
+import { ErrorMessage } from '../../common/ErrorMessage';
 const Mentoring: React.FC = () => {
     const { control, setValue } = useFormContext();
 

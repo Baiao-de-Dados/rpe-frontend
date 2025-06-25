@@ -1,8 +1,8 @@
 import React from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
-import Button from '../Button';
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
+import Button from '../common/Button';
 
 const CycleLoadErrorMessage: React.FC = () => {
     const handleRetry = () => {

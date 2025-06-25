@@ -1,6 +1,6 @@
 import { useQueryState } from 'nuqs';
 
-import Typography from '../Typography';
+import Typography from '../common/Typography';
 import CollapsibleCardSection from '../common/CollapsibleCardSection';
 import { EditableCriterion } from './EditableCriterion';
 

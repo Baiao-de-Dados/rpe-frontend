@@ -9,7 +9,7 @@ import CycleClosedMessage from '../../components/Evaluation/CycleClosedMessage';
 import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import { useCycle } from '../../hooks/useCycle';
-import CycleLoading from '../../components/CycleLoading';
+import CycleLoading from '../../components/common/CycleLoading';
 
 export function Avaliacao() {
     const { currentCycle, evaluationStatus, isLoading } = useCycle();

@@ -1,9 +1,9 @@
 import CriteriosSubmitButton from '../../components/Criterios/CriteriosSubmitButton';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
-import PageHeader from '../../components/PageHeader';
+import PageHeader from '../../components/common/PageHeader';
 
 import { useCycle } from '../../hooks/useCycle';
-import CycleLoading from '../../components/CycleLoading';
+import CycleLoading from '../../components/common/CycleLoading';
 import { motion } from 'framer-motion';
 import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
 import { mockTracks } from '../../data/mockTracks';

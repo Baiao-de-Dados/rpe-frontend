@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import CardContainer from '../CardContainer';
-import Typography from '../Typography';
+import CardContainer from './CardContainer';
+import Typography from './Typography';
 import { ChevronDown } from 'lucide-react';
 
 interface CollapsibleCardSectionProps {

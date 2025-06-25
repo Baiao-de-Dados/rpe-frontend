@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { RequiredSwitch } from './RequiredSwitch';
-import TextAreaWithTitle from '../TextAreaWithTitle';
-import InputWithTitle from '../InputWithTitle';
+import TextAreaWithTitle from '../common/TextAreaWithTitle';
+import InputWithTitle from '../common/InputWithTitle';
 
 interface EditableCriterionProps {
     criterion: {

@@ -1,6 +1,6 @@
 import Typography from './Typography';
 import Badge from './Badge';
-import { getStatusVariant } from '../utils/statusUtils';
+import { getStatusVariant } from '../../utils/statusUtils';
 import SummaryBox from './SummaryBox';
 
 interface CycleCardProps {

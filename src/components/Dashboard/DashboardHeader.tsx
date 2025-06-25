@@ -1,5 +1,5 @@
-import Typography from './Typography';
-import Avatar from './Avatar';
+import Typography from '../common/Typography';
+import Avatar from '../common/Avatar';
 
 interface DashboardHeaderProps {
     userName?: string;
