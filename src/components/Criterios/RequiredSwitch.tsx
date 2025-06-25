@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 interface RequiredSwitchProps {
     value: boolean;
     onChange: (value: boolean) => void;
+    disabled?: boolean;
 }
 
 const CustomSwitch = styled(Switch)(({ theme }) => ({
@@ -35,12 +36,17 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-export function RequiredSwitch({ value, onChange }: RequiredSwitchProps) {
+export function RequiredSwitch({
+    value,
+    onChange,
+    disabled = false,
+}: RequiredSwitchProps) {
     return (
         <CustomSwitch
             checked={value}
             onChange={e => onChange(e.target.checked)}
             onClick={e => e.stopPropagation()}
+            disabled={disabled}
         />
     );
 }

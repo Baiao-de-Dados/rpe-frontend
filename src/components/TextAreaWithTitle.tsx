@@ -8,6 +8,7 @@ interface TextAreaWithTitleProps {
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     error?: string;
     maxLength?: number;
+    readOnly?: boolean;
 }
 
 const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
@@ -17,6 +18,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
     onChange,
     error,
     maxLength,
+    readOnly,
 }) => {
     const currentLength = value?.length || 0;
 
@@ -52,6 +54,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
                 value={value}
                 onChange={onChange}
                 maxLength={maxLength}
+                readOnly={readOnly}
             />
         </div>
     );

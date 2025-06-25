@@ -19,11 +19,13 @@ interface Section {
 interface TrackSectionProps {
     trackTitle: string;
     sections: Section[];
+    isCycleClosed?: boolean;
 }
 
 export default function TrackSection({
     trackTitle,
     sections,
+    isCycleClosed = false,
 }: TrackSectionProps) {
     const [openTracks, setOpenTracks] = useQueryState('open_tracks', {
         defaultValue: '',
@@ -67,6 +69,7 @@ export default function TrackSection({
                                 <EditableCriterion
                                     key={criterion.id}
                                     criterion={criterion}
+                                    isCycleClosed={isCycleClosed}
                                 />
                             ))}
                         </div>

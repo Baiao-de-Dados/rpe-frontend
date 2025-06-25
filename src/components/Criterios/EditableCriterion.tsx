@@ -12,11 +12,18 @@ interface EditableCriterionProps {
         description?: string;
         required?: boolean;
     };
+    isCycleClosed?: boolean;
 }
 
-export function EditableCriterion({ criterion }: EditableCriterionProps) {
+export function EditableCriterion({
+    criterion,
+    isCycleClosed = false,
+}: EditableCriterionProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [required, setRequired] = useState(criterion.required ?? true);
+    const [name, setName] = useState(criterion.name);
+    const [weight, setWeight] = useState(criterion.weight || '');
+    const [description, setDescription] = useState(criterion.description || '');
 
     return (
         <div className="bg-white border-b border-gray-200 last:border-b-0">
@@ -31,7 +38,11 @@ export function EditableCriterion({ criterion }: EditableCriterionProps) {
                     <span className="text-sm text-gray-700">
                         Campo obrigatório
                     </span>
-                    <RequiredSwitch value={required} onChange={setRequired} />
+                    <RequiredSwitch
+                        value={required}
+                        onChange={setRequired}
+                        disabled={!isCycleClosed}
+                    />
                     <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
                     >
@@ -46,24 +57,27 @@ export function EditableCriterion({ criterion }: EditableCriterionProps) {
                     <div>
                         <InputWithTitle
                             title="Nome do Critério"
-                            value={criterion.name}
-                            readOnly
+                            value={name}
+                            readOnly={!isCycleClosed}
+                            onChange={e => setName(e.target.value)}
                         />
                     </div>
                     <div>
                         <InputWithTitle
                             title="Peso"
-                            value={criterion.weight || ''}
+                            value={weight}
                             placeholder="%"
-                            readOnly
+                            readOnly={!isCycleClosed}
+                            onChange={e => setWeight(e.target.value)}
                         />
                     </div>
                     <div className="sm:col-span-2">
                         <TextAreaWithTitle
                             title="Descrição"
                             placeholder="Descrição do critério"
-                            value={criterion.description || ''}
-                            onChange={() => {}}
+                            value={description}
+                            onChange={e => setDescription(e.target.value)}
+                            readOnly={!isCycleClosed}
                         />
                     </div>
                 </div>

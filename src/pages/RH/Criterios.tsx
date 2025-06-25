@@ -13,6 +13,8 @@ export function Criterios() {
     const { currentCycle, isLoading } = useCycle();
     const { shouldReduceMotion } = useOptimizedAnimation();
 
+    const isCycleClosed = !currentCycle?.isOpen;
+
     if (isLoading) {
         return <CycleLoading />;
     }
@@ -25,7 +27,7 @@ export function Criterios() {
         <>
             <PageHeader
                 title="Critérios de Avaliação"
-                button={<CriteriosSubmitButton />}
+                button={<CriteriosSubmitButton isCycleClosed={isCycleClosed} />}
             />
             <main className="p-8 pt-6">
                 {mockTracks.map((track, idx) => (
@@ -42,6 +44,7 @@ export function Criterios() {
                         <TrackSection
                             trackTitle={track.title}
                             sections={track.sections}
+                            isCycleClosed={isCycleClosed}
                         />
                     </motion.div>
                 ))}
