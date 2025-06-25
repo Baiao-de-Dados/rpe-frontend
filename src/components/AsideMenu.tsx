@@ -144,7 +144,7 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
 
-                        {user?.roles.includes('EMPLOYER') && (
+                        {user?.roles.includes('RH') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
                                     to="/avaliacao"
