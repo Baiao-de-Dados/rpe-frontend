@@ -11,12 +11,12 @@ import {
 } from '../../../schemas/pillarCriteriaFormSchema';
 import { useToast } from '../../../hooks/useToast';
 import AddCriterionModal from '../AddCriterionModal';
+import { useCycle } from '../../../hooks/useCycle';
 
 interface PillarCriteriaCardProps {
     title: string;
     criteria: { id: string; name: string; description?: string }[];
     pillarId: string;
-    isCycleOpen?: boolean;
     onBack?: () => void;
 }
 
@@ -25,11 +25,12 @@ export function PillarCriteriaCard({
     criteria,
     pillarId,
     onBack,
-    isCycleOpen = true,
 }: PillarCriteriaCardProps) {
     const [openIds, setOpenIds] = useState<string[]>([]);
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const { showToast } = useToast();
+    const { currentCycle } = useCycle();
+    const isCycleOpen = currentCycle?.isOpen;
 
     const form = useForm<PillarCriteriaFormValues>({
         resolver: zodResolver(pillarCriteriaFormSchema),
@@ -205,6 +206,7 @@ export function PillarCriteriaCard({
                                                         .criteria?.[idx]?.name
                                                         ?.message
                                                 }
+                                                labelPosition="top"
                                             />
                                             <TextAreaWithTitle
                                                 title="Descrição"

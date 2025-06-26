@@ -75,6 +75,7 @@ export default function AddPillarModal({ open, onClose }: AddPillarModalProps) {
                         error={form.formState.errors.name?.message}
                         autoFocus
                         maxLength={100}
+                        labelPosition="top"
                     />
                 </div>
                 <div className="flex gap-2 mt-8 justify-end">

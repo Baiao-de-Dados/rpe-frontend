@@ -70,6 +70,7 @@ export default function AddCriterionModal({
                         error={form.formState.errors.name?.message}
                         autoFocus
                         maxLength={100}
+                        labelPosition="top"
                     />
                     <TextAreaWithTitle
                         title="Descrição"

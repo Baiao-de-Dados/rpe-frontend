@@ -1,7 +1,7 @@
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 
-interface RequiredSwitchProps {
+interface ActiveSwitchProps {
     value: boolean;
     onChange: (value: boolean) => void;
     disabled?: boolean;
@@ -36,11 +36,11 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-export function RequiredSwitch({
+export function ActiveSwitch({
     value,
     onChange,
     disabled = false,
-}: RequiredSwitchProps) {
+}: ActiveSwitchProps) {
     return (
         <CustomSwitch
             checked={value}

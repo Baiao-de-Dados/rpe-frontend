@@ -1,37 +1,25 @@
 import { memo } from 'react';
 import Button from '../../common/Button';
-import { useToast } from '../../../hooks/useToast';
 
 interface TrackSubmitButtonProps {
     isCycleClosed: boolean;
+    isSubmitting?: boolean;
+    isValid?: boolean;
     className?: string;
 }
 
 const TrackSubmitButton = memo(
-    ({ isCycleClosed, className }: TrackSubmitButtonProps) => {
-        const isValid = true;
-        const isSubmitting = false;
-        const { showToast } = useToast();
-
-        const onSubmit = () => {
-            if (!isCycleClosed) {
-                showToast(
-                    'Não é possível editar pois o ciclo está aberto.',
-                    'error',
-                    { title: 'Edição não permitida', duration: 5000 },
-                );
-                return;
-            }
-
-            console.log('Form submitted');
-        };
-
+    ({
+        isCycleClosed,
+        isSubmitting = false,
+        isValid = true,
+        className,
+    }: TrackSubmitButtonProps) => {
         return (
             <Button
                 variant="primary"
                 size="md"
                 disabled={!isValid || isSubmitting || !isCycleClosed}
-                onClick={onSubmit}
                 title={
                     !isCycleClosed
                         ? 'Não é possível editar pois o ciclo está aberto.'
