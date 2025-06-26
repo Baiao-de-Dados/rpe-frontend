@@ -1,7 +1,7 @@
 import React from 'react';
-import Avatar from './common/Avatar';
 import Typography from './Typography';
-import { type Collaborator } from '../data/mockCollaborators';
+import type { Collaborator } from '../../data/mockCollaborators';
+import Avatar from './Avatar';
 
 interface CollaboratorCardProps {
     collaborator: Collaborator;

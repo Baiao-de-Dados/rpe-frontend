@@ -5,10 +5,14 @@ import { EvaluationHeader } from './EvaluationHeader';
 import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 import type { EvaluationFormData } from '../../schemas/evaluation';
+import {
+    evaluationSections,
+    type SectionType,
+} from './Sections/EvaluationSections';
 
 export function EvaluationForm() {
     const { activeSection, navigateToSection, sections } =
-        useSectionNavigation();
+        useSectionNavigation<SectionType>(evaluationSections);
 
     const { control } = useFormContext<EvaluationFormData>();
 
@@ -129,15 +133,12 @@ export function EvaluationForm() {
         return incompleteCount;
     }, [watchedEvaluation360]);
 
-    // Calcula as referências incompletas
     const incompleteReferencesCount = useMemo(() => {
         if (!watchedReferences || !Array.isArray(watchedReferences)) {
-            // Se não há referências, retorna 0 (não é obrigatório)
             return 0;
         }
 
         if (watchedReferences.length === 0) {
-            // Se array existe mas está vazio, retorna 0 (não é obrigatório)
             return 0;
         }
 

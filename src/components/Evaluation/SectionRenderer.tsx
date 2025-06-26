@@ -1,8 +1,11 @@
 import { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SectionLoadingSpinner } from './Sections/SectionLoadingSpinner';
+import { SectionLoadingSpinner } from '../common/SectionLoadingSpinner';
 import { SectionPreloader } from './Sections/SectionPreloader';
-import { type SectionType } from '../../hooks/useSectionNavigation';
+import {
+    evaluationSections,
+    type SectionType,
+} from './Sections/EvaluationSections';
 
 const SelfAssessmentSection = lazy(() =>
     import('./Sections/SelfAssessmentSection').then(module => ({
@@ -50,7 +53,10 @@ export function SectionRenderer({ activeSection }: SectionRendererProps) {
 
     return (
         <>
-            <SectionPreloader activeSection={activeSection} />
+            <SectionPreloader
+                activeSection={activeSection}
+                sections={evaluationSections}
+            />
             <AnimatePresence mode="wait">
                 <motion.div
                     key={activeSection}

@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion, type Variants } from 'framer-motion';
 import {
-    useOptimizedAnimation,
     animationPresets,
-} from '../hooks/useOptimizedAnimation';
+    useOptimizedAnimation,
+} from '../../hooks/useOptimizedAnimation';
 
 interface AnimatedCardProps {
     children: React.ReactNode;

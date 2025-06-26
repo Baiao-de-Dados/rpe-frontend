@@ -1,30 +1,24 @@
 import { useEffect } from 'react';
-import { type SectionType } from '../../../hooks/useSectionNavigation';
 
-interface SectionPreloaderProps {
-    activeSection: SectionType;
+interface SectionPreloaderProps<T extends string = string> {
+    activeSection: T;
+    sections: T[];
 }
 
-export function SectionPreloader({ activeSection }: SectionPreloaderProps) {
+export function SectionPreloader<T extends string = string>({
+    activeSection,
+    sections,
+}: SectionPreloaderProps<T>) {
     useEffect(() => {
-        const sectionOrder: SectionType[] = [
-            'Autoavaliação',
-            'Avaliação 360',
-            'Referências',
-            'Mentoring',
-        ];
-        const currentIndex = sectionOrder.indexOf(activeSection);
-
-        if (currentIndex >= 0 && currentIndex < sectionOrder.length - 1) {
-            const nextSection = sectionOrder[currentIndex + 1];
-
+        const currentIndex = sections.indexOf(activeSection);
+        if (currentIndex >= 0 && currentIndex < sections.length - 1) {
+            const nextSection = sections[currentIndex + 1];
             const preloadTimer = setTimeout(() => {
                 console.log(`Preparando para carregar: ${nextSection}`);
             }, 1000);
-
             return () => clearTimeout(preloadTimer);
         }
-    }, [activeSection]);
+    }, [activeSection, sections]);
 
     return null;
 }
