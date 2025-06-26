@@ -28,7 +28,7 @@ export function Criterios() {
                 onSectionChange={navigateToSection}
                 sections={criterionSections}
             />
-            <main className="p-8 pt-6">
+            <main className="pt-6 px-2 sm:p-8">
                 <SectionRenderer activeSection={activeSection} />
             </main>
         </>

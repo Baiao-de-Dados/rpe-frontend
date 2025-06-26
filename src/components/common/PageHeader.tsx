@@ -100,7 +100,7 @@ export default function PageHeader<T extends string = string>({
                             })}
                         </div>
                     </nav>
-                    <div className="lg:hidden mt-2 pt-5 bg border-gray-50">
+                    <div className="lg:hidden -mt-6 border-gray-50">
                         <div className="relative w-full" ref={dropdownRef}>
                             <button
                                 onClick={() => setIsDropdownOpen(v => !v)}
