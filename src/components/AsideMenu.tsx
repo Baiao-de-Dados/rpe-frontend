@@ -15,10 +15,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useQueryState } from 'nuqs';
+import { RoleGuard } from './common/RoleGuard';
+import { UserRoleEnum } from '../types/auth';
 
 export default function AsideMenu() {
     const navigate = useNavigate();
-    const { logout, user } = useAuth();
+    const { logout } = useAuth();
 
     const [navState, setNavState] = useQueryState('nav', {
         defaultValue: 'expanded',
@@ -131,6 +133,7 @@ export default function AsideMenu() {
 
                 <nav className="mt-4 w-full h-full mb-5 flex flex-col justify-start">
                     <ul className="flex flex-col gap-4 pl-0 w-full max-lg:justify-start max-lg:gap-8 max-lg:mt-8 max-lg:pl-20 max-lg:w-auto">
+                        {/* Dashboard - Todos podem ver */}
                         <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                             <NavLink
                                 to="/dashboard"
@@ -158,7 +161,8 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
 
-                        {user?.roles.includes('EMPLOYER') && (
+                        {/* Avaliação - Apenas EMPLOYER (Colaboradores) */}
+                        <RoleGuard anyRole={[UserRoleEnum.EMPLOYER]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
                                     to="/avaliacao"
@@ -185,9 +189,17 @@ export default function AsideMenu() {
                                     </span>
                                 </NavLink>
                             </li>
-                        )}
+                        </RoleGuard>
 
-                        {user?.roles.includes('EMPLOYER') && (
+                        {/* Evolução - Apenas MANAGER, COMMITTEE, ADMIN, DEVELOPER */}
+                        <RoleGuard
+                            anyRole={[
+                                UserRoleEnum.MANAGER,
+                                UserRoleEnum.COMMITTEE,
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.DEVELOPER,
+                            ]}
+                        >
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
                                     to="/evolucao"
@@ -214,9 +226,17 @@ export default function AsideMenu() {
                                     </span>
                                 </NavLink>
                             </li>
-                        )}
+                        </RoleGuard>
 
-                        {user?.roles.includes('RH') && (
+                        {/* Colaboradores - Apenas LEADER, MENTOR, ADMIN, DEVELOPER */}
+                        <RoleGuard
+                            anyRole={[
+                                UserRoleEnum.LEADER,
+                                UserRoleEnum.MENTOR,
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.DEVELOPER,
+                            ]}
+                        >
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
                                     to="/colaboradores"
@@ -243,9 +263,16 @@ export default function AsideMenu() {
                                     </span>
                                 </NavLink>
                             </li>
-                        )}
+                        </RoleGuard>
 
-                        {user?.roles.includes('RH') && (
+                        {/* Critérios - Apenas RH, ADMIN, DEVELOPER */}
+                        <RoleGuard
+                            anyRole={[
+                                UserRoleEnum.RH,
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.DEVELOPER,
+                            ]}
+                        >
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
                                     to="/criterios"
@@ -272,9 +299,16 @@ export default function AsideMenu() {
                                     </span>
                                 </NavLink>
                             </li>
-                        )}
+                        </RoleGuard>
 
-                        {user?.roles.includes('RH') && (
+                        {/* Importar - Apenas RH, ADMIN, DEVELOPER */}
+                        <RoleGuard
+                            anyRole={[
+                                UserRoleEnum.RH,
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.DEVELOPER,
+                            ]}
+                        >
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
                                     to="/importar"
@@ -301,7 +335,7 @@ export default function AsideMenu() {
                                     </span>
                                 </NavLink>
                             </li>
-                        )}
+                        </RoleGuard>
                     </ul>
 
                     <div className="flex w-full mt-auto lg:mt-auto max-lg:mt-8 max-lg:mb-32 max-lg:justify-start max-lg:pl-20">

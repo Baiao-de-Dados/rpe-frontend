@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import { AuthContext } from './AuthContextDefinition';
-import type { User, LoginRequest } from '../types/auth';
+import type {
+    User,
+    LoginRequest,
+    DecodedToken,
+    UserRoleEnum,
+} from '../types/auth';
 import { authEndpoints } from '../services/api';
-import type { AxiosError } from 'axios';
+
+import {
+    hasExactRole,
+    hasAnyRole as hasAnyRoleUtil,
+    hasRequiredRole,
+} from '../utils/roleUtils';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -10,21 +21,71 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const isAuthenticated = !!user;
 
-    // Inicializar - verificar se há usuário salvo
+    // Valida JWT
+    const validateToken = (token: string): DecodedToken | null => {
+        try {
+            const decoded = jwtDecode<DecodedToken>(token);
+
+            if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+                return null;
+            }
+
+            return decoded;
+        } catch {
+            return null;
+        }
+    };
+
+    // ✅ USA roleUtils - verifica role específico
+    const hasRole = (role: UserRoleEnum): boolean => {
+        return hasExactRole(user?.roles, role);
+    };
+
+    // ✅ USA roleUtils - verifica se tem algum dos roles
+    const hasAnyRole = (roles: UserRoleEnum[]): boolean => {
+        return hasAnyRoleUtil(user?.roles, roles);
+    };
+
+    // ✅ USA roleUtils - verifica hierarquia de roles
+    const hasMinimumRole = (minimumRole: UserRoleEnum): boolean => {
+        return hasRequiredRole(user?.roles, minimumRole);
+    };
+
+    // Buscar dados completos do usuário via /auth/me
+    const fetchUserData = async () => {
+        try {
+            const response = await authEndpoints.me();
+            return response.data;
+        } catch {
+            return null;
+        }
+    };
+
+    // Inicialização
     useEffect(() => {
         const initializeAuth = async () => {
             const token = localStorage.getItem('@rpe:token');
-            const savedUser = localStorage.getItem('@rpe:user');
 
-            if (token && savedUser) {
-                try {
-                    const parsedUser = JSON.parse(savedUser);
-                    setUser(parsedUser);
-                } catch (error) {
-                    console.error(
-                        'Erro ao recuperar usuário do localStorage:',
-                        error,
-                    );
+            if (token) {
+                const decoded = validateToken(token);
+
+                if (decoded) {
+                    // Buscar dados completos do usuário
+                    const userData = await fetchUserData();
+
+                    if (userData) {
+                        const user: User = {
+                            id: userData.id,
+                            email: userData.email,
+                            name: userData.name || 'Usuário',
+                            roles: userData.roles || [],
+                            isActive: true,
+                            createdAt: userData.createdAt,
+                            updatedAt: userData.updatedAt,
+                        };
+                        setUser(user);
+                    }
+                } else {
                     localStorage.removeItem('@rpe:token');
                     localStorage.removeItem('@rpe:user');
                 }
@@ -39,17 +100,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const login = async ({ email, password }: LoginRequest) => {
         try {
             setLoading(true);
-            const response = await authEndpoints.login(email, password);
 
+            const response = await authEndpoints.login(email, password);
             const { access_token, user: userData } = response.data;
 
-            localStorage.setItem('@rpe:token', access_token);
-            localStorage.setItem('@rpe:user', JSON.stringify(userData));
+            // Valida o token
+            const decoded = validateToken(access_token);
+            if (!decoded) {
+                throw new Error('Token inválido');
+            }
 
-            setUser(userData);
+            localStorage.setItem('@rpe:token', access_token);
+
+            // Usa dados do response (que tem name, etc.)
+            const user: User = {
+                id: userData.id,
+                email: userData.email,
+                name: userData.name || 'Usuário',
+                roles: userData.roles || [],
+                isActive: true,
+                createdAt: userData.createdAt,
+                updatedAt: userData.updatedAt,
+            };
+
+            setUser(user);
         } catch (error) {
-            const axiosError = error as AxiosError;
-            console.error('Erro no login:', axiosError);
+            console.error('Erro no login:', error);
             throw error;
         } finally {
             setLoading(false);
@@ -57,29 +133,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const logout = async () => {
-        // Limpa estado local IMEDIATAMENTE
         localStorage.removeItem('@rpe:token');
         localStorage.removeItem('@rpe:user');
         setUser(null);
 
-        // Tenta logout no backend em background (não bloqueia UI)
         try {
             await authEndpoints.logout();
         } catch {
-            // Ignora erros - o importante é que o frontend já fez logout
-            console.warn('Erro no logout no servidor (ignorado)');
+            console.warn('Erro no logout no servidor');
         }
     };
 
-    // Implementa o checkAuth conforme exigido pelo AuthContextType
     const checkAuth = async () => {
         const token = localStorage.getItem('@rpe:token');
-        const savedUser = localStorage.getItem('@rpe:user');
-        if (token && savedUser) {
-            try {
-                const parsedUser = JSON.parse(savedUser);
-                setUser(parsedUser);
-            } catch {
+
+        if (token) {
+            const decoded = validateToken(token);
+
+            if (decoded) {
+                const userData = await fetchUserData();
+                if (userData) {
+                    const user: User = {
+                        id: userData.id,
+                        email: userData.email,
+                        name: userData.name || 'Usuário',
+                        roles: userData.roles || [],
+                        isActive: true,
+                        createdAt: userData.createdAt,
+                        updatedAt: userData.updatedAt,
+                    };
+                    setUser(user);
+                }
+            } else {
                 setUser(null);
                 localStorage.removeItem('@rpe:token');
                 localStorage.removeItem('@rpe:user');
@@ -98,6 +183,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 login,
                 logout,
                 checkAuth,
+                hasRole,
+                hasAnyRole,
+                hasMinimumRole,
             }}
         >
             {children}

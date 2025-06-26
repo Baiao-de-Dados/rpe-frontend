@@ -1,9 +1,8 @@
-// src/components/ProtectedRoute.tsx
+// src/router/ProtectedRoute.tsx
 import type { ReactNode } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { UserRoleEnum } from '../types/auth';
-import { hasAnyRole } from '../utils/roleUtils';
 
 export function ProtectedRoute() {
     const { isAuthenticated } = useAuth();
@@ -17,16 +16,52 @@ interface RoleRouteProps {
     children: ReactNode;
 }
 
+/**
+ * Componente para proteger rotas baseado em roles
+ * Verifica se o usuário tem pelo menos um dos roles necessários
+ */
 export function RoleRoute({
     requiredRoles,
     redirectTo = '/dashboard',
     children,
 }: RoleRouteProps) {
-    const { user } = useAuth();
+    const { user, hasAnyRole } = useAuth();
 
     if (!user) return <Navigate to="/login" replace />;
 
-    if (hasAnyRole(user.roles, requiredRoles)) {
+    if (hasAnyRole(requiredRoles)) {
+        return <>{children}</>;
+    }
+
+    return <Navigate to={redirectTo} replace />;
+}
+
+interface HierarchyRouteProps {
+    minimumRole: UserRoleEnum;
+    redirectTo?: string;
+    children: ReactNode;
+}
+
+/**
+ * Componente para proteger rotas baseado em HIERARQUIA
+ * Verifica se o usuário tem pelo menos o nível mínimo
+ * ADMIN pode acessar tudo que MANAGER pode, etc.
+ *
+ * Exemplo:
+ * <HierarchyRoute minimumRole={UserRoleEnum.MANAGER}>
+ *   <Evolucao />  // MANAGER, RH, COMMITTEE, ADMIN, DEVELOPER podem acessar
+ * </HierarchyRoute>
+ */
+export function HierarchyRoute({
+    minimumRole,
+    redirectTo = '/dashboard',
+    children,
+}: HierarchyRouteProps) {
+    const { user, hasMinimumRole } = useAuth();
+
+    if (!user) return <Navigate to="/login" replace />;
+
+    if (hasMinimumRole(minimumRole)) {
         return <>{children}</>;
     }
 

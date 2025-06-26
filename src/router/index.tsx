@@ -4,7 +4,7 @@ import { DefaultLayout } from '../layouts/DefaultLayout';
 
 import LoginPage from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
-import { ProtectedRoute, RoleRoute } from './ProtectedRoute';
+import { ProtectedRoute, RoleRoute, HierarchyRoute } from './ProtectedRoute';
 import { MultiRoleRoute } from './MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
 import { Dashboard } from '../pages/Dashboard';
@@ -54,12 +54,27 @@ export function Router() {
                     />
 
                     <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="avaliacao" element={<Avaliacao />} />
+
+                    <Route
+                        path="avaliacao"
+                        element={
+                            <RoleRoute requiredRoles={[UserRoleEnum.EMPLOYER]}>
+                                <Avaliacao />
+                            </RoleRoute>
+                        }
+                    />
 
                     <Route
                         path="evolucao"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.MANAGER]}>
+                            <RoleRoute
+                                requiredRoles={[
+                                    UserRoleEnum.MANAGER,
+                                    UserRoleEnum.COMMITTEE,
+                                    UserRoleEnum.ADMIN,
+                                    UserRoleEnum.DEVELOPER,
+                                ]}
+                            >
                                 <Evolucao />
                             </RoleRoute>
                         }
@@ -70,9 +85,10 @@ export function Router() {
                         element={
                             <RoleRoute
                                 requiredRoles={[
-                                    UserRoleEnum.RH,
-                                    UserRoleEnum.MENTOR,
                                     UserRoleEnum.LEADER,
+                                    UserRoleEnum.MENTOR,
+                                    UserRoleEnum.ADMIN,
+                                    UserRoleEnum.DEVELOPER,
                                 ]}
                             >
                                 <Colaboradores />
@@ -83,35 +99,35 @@ export function Router() {
                     <Route
                         path="criterios"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                            <HierarchyRoute minimumRole={UserRoleEnum.RH}>
                                 <Criterios />
-                            </RoleRoute>
+                            </HierarchyRoute>
                         }
                     />
 
                     <Route
                         path="importar"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                            <HierarchyRoute minimumRole={UserRoleEnum.RH}>
                                 <ImportarHistoricos />
-                            </RoleRoute>
+                            </HierarchyRoute>
                         }
                     />
 
                     <Route
                         path="administracao"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                            <HierarchyRoute minimumRole={UserRoleEnum.RH}>
                                 <div className="p-6">
                                     <h1 className="text-2xl font-bold">
                                         Painel de Administração
                                     </h1>
                                     <p>
-                                        Esta página só é acessível para RH,
-                                        Comitê, Admin e Desenvolvedor
+                                        Esta página é acessível para RH ou
+                                        superior
                                     </p>
                                 </div>
-                            </RoleRoute>
+                            </HierarchyRoute>
                         }
                     />
 
