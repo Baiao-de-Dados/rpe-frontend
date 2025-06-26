@@ -3,7 +3,7 @@ import { motion, type Variants } from 'framer-motion';
 import {
     useOptimizedAnimation,
     animationPresets,
-} from '../hooks/useOptimizedAnimation';
+} from '../../hooks/useOptimizedAnimation';
 
 interface AnimatedCardProps {
     children: React.ReactNode;
