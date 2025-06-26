@@ -25,7 +25,7 @@ export function PillarCriteriaCard({
     criteria,
     pillarId,
     onBack,
-    isCycleOpen = false,
+    isCycleOpen = true,
 }: PillarCriteriaCardProps) {
     const [openIds, setOpenIds] = useState<string[]>([]);
     const [isAddModalOpen, setAddModalOpen] = useState(false);

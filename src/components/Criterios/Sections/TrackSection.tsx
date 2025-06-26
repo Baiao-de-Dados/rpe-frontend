@@ -53,7 +53,7 @@ export function TrackSection() {
                 >
                     <TrackCard
                         trackTitle={track.title}
-                        sections={track.sections}
+                        pillars={track.pillars}
                         isCycleClosed={isCycleClosed}
                     />
                 </motion.div>

@@ -18,13 +18,13 @@ interface Section {
 
 interface TrackCardProps {
     trackTitle: string;
-    sections: Section[];
+    pillars: Section[];
     isCycleClosed?: boolean;
 }
 
 export default function TrackCard({
     trackTitle,
-    sections,
+    pillars,
     isCycleClosed = false,
 }: TrackCardProps) {
     const [openTracks, setOpenTracks] = useQueryState('open_tracks', {
@@ -53,19 +53,19 @@ export default function TrackCard({
             isOpen={isOpen}
         >
             <div className="space-y-4 mt-4">
-                {sections.map(section => (
+                {pillars.map(pillar => (
                     <div
-                        key={section.id}
+                        key={pillar.id}
                         className="rounded-xl p-4 border border-gray-200 sm:p-6"
                     >
                         <Typography
                             variant="h3"
                             className="font-semibold mb-4 text-base sm:text-lg"
                         >
-                            {section.title}
+                            {pillar.title}
                         </Typography>
                         <div className="divide-y">
-                            {section.criteria?.map(criterion => (
+                            {pillar.criteria?.map(criterion => (
                                 <EditableCriterion
                                     key={criterion.id}
                                     criterion={criterion}

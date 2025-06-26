@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { mockTracks } from '../../../data/mockTracks';
-import { AddPillarButton } from '../Buttons/AddPillarButton';
 import { PillarCard } from '../Cards/PillarCard';
 import { AnimatePresence, motion, easeIn, easeOut } from 'framer-motion';
 import { PillarCriteriaCard } from '../Cards/PillarCriteriaCard';
 import { useQueryState } from 'nuqs';
+import AddPillarModal from '../AddPillarModal';
+import { AddPillarButton } from '../Buttons/AddPillarButton';
 
 export function PillarSection() {
     const pillars = useMemo(() => mockTracks[0]?.pillars || [], []);
@@ -14,6 +15,7 @@ export function PillarSection() {
         title: string;
         criteria: { id: string; name: string; description?: string }[];
     }>(null);
+    const [isAddPillarOpen, setAddPillarOpen] = useState(false);
 
     useEffect(() => {
         if (pillarId) {
@@ -61,7 +63,9 @@ export function PillarSection() {
                     animate="animate"
                     exit="exit"
                 >
-                    <AddPillarButton />
+                    <span onClick={() => setAddPillarOpen(true)}>
+                        <AddPillarButton />
+                    </span>
                     {pillars.map(pillar => (
                         <div
                             key={pillar.id}
@@ -73,6 +77,10 @@ export function PillarSection() {
                             />
                         </div>
                     ))}
+                    <AddPillarModal
+                        open={isAddPillarOpen}
+                        onClose={() => setAddPillarOpen(false)}
+                    />
                 </motion.div>
             ) : (
                 <motion.div
