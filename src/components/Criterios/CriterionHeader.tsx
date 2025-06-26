@@ -2,8 +2,6 @@ import { memo } from 'react';
 import PageHeader from '../common/PageHeader';
 import type { PageHeaderSection } from '../common/PageHeader';
 import type { SectionType } from './Sections/CriterionSections';
-import CriteriosSubmitButton from './CriteriosSubmitButton';
-import { useCycle } from '../../hooks/useCycle';
 
 interface CriterionHeaderProps {
     activeSection: SectionType;
@@ -16,35 +14,13 @@ function CriterionHeaderComponent({
     onSectionChange,
     sections,
 }: CriterionHeaderProps) {
-    const { currentCycle } = useCycle();
-
-    const isCycleClosed = !currentCycle?.isOpen;
-
     const pageHeaderSections: PageHeaderSection<SectionType>[] = sections.map(
-        section => {
-            if (section === 'Pilares') {
-                return {
-                    name: section,
-                };
-            }
-            if (section === 'Trilhas') {
-                return {
-                    name: section,
-                };
-            }
-            if (section === 'Ciclo') {
-                return {
-                    name: section,
-                };
-            }
-            return { name: section };
-        },
+        section => ({ name: section }),
     );
 
     return (
         <PageHeader
-            title="Ciclo 2025.1"
-            button={<CriteriosSubmitButton isCycleClosed={isCycleClosed} />}
+            title="Configurações de Ciclo"
             sections={pageHeaderSections}
             activeSection={activeSection}
             onSectionChange={onSectionChange}

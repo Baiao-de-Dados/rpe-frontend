@@ -1,8 +1,8 @@
 import { useQueryState } from 'nuqs';
 
-import Typography from '../common/Typography';
-import CollapsibleCardSection from '../common/CollapsibleCardSection';
-import { EditableCriterion } from './EditableCriterion';
+import Typography from '../../common/Typography';
+import CollapsibleCardSection from '../../common/CollapsibleCardSection';
+import { EditableCriterion } from '../EditableCriterion';
 
 interface Section {
     id: string;

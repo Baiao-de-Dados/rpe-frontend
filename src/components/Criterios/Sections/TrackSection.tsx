@@ -1,19 +1,46 @@
+import { useState, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { mockTracks } from '../../../data/mockTracks';
-import TrackCard from '../TrackCard';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 import { useCycle } from '../../../hooks/useCycle';
+import TrackSubmitButton from '../Buttons/TrackSubmitButton';
+import SearchBar from '../../common/Searchbar';
+import TrackCard from '../Cards/TrackCard';
 
 export function TrackSection() {
     const { shouldReduceMotion } = useOptimizedAnimation();
-
     const { currentCycle } = useCycle();
-
     const isCycleClosed = !currentCycle?.isOpen;
 
+    const [search, setSearch] = useState('');
+
+    const searchFunction = useCallback((query: string) => {
+        return mockTracks.filter(track =>
+            track.title.toLowerCase().includes(query.toLowerCase()),
+        );
+    }, []);
+
+    const filteredTracks = search ? searchFunction(search) : mockTracks;
+
+    const memoizedExcludeItems = useMemo(() => [], []);
+
     return (
-        <>
-            {mockTracks.map((track, idx) => (
+        <div className="space-y-6">
+            <div className="flex items-center gap-4">
+                <div className="flex-1">
+                    <SearchBar
+                        value={search}
+                        onChange={setSearch}
+                        placeholder="Buscar trilha..."
+                        searchFunction={searchFunction}
+                        showResults={false}
+                        className="w-full"
+                        excludeItems={memoizedExcludeItems}
+                    />
+                </div>
+                <TrackSubmitButton isCycleClosed={isCycleClosed} />
+            </div>
+            {filteredTracks.map((track, idx) => (
                 <motion.div
                     key={track.id}
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -31,6 +58,6 @@ export function TrackSection() {
                     />
                 </motion.div>
             ))}
-        </>
+        </div>
     );
 }

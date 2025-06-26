@@ -1,11 +1,16 @@
 import { memo } from 'react';
-import Button from '../common/Button';
-import { useToast } from '../../hooks/useToast';
+import Button from '../../common/Button';
+import { useToast } from '../../../hooks/useToast';
 
-const CriteriosSubmitButton = memo(
-    ({ isCycleClosed }: { isCycleClosed: boolean }) => {
-        const isValid = true; // Replace with actual validation logic
-        const isSubmitting = false; // Replace with actual submitting state
+interface TrackSubmitButtonProps {
+    isCycleClosed: boolean;
+    className?: string;
+}
+
+const TrackSubmitButton = memo(
+    ({ isCycleClosed, className }: TrackSubmitButtonProps) => {
+        const isValid = true;
+        const isSubmitting = false;
         const { showToast } = useToast();
 
         const onSubmit = () => {
@@ -17,7 +22,7 @@ const CriteriosSubmitButton = memo(
                 );
                 return;
             }
-            // Replace with actual submit logic
+
             console.log('Form submitted');
         };
 
@@ -36,12 +41,12 @@ const CriteriosSubmitButton = memo(
                     !isValid || isSubmitting || !isCycleClosed
                         ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200'
                         : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
-                }`}
+                }${className ? ` ${className}` : ''}`}
             >
-                {isSubmitting ? 'Enviando...' : 'Salvar'}
+                {isSubmitting ? 'Enviando...' : 'Salvar trilhas'}
             </Button>
         );
     },
 );
 
-export default CriteriosSubmitButton;
+export default TrackSubmitButton;
