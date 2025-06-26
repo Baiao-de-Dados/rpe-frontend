@@ -60,10 +60,12 @@ export default function AsideMenu() {
         };
     }, [isMenuOpened]);
 
-    // Sincroniza o estado do menu lateral com a URL ao mudar navState
     useEffect(() => {
         setIsNavExpanded(navState === 'expanded');
     }, [navState]);
+
+    const navParam = isNavExpanded ? 'expanded' : 'collapsed';
+    const withNavParam = (path: string) => `${path}?nav=${navParam}`;
 
     return (
         <>
@@ -133,7 +135,7 @@ export default function AsideMenu() {
                     <ul className="flex flex-col gap-4 pl-0 w-full max-lg:justify-start max-lg:gap-8 max-lg:mt-8 max-lg:pl-20 max-lg:w-auto">
                         <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                             <NavLink
-                                to="/dashboard"
+                                to={withNavParam('/dashboard')}
                                 onClick={closeMenu}
                                 className={({ isActive }) => `
                                     flex items-center gap-4 no-underline relative 
@@ -158,10 +160,10 @@ export default function AsideMenu() {
                             </NavLink>
                         </li>
 
-                        {user?.roles.includes('RH') && (
+                        {user?.roles.includes('EMPLOYER') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
-                                    to="/avaliacao"
+                                    to={withNavParam('/avaliacao')}
                                     onClick={closeMenu}
                                     className={({ isActive }) => `
                                         flex items-center gap-4 no-underline relative 
@@ -190,7 +192,7 @@ export default function AsideMenu() {
                         {user?.roles.includes('EMPLOYER') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
-                                    to="/evolucao"
+                                    to={withNavParam('/evolucao')}
                                     onClick={closeMenu}
                                     className={({ isActive }) => `
                                         flex items-center gap-4 no-underline relative 
@@ -219,7 +221,7 @@ export default function AsideMenu() {
                         {user?.roles.includes('RH') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
-                                    to="/colaboradores"
+                                    to={withNavParam('/colaboradores')}
                                     onClick={closeMenu}
                                     className={({ isActive }) => `
                                         flex items-center gap-4 no-underline relative 
@@ -248,7 +250,7 @@ export default function AsideMenu() {
                         {user?.roles.includes('RH') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
-                                    to="/criterios"
+                                    to={withNavParam('/criterios')}
                                     onClick={closeMenu}
                                     className={({ isActive }) => `
                                         flex items-center gap-4 no-underline relative 
@@ -277,7 +279,7 @@ export default function AsideMenu() {
                         {user?.roles.includes('RH') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
-                                    to="/importar"
+                                    to={withNavParam('/importar')}
                                     onClick={closeMenu}
                                     className={({ isActive }) => `
                                         flex items-center gap-4 no-underline relative 
