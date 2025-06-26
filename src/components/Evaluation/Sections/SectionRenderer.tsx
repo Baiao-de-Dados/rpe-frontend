@@ -1,32 +1,29 @@
 import { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SectionLoadingSpinner } from '../common/SectionLoadingSpinner';
-import { SectionPreloader } from './Sections/SectionPreloader';
-import {
-    evaluationSections,
-    type SectionType,
-} from './Sections/EvaluationSections';
+import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
+import { SectionPreloader } from './SectionPreloader';
+import { evaluationSections, type SectionType } from './EvaluationSections';
 
 const SelfAssessmentSection = lazy(() =>
-    import('./Sections/SelfAssessmentSection').then(module => ({
+    import('./SelfAssessmentSection').then(module => ({
         default: module.SelfAssessmentSection,
     })),
 );
 
 const Evaluation360Section = lazy(() =>
-    import('./Sections/Evaluation360Section').then(module => ({
+    import('./Evaluation360Section').then(module => ({
         default: module.Evaluation360Section,
     })),
 );
 
 const ReferencesSection = lazy(() =>
-    import('./Sections/ReferencesSection').then(module => ({
+    import('./ReferencesSection').then(module => ({
         default: module.ReferencesSection,
     })),
 );
 
 const MentoringSection = lazy(() =>
-    import('./Sections/MentoringSection').then(module => ({
+    import('./MentoringSection').then(module => ({
         default: module.MentoringSection,
     })),
 );

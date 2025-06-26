@@ -1,19 +1,17 @@
-import CriteriosSubmitButton from '../../components/Criterios/CriteriosSubmitButton';
-import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
-import PageHeader from '../../components/common/PageHeader';
-
 import { useCycle } from '../../hooks/useCycle';
 import CycleLoading from '../../components/common/CycleLoading';
-import { motion } from 'framer-motion';
-import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
-import { mockTracks } from '../../data/mockTracks';
-import TrackSection from '../../components/Criterios/TrackSection';
+import { SectionRenderer } from '../../components/Criterios/Sections/SectionRenderer';
+import type { SectionType } from '../../components/Criterios/Sections/CriterionSections';
+import { useSectionNavigation } from '../../hooks/useSectionNavigation';
+import { criterionSections } from '../../components/Criterios/Sections/CriterionSections';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
+import { CriterionHeader } from '../../components/Criterios/CriterionHeader';
 
 export function Criterios() {
     const { currentCycle, isLoading } = useCycle();
-    const { shouldReduceMotion } = useOptimizedAnimation();
 
-    const isCycleClosed = !currentCycle?.isOpen;
+    const { activeSection, navigateToSection } =
+        useSectionNavigation<SectionType>(criterionSections);
 
     if (isLoading) {
         return <CycleLoading />;
@@ -25,29 +23,13 @@ export function Criterios() {
 
     return (
         <>
-            <PageHeader
-                title="Critérios de Avaliação"
-                button={<CriteriosSubmitButton isCycleClosed={isCycleClosed} />}
+            <CriterionHeader
+                activeSection={activeSection}
+                onSectionChange={navigateToSection}
+                sections={criterionSections}
             />
             <main className="p-8 pt-6">
-                {mockTracks.map((track, idx) => (
-                    <motion.div
-                        key={track.id}
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{
-                            duration: shouldReduceMotion ? 0.01 : 0.3,
-                            ease: [0.4, 0, 0.2, 1],
-                            delay: shouldReduceMotion ? 0 : idx * 0.13,
-                        }}
-                    >
-                        <TrackSection
-                            trackTitle={track.title}
-                            sections={track.sections}
-                            isCycleClosed={isCycleClosed}
-                        />
-                    </motion.div>
-                ))}
+                <SectionRenderer activeSection={activeSection} />
             </main>
         </>
     );

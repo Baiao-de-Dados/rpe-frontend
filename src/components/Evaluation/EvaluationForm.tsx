@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { SectionRenderer } from './SectionRenderer';
+import { SectionRenderer } from './Sections/SectionRenderer';
 import { EvaluationHeader } from './EvaluationHeader';
 import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';

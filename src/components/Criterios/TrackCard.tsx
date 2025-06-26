@@ -16,17 +16,17 @@ interface Section {
     }>;
 }
 
-interface TrackSectionProps {
+interface TrackCardProps {
     trackTitle: string;
     sections: Section[];
     isCycleClosed?: boolean;
 }
 
-export default function TrackSection({
+export default function TrackCard({
     trackTitle,
     sections,
     isCycleClosed = false,
-}: TrackSectionProps) {
+}: TrackCardProps) {
     const [openTracks, setOpenTracks] = useQueryState('open_tracks', {
         defaultValue: '',
         history: 'replace',
