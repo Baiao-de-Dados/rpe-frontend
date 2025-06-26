@@ -1,7 +1,6 @@
-import * as z from 'zod';
+import { z } from 'zod';
 
-export const criterionSchema = z.object({
-    id: z.string(),
+export const addCriterionSchema = z.object({
     name: z
         .string()
         .min(1, 'O nome é obrigatório')
@@ -12,8 +11,4 @@ export const criterionSchema = z.object({
         .optional(),
 });
 
-export const pillarCriteriaFormSchema = z.object({
-    criteria: z.array(criterionSchema),
-});
-
-export type PillarCriteriaFormValues = z.infer<typeof pillarCriteriaFormSchema>;
+export type AddCriterionFormValues = z.infer<typeof addCriterionSchema>;

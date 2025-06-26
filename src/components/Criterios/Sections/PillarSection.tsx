@@ -7,10 +7,10 @@ import { PillarCriteriaCard } from '../Cards/PillarCriteriaCard';
 import { useQueryState } from 'nuqs';
 
 export function PillarSection() {
-    const pillars = useMemo(() => mockTracks[0]?.sections || [], []);
+    const pillars = useMemo(() => mockTracks[0]?.pillars || [], []);
     const [pillarId, setPillarId] = useQueryState('pillar');
     const [selectedPillar, setSelectedPillar] = useState<null | {
-        sectionId: string;
+        pillarId: string;
         title: string;
         criteria: { id: string; name: string; description?: string }[];
     }>(null);
@@ -20,7 +20,7 @@ export function PillarSection() {
             const found = pillars.find(p => p.id === pillarId);
             if (found) {
                 setSelectedPillar({
-                    sectionId: found.id,
+                    pillarId: found.id,
                     title: found.title,
                     criteria: found.criteria,
                 });
@@ -62,14 +62,14 @@ export function PillarSection() {
                     exit="exit"
                 >
                     <AddPillarButton />
-                    {pillars.map(section => (
+                    {pillars.map(pillar => (
                         <div
-                            key={section.id}
-                            onClick={() => handleCardClick(section)}
+                            key={pillar.id}
+                            onClick={() => handleCardClick(pillar)}
                         >
                             <PillarCard
-                                title={section.title}
-                                criteriaCount={section.criteria.length}
+                                title={pillar.title}
+                                criteriaCount={pillar.criteria.length}
                             />
                         </div>
                     ))}
@@ -86,7 +86,7 @@ export function PillarSection() {
                     <PillarCriteriaCard
                         title={selectedPillar.title}
                         criteria={selectedPillar.criteria}
-                        sectionId={selectedPillar.sectionId}
+                        pillarId={selectedPillar.pillarId}
                         onBack={handleBack}
                     />
                 </motion.div>

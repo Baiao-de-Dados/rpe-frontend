@@ -30,11 +30,14 @@ const InputWithTitle: React.FC<InputWithTitleProps> = ({
     };
 
     const shouldShowCounter = maxLength && currentLength >= maxLength;
+    const inputId = React.useId();
 
     return (
         <div>
             <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-gray-600">{title}</p>
+                <label htmlFor={inputId} className="text-sm text-gray-600">
+                    {title}
+                </label>
                 <div className="flex items-center gap-2">
                     {shouldShowCounter && (
                         <p className={`text-xs ${getCharCountColor()}`}>
@@ -45,6 +48,7 @@ const InputWithTitle: React.FC<InputWithTitleProps> = ({
                 </div>
             </div>
             <input
+                id={inputId}
                 className={`w-full h-10 p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none ${getBorderColor()}`}
                 value={value}
                 onChange={onChange}

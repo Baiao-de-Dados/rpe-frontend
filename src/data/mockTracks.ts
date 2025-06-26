@@ -76,7 +76,7 @@ const defaultCriteria = {
     ],
 };
 
-const defaultSections = [
+const defaultPillars = [
     {
         id: 'comportamento',
         title: 'Comportamento',
@@ -94,11 +94,11 @@ export const mockTracks = [
     {
         id: 'financeiro',
         title: 'Financeiro',
-        sections: defaultSections,
+        pillars: defaultPillars,
     },
     {
         id: 'design',
         title: 'Design',
-        sections: defaultSections,
+        pillars: defaultPillars,
     },
 ];

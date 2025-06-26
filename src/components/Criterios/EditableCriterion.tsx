@@ -60,6 +60,7 @@ export function EditableCriterion({
                             value={name}
                             readOnly={!isCycleClosed}
                             onChange={e => setName(e.target.value)}
+                            maxLength={100}
                         />
                     </div>
                     <div>
@@ -78,6 +79,7 @@ export function EditableCriterion({
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             readOnly={!isCycleClosed}
+                            maxLength={500}
                         />
                     </div>
                 </div>
