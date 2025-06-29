@@ -39,35 +39,63 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
 }) => {
     const image = collaborator.image || collaborator.avatar;
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+
+    // Nome abreviado no mobile
+    let displayName = collaborator.nome;
+    if (isMobile) {
+        const parts = collaborator.nome.trim().split(' ');
+        if (parts.length > 1) {
+            displayName = `${parts[0]} ${parts[1][0].toUpperCase()}.`;
+        } else {
+            displayName = parts[0];
+        }
+    }
+
+    // Encontra o índice da nota de autoavaliação e nota final
+    const autoIdx = evaluationFields.findIndex(
+        f => f.label === 'Autoavaliação',
+    );
+    const finalIdx = evaluationFields.findIndex(f => f.label === 'Nota final');
     return (
         <div
-            className={`flex ${isMobile ? 'items-center' : 'flex-row items-center'} justify-between bg-white rounded-lg sm:rounded-2xl px-2 sm:px-6 py-2 sm:py-3 gap-2 sm:gap-4 border border-[#f0f0f0] min-h-0 h-auto ${className}`}
+            className={`flex ${isMobile ? 'flex-row items-center' : 'sm:flex-row items-center'} justify-between bg-white rounded-lg sm:rounded-2xl px-2 sm:px-6 py-2 sm:py-3 gap-2 sm:gap-4 border border-[#f0f0f0] min-h-0 h-auto ${className}`}
             onClick={onClick}
             style={{
                 minHeight: isMobile ? 48 : 56,
                 maxHeight: isMobile ? 64 : undefined,
             }}
         >
-            {/* Esquerda: Avatar, nome, cargo, status */}
+            {/* Esquerda: Avatar, nome, cargo */}
             <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
                 <CollaboratorCard
                     collaborator={{
                         id: collaborator.nome,
-                        nome: collaborator.nome,
+                        nome: displayName,
                         cargo: collaborator.cargo,
                         image,
                     }}
                     variant="compact"
                 />
-                <Badge
-                    label={collaborator.status}
-                    variant={collaborator.statusVariant || 'default'}
-                    size="sm"
-                    className="ml-1 sm:ml-2"
-                />
             </div>
-            {/* Direita: Campos de avaliação + seta (mobile: lado a lado) */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            {/* Direita: Campos de avaliação + badge + seta */}
+            <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end w-full sm:max-w-[60%]">
+                {/* Badge fixa à esquerda da autoavaliação (desktop) ou nota final (mobile) */}
+                {isMobile && finalIdx !== -1 && (
+                    <Badge
+                        label={collaborator.status}
+                        variant={collaborator.statusVariant || 'default'}
+                        size="sm"
+                        className="ml-1 sm:ml-2"
+                    />
+                )}
+                {!isMobile && autoIdx !== -1 && (
+                    <Badge
+                        label={collaborator.status}
+                        variant={collaborator.statusVariant || 'default'}
+                        size="sm"
+                        className="ml-1 sm:ml-2"
+                    />
+                )}
                 {evaluationFields.map((field, idx) => {
                     const isNotaFinal =
                         field.label === 'Nota final' &&

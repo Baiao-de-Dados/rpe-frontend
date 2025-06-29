@@ -22,7 +22,7 @@ export const mockCollaborators: Collaborator[] = [
     },
     {
         id: 'colab-002',
-        nome: 'Colaborador 2',
+        nome: 'Colaborador Lorenzo',
         cargo: 'Frontend Developer',
     },
     {
