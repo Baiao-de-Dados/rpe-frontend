@@ -33,7 +33,7 @@ export function SectionRenderer({ activeSection }: SectionRendererProps) {
                 return <PillarSection />;
             case 'Trilhas':
                 return <TrackSection />;
-            case 'Ciclo':
+            case 'Ciclos':
                 return <CycleSection />;
             default:
                 return <PillarSection />;

@@ -36,6 +36,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         initializeAuth();
     }, []);
 
+    // MOCK DE USUÁRIO PARA DESENVOLVIMENTO
+    useEffect(() => {
+        // Só mocka se não houver usuário já salvo
+        if (!user) {
+            setUser({
+                id: 1,
+                name: 'Usuário Mockado',
+                email: 'mock@rocketlab.com',
+                roles: ['RH'],
+                department: 'TI',
+                position: 'Desenvolvedor',
+                avatar: undefined,
+                isActive: true,
+                lastLogin: new Date(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        }
+    }, [user]);
+
     const login = async ({ email, password }: LoginRequest) => {
         try {
             setLoading(true);

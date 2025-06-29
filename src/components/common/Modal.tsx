@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
 
 interface ModalProps {
     open: boolean;
@@ -38,11 +39,11 @@ export default function Modal({
         onClose();
     };
 
-    return (
+    return createPortal(
         <AnimatePresence>
             {open || isVisible ? (
                 <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs animate-fadeIn"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-xs animate-fadeIn"
                     onClick={handleClose}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -63,6 +64,11 @@ export default function Modal({
                     </motion.div>
                 </motion.div>
             ) : null}
-        </AnimatePresence>
+        </AnimatePresence>,
+        typeof window !== 'undefined' &&
+            typeof document !== 'undefined' &&
+            document.body
+            ? document.body
+            : document.createElement('div'),
     );
 }

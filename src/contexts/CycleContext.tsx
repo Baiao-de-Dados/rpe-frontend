@@ -11,9 +11,10 @@ import { useToast } from '../hooks/useToast';
 const mockCurrentCycle: Cycle = {
     id: '2025.1',
     nome: '2025.1',
-    isOpen: false,
+    isOpen: true,
+    allTracksSet: true,
     dataInicio: '2025-01-01',
-    dataFim: '2025-06-30',
+    dataFim: '2025-06-29',
 };
 
 export const CycleProvider: React.FC<{ children: ReactNode }> = ({

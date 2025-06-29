@@ -97,9 +97,11 @@ export default function CollapsibleCardSection({
                                 />
                             </div>
                         </div>
-                        <span className="text-gray-500 text-xs mt-1 block">
-                            A trilha deve ter de 12 a 17 critérios
-                        </span>
+                        {track && (
+                            <span className="text-gray-500 text-xs mt-1 block">
+                                A trilha deve ter de 12 a 17 critérios
+                            </span>
+                        )}
                     </div>
                     {/* Se houver headerRight, mostra abaixo (caso PillarSection) */}
                     {headerRight && (
@@ -171,9 +173,11 @@ export default function CollapsibleCardSection({
                                 />
                             </div>
                         </div>
-                        <span className="text-gray-500 text-xs mt-1 block">
-                            A trilha deve ter de 12 a 17 critérios
-                        </span>
+                        {track && (
+                            <span className="text-gray-500 text-xs mt-1 block">
+                                A trilha deve ter de 12 a 17 critérios
+                            </span>
+                        )}
                     </div>
                     <div className="flex items-center gap-2">{headerRight}</div>
                 </div>

@@ -1,3 +1,7 @@
-export type SectionType = 'Pilares' | 'Trilhas' | 'Ciclo';
+export type SectionType = 'Pilares' | 'Trilhas' | 'Ciclos';
 
-export const criterionSections: SectionType[] = ['Pilares', 'Trilhas', 'Ciclo'];
+export const criterionSections: SectionType[] = [
+    'Pilares',
+    'Trilhas',
+    'Ciclos',
+];
