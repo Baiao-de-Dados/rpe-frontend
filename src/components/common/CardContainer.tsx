@@ -19,6 +19,7 @@ const CardContainer: React.FC<CardContainerProps> = ({
                 ${!hasCustomBgClass ? 'bg-white' : ''} rounded-2xl shadow-sm 
                 ${noPadding ? '' : 'p-6'} 
                 ${className}
+                h-full
             `}
         >
             {children}

@@ -3,6 +3,7 @@ export interface Collaborator {
     nome: string;
     cargo: string;
     avatar?: string;
+    image?: string; // Adicionado para compatibilidade com componentes
 }
 
 export interface CollaboratorEvaluation {

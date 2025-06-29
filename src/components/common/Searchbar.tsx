@@ -45,20 +45,18 @@ const SearchBar = <T,>({
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        // Memoize excludeItems and getItemKey to avoid unnecessary rerenders/loops
+        const exclude = excludeItems || [];
+        const getKey = getItemKey;
         if (searchFunction && value.trim() && showResults) {
             const searchResults = searchFunction(value);
             const filteredResults =
-                excludeItems.length > 0
+                exclude.length > 0 && getKey
                     ? searchResults.filter(item => {
-                          const itemKey = getItemKey
-                              ? getItemKey(item)
-                              : JSON.stringify(item);
-                          return !excludeItems.some(excludeItem => {
-                              const excludeKey = getItemKey
-                                  ? getItemKey(excludeItem)
-                                  : JSON.stringify(excludeItem);
-                              return itemKey === excludeKey;
-                          });
+                          const itemKey = getKey(item);
+                          return !exclude.some(
+                              excludeItem => getKey(excludeItem) === itemKey,
+                          );
                       })
                     : searchResults;
 
@@ -68,14 +66,7 @@ const SearchBar = <T,>({
             setResults([]);
             setIsOpen(false);
         }
-    }, [
-        value,
-        searchFunction,
-        showResults,
-        maxResults,
-        excludeItems,
-        getItemKey,
-    ]);
+    }, [value, searchFunction, showResults, maxResults]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

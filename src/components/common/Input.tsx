@@ -25,9 +25,9 @@ const Input: React.FC<InputProps> = ({
                 )}
                 <input
                     className={cn(
-                        'w-full h-[5vh] px-3 py-2 bg-gray-100  rounded-[10px]',
+                        'w-full h-[5vh] px-3 py-2 bg-gray-100 rounded-[10px] shadow-sm',
                         'text-sm text-gray-500 placeholder:text-[#8b949e]',
-                        'focus:outline-none focus:ring-1 focus:border-gray-500',
+                        'focus:outline-none focus:ring-1 focus:border-gray-300',
                         'disabled:bg-[#21262d] disabled:text-[#8b949e] disabled:cursor-not-allowed',
                         'transition-colors duration-200',
                         leftIcon && 'pl-10',

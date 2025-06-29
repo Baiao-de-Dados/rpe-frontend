@@ -12,7 +12,8 @@ interface TypographyProps {
         | 'warning'
         | 'gradient'
         | 'white'
-        | 'link';
+        | 'link'
+        | 'inherit';
     onClick?: () => void;
 }
 
@@ -56,9 +57,7 @@ export default function Typography({
 
     return (
         <Tag
-            className={`${variants[variant]} ${colors[color]}${
-                onClick ? ' cursor-pointer' : ''
-            } ${className}`}
+            className={`${variants[variant]}${onClick ? ' cursor-pointer' : ''} ${color !== 'inherit' ? colors[color] : ''} ${className}`}
             onClick={onClick}
         >
             {children}

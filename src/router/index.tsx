@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import { ProtectedRoute, RoleRoute, HierarchyRoute } from './ProtectedRoute';
 import { MultiRoleRoute } from './MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
-import { Dashboard } from '../pages/Dashboard';
+import { Dashboard } from '../pages/Dashboard/index';
 import { Colaboradores } from '../pages/Colaboradores';
 import { Criterios } from '../pages/RH/Criterios';
 import { ImportarHistoricos } from '../pages/RH/ImportarHistoricos';
@@ -69,7 +69,7 @@ export function Router() {
                         element={
                             <RoleRoute
                                 requiredRoles={[
-                                    UserRoleEnum.MANAGER,
+                                    UserRoleEnum.RH,
                                     UserRoleEnum.COMMITTEE,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
@@ -85,7 +85,7 @@ export function Router() {
                         element={
                             <RoleRoute
                                 requiredRoles={[
-                                    UserRoleEnum.LEADER,
+                                    UserRoleEnum.RH,
                                     UserRoleEnum.MENTOR,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
