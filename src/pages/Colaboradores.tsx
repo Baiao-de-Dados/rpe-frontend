@@ -84,13 +84,18 @@ export function Colaboradores() {
     return (
         <div className="min-h-screen bg-[#f6f6f6]">
             {/* Header branco fixo */}
-            <header className="bg-white border-b border-[#e5e5e5] px-2 sm:px-4 md:px-8 py-4 sm:py-6">
-                <Typography
-                    variant="h2"
-                    className="text-lg sm:text-xl font-bold"
-                >
-                    Colaboradores
-                </Typography>
+            <header className="bg-white border-b border-[#e5e5e5] px-2 sm:px-4 md:px-8 py-6 sm:py-6 min-h-[100px] flex flex-col justify-center">
+                <div className="flex flex-col items-start w-full">
+                    {/* Espaço reservado para o ícone do menu fixo no mobile */}
+                    <div className="block lg:hidden w-[58px] min-w-[58px] h-[58px] mb-1" />
+                    <Typography
+                        variant="h1"
+                        color="primary500"
+                        className="text-2xl sm:text-4xl font-bold mt-0 lg:mt-2"
+                    >
+                        Colaboradores
+                    </Typography>
+                </div>
             </header>
             {/* Conteúdo principal */}
             <main className="w-full max-w-[1600px] mx-auto px-2 sm:px-4 md:px-6 pt-4 sm:pt-6">
