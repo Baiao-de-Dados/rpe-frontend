@@ -3,13 +3,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     addPillarSchema,
     type AddPillarFormValues,
-} from '../../schemas/addPillarSchema';
-import Modal from '../common/Modal';
-import InputWithTitle from '../common/InputWithTitle';
-import Button from '../common/Button';
-import Typography from '../common/Typography';
-import { useCycle } from '../../hooks/useCycle';
-import { useToast } from '../../hooks/useToast';
+} from '../../../schemas/addPillarSchema';
+import Modal from '../../common/Modal';
+import InputWithTitle from '../../common/InputWithTitle';
+import Button from '../../common/Button';
+import Typography from '../../common/Typography';
+import { useCycle } from '../../../hooks/useCycle';
+import { useToast } from '../../../hooks/useToast';
+import { pillarEndpoints } from '../../../services/api/pillar';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { PILLARS_QUERY_KEY } from '../../../hooks/usePillarsQuery';
 
 interface AddPillarModalProps {
     open: boolean;
@@ -26,6 +29,27 @@ export default function AddPillarModal({ open, onClose }: AddPillarModalProps) {
     const { showToast } = useToast();
     const { currentCycle } = useCycle();
     const isCycleOpen = currentCycle?.isOpen;
+    const queryClient = useQueryClient();
+    const createPillarMutation = useMutation({
+        mutationFn: pillarEndpoints.createPillar,
+        onSuccess: () => {
+            showToast('Pilar adicionado com sucesso!', 'success', {
+                title: 'Novo pilar',
+                duration: 4000,
+            });
+            form.reset();
+            onClose();
+            queryClient.invalidateQueries({ queryKey: PILLARS_QUERY_KEY });
+        },
+        onError: () => {
+            showToast('Tente novamente mais tarde.', 'error', {
+                title: 'Erro ao criar pilar',
+                duration: 8000,
+            });
+            form.reset();
+            onClose();
+        },
+    });
 
     const handleSubmit = (data: AddPillarFormValues) => {
         if (isCycleOpen) {
@@ -39,13 +63,7 @@ export default function AddPillarModal({ open, onClose }: AddPillarModalProps) {
             );
             return;
         }
-        console.log(data);
-        showToast('Pilar adicionado com sucesso!', 'success', {
-            title: 'Novo pilar',
-            duration: 4000,
-        });
-        form.reset();
-        onClose();
+        createPillarMutation.mutate({ name: data.name });
     };
 
     const handleClose = () => {
@@ -89,14 +107,20 @@ export default function AddPillarModal({ open, onClose }: AddPillarModalProps) {
                     <Button
                         type="submit"
                         variant="primary"
-                        disabled={!form.formState.isValid || isCycleOpen}
+                        disabled={
+                            !form.formState.isValid ||
+                            isCycleOpen ||
+                            createPillarMutation.isPending
+                        }
                         title={
                             isCycleOpen
                                 ? 'Não é possível adicionar pilares porque o ciclo está aberto.'
                                 : undefined
                         }
                     >
-                        Adicionar
+                        {createPillarMutation.isPending
+                            ? 'Adicionando...'
+                            : 'Adicionar'}
                     </Button>
                 </div>
             </form>

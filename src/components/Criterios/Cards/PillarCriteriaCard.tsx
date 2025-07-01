@@ -1,7 +1,7 @@
 import { ArrowLeft, ChevronDown } from 'lucide-react';
 import InputWithTitle from '../../common/InputWithTitle';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../../common/Button';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,40 +10,106 @@ import {
     type PillarCriteriaFormValues,
 } from '../../../schemas/pillarCriteriaFormSchema';
 import { useToast } from '../../../hooks/useToast';
-import AddCriterionModal from '../AddCriterionModal';
 import { useCycle } from '../../../hooks/useCycle';
+import AddCriterionModal from '../Modals/AddCriterionModal';
+import type { Criteria } from '../../../types/pillar';
+import { pillarEndpoints } from '../../../services/api/pillar';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { PILLARS_QUERY_KEY } from '../../../hooks/usePillarsQuery';
 
 interface PillarCriteriaCardProps {
-    title: string;
-    criteria: { id: string; name: string; description?: string }[];
-    pillarId: string;
+    pillarName: string;
+    criteria: Criteria[];
+    pillarId: number;
     onBack?: () => void;
 }
 
 export function PillarCriteriaCard({
-    title,
+    pillarName,
     criteria,
     pillarId,
     onBack,
 }: PillarCriteriaCardProps) {
-    const [openIds, setOpenIds] = useState<string[]>([]);
+    const [openIds, setOpenIds] = useState<number[]>([]);
     const [isAddModalOpen, setAddModalOpen] = useState(false);
     const { showToast } = useToast();
     const { currentCycle } = useCycle();
     const isCycleOpen = currentCycle?.isOpen;
+    const [isModified, setIsModified] = useState(false);
 
-    const form = useForm<PillarCriteriaFormValues>({
+    const {
+        control,
+        handleSubmit,
+        formState: { isValid, errors },
+        reset,
+        watch,
+        setValue,
+    } = useForm<PillarCriteriaFormValues>({
         resolver: zodResolver(pillarCriteriaFormSchema),
         defaultValues: { criteria },
         mode: 'onChange',
     });
 
+    useEffect(() => {
+        const subscription = watch(value => {
+            const hasChanged =
+                JSON.stringify(value.criteria) !== JSON.stringify(criteria);
+            setIsModified(hasChanged);
+        });
+        return () => subscription.unsubscribe?.();
+    }, [watch, criteria]);
+
+    useEffect(() => {
+        reset({ criteria });
+    }, [reset, criteria]);
+
     const { fields } = useFieldArray({
-        control: form.control,
+        control,
         name: 'criteria',
     });
 
-    const toggleOpen = (id: string) => {
+    const queryClient = useQueryClient();
+
+    const updateCriteriasMutation = useMutation({
+        mutationFn: pillarEndpoints.updateCriterias,
+        onSuccess: () => {
+            showToast(
+                'Os critérios do pilar foram salvos com sucesso!',
+                'success',
+                {
+                    title: 'Critérios atualizados',
+                    duration: 4000,
+                },
+            );
+            queryClient.invalidateQueries({ queryKey: PILLARS_QUERY_KEY });
+        },
+        onError: () => {
+            showToast('Tente novamente mais tarde!', 'error', {
+                title: 'Erro ao salvar critérios',
+                duration: 8000,
+            });
+        },
+    });
+
+    const createCriteriaMutation = useMutation({
+        mutationFn: pillarEndpoints.createCriteria,
+        onSuccess: () => {
+            showToast('Critério adicionado com sucesso!', 'success', {
+                title: 'Novo critério',
+                duration: 4000,
+            });
+            setAddModalOpen(false);
+            queryClient.invalidateQueries({ queryKey: PILLARS_QUERY_KEY });
+        },
+        onError: () => {
+            showToast('Tente novamente mais tarde.', 'error', {
+                title: 'Erro ao adicionar critério',
+                duration: 8000,
+            });
+        },
+    });
+
+    const toggleOpen = (id: number) => {
         setOpenIds(prev =>
             prev.includes(id)
                 ? prev.filter(openId => openId !== id)
@@ -63,21 +129,17 @@ export function PillarCriteriaCard({
             );
             return;
         }
-        console.log('Dados salvos:', data);
-        showToast(
-            'Os critérios do pilar foram salvos com sucesso!',
-            'success',
-            {
-                title: 'Critérios atualizados',
+        if (!data.criteria || data.criteria.length === 0) {
+            showToast('Adicione pelo menos um critério para salvar.', 'error', {
+                title: 'Nenhum critério informado',
                 duration: 4000,
-            },
-        );
+            });
+            return;
+        }
+        updateCriteriasMutation.mutate(data);
     };
 
-    const handleAddCriterion = (data: {
-        name: string;
-        description: string;
-    }) => {
+    const handleAddCriterion = (name: string, description: string) => {
         if (isCycleOpen) {
             showToast(
                 'Não é possível adicionar critérios enquanto o ciclo estiver aberto.',
@@ -89,17 +151,12 @@ export function PillarCriteriaCard({
             );
             return;
         }
-        console.log(data);
-        showToast('Critério adicionado com sucesso!', 'success', {
-            title: 'Novo critério',
-            duration: 4000,
-        });
-        setAddModalOpen(false);
+        createCriteriaMutation.mutate({ pillarId, name, description });
     };
 
     return (
         <>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                 <div className="bg-white rounded-xl shadow-lg p-4 pt-6 sm:p-8 w-full relative">
                     <div className="flex items-center mb-6 gap-2 justify-between flex-wrap">
                         <div className="flex items-center gap-2 min-w-0">
@@ -115,7 +172,7 @@ export function PillarCriteriaCard({
                                 </button>
                             )}
                             <span className="font-bold text-xl truncate text-primary-700">
-                                Critérios de {title}
+                                Critérios de {pillarName}
                             </span>
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
@@ -123,11 +180,21 @@ export function PillarCriteriaCard({
                                 variant="secondary"
                                 size="sm"
                                 type="submit"
-                                disabled={isCycleOpen}
+                                disabled={
+                                    !isValid ||
+                                    !isModified ||
+                                    isCycleOpen ||
+                                    fields.length === 0 ||
+                                    updateCriteriasMutation.isPending
+                                }
                                 title={
                                     isCycleOpen
-                                        ? 'Não é possível alterar porque o ciclo está aberto.'
-                                        : undefined
+                                        ? 'Não é possível alterar porque o ciclo está aberto'
+                                        : fields.length === 0
+                                          ? 'Adicione pelo menos um critério para salvar'
+                                          : !isModified
+                                            ? 'Nenhuma alteração foi feita'
+                                            : undefined
                                 }
                                 className="flex-1 sm:flex-none"
                             >
@@ -138,7 +205,10 @@ export function PillarCriteriaCard({
                                 size="sm"
                                 type="button"
                                 onClick={() => setAddModalOpen(true)}
-                                disabled={isCycleOpen}
+                                disabled={
+                                    isCycleOpen ||
+                                    createCriteriaMutation.isPending
+                                }
                                 title={
                                     isCycleOpen
                                         ? 'Não é possível adicionar critério com ciclo aberto.'
@@ -151,84 +221,90 @@ export function PillarCriteriaCard({
                         </div>
                     </div>
                     <div className="divide-y divide-gray-200 overflow-y-auto pr-2">
-                        {fields.map((crit, idx) => {
-                            const isOpen = openIds.includes(crit.id);
-                            return (
-                                <div
-                                    key={crit.id}
-                                    className="bg-white first:pt-0 pt-4 pb-4 last:pb-0 border-b border-gray-200 last:border-b-0"
-                                >
+                        {fields.length === 0 ? (
+                            <div className="text-center text-gray-400 py-8">
+                                Nenhum critério cadastrado para este pilar
+                            </div>
+                        ) : (
+                            fields.map((crit, idx) => {
+                                const isOpen = openIds.includes(crit.id);
+                                return (
                                     <div
-                                        className="flex items-center justify-between cursor-pointer select-none"
-                                        onClick={() => toggleOpen(crit.id)}
+                                        key={crit.id}
+                                        className="bg-white first:pt-0 pt-4 pb-4 last:pb-0 border-b border-gray-200 last:border-b-0"
                                     >
-                                        <span className="font-semibold text-primary-600">
-                                            {form.watch(
-                                                `criteria.${idx}.name`,
-                                            ) || 'Novo critério'}
-                                        </span>
                                         <div
-                                            className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                                            className="flex items-center justify-between cursor-pointer select-none"
+                                            onClick={() => toggleOpen(crit.id)}
+                                        >
+                                            <span className="font-semibold text-primary-600">
+                                                {watch(
+                                                    `criteria.${idx}.name`,
+                                                ) || 'Novo critério'}
+                                            </span>
+                                            <div
+                                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${
+                                                    isOpen
+                                                        ? 'rotate-180'
+                                                        : 'rotate-0'
+                                                }`}
+                                            >
+                                                <ChevronDown size={24} />
+                                            </div>
+                                        </div>
+                                        <div
+                                            className={`transition-all duration-300 ease-in-out overflow-hidden ${
                                                 isOpen
-                                                    ? 'rotate-180'
-                                                    : 'rotate-0'
+                                                    ? 'max-h-[500px] opacity-100'
+                                                    : 'max-h-0 opacity-0'
                                             }`}
                                         >
-                                            <ChevronDown size={24} />
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                                            isOpen
-                                                ? 'max-h-[500px] opacity-100'
-                                                : 'max-h-0 opacity-0'
-                                        }`}
-                                    >
-                                        <div className="p-0 pt-4 grid grid-cols-1 gap-4">
-                                            <InputWithTitle
-                                                title="Nome do Critério"
-                                                value={form.watch(
-                                                    `criteria.${idx}.name`,
-                                                )}
-                                                readOnly={isCycleOpen}
-                                                onChange={e =>
-                                                    form.setValue(
+                                            <div className="p-0 pt-4 grid grid-cols-1 gap-4">
+                                                <InputWithTitle
+                                                    title="Nome do Critério"
+                                                    value={watch(
                                                         `criteria.${idx}.name`,
-                                                        e.target.value,
-                                                        {
-                                                            shouldValidate:
-                                                                true,
-                                                        },
-                                                    )
-                                                }
-                                                error={
-                                                    form.formState.errors
-                                                        .criteria?.[idx]?.name
-                                                        ?.message
-                                                }
-                                                labelPosition="top"
-                                            />
-                                            <TextAreaWithTitle
-                                                title="Descrição"
-                                                placeholder="Descrição do critério"
-                                                value={
-                                                    form.watch(
-                                                        `criteria.${idx}.description`,
-                                                    ) || ''
-                                                }
-                                                readOnly={isCycleOpen}
-                                                onChange={e =>
-                                                    form.setValue(
-                                                        `criteria.${idx}.description`,
-                                                        e.target.value,
-                                                    )
-                                                }
-                                            />
+                                                    )}
+                                                    readOnly={isCycleOpen}
+                                                    onChange={e =>
+                                                        setValue(
+                                                            `criteria.${idx}.name`,
+                                                            e.target.value,
+                                                            {
+                                                                shouldValidate:
+                                                                    true,
+                                                            },
+                                                        )
+                                                    }
+                                                    error={
+                                                        errors.criteria?.[idx]
+                                                            ?.name?.message
+                                                    }
+                                                    labelPosition="top"
+                                                    maxLength={100}
+                                                />
+                                                <TextAreaWithTitle
+                                                    title="Descrição"
+                                                    placeholder="Descrição do critério"
+                                                    value={
+                                                        watch(
+                                                            `criteria.${idx}.description`,
+                                                        ) || ''
+                                                    }
+                                                    readOnly={isCycleOpen}
+                                                    onChange={e =>
+                                                        setValue(
+                                                            `criteria.${idx}.description`,
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })
+                        )}
                     </div>
                 </div>
             </form>
@@ -236,7 +312,6 @@ export function PillarCriteriaCard({
                 open={isAddModalOpen}
                 onClose={() => setAddModalOpen(false)}
                 onAdd={handleAddCriterion}
-                pillarId={pillarId}
             />
         </>
     );

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { AuthContext } from './AuthContextDefinition';
 import type { User, LoginRequest } from '../types/auth';
-import { authEndpoints } from '../services/api';
 import type { AxiosError } from 'axios';
+import { authEndpoints } from '../services/api/auth';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -10,7 +10,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const isAuthenticated = !!user;
 
-    // Inicializar - verificar se há usuário salvo
     useEffect(() => {
         const initializeAuth = async () => {
             const token = localStorage.getItem('@rpe:token');
@@ -36,30 +35,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         initializeAuth();
     }, []);
 
-    // MOCK DE USUÁRIO PARA DESENVOLVIMENTO
-    useEffect(() => {
-        // Só mocka se não houver usuário já salvo
-        if (!user) {
-            setUser({
-                id: 1,
-                name: 'Usuário Mockado',
-                email: 'mock@rocketlab.com',
-                roles: ['RH'],
-                department: 'TI',
-                position: 'Desenvolvedor',
-                avatar: undefined,
-                isActive: true,
-                lastLogin: new Date(),
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            });
-        }
-    }, [user]);
-
     const login = async ({ email, password }: LoginRequest) => {
         try {
             setLoading(true);
-            const response = await authEndpoints.login(email, password);
+            const response = await authEndpoints.login({ email, password });
 
             const { access_token, user: userData } = response.data;
 
@@ -77,21 +56,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const logout = async () => {
-        // Limpa estado local IMEDIATAMENTE
         localStorage.removeItem('@rpe:token');
         localStorage.removeItem('@rpe:user');
         setUser(null);
 
-        // Tenta logout no backend em background (não bloqueia UI)
         try {
             await authEndpoints.logout();
         } catch {
-            // Ignora erros - o importante é que o frontend já fez logout
             console.warn('Erro no logout no servidor (ignorado)');
         }
     };
 
-    // Implementa o checkAuth conforme exigido pelo AuthContextType
     const checkAuth = async () => {
         const token = localStorage.getItem('@rpe:token');
         const savedUser = localStorage.getItem('@rpe:user');

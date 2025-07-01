@@ -1,11 +1,11 @@
-// src/services/api.ts
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+
 const api = axios.create({
     baseURL: API_URL,
     headers: { 'Content-Type': 'application/json' },
-    timeout: 3000, // Reduzido para 3 segundos
+    timeout: 3000,
 });
 
 api.interceptors.request.use(config => {
@@ -30,11 +30,10 @@ api.interceptors.response.use(
                 '[AXIOS][RESPONSE] Erro 401 Unauthorized. URL:',
                 error.config.url,
             );
-            // Remover token inválido
+
             localStorage.removeItem('@rpe:token');
             localStorage.removeItem('@rpe:user');
 
-            // Redirecionar para login se não estiver já na página de login
             if (window.location.pathname !== '/login') {
                 window.location.href = '/login';
             }
@@ -42,13 +41,5 @@ api.interceptors.response.use(
         return Promise.reject(error);
     },
 );
-
-export const authEndpoints = {
-    login: (email: string, password: string) =>
-        api.post('/auth/login', { email, password }),
-    me: () => api.get('/auth/me'),
-    createUser: (userData: unknown) => api.post('/auth/create-user', userData),
-    logout: () => api.post('/auth/logout'),
-};
 
 export default api;

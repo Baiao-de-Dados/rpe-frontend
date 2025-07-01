@@ -11,7 +11,7 @@ import { useToast } from '../hooks/useToast';
 const mockCurrentCycle: Cycle = {
     id: '2025.1',
     nome: '2025.1',
-    isOpen: true,
+    isOpen: false,
     allTracksSet: true,
     dataInicio: '2025-01-01',
     dataFim: '2025-06-29',

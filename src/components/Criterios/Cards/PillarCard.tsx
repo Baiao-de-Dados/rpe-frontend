@@ -11,7 +11,7 @@ export function PillarCard({
                 {title}
             </div>
             <div className="text-gray-500 text-xs sm:text-sm">
-                {criteriaCount} critérios
+                {criteriaCount} {criteriaCount === 1 ? 'Critério' : 'Critérios'}
             </div>
         </div>
     );

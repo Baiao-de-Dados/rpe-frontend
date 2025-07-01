@@ -3,29 +3,23 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     addCriterionSchema,
     type AddCriterionFormValues,
-} from '../../schemas/addCriterionSchema';
-import Modal from '../common/Modal';
-import InputWithTitle from '../common/InputWithTitle';
-import TextAreaWithTitle from '../common/TextAreaWithTitle';
-import Button from '../common/Button';
-import Typography from '../common/Typography';
+} from '../../../schemas/addCriterionSchema';
+import Modal from '../../common/Modal';
+import InputWithTitle from '../../common/InputWithTitle';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+import Button from '../../common/Button';
+import Typography from '../../common/Typography';
 
 interface AddCriterionModalProps {
     open: boolean;
     onClose: () => void;
-    onAdd: (data: {
-        name: string;
-        description: string;
-        pillarId: string;
-    }) => void;
-    pillarId: string;
+    onAdd: (name: string, description: string) => void;
 }
 
 export default function AddCriterionModal({
     open,
     onClose,
     onAdd,
-    pillarId,
 }: AddCriterionModalProps) {
     const form = useForm<AddCriterionFormValues>({
         resolver: zodResolver(addCriterionSchema),
@@ -34,11 +28,7 @@ export default function AddCriterionModal({
     });
 
     const handleSubmit = (values: AddCriterionFormValues) => {
-        onAdd({
-            name: values.name,
-            description: values.description ?? '',
-            pillarId,
-        });
+        onAdd(values.name, values.description ?? '');
         form.reset();
         onClose();
     };
