@@ -92,10 +92,7 @@ export function TrackSection() {
         }
     }, [tracksLoadingError, showToast]);
 
-    const defaultValues: TrackSectionFormType = useMemo(
-        () => createTrackDefaultValues(tracks || [], pillars || [], tracksCriteria),
-        [pillars, tracksCriteria, tracks],
-    );
+    const defaultValues: TrackSectionFormType = useMemo(() => createTrackDefaultValues(tracks || [], pillars || [], tracksCriteria), [pillars, tracksCriteria, tracks]);
 
     const {
         control,
@@ -140,21 +137,10 @@ export function TrackSection() {
         <form onSubmit={handleSubmit(processTracks)} className="space-y-6">
             <div className="flex items-center gap-4">
                 <div className="flex-1">
-                    <SearchBar
-                        value={search}
-                        onChange={setSearch}
-                        placeholder="Buscar trilha..."
-                        showResults={false}
-                        className="w-full"
-                        excludeItems={memoizedExcludeItems}
-                    />
+                    <SearchBar value={search} onChange={setSearch} placeholder="Buscar trilha..." showResults={false} className="w-full" excludeItems={memoizedExcludeItems} />
                 </div>
 
-                <TrackSubmitButton
-                    isCycleClosed={isCycleClosed}
-                    isSubmitting={isSubmitting || setTracksMutation.isPending}
-                    isValid={isValid && !!tracks && tracks.length > 0 && !tracksLoadingError}
-                />
+                <TrackSubmitButton isCycleClosed={isCycleClosed} isSubmitting={isSubmitting || setTracksMutation.isPending} isValid={isValid && !!tracks && tracks.length > 0 && !tracksLoadingError} />
             </div>
 
             {filteredTrackIndexes.map((trackIdx: number) => (
@@ -163,22 +149,8 @@ export function TrackSection() {
                     control={control}
                     name={`tracks.${trackIdx}` as const}
                     render={({ field }) => (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{
-                                duration: shouldReduceMotion ? 0.01 : 0.3,
-                                ease: [0.4, 0, 0.2, 1],
-                                delay: shouldReduceMotion ? 0 : trackIdx * 0.13,
-                            }}
-                        >
-                            <TrackCard
-                                track={watchedTracks?.[trackIdx] || field.value}
-                                trackIdx={trackIdx}
-                                control={control}
-                                isCycleClosed={isCycleClosed}
-                                errors={errors?.tracks?.[trackIdx]}
-                            />
+                        <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: shouldReduceMotion ? 0.01 : 0.3, ease: [0.4, 0, 0.2, 1], delay: shouldReduceMotion ? 0 : trackIdx * 0.13 }}>
+                            <TrackCard track={watchedTracks?.[trackIdx] || field.value} trackIdx={trackIdx} control={control} isCycleClosed={isCycleClosed} errors={errors?.tracks?.[trackIdx]} />
                         </motion.div>
                     )}
                 />
