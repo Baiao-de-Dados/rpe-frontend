@@ -2,8 +2,7 @@ import { z } from 'zod';
 
 export const CriterionSchema = z
     .object({
-        id: z.string(),
-        name: z.string(),
+        id: z.number(),
         isActive: z.boolean(),
         weight: z.string().optional(),
     })
@@ -32,35 +31,27 @@ export const CriterionSchema = z
     });
 
 export const PillarSchema = z.object({
-    id: z.string(),
-    title: z.string(),
+    id: z.number(),
     criteria: z.array(CriterionSchema).refine(
         criteria => {
             const active = criteria.filter(c => c.isActive);
             if (active.length === 0) return true;
-            const sum = active.reduce(
-                (acc, c) => acc + (c.weight ? Number(c.weight) : 0),
-                0,
-            );
+            const sum = active.reduce((acc, c) => acc + (c.weight ? Number(c.weight) : 0), 0);
             return sum === 100;
         },
         {
-            message:
-                'A soma dos pesos dos critérios ativos em um pilar deve ser exatamente 100%',
+            message: 'A soma dos pesos dos critérios ativos em um pilar deve ser exatamente 100%',
         },
     ),
 });
 
 export const TrackSchema = z
     .object({
-        id: z.string(),
-        title: z.string(),
+        id: z.number(),
         pillars: z.array(PillarSchema),
     })
     .superRefine((track, ctx) => {
-        const allActiveCriteria = track.pillars.flatMap(pillar =>
-            pillar.criteria.filter(c => c.isActive),
-        );
+        const allActiveCriteria = track.pillars.flatMap(pillar => pillar.criteria.filter(c => c.isActive));
         if (allActiveCriteria.length < 12) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,

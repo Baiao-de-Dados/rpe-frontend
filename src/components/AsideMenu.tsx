@@ -1,18 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import {
-    Menu,
-    LayoutGrid,
-    ClipboardPen,
-    ChartNoAxesCombined,
-    Settings,
-    Users,
-    LogOut,
-    X,
-    ChevronRight,
-    ChevronLeft,
-    FileUp,
-} from 'lucide-react';
+import { Menu, LayoutGrid, ClipboardPen, ChartNoAxesCombined, Settings, Users, LogOut, X, ChevronRight, ChevronLeft, FileUp } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useQueryState } from 'nuqs';
 
@@ -69,21 +57,9 @@ export default function AsideMenu() {
 
     return (
         <>
-            {isMenuOpened && (
-                <div
-                    className="hidden max-lg:block fixed inset-0 bg-black bg-opacity-50 z-[998]"
-                    onClick={closeMenu}
-                />
-            )}
+            {isMenuOpened && <div className="hidden max-lg:block fixed inset-0 bg-black bg-opacity-50 z-[998]" onClick={closeMenu} />}
 
-            {!isMenuOpened && (
-                <Menu
-                    onClick={openMenu}
-                    className="hidden max-lg:block fixed top-4 left-4 text-secondary-400 cursor-pointer z-[1000]"
-                    size={50}
-                    strokeWidth={2.5}
-                />
-            )}
+            {!isMenuOpened && <Menu onClick={openMenu} className="hidden max-lg:block fixed top-4 left-4 text-secondary-400 cursor-pointer z-[1000]" size={50} strokeWidth={2.5} />}
 
             <aside
                 className={`
@@ -94,40 +70,19 @@ export default function AsideMenu() {
                     ${isMenuOpened ? 'max-lg:w-full max-lg:flex max-lg:flex-col' : 'max-lg:w-0 max-lg:hidden'}
                 `}
                 style={{
-                    boxShadow: isNavExpanded
-                        ? '0 1px 3px 0 rgba(0, 0, 0, 0.05)'
-                        : 'none',
+                    boxShadow: isNavExpanded ? '0 1px 3px 0 rgba(0, 0, 0, 0.05)' : 'none',
                 }}
             >
-                <button
-                    onClick={toggleNav}
-                    className="hidden lg:flex absolute -right-3 top-1/2 transform -translate-y-1/2 bg-white border-2 border-neutral-300 rounded-full p-1 hover:bg-neutral-100 cursor-pointer transition-colors duration-200 z-10"
-                >
-                    {isNavExpanded ? (
-                        <ChevronLeft size={24} className="text-secondary-400" />
-                    ) : (
-                        <ChevronRight
-                            size={24}
-                            className="text-secondary-400"
-                        />
-                    )}
+                <button onClick={toggleNav} className="hidden lg:flex absolute -right-3 top-1/2 transform -translate-y-1/2 bg-white border-2 border-neutral-300 rounded-full p-1 hover:bg-neutral-100 cursor-pointer transition-colors duration-200 z-10" title={isNavExpanded ? 'Minimizar menu' : 'Expandir menu'}>
+                    {isNavExpanded ? <ChevronLeft size={24} className="text-secondary-400" /> : <ChevronRight size={24} className="text-secondary-400" />}
                 </button>
                 <div className="hidden max-lg:block max-lg:absolute max-lg:top-4 max-lg:left-4">
-                    <X
-                        onClick={closeMenu}
-                        className="text-secondary-400 cursor-pointer"
-                        size={50}
-                        strokeWidth={2.5}
-                    />
+                    <X onClick={closeMenu} className="text-secondary-400 cursor-pointer" size={50} strokeWidth={2.5} />
                 </div>
 
                 <div className="flex justify-center items-center w-full mb-4">
                     <Link to="/">
-                        <img
-                            className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-32 max-lg:h-32 max-lg:mt-8"
-                            src="/rpe-logo.png"
-                            alt="Logo"
-                        />
+                        <img className="w-14 h-14 transition-transform duration-300 mx-auto max-lg:w-32 max-lg:h-32 max-lg:mt-8" src="/rpe-logo.png" alt="Logo" />
                     </Link>
                 </div>
 
@@ -143,11 +98,9 @@ export default function AsideMenu() {
                                     max-lg:text-2xl max-lg:gap-4
                                     ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                 `}
+                                title="Dashboard"
                             >
-                                <LayoutGrid
-                                    size={32}
-                                    className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                />
+                                <LayoutGrid size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                 <span
                                     className={`
                                     opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out 
@@ -171,11 +124,9 @@ export default function AsideMenu() {
                                         max-lg:text-2xl max-lg:gap-4
                                         ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                     `}
+                                    title="Avaliação de ciclo"
                                 >
-                                    <ClipboardPen
-                                        size={32}
-                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                    />
+                                    <ClipboardPen size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span
                                         className={`
                                         opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
@@ -200,11 +151,9 @@ export default function AsideMenu() {
                                         max-lg:text-2xl max-lg:gap-4
                                         ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                     `}
+                                    title="Evolução"
                                 >
-                                    <ChartNoAxesCombined
-                                        size={32}
-                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                    />
+                                    <ChartNoAxesCombined size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span
                                         className={`
                                         opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
@@ -229,11 +178,9 @@ export default function AsideMenu() {
                                         max-lg:text-2xl max-lg:gap-4
                                         ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                     `}
+                                    title="Colaboradores"
                                 >
-                                    <Users
-                                        size={32}
-                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                    />
+                                    <Users size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span
                                         className={`
                                         opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
@@ -258,11 +205,9 @@ export default function AsideMenu() {
                                         max-lg:text-2xl max-lg:gap-4
                                         ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                     `}
+                                    title="Importar Histórico"
                                 >
-                                    <FileUp
-                                        size={32}
-                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                    />
+                                    <FileUp size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span
                                         className={`
                                         opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
@@ -279,7 +224,7 @@ export default function AsideMenu() {
                         {user?.roles.includes('RH') && (
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink
-                                    to={withNavParam('/criterios')}
+                                    to={withNavParam('/configuracoes')}
                                     onClick={closeMenu}
                                     className={({ isActive }) => `
                                         flex items-center gap-4 no-underline relative 
@@ -287,11 +232,9 @@ export default function AsideMenu() {
                                         max-lg:text-2xl max-lg:gap-4
                                         ${isActive ? 'text-primary-500' : 'text-secondary-400'}
                                     `}
+                                    title="Configurações"
                                 >
-                                    <Settings
-                                        size={32}
-                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                    />
+                                    <Settings size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span
                                         className={`
                                         opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
@@ -307,15 +250,8 @@ export default function AsideMenu() {
                     </ul>
 
                     <div className="flex w-full mt-auto lg:mt-auto max-lg:mt-8 max-lg:mb-32 max-lg:justify-start max-lg:pl-20">
-                        <div
-                            onClick={handleLogout}
-                            className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0"
-                        >
-                            <LogOut
-                                size={32}
-                                strokeWidth={2.5}
-                                className="flex-shrink-0 max-lg:w-12 max-lg:h-12"
-                            />
+                        <div onClick={handleLogout} className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0" title="Sair">
+                            <LogOut size={32} strokeWidth={2.5} className="flex-shrink-0 max-lg:w-12 max-lg:h-12" />
                             <span
                                 className={`
                                 opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out 
