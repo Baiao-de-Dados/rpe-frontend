@@ -1,10 +1,6 @@
 import { z } from 'zod';
 
-export const getExtendCycleSchema = (
-    minDate: string,
-    maxDate: string,
-    currentEndDate: string,
-) => {
+export const getExtendCycleSchema = (minDate: string, maxDate: string, currentEndDate: string) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
@@ -24,6 +20,4 @@ export const getExtendCycleSchema = (
     });
 };
 
-export type ExtendCycleSchema = z.infer<
-    ReturnType<typeof getExtendCycleSchema>
->;
+export type ExtendCycleSchema = z.infer<ReturnType<typeof getExtendCycleSchema>>;

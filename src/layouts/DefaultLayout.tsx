@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+
 import AsideMenu from '../components/AsideMenu';
 
 export function DefaultLayout() {

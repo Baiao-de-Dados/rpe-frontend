@@ -1,19 +1,26 @@
-import { useEffect, useState, useCallback, useMemo, memo } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
-import { AnimatePresence, motion } from 'framer-motion';
-import SearchBar from '../../common/Searchbar';
-import CollaboratorCard from '../../common/CollaboratorCard';
-import AnimatedCard from '../../common/AnimatedCard';
-import Typography from '../../common/Typography';
-import Reference from '../Cards/Reference';
-import { searchCollaborators } from '../../../data/mockCollaborators';
-import type { Collaborator } from '../../../data/mockCollaborators';
-import type { EvaluationFormData } from '../../../schemas/evaluation';
 import { useQueryState } from 'nuqs';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useEffect, useState, useCallback, useMemo, memo } from 'react';
+
+import Reference from '../Cards/Reference';
+import SearchBar from '../../common/Searchbar';
+import Typography from '../../common/Typography';
+import AnimatedCard from '../../common/AnimatedCard';
+import CollaboratorCard from '../../common/CollaboratorCard';
+
+import type { Collaborator } from '../../../data/mockCollaborators';
+import { searchCollaborators } from '../../../data/mockCollaborators';
+
+import type { EvaluationFormData } from '../../../schemas/evaluation';
+
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 export const ReferencesSection = memo(() => {
-    const { control, setValue, getValues } =
-        useFormContext<EvaluationFormData>();
+
+    const { variants } = useOptimizedAnimation();
+
+    const { control, setValue, getValues } = useFormContext<EvaluationFormData>();
 
     const [searchQuery, setSearchQuery] = useQueryState('ref_search', {
         defaultValue: '',
@@ -53,61 +60,49 @@ export const ReferencesSection = memo(() => {
         }
     }, [validFields.length]);
 
-    const selectedCollaborators = useCallback(
-        (searchCollaboratorIds: string[]) =>
-            searchCollaborators('').filter(c =>
-                searchCollaboratorIds.includes(c.id),
-            ),
-        [],
+    const selectedCollaborators = useCallback((searchCollaboratorIds: string[]) => {
+            return searchCollaborators('').filter(c => searchCollaboratorIds.includes(c.id))
+        },
+        []
     );
 
-    const addCollaborator = useCallback(
-        (collaborator: Collaborator) => {
-            append({
-                collaboratorId: collaborator.id,
-                justification: '',
-            });
+    const addCollaborator = useCallback((collaborator: Collaborator) => { 
+            append({collaboratorId: collaborator.id, justification: ''});
             setSearchQuery('');
         },
-        [append, setSearchQuery],
+        [append, setSearchQuery]
     );
 
-    const removeCollaborator = useCallback(
-        async (collaboratorId: string) => {
+    const removeCollaborator = useCallback(async (collaboratorId: string) => {
             const currentReferences = getValues('references') || [];
-            const newReferences = currentReferences.filter(
-                ref => ref.collaboratorId !== collaboratorId,
-            );
-
+            const newReferences = currentReferences.filter(ref => ref.collaboratorId !== collaboratorId);
             setValue('references', newReferences);
         },
         [getValues, setValue],
     );
 
-    const renderItem = useCallback(
-        (collaborator: Collaborator) => (
-            <CollaboratorCard collaborator={collaborator} variant="compact" />
-        ),
+    const renderItem = useCallback((collaborator: Collaborator) => 
+        <CollaboratorCard collaborator={collaborator} variant="compact" />,
         [],
     );
 
-    const excludeItems = useMemo(
-        () => selectedCollaborators(selectedCollaboratorIds),
+    const excludeItems = useMemo(() => 
+        selectedCollaborators(selectedCollaboratorIds),
         [selectedCollaborators, selectedCollaboratorIds],
     );
 
     return (
         <section>
             <div className="mb-8">
-                <SearchBar<Collaborator>
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    placeholder="Buscar por colaboradores"
-                    className="w-full"
-                    searchFunction={searchCollaborators}
+                <SearchBar<Collaborator> 
+                    value={searchQuery} 
+                    onChange={setSearchQuery} 
+                    placeholder="Buscar por colaboradores" 
+                    className="w-full" 
+                    searchFunction={searchCollaborators} 
                     onItemSelect={addCollaborator}
-                    renderItem={renderItem}
-                    excludeItems={excludeItems}
+                    renderItem={renderItem} 
+                    excludeItems={excludeItems} 
                     getItemKey={collaborator => collaborator.id}
                     noResultsMessage="Nenhum colaborador encontrado"
                 />
@@ -117,29 +112,20 @@ export const ReferencesSection = memo(() => {
                 <div className="space-y-6">
                     <AnimatePresence>
                         {validFields.map((field, validIndex) => {
-                            const collaborator = searchCollaborators('').find(
-                                c => c.id === field.collaboratorId,
-                            );
+                            const collaborator = searchCollaborators('').find(c => c.id === field.collaboratorId);
                             if (!collaborator) return null;
 
-                            const originalIndex = fields.findIndex(
-                                f => f.id === field.id,
-                            );
+                            const originalIndex = fields.findIndex(f => f.id === field.id);
                             const fieldName = `references.${originalIndex}.justification`;
 
                             return (
-                                <AnimatedCard
-                                    key={`ref-${field.collaboratorId}`}
-                                    index={validIndex}
-                                >
-                                    <Reference
-                                        collaborator={collaborator}
+                                <AnimatedCard key={`ref-${field.collaboratorId}`} index={validIndex}>
+                                    <Reference collaborator={collaborator} name={fieldName}
                                         onRemove={() =>
                                             removeCollaborator(
                                                 field.collaboratorId,
                                             )
                                         }
-                                        name={fieldName}
                                     />
                                 </AnimatedCard>
                             );
@@ -150,14 +136,7 @@ export const ReferencesSection = memo(() => {
 
             <AnimatePresence>
                 {showEmptyMessage && (
-                    <motion.div
-                        key="empty-message"
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 12 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="text-center py-12"
-                    >
+                    <motion.div key="empty-message" variants={variants.emptyMessage} initial="initial" animate="animate" exit="exit" className="text-center py-12">
                         <Typography variant="body" className="text-gray-500">
                             Nenhuma referência adicionada
                         </Typography>

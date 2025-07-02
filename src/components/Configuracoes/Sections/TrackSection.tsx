@@ -21,6 +21,7 @@ import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 import { useTracksCriteriaQuery, useSetTracksMutation, useTracksQuery } from '../../../hooks/useTracksCriteriaQuery';
 
 export function TrackSection() {
+
     const { showToast } = useToast();
 
     const { currentCycle } = useCycle();
@@ -28,7 +29,7 @@ export function TrackSection() {
 
     const [search, setSearch] = useState('');
 
-    const { shouldReduceMotion } = useOptimizedAnimation();
+    const { shouldReduceMotion, variants } = useOptimizedAnimation();
 
     const { data: pillars, isLoading: pillarsLoading, error: pillarsError } = usePillarsQuery();
     const { data: tracks, isLoading: tracksLoading, error: tracksLoadingError } = useTracksQuery();
@@ -94,11 +95,7 @@ export function TrackSection() {
 
     const defaultValues: TrackSectionFormType = useMemo(() => createTrackDefaultValues(tracks || [], pillars || [], tracksCriteria), [pillars, tracksCriteria, tracks]);
 
-    const {
-        control,
-        handleSubmit,
-        formState: { errors, isSubmitting, isValid },
-    } = useForm<TrackSectionFormType>({
+    const { control, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm<TrackSectionFormType>({
         resolver: zodResolver(TrackSectionSchema),
         defaultValues,
         mode: 'onSubmit',
@@ -144,12 +141,10 @@ export function TrackSection() {
             </div>
 
             {filteredTrackIndexes.map((trackIdx: number) => (
-                <Controller
-                    key={tracks?.[trackIdx]?.id || `track-${trackIdx}`}
-                    control={control}
-                    name={`tracks.${trackIdx}` as const}
+                <Controller key={tracks?.[trackIdx]?.id || `track-${trackIdx}`} control={control} 
+                name={`tracks.${trackIdx}` as const}
                     render={({ field }) => (
-                        <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: shouldReduceMotion ? 0.01 : 0.3, ease: [0.4, 0, 0.2, 1], delay: shouldReduceMotion ? 0 : trackIdx * 0.13 }}>
+                        <motion.div variants={variants.trackMotion} initial="initial" animate="animate" exit="exit" transition={{ duration: shouldReduceMotion ? 0.01 : 0.3, delay: shouldReduceMotion ? 0 : trackIdx * 0.13 }}>
                             <TrackCard track={watchedTracks?.[trackIdx] || field.value} trackIdx={trackIdx} control={control} isCycleClosed={isCycleClosed} errors={errors?.tracks?.[trackIdx]} />
                         </motion.div>
                     )}

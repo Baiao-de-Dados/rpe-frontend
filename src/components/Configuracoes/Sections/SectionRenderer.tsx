@@ -1,7 +1,12 @@
 import { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
+
 import { criterionSections, type SectionType } from './CriterionSections';
+
+import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
+
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
+
 import { SectionPreloader } from '../../Evaluation/Sections/SectionPreloader';
 
 const PillarSection = lazy(() =>
@@ -27,6 +32,9 @@ interface SectionRendererProps {
 }
 
 export function SectionRenderer({ activeSection }: SectionRendererProps) {
+
+    const { variants } = useOptimizedAnimation();
+
     const renderSection = () => {
         switch (activeSection) {
             case 'Pilares':
@@ -44,7 +52,7 @@ export function SectionRenderer({ activeSection }: SectionRendererProps) {
         <>
             <SectionPreloader activeSection={activeSection} sections={criterionSections} />
             <AnimatePresence mode="wait">
-                <motion.div key={activeSection} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: 'easeInOut' }} className="min-h-[200px]">
+                <motion.div key={activeSection} variants={variants.configSectionRenderer} initial="initial" animate="animate" exit="exit" className="min-h-[200px]">
                     <Suspense fallback={<SectionLoadingSpinner />}>{renderSection()}</Suspense>
                 </motion.div>
             </AnimatePresence>

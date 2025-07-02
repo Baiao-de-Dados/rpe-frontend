@@ -34,6 +34,7 @@ export interface TransformedEvaluationData {
 }
 
 export const transformFormData = (data: EvaluationFormData, ciclo: string = '2025.1', colaboradorId: string = '1'): TransformedEvaluationData => {
+
     const pilaresMap = new Map<string, CriterioOutput[]>();
 
     data.selfAssessment?.forEach(assessment => {
@@ -55,26 +56,19 @@ export const transformFormData = (data: EvaluationFormData, ciclo: string = '202
         criterios,
     }));
 
-    const avaliacao360 =
-        data.evaluation360?.map(evaluation => ({
+    const avaliacao360 = data.evaluation360?.map(evaluation => ({
             avaliadoId: evaluation.collaboratorId,
             pontosFortes: evaluation.strengths,
             pontosMelhoria: evaluation.improvements,
             justificativa: 'Justifique sua nota',
         })) || [];
 
-    const mentoring =
-        data.mentoringRating && data.mentoringJustification && data.mentorId
-            ? [
-                  {
-                      mentorId: data.mentorId,
-                      justificativa: data.mentoringJustification,
-                  },
-              ]
-            : [];
+    const mentoring = data.mentoringRating && data.mentoringJustification && data.mentorId ? [{
+                        mentorId: data.mentorId,
+                        justificativa: data.mentoringJustification,
+                    }] : [];
 
-    const referencias =
-        data.references?.map(reference => ({
+    const referencias = data.references?.map(reference => ({
             colaboradorId: reference.collaboratorId,
             justificativa: reference.justification,
         })) || [];
@@ -92,6 +86,7 @@ export const transformFormData = (data: EvaluationFormData, ciclo: string = '202
 };
 
 export const validateTransformedData = (data: TransformedEvaluationData): true | string => {
+
     if (!data.ciclo) return "Campo 'ciclo' é obrigatório";
     if (!data.colaboradorId) return "Campo 'colaboradorId' é obrigatório";
     if (!data.autoavaliacao?.pilares || data.autoavaliacao.pilares.length === 0) {
@@ -114,4 +109,5 @@ export const validateTransformedData = (data: TransformedEvaluationData): true |
     }
 
     return true;
+
 };

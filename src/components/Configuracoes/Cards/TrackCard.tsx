@@ -1,12 +1,14 @@
+import { useQueryState } from 'nuqs';
 import { Controller } from 'react-hook-form';
 import type { Control, FieldErrors } from 'react-hook-form';
-import { useQueryState } from 'nuqs';
+
+import { EditableCriterion } from '../EditableCriterion';
 
 import Typography from '../../common/Typography';
-import CollapsibleCardSection from '../../common/CollapsibleCardSection';
-import { EditableCriterion } from '../EditableCriterion';
-import type { TrackSectionFormType } from '../../../schemas/trackSectionSchema';
 import RatingDisplay from '../../common/RatingDisplay';
+import CollapsibleCardSection from '../../common/CollapsibleCardSection';
+
+import type { TrackSectionFormType } from '../../../schemas/trackSectionSchema';
 
 interface TrackCardProps {
     track: TrackSectionFormType['tracks'][number];
@@ -17,10 +19,12 @@ interface TrackCardProps {
 }
 
 export default function TrackCard({ track, trackIdx, control, isCycleClosed }: TrackCardProps) {
+
     const [openTracks, setOpenTracks] = useQueryState('open_tracks', {
         defaultValue: '',
         history: 'replace',
     });
+
     const id = track?.name;
     const openArray = openTracks ? openTracks.split(',') : [];
     const isOpen = openArray.includes(id);
@@ -49,7 +53,18 @@ export default function TrackCard({ track, trackIdx, control, isCycleClosed }: T
                                 <RatingDisplay rating={pillar.criteria.some(c => c.isActive) ? sumPesos : null} suffix="%" min={100} max={100} />
                             </div>
                             <span className="text-gray-500 text-xs mb-12">A soma dos pesos deve ser 100%</span>
-                            <div className="divide-y mt-2">{pillar.criteria?.map((criterion, criterionIdx) => <Controller key={criterion.id} control={control} name={`tracks.${trackIdx}.pillars.${pillarIdx}.criteria.${criterionIdx}` as const} render={({ field }) => <EditableCriterion value={field.value} onChange={field.onChange} isCycleClosed={isCycleClosed} />} />)}</div>
+                            <div className="divide-y mt-2">
+                                {
+                                    pillar.criteria?.map((criterion, criterionIdx) => 
+                                    <Controller key={criterion.id} control={control} 
+                                    name={`tracks.${trackIdx}.pillars.${pillarIdx}.criteria.${criterionIdx}` as const} 
+                                    render={
+                                        ({ field }) => 
+                                        <EditableCriterion value={field.value} onChange={field.onChange} 
+                                        isCycleClosed={isCycleClosed}/>
+                                    } />)
+                                }
+                            </div>
                         </div>
                     );
                 })}

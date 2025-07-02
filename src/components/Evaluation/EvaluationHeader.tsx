@@ -1,7 +1,10 @@
 import { memo } from 'react';
+
 import PageHeader from '../common/PageHeader';
 import type { PageHeaderSection } from '../common/PageHeader';
+
 import EvaluationSubmitButton from './EvaluationSubmitButton';
+
 import type { SectionType } from './Sections/EvaluationSections';
 
 interface EvaluationHeaderProps {
@@ -14,15 +17,8 @@ interface EvaluationHeaderProps {
     incompleteReferencesCount?: number;
 }
 
-function EvaluationHeaderComponent({
-    activeSection,
-    onSectionChange,
-    sections,
-    incompleteSelfAssessmentCount = 0,
-    incompleteMentoringCount = 0,
-    incompleteEvaluation360Count = null,
-    incompleteReferencesCount = 0,
-}: EvaluationHeaderProps) {
+function EvaluationHeaderComponent({ activeSection, onSectionChange, sections, incompleteSelfAssessmentCount = 0, incompleteMentoringCount = 0, incompleteEvaluation360Count = null, incompleteReferencesCount = 0, }: EvaluationHeaderProps) {
+
     const pageHeaderSections: PageHeaderSection<SectionType>[] = sections.map(
         section => {
             if (section === 'Autoavaliação') {
@@ -43,12 +39,9 @@ function EvaluationHeaderComponent({
                 return {
                     name: section,
                     showBadge:
-                        incompleteEvaluation360Count === null ||
-                        incompleteEvaluation360Count > 0,
+                        incompleteEvaluation360Count === null || incompleteEvaluation360Count > 0,
                     badgeCount:
-                        incompleteEvaluation360Count === null
-                            ? undefined
-                            : incompleteEvaluation360Count,
+                        incompleteEvaluation360Count === null ? undefined : incompleteEvaluation360Count,
                 };
             }
             if (section === 'Referências') {

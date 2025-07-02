@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const CriterionSchema = z
     .object({
         id: z.number(),
+        name: z.string(),
         isActive: z.boolean(),
         weight: z.string().optional(),
     })
@@ -32,6 +33,7 @@ export const CriterionSchema = z
 
 export const PillarSchema = z.object({
     id: z.number(),
+    name: z.string(),
     criteria: z.array(CriterionSchema).refine(
         criteria => {
             const active = criteria.filter(c => c.isActive);
@@ -48,6 +50,7 @@ export const PillarSchema = z.object({
 export const TrackSchema = z
     .object({
         id: z.number(),
+        name: z.string(),
         pillars: z.array(PillarSchema),
     })
     .superRefine((track, ctx) => {

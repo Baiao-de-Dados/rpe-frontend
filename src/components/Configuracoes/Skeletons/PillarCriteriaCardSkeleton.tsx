@@ -1,6 +1,4 @@
-import React from 'react';
-
-export const PillarCriteriaCardSkeleton: React.FC = () => {
+export function PillarCriteriaCardSkeleton() {
     return (
         <div className="bg-white rounded-xl shadow-lg p-4 pt-6 sm:p-8 w-full relative animate-pulse">
             <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
@@ -12,6 +10,4 @@ export const PillarCriteriaCardSkeleton: React.FC = () => {
             </div>
         </div>
     );
-};
-
-export default PillarCriteriaCardSkeleton;
+}

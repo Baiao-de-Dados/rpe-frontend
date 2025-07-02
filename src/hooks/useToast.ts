@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+
 import { ToastContext } from '../contexts/ToastContextDefinition';
 import type { ToastContextType } from '../contexts/ToastContextDefinition';
 

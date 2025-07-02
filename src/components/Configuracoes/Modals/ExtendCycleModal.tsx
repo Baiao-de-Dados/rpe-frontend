@@ -1,14 +1,17 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import Modal from '../../common/Modal';
+import Input from '../../common/Input';
 import Button from '../../common/Button';
 import Typography from '../../common/Typography';
-import Input from '../../common/Input';
-import { formatDate } from '../../../utils/globalUtils';
-import { getExtendCycleSchema, type ExtendCycleSchema } from '../../../schemas/extendCycleSchema';
-import { getSemesterEndDate, getSemesterStartDate } from '../Sections/utils';
 import { ErrorMessage } from '../../common/ErrorMessage';
+
+import { formatDate } from '../../../utils/globalUtils';
+import { getSemesterEndDate, getSemesterStartDate } from '../Sections/utils';
+
+import { getExtendCycleSchema, type ExtendCycleSchema } from '../../../schemas/extendCycleSchema';
 
 interface ExtendCycleModalProps {
     open: boolean;
@@ -20,17 +23,12 @@ interface ExtendCycleModalProps {
 }
 
 function ExtendCycleModal({ open, onClose, onConfirm, currentEndDate, year, semester }: ExtendCycleModalProps) {
-    const minDate = getSemesterStartDate(year, semester);
+
     const maxDate = getSemesterEndDate(year, semester);
+    const minDate = getSemesterStartDate(year, semester);
     const schema = getExtendCycleSchema(minDate, maxDate, currentEndDate);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        watch,
-        formState: { isSubmitting, isValid, errors },
-    } = useForm<ExtendCycleSchema>({
+    const { register, handleSubmit, reset, watch, formState: { isSubmitting, isValid, errors } } = useForm<ExtendCycleSchema>({
         resolver: zodResolver(schema),
         defaultValues: { newDate: currentEndDate },
         mode: 'onChange',
@@ -77,6 +75,7 @@ function ExtendCycleModal({ open, onClose, onConfirm, currentEndDate, year, seme
             </form>
         </Modal>
     );
+
 }
 
 export default ExtendCycleModal;

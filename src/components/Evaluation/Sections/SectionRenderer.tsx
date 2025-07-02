@@ -1,8 +1,12 @@
 import { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
+
 import { SectionPreloader } from './SectionPreloader';
 import { evaluationSections, type SectionType } from './EvaluationSections';
+
+import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
+
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 const SelfAssessmentSection = lazy(() =>
     import('./SelfAssessmentSection').then(module => ({
@@ -33,6 +37,9 @@ interface SectionRendererProps {
 }
 
 export function SectionRenderer({ activeSection }: SectionRendererProps) {
+
+    const { variants } = useOptimizedAnimation();
+    
     const renderSection = () => {
         switch (activeSection) {
             case 'Autoavaliação':
@@ -50,19 +57,9 @@ export function SectionRenderer({ activeSection }: SectionRendererProps) {
 
     return (
         <>
-            <SectionPreloader
-                activeSection={activeSection}
-                sections={evaluationSections}
-            />
+            <SectionPreloader activeSection={activeSection} sections={evaluationSections} />
             <AnimatePresence mode="wait">
-                <motion.div
-                    key={activeSection}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="min-h-[200px]"
-                >
+                <motion.div key={activeSection} variants={variants.evaluationSectionRenderer} initial="initial" animate="animate" exit="exit" className="min-h-[200px]">
                     <Suspense fallback={<SectionLoadingSpinner />}>
                         {renderSection()}
                     </Suspense>

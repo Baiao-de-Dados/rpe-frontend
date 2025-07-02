@@ -1,29 +1,40 @@
 import { useState } from 'react';
-import CycleCard from '../Cards/CycleCard';
-import { useCycle } from '../../../hooks/useCycle';
-import { getCycleLabel, parseCycleString } from './utils';
-import { mockCycles } from '../../../data/mockCycles';
 import { Clock, History } from 'lucide-react';
+
+import CycleCard from '../Cards/CycleCard';
+
+import { useCycle } from '../../../hooks/useCycle';
 import { useToast } from '../../../hooks/useToast';
-import { formatDate } from '../../../utils/globalUtils';
+
 import AlertMessage from '../../common/AlertMessage';
+
+import { mockCycles } from '../../../data/mockCycles';
+
+import { formatDate } from '../../../utils/globalUtils';
+import { getCycleLabel, parseCycleString } from './utils';
+
+import StartCycleModal from '../Modals/StartCycleModal';
 import CancelCycleModal from '../Modals/CancelCycleModal';
 import ExtendCycleModal from '../Modals/ExtendCycleModal';
-import StartCycleModal from '../Modals/StartCycleModal';
 
 export function CycleSection() {
+
+    const { showToast } = useToast();
+
     const { currentCycle, checkCycleStatus } = useCycle();
+
     const [startModalOpen, setStartModalOpen] = useState(false);
     const [cancelModalOpen, setCancelModalOpen] = useState(false);
     const [extendModalOpen, setExtendModalOpen] = useState(false);
-    const { showToast } = useToast();
 
     const cycleLabel = getCycleLabel();
     const { year, semester } = parseCycleString(cycleLabel);
 
     const handleStartCycle = async (endDate: string) => {
         console.log({ cycle: cycleLabel, endDate });
-        showToast(`O ciclo foi iniciado com sucesso! Data de término: ${formatDate(endDate)}`, 'success', { title: 'Ciclo iniciado', duration: 10000 });
+        showToast(`O ciclo foi iniciado com sucesso! Data de término: ${formatDate(endDate)}`, 'success', { 
+            title: 'Ciclo iniciado', duration: 10000 
+        });
         setStartModalOpen(false);
         await new Promise(resolve => setTimeout(resolve, 1000));
         await checkCycleStatus();
@@ -31,7 +42,9 @@ export function CycleSection() {
 
     const handleCancelCycle = async () => {
         console.log({ cycle: cycleLabel });
-        showToast('Ciclo cancelado com sucesso! As avaliações foram apagadas.', 'success', { title: 'Ciclo cancelado', duration: 10000 });
+        showToast('Ciclo cancelado com sucesso! As avaliações foram apagadas.', 'success', { 
+            title: 'Ciclo cancelado', duration: 10000 
+        });
         setCancelModalOpen(false);
         await checkCycleStatus();
     };
@@ -50,13 +63,19 @@ export function CycleSection() {
 
     return (
         <div className="flex flex-col gap-8 sm:gap-6 px-2 sm:px-0">
-            {!currentCycle?.allTracksSet && <AlertMessage message="É necessário definir os critérios de todas as trilhas antes de iniciar o ciclo." type="alert" />}
+            {
+                !currentCycle?.allTracksSet && 
+                <AlertMessage message="É necessário definir os critérios de todas as trilhas antes de iniciar o ciclo." type="alert" />
+            }
             <section className="pb-8 sm:pb-6 border-b border-gray-300 mb-4 sm:mb-2">
                 <span className="text-primary-700 font-semibold text-base sm:text-sm flex mb-6 sm:mb-4 items-center gap-2">
                     <Clock size={18} className="text-primary-700" />
                     Ciclo atual
                 </span>
-                <CycleCard label={cycleLabel} showButton={!!currentCycle && !currentCycle.isOpen} canStart={canStartCycle} status={currentCycle?.isOpen ? 'aberto' : undefined} onStartClick={() => setStartModalOpen(true)} onCancelClick={() => setCancelModalOpen(true)} onExtendClick={() => setExtendModalOpen(true)} />
+                <CycleCard label={cycleLabel} showButton={!!currentCycle && !currentCycle.isOpen} canStart={canStartCycle} status={currentCycle?.isOpen ? 'aberto' : undefined} 
+                onStartClick={() => setStartModalOpen(true)} 
+                onCancelClick={() => setCancelModalOpen(true)} 
+                onExtendClick={() => setExtendModalOpen(true)} />
             </section>
             <section>
                 <span className="text-primary-700 font-semibold text-base sm:text-sm flex mb-6 sm:mb-4 items-center gap-2">

@@ -1,10 +1,12 @@
-import { useState, type ReactNode } from 'react';
-import CardContainer from './CardContainer';
-import Typography from './Typography';
 import { ChevronDown } from 'lucide-react';
-import { ErrorMessage } from './ErrorMessage';
-import type { TrackSectionFormType } from '../../schemas/trackSectionSchema';
+import { useState, type ReactNode } from 'react';
+
+import Typography from './Typography';
 import RatingDisplay from './RatingDisplay';
+import CardContainer from './CardContainer';
+import { ErrorMessage } from './ErrorMessage';
+
+import type { TrackSectionFormType } from '../../schemas/trackSectionSchema';
 
 interface CollapsibleCardSectionProps {
     title: React.ReactNode;
@@ -20,7 +22,9 @@ interface CollapsibleCardSectionProps {
 }
 
 export default function CollapsibleCardSection({ title, headerRight, notificationBadge, children, defaultOpen = true, onHeaderClick, isOpen: isOpenProp, className = '', headerErrorMessage, track }: CollapsibleCardSectionProps) {
+
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
+
     const isControlled = typeof isOpenProp === 'boolean';
     const isOpen = isControlled ? isOpenProp : internalOpen;
 
@@ -45,9 +49,11 @@ export default function CollapsibleCardSection({ title, headerRight, notificatio
                                 </Typography>
                                 {track &&
                                     (() => {
-                                        const activeCount = track.pillars.reduce((acc, pillar) => acc + pillar.criteria.filter(c => c.isActive).length, 0);
+                                        const activeCount = track.pillars.reduce((acc, pillar) => 
+                                            acc + pillar.criteria.filter(c => c.isActive).length, 0);
                                         return <RatingDisplay rating={activeCount} min={12} max={17} />;
-                                    })()}
+                                    })()
+                                }
                                 {notificationBadge}
                                 {headerErrorMessage && <ErrorMessage error={headerErrorMessage} />}
                             </div>
@@ -55,7 +61,9 @@ export default function CollapsibleCardSection({ title, headerRight, notificatio
                                 <ChevronDown size={24} className="text-gray-600" />
                             </div>
                         </div>
-                        {track && <span className="text-gray-500 text-xs mt-1 block">A trilha deve ter de 12 a 17 critérios</span>}
+                        {track && 
+                            <span className="text-gray-500 text-xs mt-1 block">A trilha deve ter de 12 a 17 critérios</span>
+                        }
                     </div>
                     {headerRight && (
                         <div className="flex items-center gap-2 mt-2" onClick={handleHeaderClick}>
@@ -75,7 +83,8 @@ export default function CollapsibleCardSection({ title, headerRight, notificatio
                                 </Typography>
                                 {track &&
                                     (() => {
-                                        const activeCount = track.pillars.reduce((acc, pillar) => acc + pillar.criteria.filter(c => c.isActive).length, 0);
+                                        const activeCount = track.pillars.reduce((acc, pillar) => 
+                                            acc + pillar.criteria.filter(c => c.isActive).length, 0);
                                         return <RatingDisplay rating={activeCount} min={12} max={17} />;
                                     })()}
                                 {notificationBadge}

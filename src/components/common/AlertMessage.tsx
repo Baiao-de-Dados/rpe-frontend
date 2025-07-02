@@ -1,5 +1,6 @@
-import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import Typography from './Typography';
+
+import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 
 interface AlertMessageProps {
     message: string;
@@ -19,15 +20,9 @@ const bgMap = {
     alert: 'bg-yellow-100 border-yellow-500 text-yellow-800',
 };
 
-function AlertMessage({
-    message,
-    type = 'alert',
-    className = '',
-}: AlertMessageProps) {
+function AlertMessage({ message, type = 'alert', className = '' }: AlertMessageProps) {
     return (
-        <div
-            className={`border-l-4 p-3 rounded mb-2 flex items-center gap-2 ${bgMap[type]} ${className}`}
-        >
+        <div className={`border-l-4 p-3 rounded mb-2 flex items-center gap-2 ${bgMap[type]} ${className}`}>
             {iconMap[type]}
             <Typography variant="body">{message}</Typography>
         </div>

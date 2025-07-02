@@ -1,6 +1,7 @@
 import { ActiveSwitch } from './ActiveSwitch';
-import InputWithTitle from '../common/InputWithTitle';
+
 import RatingDisplay from '../common/RatingDisplay';
+import InputWithTitle from '../common/InputWithTitle';
 
 interface EditableCriterionProps {
     value: {
@@ -10,15 +11,23 @@ interface EditableCriterionProps {
         description?: string;
         isActive?: boolean;
     };
-    onChange: (value: { id: number; name: string; weight?: string; description?: string; isActive?: boolean }) => void;
+    onChange: (value: { 
+        id: number; 
+        name: string; 
+        weight?: string; 
+        description?: string; 
+        isActive?: boolean 
+    }) => void;
     isCycleClosed?: boolean;
     error?: string;
 }
 
 export function EditableCriterion({ value, onChange, isCycleClosed = false, error }: EditableCriterionProps) {
+
     const handleActiveChange = (val: boolean) => {
         onChange({ ...value, isActive: val });
     };
+
     const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let val = e.target.value;
         if (val) {
@@ -35,6 +44,7 @@ export function EditableCriterion({ value, onChange, isCycleClosed = false, erro
         }
         onChange({ ...value, weight: val });
     };
+
     return (
         <div className="bg-white border-b border-gray-200 last:border-b-0">
             <div className="flex items-center justify-between p-4 pl-0">

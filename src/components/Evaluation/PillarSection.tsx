@@ -1,11 +1,15 @@
+import { useQueryState } from 'nuqs';
 import { memo, useMemo, useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+
 import SelfAssessment from './Cards/SelfAssessment';
 import { PillarRatingDisplay } from './PillarRatingDisplay';
+
 import NotificationBadge from '../common/NotificationBadge';
-import { useQueryState } from 'nuqs';
 import CollapsibleCardSection from '../common/CollapsibleCardSection';
+
 import type { Criterion } from '../../data/mockEvaluationPIllars';
+
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
 interface PillarSectionProps {
@@ -19,15 +23,14 @@ interface PillarSectionProps {
     }>;
 }
 
-export const PillarSection = memo(
-    ({ pillarTitle, criteria, validFields }: PillarSectionProps) => {
-        const [pillarOpenList, setPillarOpenList] = useQueryState(
-            'pillar_open',
-            {
+export const PillarSection = memo(({ pillarTitle, criteria, validFields }: PillarSectionProps) => {
+
+        const [pillarOpenList, setPillarOpenList] = useQueryState('pillar_open', {
                 defaultValue: '',
                 history: 'replace',
             },
         );
+
         const pillarId = pillarTitle;
         const openArray = pillarOpenList ? pillarOpenList.split(',') : [];
         const isOpen = openArray.includes(pillarId);
@@ -64,9 +67,7 @@ export const PillarSection = memo(
                 const justification = watchedData[justificationIndex];
 
                 const hasRating = typeof rating === 'number' && rating > 0;
-                const hasJustification =
-                    typeof justification === 'string' &&
-                    justification.trim().length > 0;
+                const hasJustification = typeof justification === 'string' && justification.trim().length > 0;
 
                 if (!hasRating || !hasJustification) {
                     incompleteCount++;
@@ -76,8 +77,7 @@ export const PillarSection = memo(
             return incompleteCount;
         }, [watchedData, fieldIndices.length, criteria.length]);
 
-        const completedCriteriaCount =
-            criteria.length - incompleteCriteriaCount;
+        const completedCriteriaCount = criteria.length - incompleteCriteriaCount;
 
         const toggleMinimized = () => {
             let newArray: string[];
@@ -105,10 +105,7 @@ export const PillarSection = memo(
                 }
                 headerRight={
                     <>
-                        <PillarRatingDisplay
-                            criteria={criteria}
-                            validFields={validFields}
-                        />
+                        <PillarRatingDisplay criteria={criteria} validFields={validFields} />
                         <span className="text-sm text-gray-500">
                             {completedCriteriaCount}/{criteria.length}{' '}
                             preenchidos
@@ -121,9 +118,7 @@ export const PillarSection = memo(
             >
                 <div className="space-y-4">
                     {criteria.map((criterion: Criterion, index: number) => {
-                        const fieldData = validFields.find(
-                            f => f.criterionId === criterion.id,
-                        );
+                        const fieldData = validFields.find(f => f.criterionId === criterion.id);
                         if (!fieldData) return null;
 
                         const fieldName = `selfAssessment.${fieldData.index}`;

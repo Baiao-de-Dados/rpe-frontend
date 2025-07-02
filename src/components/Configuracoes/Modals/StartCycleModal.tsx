@@ -1,14 +1,16 @@
+import { useForm } from 'react-hook-form';
 import { useEffect, useMemo } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import Modal from '../../common/Modal';
 import Input from '../../common/Input';
 import Button from '../../common/Button';
 import Typography from '../../common/Typography';
-
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { getStartCycleSchema, type StartCycleSchema } from '../../../schemas/startCycleSchema';
 import { ErrorMessage } from '../../common/ErrorMessage';
+
 import { getSemesterEndDate, getSemesterStartDate } from '../Sections/utils';
+
+import { getStartCycleSchema, type StartCycleSchema } from '../../../schemas/startCycleSchema';
 
 interface StartCycleModalProps {
     open: boolean;
@@ -19,17 +21,13 @@ interface StartCycleModalProps {
 }
 
 function StartCycleModal({ open, onClose, onStart, semester, year }: StartCycleModalProps) {
+
     const maxDate = getSemesterEndDate(year, semester);
     const minDate = getSemesterStartDate(year, semester);
 
     const schema = useMemo(() => getStartCycleSchema(minDate, maxDate), [minDate, maxDate]);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting, isValid },
-        reset,
-    } = useForm<StartCycleSchema>({
+    const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, reset } = useForm<StartCycleSchema>({
         resolver: zodResolver(schema),
         defaultValues: { endDate: '' },
         mode: 'onChange',
@@ -70,6 +68,7 @@ function StartCycleModal({ open, onClose, onStart, semester, year }: StartCycleM
             </form>
         </Modal>
     );
+
 }
 
 export default StartCycleModal;

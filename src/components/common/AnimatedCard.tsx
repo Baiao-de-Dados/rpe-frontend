@@ -1,9 +1,7 @@
-import React from 'react';
-import { motion, type Variants } from 'framer-motion';
-import {
-    animationPresets,
-    useOptimizedAnimation,
-} from '../../hooks/useOptimizedAnimation';
+import { memo } from 'react';
+import { motion } from 'framer-motion';
+
+import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
 
 interface AnimatedCardProps {
     children: React.ReactNode;
@@ -11,33 +9,15 @@ interface AnimatedCardProps {
     className?: string;
 }
 
-const AnimatedCard: React.FC<AnimatedCardProps> = ({
-    children,
-    index = 0,
-    className = '',
-}) => {
-    const { optimizedTransition } = useOptimizedAnimation();
+function AnimatedCard({ children, index = 0, className = '' }: AnimatedCardProps) {
+
+    const { optimizedTransition, variants } = useOptimizedAnimation();
 
     return (
-        <motion.div
-            className={className}
-            style={{
-                // will-change otimiza o rendering
-                willChange: 'transform, opacity',
-            }}
-            variants={animationPresets.card as Variants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{
-                ...optimizedTransition,
-                delay: index * 0.08, // Delay escalonado para efeito stagger
-            }}
-            layout
-        >
+        <motion.div className={className} style={{ willChange: 'transform, opacity'}} variants={variants.animatedCard} initial="hidden" animate="visible" exit="exit" transition={{...optimizedTransition, delay: index * 0.08}} layout>
             {children}
         </motion.div>
     );
-};
+}
 
-export default React.memo(AnimatedCard);
+export default memo(AnimatedCard);

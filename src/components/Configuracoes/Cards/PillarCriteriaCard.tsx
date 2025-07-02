@@ -1,16 +1,23 @@
+import { useState, useEffect } from 'react';
 import { ArrowLeft, ChevronDown } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, useFieldArray } from 'react-hook-form';
+
+
+import Button from '../../common/Button';
 import InputWithTitle from '../../common/InputWithTitle';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
-import { useState, useEffect } from 'react';
-import Button from '../../common/Button';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { pillarCriteriaFormSchema, type PillarCriteriaFormValues } from '../../../schemas/pillarCriteriaFormSchema';
+
 import { useToast } from '../../../hooks/useToast';
 import { useCycle } from '../../../hooks/useCycle';
-import AddCriterionModal from '../Modals/AddCriterionModal';
+
 import type { Criteria } from '../../../types/pillar';
+
+import AddCriterionModal from '../Modals/AddCriterionModal';
+
 import { useUpdateCriteriasMutation, useCreateCriteriaMutation } from '../../../hooks/usePillarsQuery';
+
+import { pillarCriteriaFormSchema, type PillarCriteriaFormValues } from '../../../schemas/pillarCriteriaFormSchema';
 
 interface PillarCriteriaCardProps {
     pillarName: string;
@@ -20,21 +27,16 @@ interface PillarCriteriaCardProps {
 }
 
 export function PillarCriteriaCard({ pillarName, criteria, pillarId, onBack }: PillarCriteriaCardProps) {
-    const [openIds, setOpenIds] = useState<number[]>([]);
-    const [isAddModalOpen, setAddModalOpen] = useState(false);
+
     const { showToast } = useToast();
     const { currentCycle } = useCycle();
     const isCycleOpen = currentCycle?.isOpen;
-    const [isModified, setIsModified] = useState(false);
 
-    const {
-        control,
-        handleSubmit,
-        formState: { isValid, errors },
-        reset,
-        watch,
-        setValue,
-    } = useForm<PillarCriteriaFormValues>({
+    const [openIds, setOpenIds] = useState<number[]>([]);
+    const [isModified, setIsModified] = useState(false);
+    const [isAddModalOpen, setAddModalOpen] = useState(false);
+
+    const { control, handleSubmit, formState: { isValid, errors }, reset, watch, setValue } = useForm<PillarCriteriaFormValues>({
         resolver: zodResolver(pillarCriteriaFormSchema),
         defaultValues: { criteria },
         mode: 'onChange',

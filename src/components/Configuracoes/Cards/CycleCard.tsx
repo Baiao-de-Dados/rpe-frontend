@@ -1,7 +1,8 @@
 import { CheckCircle, Loader2 } from 'lucide-react';
-import CardContainer from '../../common/CardContainer';
+
 import Button from '../../common/Button';
 import Typography from '../../common/Typography';
+import CardContainer from '../../common/CardContainer';
 
 interface CycleCardProps {
     label: string;
@@ -14,6 +15,7 @@ interface CycleCardProps {
 }
 
 function CycleCard({ label, status, onStartClick, showButton, canStart, onCancelClick, onExtendClick }: CycleCardProps) {
+
     return (
         <CardContainer className="p-10 mb-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -61,6 +63,7 @@ function CycleCard({ label, status, onStartClick, showButton, canStart, onCancel
             </div>
         </CardContainer>
     );
+
 }
 
 export default CycleCard;

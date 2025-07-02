@@ -1,14 +1,13 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useQueryState } from 'nuqs';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 
-export function useSectionNavigation<T extends string = string>(
-    sectionsInput: T[],
-    defaultSection?: T,
-) {
+export function useSectionNavigation<T extends string = string>(sectionsInput: T[], defaultSection?: T) {
+
     const [sectionQuery, setSectionQuery] = useQueryState('section', {
         defaultValue: defaultSection || sectionsInput[0],
         history: 'replace',
     });
+
     const [activeSection, setActiveSection] = useState<T>(
         (sectionQuery as T) || defaultSection || sectionsInput[0],
     );

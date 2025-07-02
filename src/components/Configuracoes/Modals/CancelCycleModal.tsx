@@ -1,8 +1,9 @@
 import { useState } from 'react';
+
 import Modal from '../../common/Modal';
 import Button from '../../common/Button';
-import Typography from '../../common/Typography';
 import Input from '../../common/Input';
+import Typography from '../../common/Typography';
 
 interface CancelCycleModalProps {
     open: boolean;
@@ -12,6 +13,7 @@ interface CancelCycleModalProps {
 }
 
 function CancelCycleModal({ open, onClose, onConfirm, cycleName }: CancelCycleModalProps) {
+
     const [input, setInput] = useState('');
     const isMatch = input.trim() === cycleName.trim();
 
