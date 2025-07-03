@@ -1,13 +1,16 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
+
 import StarRating from '../../common/StarRating';
-import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import Typography from '../../common/Typography';
-import CollaboratorCard from '../../common/CollaboratorCard';
 import RatingDisplay from '../../common/RatingDisplay';
 import CardContainer from '../../common/CardContainer';
 import { ErrorMessage } from '../../common/ErrorMessage';
-const Mentoring: React.FC = () => {
+import CollaboratorCard from '../../common/CollaboratorCard';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+
+const Mentoring = () => {
+
     const { control, setValue } = useFormContext();
 
     const mentor = {
@@ -16,66 +19,41 @@ const Mentoring: React.FC = () => {
         cargo: 'Mentor',
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         setValue('mentorId', mentor.id);
     }, [setValue, mentor.id]);
 
     return (
         <CardContainer>
-            <Controller
-                name="mentorId"
-                control={control}
+            <Controller name="mentorId" control={control}
                 render={({ field }) => (
                     <input type="hidden" {...field} value={mentor.id} />
                 )}
             />
 
-            <Controller
-                name="mentoringRating"
-                control={control}
+            <Controller name="mentoringRating" control={control}
                 render={({ field, fieldState }) => (
                     <>
                         <div className="flex items-center gap-4 mb-4">
-                            <CollaboratorCard
-                                collaborator={mentor}
-                                variant="compact"
-                            />
-                            <RatingDisplay
-                                rating={field.value || null}
-                                className="ml-auto"
-                            />
+                            <CollaboratorCard collaborator={mentor} variant="compact"/>
+                            <RatingDisplay rating={field.value || null} className="ml-auto"/>
                         </div>
                         <div className="flex items-center justify-between mb-2">
-                            <Typography
-                                variant="body"
-                                className="text-sm text-gray-600"
-                            >
+                            <Typography variant="body" className="text-sm text-gray-600">
                                 Dê uma avaliação de 1 à 5 ao seu mentor
                             </Typography>
                             <ErrorMessage error={fieldState.error?.message} />
                         </div>
                         <div className="mb-4">
-                            <StarRating
-                                value={field.value || null}
-                                onChange={field.onChange}
-                            />
+                            <StarRating value={field.value || null} onChange={field.onChange}/>
                         </div>
                     </>
                 )}
             />
 
-            <Controller
-                name="mentoringJustification"
-                control={control}
+            <Controller name="mentoringJustification" control={control}
                 render={({ field, fieldState }) => (
-                    <TextAreaWithTitle
-                        title="Justifique sua nota"
-                        placeholder="Justifique sua nota"
-                        maxLength={1000}
-                        value={field.value || ''}
-                        onChange={field.onChange}
-                        error={fieldState.error?.message}
-                    />
+                    <TextAreaWithTitle title="Justifique sua nota" placeholder="Justifique sua nota" maxLength={1000} value={field.value || ''} onChange={field.onChange} error={fieldState.error?.message}/>
                 )}
             />
         </CardContainer>

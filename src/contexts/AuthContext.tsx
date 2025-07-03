@@ -7,7 +7,7 @@ import type {
     DecodedToken,
     UserRoleEnum,
 } from '../types/auth';
-import { authEndpoints } from '../services/api';
+import { authEndpoints } from '../services/api/auth';
 
 import {
     hasExactRole,
@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             setLoading(true);
 
-            const response = await authEndpoints.login(email, password);
+            const response = await authEndpoints.login({ email, password });
             const { access_token, user: userData } = response.data;
 
             // Valida o token

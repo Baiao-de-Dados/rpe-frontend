@@ -85,3 +85,8 @@ export interface AuthError {
     message: string;
     statusCode?: number;
 }
+
+export type LoginPayload = {
+    email: string;
+    password: string;
+};

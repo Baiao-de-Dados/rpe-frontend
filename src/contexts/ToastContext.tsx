@@ -1,11 +1,9 @@
-import React, { useState, useRef } from 'react';
-import type { ReactNode } from 'react';
-import { ToastContext } from './ToastContextDefinition';
-import type { ToastData, ToastContextType } from './ToastContextDefinition';
+import { useState, useRef, type ReactNode } from 'react';
 
-export const ToastProvider: React.FC<{ children: ReactNode }> = ({
-    children,
-}) => {
+import { ToastContext, type ToastData, type ToastContextType} from './ToastContextDefinition';
+
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
+
     const [toasts, setToasts] = useState<ToastData[]>([]);
     const timersRef = useRef<Map<string, number>>(new Map());
 
@@ -22,7 +20,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
         },
     ): string => {
         const id = generateId();
-        const duration = options?.duration ?? 5000; // 5s padrão
+        const duration = options?.duration ?? 5000; 
 
         const newToast: ToastData = {
             id,
@@ -35,7 +33,6 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
 
         setToasts(prev => [...prev, newToast]);
 
-        // Auto-hide apenas se duration foi definida
         if (newToast.duration) {
             const timer = setTimeout(() => {
                 hideToast(id);
@@ -48,35 +45,29 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
     };
 
     const hideToast = (id: string) => {
-        // Limpa o timer se existir
         const timer = timersRef.current.get(id);
         if (timer) {
             clearTimeout(timer);
             timersRef.current.delete(id);
         }
 
-        // Marca o toast como hidden (para animação)
         setToasts(prev =>
             prev.map(toast =>
                 toast.id === id ? { ...toast, show: false } : toast,
             ),
         );
 
-        // Remove o toast após a animação (300ms)
         setTimeout(() => {
             setToasts(prev => prev.filter(toast => toast.id !== id));
         }, 300);
     };
 
     const clearAllToasts = () => {
-        // Limpa todos os timers
         timersRef.current.forEach(timer => clearTimeout(timer));
         timersRef.current.clear();
 
-        // Esconde todos os toasts
         setToasts(prev => prev.map(toast => ({ ...toast, show: false })));
 
-        // Remove todos após animação
         setTimeout(() => {
             setToasts([]);
         }, 300);

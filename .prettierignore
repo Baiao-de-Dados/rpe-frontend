@@ -1,0 +1,8 @@
+# Ignore all TypeScript and JavaScript files to preserve manual indentation
+*.ts
+*.tsx
+*.js
+*.jsx
+
+# Ignore source code directories
+src/

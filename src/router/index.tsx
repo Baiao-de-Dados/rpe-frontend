@@ -4,12 +4,12 @@ import { DefaultLayout } from '../layouts/DefaultLayout';
 
 import LoginPage from '../pages/LoginPage';
 import { useAuth } from '../hooks/useAuth';
-import { ProtectedRoute, RoleRoute, HierarchyRoute } from './ProtectedRoute';
+import { ProtectedRoute, RoleRoute } from './ProtectedRoute';
 import { MultiRoleRoute } from './MultiRoleRoute';
 import { UserRoleEnum } from '../types/auth';
 import { Dashboard } from '../pages/Dashboard/index';
 import { Colaboradores } from '../pages/Colaboradores';
-import { Criterios } from '../pages/RH/Criterios';
+import { Configuracoes } from '../pages/RH/Configuracoes';
 import { ImportarHistoricos } from '../pages/RH/ImportarHistoricos';
 import { Avaliacao } from '../pages/Colaborador/Avaliacao';
 import { Evolucao } from '../pages/Colaborador/Evolucao';
@@ -33,36 +33,16 @@ export function Router() {
     return (
         <Routes>
             {/* Login: se já estiver autenticado, manda direto pro dashboard */}
-            <Route
-                path="/login"
-                element={
-                    isAuthenticated ? (
-                        <Navigate to="/dashboard" replace />
-                    ) : (
-                        <LoginPage />
-                    )
-                }
-            />
+            <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
 
             {/* Roteamento protegido */}
             <Route element={<ProtectedRoute />}>
                 <Route element={<DefaultLayout />}>
                     {/* redireciona / para /dashboard */}
-                    <Route
-                        index
-                        element={<Navigate to="dashboard" replace />}
-                    />
+                    <Route index element={<Navigate to="dashboard" replace />} />
 
                     <Route path="dashboard" element={<Dashboard />} />
-
-                    <Route
-                        path="avaliacao"
-                        element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.EMPLOYER]}>
-                                <Avaliacao />
-                            </RoleRoute>
-                        }
-                    />
+                    <Route path="avaliacao" element={<Avaliacao />} />
 
                     <Route
                         path="evolucao"
@@ -97,55 +77,42 @@ export function Router() {
                     />
 
                     <Route
-                        path="criterios"
+                        path="configuracoes"
                         element={
-                            <HierarchyRoute minimumRole={UserRoleEnum.RH}>
-                                <Criterios />
-                            </HierarchyRoute>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                                <Configuracoes />
+                            </RoleRoute>
                         }
                     />
 
                     <Route
                         path="importar"
                         element={
-                            <HierarchyRoute minimumRole={UserRoleEnum.RH}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
                                 <ImportarHistoricos />
-                            </HierarchyRoute>
+                            </RoleRoute>
                         }
                     />
 
                     <Route
                         path="administracao"
                         element={
-                            <HierarchyRoute minimumRole={UserRoleEnum.RH}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
                                 <div className="p-6">
-                                    <h1 className="text-2xl font-bold">
-                                        Painel de Administração
-                                    </h1>
-                                    <p>
-                                        Esta página é acessível para RH ou
-                                        superior
-                                    </p>
+                                    <h1 className="text-2xl font-bold">Painel de Administração</h1>
+                                    <p>Esta página só é acessível para RH, Comitê, Admin e Desenvolvedor</p>
                                 </div>
-                            </HierarchyRoute>
+                            </RoleRoute>
                         }
                     />
 
                     <Route
                         path="dev"
                         element={
-                            <RoleRoute
-                                requiredRoles={[UserRoleEnum.DEVELOPER]}
-                                redirectTo="/dashboard"
-                            >
+                            <RoleRoute requiredRoles={[UserRoleEnum.DEVELOPER]} redirectTo="/dashboard">
                                 <div className="p-6">
-                                    <h1 className="text-2xl font-bold">
-                                        Ferramentas de Desenvolvimento
-                                    </h1>
-                                    <p>
-                                        Esta página só é acessível para
-                                        desenvolvedores
-                                    </p>
+                                    <h1 className="text-2xl font-bold">Ferramentas de Desenvolvimento</h1>
+                                    <p>Esta página só é acessível para desenvolvedores</p>
                                 </div>
                             </RoleRoute>
                         }
@@ -154,22 +121,10 @@ export function Router() {
                     <Route
                         path="mentoria"
                         element={
-                            <MultiRoleRoute
-                                allowedRoles={[
-                                    UserRoleEnum.MENTOR,
-                                    UserRoleEnum.LEADER,
-                                    UserRoleEnum.MANAGER,
-                                ]}
-                                redirectTo="/dashboard"
-                            >
+                            <MultiRoleRoute allowedRoles={[UserRoleEnum.MENTOR, UserRoleEnum.LEADER, UserRoleEnum.MANAGER]} redirectTo="/dashboard">
                                 <div className="p-6">
-                                    <h1 className="text-2xl font-bold">
-                                        Mentoria
-                                    </h1>
-                                    <p>
-                                        Esta página é acessível para mentores,
-                                        líderes e gestores
-                                    </p>
+                                    <h1 className="text-2xl font-bold">Mentoria</h1>
+                                    <p>Esta página é acessível para mentores, líderes e gestores</p>
                                 </div>
                             </MultiRoleRoute>
                         }
@@ -178,15 +133,7 @@ export function Router() {
             </Route>
 
             {/* Catch-all: qualquer rota não encontrada redireciona para login ou dashboard */}
-            <Route
-                path="*"
-                element={
-                    <Navigate
-                        to={isAuthenticated ? '/dashboard' : '/login'}
-                        replace
-                    />
-                }
-            />
+            <Route path="*" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />} />
         </Routes>
     );
 }

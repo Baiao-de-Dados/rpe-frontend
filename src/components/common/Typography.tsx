@@ -25,10 +25,10 @@ export default function Typography({
     onClick,
 }: TypographyProps) {
     const variants = {
-        h1: 'text-3xl font-bold',
-        h2: 'text-2xl font-semibold',
-        h3: 'text-xl',
-        h4: 'text-base',
+        h1: 'text-4xl font-bold',
+        h2: 'text-2xl font-bold',
+        h3: 'text-xl font-semibold',
+        h4: 'text-md',
         body: 'text-base',
         caption: 'text-sm',
     };

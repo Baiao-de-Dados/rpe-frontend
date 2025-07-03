@@ -232,6 +232,7 @@ export default function AsideMenu() {
                         <RoleGuard
                             anyRole={[
                                 UserRoleEnum.LEADER,
+                                UserRoleEnum.RH,
                                 UserRoleEnum.MENTOR,
                                 UserRoleEnum.ADMIN,
                                 UserRoleEnum.DEVELOPER,
@@ -264,43 +265,6 @@ export default function AsideMenu() {
                                 </NavLink>
                             </li>
                         </RoleGuard>
-
-                        {/* Critérios - Apenas RH, ADMIN, DEVELOPER */}
-                        <RoleGuard
-                            anyRole={[
-                                UserRoleEnum.RH,
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.DEVELOPER,
-                            ]}
-                        >
-                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                                <NavLink
-                                    to="/criterios"
-                                    onClick={closeMenu}
-                                    className={({ isActive }) => `
-                                        flex items-center gap-4 no-underline relative 
-                                        transition-all duration-200 ease-in-out hover:text-secondary-600
-                                        max-lg:text-2xl max-lg:gap-4
-                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
-                                    `}
-                                >
-                                    <Settings
-                                        size={32}
-                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
-                                    />
-                                    <span
-                                        className={`
-                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
-                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
-                                        max-lg:opacity-100 max-lg:visible
-                                    `}
-                                    >
-                                        Critérios de Avaliação
-                                    </span>
-                                </NavLink>
-                            </li>
-                        </RoleGuard>
-
                         {/* Importar - Apenas RH, ADMIN, DEVELOPER */}
                         <RoleGuard
                             anyRole={[
@@ -332,6 +296,41 @@ export default function AsideMenu() {
                                     `}
                                     >
                                         Importar Histórico
+                                    </span>
+                                </NavLink>
+                            </li>
+                        </RoleGuard>
+                        {/* Critérios - Apenas RH, ADMIN, DEVELOPER */}
+                        <RoleGuard
+                            anyRole={[
+                                UserRoleEnum.RH,
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.DEVELOPER,
+                            ]}
+                        >
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink
+                                    to="/configuracoes"
+                                    onClick={closeMenu}
+                                    className={({ isActive }) => `
+                                        flex items-center gap-4 no-underline relative 
+                                        transition-all duration-200 ease-in-out hover:text-secondary-600
+                                        max-lg:text-2xl max-lg:gap-4
+                                        ${isActive ? 'text-primary-500' : 'text-secondary-400'}
+                                    `}
+                                >
+                                    <Settings
+                                        size={32}
+                                        className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center"
+                                    />
+                                    <span
+                                        className={`
+                                        opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out
+                                        ${isNavExpanded ? 'opacity-100 visible' : ''}
+                                        max-lg:opacity-100 max-lg:visible
+                                    `}
+                                    >
+                                        Configurações
                                     </span>
                                 </NavLink>
                             </li>

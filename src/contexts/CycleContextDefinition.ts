@@ -6,6 +6,7 @@ export interface Cycle {
     isOpen: boolean;
     dataInicio: string;
     dataFim: string;
+    allTracksSet: boolean;
 }
 
 export interface EvaluationStatus {

@@ -1,40 +1,32 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useQueryState } from 'nuqs';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 
-export type SectionType =
-    | 'Autoavaliação'
-    | 'Avaliação 360'
-    | 'Referências'
-    | 'Mentoring';
+export function useSectionNavigation<T extends string = string>(sectionsInput: T[], defaultSection?: T) {
 
-export const useSectionNavigation = () => {
     const [sectionQuery, setSectionQuery] = useQueryState('section', {
-        defaultValue: 'Autoavaliação',
+        defaultValue: defaultSection || sectionsInput[0],
         history: 'replace',
     });
-    const [activeSection, setActiveSection] = useState<SectionType>(
-        sectionQuery as SectionType,
+
+    const [activeSection, setActiveSection] = useState<T>(
+        (sectionQuery as T) || defaultSection || sectionsInput[0],
     );
 
     useEffect(() => {
         if (sectionQuery && sectionQuery !== activeSection) {
-            setActiveSection(sectionQuery as SectionType);
+            setActiveSection(sectionQuery as T);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sectionQuery]);
+    }, [sectionQuery, activeSection]);
 
     const navigateToSection = useCallback(
-        (section: SectionType) => {
+        (section: T) => {
             setActiveSection(section);
             setSectionQuery(section);
         },
         [setSectionQuery],
     );
 
-    const sections: SectionType[] = useMemo(
-        () => ['Autoavaliação', 'Avaliação 360', 'Mentoring', 'Referências'],
-        [],
-    );
+    const sections: T[] = useMemo(() => sectionsInput, [sectionsInput]);
 
     const getCurrentSectionIndex = useCallback(() => {
         return sections.indexOf(activeSection);
@@ -87,4 +79,4 @@ export const useSectionNavigation = () => {
         navigateToSection,
         sections,
     };
-};
+}

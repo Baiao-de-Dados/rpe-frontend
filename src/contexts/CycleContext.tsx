@@ -1,35 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
+
 import { CycleContext } from './CycleContextDefinition';
-import type {
-    Cycle,
-    EvaluationStatus,
-    CycleContextType,
-} from './CycleContextDefinition';
+import type { Cycle, EvaluationStatus, CycleContextType } from './CycleContextDefinition';
+
 import { useToast } from '../hooks/useToast';
 
 const mockCurrentCycle: Cycle = {
     id: '2025.1',
     nome: '2025.1',
-    isOpen: true,
+    isOpen: false,
+    allTracksSet: true,
     dataInicio: '2025-01-01',
-    dataFim: '2025-06-30',
+    dataFim: '2025-06-29',
 };
 
-export const CycleProvider: React.FC<{ children: ReactNode }> = ({
-    children,
-}) => {
-    const [currentCycle, setCurrentCycle] = useState<Cycle | null>(null);
-    const [evaluationStatus, setEvaluationStatus] =
-        useState<EvaluationStatus | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+export const CycleProvider = ({ children }: { children: ReactNode }) => {
+
     const { showToast } = useToast();
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentCycle, setCurrentCycle] = useState<Cycle | null>(null);
+    const [evaluationStatus, setEvaluationStatus] = useState<EvaluationStatus | null>(null);
 
     const checkCycleStatus = async () => {
         setIsLoading(true);
-
         await new Promise(resolve => setTimeout(resolve, 1000));
-
         try {
             setCurrentCycle(mockCurrentCycle);
 
@@ -71,8 +66,7 @@ export const CycleProvider: React.FC<{ children: ReactNode }> = ({
                 setEvaluationStatus(newStatus);
 
                 showToast(
-                    'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.',
-                    'success',
+                    'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.','success',
                     {
                         title: 'Avaliação Enviada! 🎉',
                         duration: 10000,

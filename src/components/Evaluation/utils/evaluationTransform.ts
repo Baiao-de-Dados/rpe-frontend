@@ -1,4 +1,4 @@
-import type { EvaluationFormData } from '../schemas/evaluation';
+import type { EvaluationFormData } from '../../../schemas/evaluation';
 
 export interface CriterioOutput {
     criterioId: string;
@@ -33,11 +33,8 @@ export interface TransformedEvaluationData {
     }>;
 }
 
-export const transformFormData = (
-    data: EvaluationFormData,
-    ciclo: string = '2025.1',
-    colaboradorId: string = '1',
-): TransformedEvaluationData => {
+export const transformFormData = (data: EvaluationFormData, ciclo: string = '2025.1', colaboradorId: string = '1'): TransformedEvaluationData => {
+
     const pilaresMap = new Map<string, CriterioOutput[]>();
 
     data.selfAssessment?.forEach(assessment => {
@@ -54,33 +51,24 @@ export const transformFormData = (
         pilaresMap.get(pilarId)!.push(criterio);
     });
 
-    const pilaresData: PilarOutput[] = Array.from(pilaresMap.entries()).map(
-        ([pilarId, criterios]) => ({
-            pilarId,
-            criterios,
-        }),
-    );
+    const pilaresData: PilarOutput[] = Array.from(pilaresMap.entries()).map(([pilarId, criterios]) => ({
+        pilarId,
+        criterios,
+    }));
 
-    const avaliacao360 =
-        data.evaluation360?.map(evaluation => ({
+    const avaliacao360 = data.evaluation360?.map(evaluation => ({
             avaliadoId: evaluation.collaboratorId,
             pontosFortes: evaluation.strengths,
             pontosMelhoria: evaluation.improvements,
             justificativa: 'Justifique sua nota',
         })) || [];
 
-    const mentoring =
-        data.mentoringRating && data.mentoringJustification && data.mentorId
-            ? [
-                  {
-                      mentorId: data.mentorId,
-                      justificativa: data.mentoringJustification,
-                  },
-              ]
-            : [];
+    const mentoring = data.mentoringRating && data.mentoringJustification && data.mentorId ? [{
+                        mentorId: data.mentorId,
+                        justificativa: data.mentoringJustification,
+                    }] : [];
 
-    const referencias =
-        data.references?.map(reference => ({
+    const referencias = data.references?.map(reference => ({
             colaboradorId: reference.collaboratorId,
             justificativa: reference.justification,
         })) || [];
@@ -97,15 +85,11 @@ export const transformFormData = (
     };
 };
 
-export const validateTransformedData = (
-    data: TransformedEvaluationData,
-): true | string => {
+export const validateTransformedData = (data: TransformedEvaluationData): true | string => {
+
     if (!data.ciclo) return "Campo 'ciclo' é obrigatório";
     if (!data.colaboradorId) return "Campo 'colaboradorId' é obrigatório";
-    if (
-        !data.autoavaliacao?.pilares ||
-        data.autoavaliacao.pilares.length === 0
-    ) {
+    if (!data.autoavaliacao?.pilares || data.autoavaliacao.pilares.length === 0) {
         return 'Autoavaliação deve conter pelo menos um pilar';
     }
 
@@ -117,17 +101,13 @@ export const validateTransformedData = (
 
         for (const criterio of pilar.criterios) {
             if (!criterio.criterioId) return 'Cada critério deve ter um ID';
-            if (
-                typeof criterio.nota !== 'number' ||
-                criterio.nota < 1 ||
-                criterio.nota > 5
-            ) {
+            if (typeof criterio.nota !== 'number' || criterio.nota < 1 || criterio.nota > 5) {
                 return `Critério ${criterio.criterioId} deve ter uma nota entre 1 e 5`;
             }
-            if (!criterio.justificativa)
-                return `Critério ${criterio.criterioId} deve ter uma justificativa`;
+            if (!criterio.justificativa) return `Critério ${criterio.criterioId} deve ter uma justificativa`;
         }
     }
 
     return true;
+
 };

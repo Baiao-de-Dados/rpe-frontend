@@ -1,13 +1,14 @@
 import { useEffect, useMemo, memo, useRef } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+
 import { PillarSection } from '../PillarSection';
-import {
-    mockEvaluationPillars,
-    type Criterion,
-} from '../../../data/mockEvaluationPIllars';
+
 import type { EvaluationFormData } from '../../../schemas/evaluation';
 
+import { mockEvaluationPillars, type Criterion } from '../../../data/mockEvaluationPIllars';
+
 export const SelfAssessmentSection = memo(() => {
+
     const { control } = useFormContext<EvaluationFormData>();
     const isInitialized = useRef(false);
 
@@ -17,8 +18,7 @@ export const SelfAssessmentSection = memo(() => {
     });
 
     useEffect(() => {
-        const allCriteria = Object.values(mockEvaluationPillars).flatMap(
-            pillar =>
+        const allCriteria = Object.values(mockEvaluationPillars).flatMap(pillar =>
                 pillar.criterios.map((criterion: Criterion) => ({
                     pilarId: pillar.id,
                     criterionId: criterion.id,
@@ -26,23 +26,19 @@ export const SelfAssessmentSection = memo(() => {
                     justification: '',
                 })),
         );
-        if (
-            (!fields || fields.length !== allCriteria.length) &&
-            !isInitialized.current
-        ) {
+        if ((!fields || fields.length !== allCriteria.length) && !isInitialized.current) {
             replace(allCriteria);
             isInitialized.current = true;
         }
     }, [fields, replace]);
 
-    const validFields = useMemo(
-        () =>
-            fields.map((field, index) => ({
-                id: field.id,
-                pilarId: field.pilarId,
-                criterionId: field.criterionId,
-                index: index,
-            })),
+    const validFields = useMemo(() =>
+        fields.map((field, index) => ({
+            id: field.id,
+            pilarId: field.pilarId,
+            criterionId: field.criterionId,
+            index: index,
+        })),
         [fields],
     );
 
