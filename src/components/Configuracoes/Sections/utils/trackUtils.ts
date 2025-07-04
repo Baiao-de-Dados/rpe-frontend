@@ -64,3 +64,19 @@ export const processTracksForAPI = (data: TrackSectionFormType): SetTracksPayloa
         })
         .filter((track): track is NonNullable<typeof track> => track !== null);
 };
+
+export function normalizeCriterionWeight(val: string): string {
+    if (val) {
+        let num = Number(val);
+        if (!isNaN(num)) {
+            num = Math.trunc(num);
+            if (num > 100) {
+                num = 100;
+            } else if (num < 1) {
+                num = 1;
+            }
+            return String(num);
+        }
+    }
+    return '';
+}
