@@ -43,13 +43,13 @@ function CycleCard({ label, status, onStartClick, showButton, canStart, onCancel
                                 </Button>
                             </div>
                             <Loader2 className="w-5 h-5 text-primary-400 mr-2 animate-spin" />
-                            Em Andamento
+                            Pendente
                         </div>
 
                         <div className="flex flex-col items-center mt-4 text-gray-500 font-semibold md:hidden">
                             <div className="flex items-center gap-2 mb-6 -mt-4">
                                 <Loader2 className="w-5 h-5 text-primary-400 animate-spin" />
-                                Em Andamento
+                                Pendente
                             </div>
                             <Button variant="danger" size="sm" onClick={onCancelClick} className="w-full mb-2">
                                 Cancelar

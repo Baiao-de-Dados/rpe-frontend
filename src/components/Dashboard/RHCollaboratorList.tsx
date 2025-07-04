@@ -58,22 +58,36 @@ export function RHCollaboratorList({ collaborators }: RHCollaboratorListProps) {
               p-3 hover:bg-gray-50 transition-colors
             "
                     >
-                        <div className="flex items-center space-x-3">
-                            {/* Avatar */}
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
                             <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                                 <span className="text-gray-700 font-semibold text-sm">
                                     {getInitials(collab.name)}
                                 </span>
                             </div>
 
-                            {/* Nome e departamento */}
-                            <div className="min-w-0">
-                                <Typography
-                                    variant="body"
-                                    className="font-semibold text-gray-900 truncate"
-                                >
-                                    {collab.name}
-                                </Typography>
+                            <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 sm:block">
+                                    <Typography
+                                        variant="body"
+                                        className="font-semibold text-gray-900 truncate"
+                                    >
+                                        {collab.name}
+                                    </Typography>
+                                    
+                                    {/* Badge ao lado do nome no mobile */}
+                                    <div className="sm:hidden">
+                                        <Badge
+                                            label={collab.status}
+                                            variant={
+                                                collab.status === 'Finalizado'
+                                                    ? 'success'
+                                                    : 'warning'
+                                            }
+                                            size="sm"
+                                        />
+                                    </div>
+                                </div>
+                                
                                 <Typography
                                     variant="caption"
                                     className="text-gray-600 truncate"
@@ -83,16 +97,18 @@ export function RHCollaboratorList({ collaborators }: RHCollaboratorListProps) {
                             </div>
                         </div>
 
-                        {/* Badge reutilizado */}
-                        <Badge
-                            label={collab.status}
-                            variant={
-                                collab.status === 'Finalizado'
-                                    ? 'success'
-                                    : 'warning'
-                            }
-                            size="sm"
-                        />
+                        {/* Badge no desktop */}
+                        <div className="hidden sm:block">
+                            <Badge
+                                label={collab.status}
+                                variant={
+                                    collab.status === 'Finalizado'
+                                        ? 'success'
+                                        : 'warning'
+                                }
+                                size="sm"
+                            />
+                        </div>
                     </div>
                 ))}
             </div>

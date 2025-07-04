@@ -14,6 +14,7 @@ import {
     hasAnyRole as hasAnyRoleUtil,
     hasRequiredRole,
 } from '../utils/roleUtils';
+import type { AxiosError } from 'axios';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
@@ -99,7 +100,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const login = async ({ email, password }: LoginRequest) => {
         try {
-            setLoading(true);
 
             const response = await authEndpoints.login({ email, password });
             const { access_token, user: userData } = response.data;
@@ -126,9 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser(user);
         } catch (error) {
             console.error('Erro no login:', error);
-            throw error;
-        } finally {
-            setLoading(false);
+            throw error as AxiosError;
         }
     };
 

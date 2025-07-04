@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CollaboratorEvaluationCard, {
     type EvaluationField,
 } from '../components/common/CollaboratorEvaluationCard';
-import Typography from '../components/common/Typography';
+import PageHeader from '../components/common/PageHeader';
 import Searchbar from '../components/common/Searchbar';
 import { mockCollaborators } from '../data/mockCollaborators';
 import { Filter } from 'lucide-react';
@@ -20,42 +20,42 @@ const mockEvaluations: Record<
     }
 > = {
     'colab-001': {
-        autoavaliacao: 8.5,
-        avaliacao360: 8.2,
-        notaGestor: 8.8,
-        notaFinal: 8.5,
+        autoavaliacao: 4.3,
+        avaliacao360: 4.1,
+        notaGestor: 4.4,
+        notaFinal: 4.3,
         status: 'Finalizado',
         statusVariant: 'success',
     },
     'colab-002': {
-        autoavaliacao: 7.9,
-        avaliacao360: 7.5,
-        notaGestor: 8.0,
-        notaFinal: 7.8,
+        autoavaliacao: 3.9,
+        avaliacao360: 3.7,
+        notaGestor: 4.0,
+        notaFinal: 3.9,
         status: 'Em andamento',
         statusVariant: 'warning',
     },
     'colab-003': {
-        autoavaliacao: 9.0,
-        avaliacao360: 8.7,
-        notaGestor: 9.2,
-        notaFinal: 9.0,
+        autoavaliacao: 4.5,
+        avaliacao360: 4.3,
+        notaGestor: 4.6,
+        notaFinal: 4.5,
         status: 'Finalizado',
         statusVariant: 'success',
     },
     'colab-004': {
-        autoavaliacao: 6.5,
-        avaliacao360: 6.8,
-        notaGestor: 7.0,
-        notaFinal: 6.8,
+        autoavaliacao: 3.2,
+        avaliacao360: 3.4,
+        notaGestor: 3.5,
+        notaFinal: 3.4,
         status: 'Pendente',
         statusVariant: 'error',
     },
     'colab-005': {
-        autoavaliacao: 8.0,
-        avaliacao360: 8.1,
-        notaGestor: 8.3,
-        notaFinal: 8.1,
+        autoavaliacao: 4.0,
+        avaliacao360: 4.0,
+        notaGestor: 4.1,
+        notaFinal: 4.0,
         status: 'Finalizado',
         statusVariant: 'success',
     },
@@ -82,23 +82,10 @@ export function Colaboradores() {
         : mockCollaborators;
 
     return (
-        <div className="min-h-screen bg-[#f6f6f6]">
-            {/* Header branco fixo */}
-            <header className="bg-white border-b border-[#e5e5e5] py-6 sm:py-6 min-h-[100px] flex flex-col justify-center">
-                <div className="flex flex-col items-start w-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-24 2xl:px-20">
-                    {/* Espaço reservado para o ícone do menu fixo no mobile */}
-                    <div className="block lg:hidden w-[58px] min-w-[58px] h-[58px] mb-1" />
-                    <Typography
-                        variant="h1"
-                        color="primary500"
-                        className="text-2xl sm:text-3xl font-bold mt-0 lg:mt-2"
-                    >
-                        Colaboradores
-                    </Typography>
-                </div>
-            </header>
+        <>
+            <PageHeader title="Colaboradores" />
             {/* Conteúdo principal */}
-            <main className="w-full px-2 sm:px-3 md:px-7 lg:px-10 xl:px-14 2xl:px-20 pt-4 sm:pt-6">
+            <main className="p-8 pt-6">
                 <div className="flex flex-row items-stretch gap-2 sm:gap-4 mb-4">
                     <div className="flex-1">
                         <Searchbar
@@ -109,7 +96,7 @@ export function Colaboradores() {
                         />
                     </div>
                     <button
-                        className="bg-[#167174] hover:bg-[#125c5e] transition-colors rounded-xl p-3 flex items-center justify-center w-[48px] min-w-[48px] max-w-[60px] sm:w-auto sm:min-w-0 sm:max-w-none"
+                        className="bg-[#167174] cursor-pointer hover:bg-[#125c5e] transition-colors rounded-xl p-3 flex items-center justify-center w-[48px] min-w-[48px] max-w-[60px] sm:w-auto sm:min-w-0 sm:max-w-none"
                         aria-label="Filtrar"
                     >
                         <Filter className="text-white w-6 h-6" />
@@ -138,7 +125,7 @@ export function Colaboradores() {
                                     value: evalData.avaliacao360,
                                 },
                                 {
-                                    label: 'Nota gestor',
+                                    label: 'Nota mentor',
                                     value: evalData.notaGestor,
                                 },
                                 {
@@ -166,6 +153,6 @@ export function Colaboradores() {
                     })}
                 </div>
             </main>
-        </div>
+        </>
     );
 }

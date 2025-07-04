@@ -79,7 +79,7 @@ export function Router() {
                     <Route
                         path="configuracoes"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH, UserRoleEnum.ADMIN]}>
                                 <Configuracoes />
                             </RoleRoute>
                         }
@@ -88,7 +88,7 @@ export function Router() {
                     <Route
                         path="importar"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH, UserRoleEnum.ADMIN]}>
                                 <ImportarHistoricos />
                             </RoleRoute>
                         }
@@ -97,7 +97,7 @@ export function Router() {
                     <Route
                         path="administracao"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.RH]}>
+                            <RoleRoute requiredRoles={[UserRoleEnum.RH, UserRoleEnum.ADMIN]}>
                                 <div className="p-6">
                                     <h1 className="text-2xl font-bold">Painel de Administração</h1>
                                     <p>Esta página só é acessível para RH, Comitê, Admin e Desenvolvedor</p>
@@ -109,7 +109,7 @@ export function Router() {
                     <Route
                         path="dev"
                         element={
-                            <RoleRoute requiredRoles={[UserRoleEnum.DEVELOPER]} redirectTo="/dashboard">
+                            <RoleRoute requiredRoles={[UserRoleEnum.DEVELOPER, UserRoleEnum.ADMIN]} redirectTo="/dashboard">
                                 <div className="p-6">
                                     <h1 className="text-2xl font-bold">Ferramentas de Desenvolvimento</h1>
                                     <p>Esta página só é acessível para desenvolvedores</p>
@@ -121,7 +121,7 @@ export function Router() {
                     <Route
                         path="mentoria"
                         element={
-                            <MultiRoleRoute allowedRoles={[UserRoleEnum.MENTOR, UserRoleEnum.LEADER, UserRoleEnum.MANAGER]} redirectTo="/dashboard">
+                            <MultiRoleRoute allowedRoles={[UserRoleEnum.MENTOR, UserRoleEnum.LEADER, UserRoleEnum.MANAGER, UserRoleEnum.ADMIN]} redirectTo="/dashboard">
                                 <div className="p-6">
                                     <h1 className="text-2xl font-bold">Mentoria</h1>
                                     <p>Esta página é acessível para mentores, líderes e gestores</p>

@@ -11,7 +11,7 @@ interface SummaryBoxProps {
 
 const SummaryBox: React.FC<SummaryBoxProps> = ({
     summary,
-    icon = <Sparkles className="text-primary-500" size={18} />,
+    icon = <Sparkles className="text-primary-500" size={18} fill="currentColor" />,
     title = 'Resumo',
     className = '',
 }) => {

@@ -7,8 +7,6 @@ import { DashboardHeader } from '../../components/Dashboard/DashboardHeader';
 import Typography from '../../components/common/Typography';
 import CardContainer from '../../components/common/CardContainer';
 import Button from '../../components/common/Button';
-import { RoleGuard } from '../../components/common/RoleGuard';
-import { UserRoleEnum } from '../../types/auth';
 import { mockCycles } from '../../data/mockCycles';
 
 // Filtrando os dados para o gráfico de desempenho (apenas ciclos finalizados) - remover isso dps com o back
@@ -41,12 +39,12 @@ export function CollaboratorDashboard() {
     const remainingDays = currentCycle.status === 'Em andamento' ? 15 : 0;
 
     return (
-        <div className="min-h-screen bg-neutral-100">
+        <>
             {/* Header */}
             <DashboardHeader userName={user?.name || 'Usuário Teste'} />
+            <main className='p-8 pt-6'>
 
-            <div className="py-4 px-3 sm:px-5">
-                <div className="px-4 sm:px-8 pb-4 mb-4">
+                <div className="mb-4">
                     <CycleBanner
                         status={mapStatusToCycleBanner(currentCycle.status)}
                         cycleName={`Ciclo ${currentCycle.cycleName}`}
@@ -56,7 +54,7 @@ export function CollaboratorDashboard() {
                 </div>
 
                 {/* Layout principal */}
-                <main className="px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Coluna da esquerda - Avaliações */}
                     <section className="lg:col-span-5 xl:col-span-4">
                         <CardContainer>
@@ -69,45 +67,13 @@ export function CollaboratorDashboard() {
                                 >
                                     Suas avaliações
                                 </Typography>
-
-                                {/* 🎯 Botões condicionais baseados em role */}
-                                <RoleGuard
-                                    anyRole={[
-                                        UserRoleEnum.MANAGER,
-                                        UserRoleEnum.COMMITTEE,
-                                        UserRoleEnum.ADMIN,
-                                        UserRoleEnum.DEVELOPER,
-                                    ]}
-                                >
                                     <Button
                                         variant="link"
                                         size="sm"
                                         onClick={() => navigate('/evolucao')}
                                     >
-                                        Ver Evolução Completa
+                                        Ver mais
                                     </Button>
-                                </RoleGuard>
-
-                                <RoleGuard
-                                    anyRole={[
-                                        UserRoleEnum.EMPLOYER,
-                                        UserRoleEnum.MENTOR,
-                                        UserRoleEnum.LEADER,
-                                        UserRoleEnum.RH,
-                                    ]}
-                                >
-                                    <Button
-                                        variant="link"
-                                        size="sm"
-                                        onClick={() =>
-                                            alert(
-                                                'Relatórios de evolução disponíveis apenas para MANAGER ou superior',
-                                            )
-                                        }
-                                    >
-                                        Ver Resumo
-                                    </Button>
-                                </RoleGuard>
                             </div>
 
                             {/* Container com altura fixa e scrollbar */}
@@ -155,8 +121,8 @@ export function CollaboratorDashboard() {
                             </div>
                         </CardContainer>
                     </section>
-                </main>
-            </div>
-        </div>
+                </div>
+        </main>
+        </>
     );
 }

@@ -16,13 +16,13 @@ export function RHDashboard() {
     const { user } = useAuth();
 
     return (
-        <div className="min-h-screen bg-neutral-100">
+        <>
             {/* Header reutilizado */}
             <DashboardHeader userName={user?.name || 'Gestor RH'} />
 
-            <div className="py-4 px-3 sm:px-5">
+            <main className="p-8 pt-6">
                 {/* Métricas principais do RH */}
-                <div className="px-4 sm:px-8 mb-6">
+                <div className="mb-6">
                     <RHMetrics
                         totalCollaborators={mockRHMetrics.totalCollaborators}
                         completedEvaluations={
@@ -36,7 +36,7 @@ export function RHDashboard() {
                 </div>
 
                 {/* Layout principal */}
-                <main className="px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                     {/* Coluna da esquerda - Lista de Colaboradores */}
                     <section className="lg:col-span-5 xl:col-span-4 h-full flex flex-col min-h-[400px] max-h-[600px]">
                         <RHCollaboratorList
@@ -68,8 +68,8 @@ export function RHDashboard() {
                             </div>
                         </CardContainer>
                     </section>
-                </main>
-            </div>
-        </div>
+                </div>
+            </main>
+        </>
     );
 }
