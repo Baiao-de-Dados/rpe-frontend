@@ -82,10 +82,10 @@ export function Colaboradores() {
         : mockCollaborators;
 
     return (
-        <div className="min-h-screen bg-[#f6f6f6]">
+        <>
             <PageHeader title="Colaboradores" />
             {/* Conteúdo principal */}
-            <main className="w-full px-2 sm:px-3 md:px-7 lg:px-10 xl:px-14 2xl:px-20 pt-4 sm:pt-6">
+            <main className="p-8 pt-6">
                 <div className="flex flex-row items-stretch gap-2 sm:gap-4 mb-4">
                     <div className="flex-1">
                         <Searchbar
@@ -96,7 +96,7 @@ export function Colaboradores() {
                         />
                     </div>
                     <button
-                        className="bg-[#167174] hover:bg-[#125c5e] transition-colors rounded-xl p-3 flex items-center justify-center w-[48px] min-w-[48px] max-w-[60px] sm:w-auto sm:min-w-0 sm:max-w-none"
+                        className="bg-[#167174] cursor-pointer hover:bg-[#125c5e] transition-colors rounded-xl p-3 flex items-center justify-center w-[48px] min-w-[48px] max-w-[60px] sm:w-auto sm:min-w-0 sm:max-w-none"
                         aria-label="Filtrar"
                     >
                         <Filter className="text-white w-6 h-6" />
@@ -153,6 +153,6 @@ export function Colaboradores() {
                     })}
                 </div>
             </main>
-        </div>
+        </>
     );
 }

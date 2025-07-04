@@ -41,12 +41,12 @@ export function CollaboratorDashboard() {
     const remainingDays = currentCycle.status === 'Em andamento' ? 15 : 0;
 
     return (
-        <div>
+        <>
             {/* Header */}
             <DashboardHeader userName={user?.name || 'Usuário Teste'} />
+            <main className='p-8 pt-6'>
 
-            <div className="py-4 px-3 sm:px-5">
-                <div className="px-4 sm:px-8 pb-4 mb-4">
+                <div className="mb-4">
                     <CycleBanner
                         status={mapStatusToCycleBanner(currentCycle.status)}
                         cycleName={`Ciclo ${currentCycle.cycleName}`}
@@ -56,7 +56,7 @@ export function CollaboratorDashboard() {
                 </div>
 
                 {/* Layout principal */}
-                <main className="px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Coluna da esquerda - Avaliações */}
                     <section className="lg:col-span-5 xl:col-span-4">
                         <CardContainer>
@@ -155,8 +155,8 @@ export function CollaboratorDashboard() {
                             </div>
                         </CardContainer>
                     </section>
-                </main>
-            </div>
-        </div>
+                </div>
+        </main>
+        </>
     );
 }

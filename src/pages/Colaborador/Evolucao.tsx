@@ -44,7 +44,7 @@ export function Evolucao() {
                 selectedCycle={selectedCycle}
                 onSelectCycle={setSelectedCycle}
             />
-            <main className="p-4 sm:p-8 space-y-6">
+            <main className="p-8 pt-6 space-y-6">
                 <PerfomanceEvolution
                     displayedScore={displayedScore}
                     displayedCycleName={displayedCycleName}

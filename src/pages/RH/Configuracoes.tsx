@@ -23,7 +23,7 @@ export function Configuracoes() {
     return (
         <>
             <ConfigHeader activeSection={activeSection} onSectionChange={navigateToSection} sections={criterionSections} />
-            <main className="pt-6 px-2 sm:p-8">
+            <main className="pt-6 p-8">
                 <SectionRenderer activeSection={activeSection} />
             </main>
         </>
