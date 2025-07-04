@@ -26,7 +26,7 @@ export default function PageHeader<T extends string = string>({
     activeSection,
     onSectionChange,
 }: PageHeaderProps<T>) {
-    const hasChildren = !!children;
+    const hasSections = !!sections;
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +51,7 @@ export default function PageHeader<T extends string = string>({
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
             <div
-                className={`p-8 flex items-center ${hasChildren ? '' : 'mb-10'} justify-between`}
+                className={`p-8 pl-5 sm:pl-8 flex items-center ${hasSections ? 'mb-8 sm:mb-4' : 'mb-10'} justify-between`}
             >
                 <Typography
                     variant="h1"
@@ -63,7 +63,7 @@ export default function PageHeader<T extends string = string>({
             </div>
             {sections && onSectionChange && (
                 <>
-                    <nav className="hidden lg:flex w-full mt-2 border-t-3 pt-5 bg border-gray-50 overflow-x-auto">
+                    <nav className="hidden lg:flex w-full mt-2 sm:mt-0 border-t-3 pt-5 bg border-gray-50 overflow-x-auto">
                         <div className="flex w-full justify-start gap-x-4">
                             {sections.map(section => {
                                 const isActive = section.name === activeSection;

@@ -75,8 +75,8 @@ export default function AsideMenu() {
                         <Icons.ChevronRight size={24} className="text-secondary-400" />
                     )}
                 </button>
-                <div className="hidden max-lg:block max-lg:absolute max-lg:top-4 max-lg:left-4">
-                    <Icons.X onClick={closeMenu} className="text-secondary-400 cursor-pointer" size={50} strokeWidth={2.5} />
+                <div className="hidden max-lg:block max-lg:absolute max-lg:top-4 max-lg:left-4 max-lg:z-[1001]">
+                    <Icons.X onClick={closeMenu} className="text-secondary-400 cursor-pointer transition-colors duration-200" size={50} strokeWidth={2.5} />
                 </div>
 
                 <div className="flex justify-center items-center w-full mb-4">
