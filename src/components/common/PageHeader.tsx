@@ -51,7 +51,7 @@ export default function PageHeader<T extends string = string>({
     return (
         <header className="sticky top-0 z-50 pt-12 pb-0 bg-white flex flex-col justify-between shadow-sm">
             <div
-                className={`p-8 pl-5 sm:pl-8 flex items-center ${hasSections ? 'mb-8 sm:mb-4' : 'mb-10'} justify-between`}
+                className={`h-20 mt-4 sm:mt-0 px-8  pl-5 sm:pl-8 flex items-center ${hasSections ? 'mb-8 sm:mb-4' : 'mb-10'} justify-between`}
             >
                 <Typography
                     variant="h1"

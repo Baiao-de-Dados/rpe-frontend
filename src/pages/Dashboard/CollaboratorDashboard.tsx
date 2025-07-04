@@ -41,7 +41,7 @@ export function CollaboratorDashboard() {
     const remainingDays = currentCycle.status === 'Em andamento' ? 15 : 0;
 
     return (
-        <div className="min-h-screen bg-neutral-100">
+        <div>
             {/* Header */}
             <DashboardHeader userName={user?.name || 'Usuário Teste'} />
 

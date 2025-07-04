@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import CollaboratorEvaluationCard, {
     type EvaluationField,
 } from '../components/common/CollaboratorEvaluationCard';
-import Typography from '../components/common/Typography';
+import PageHeader from '../components/common/PageHeader';
 import Searchbar from '../components/common/Searchbar';
 import { mockCollaborators } from '../data/mockCollaborators';
 import { Filter } from 'lucide-react';
@@ -83,20 +83,7 @@ export function Colaboradores() {
 
     return (
         <div className="min-h-screen bg-[#f6f6f6]">
-            {/* Header branco fixo */}
-            <header className="bg-white border-b border-[#e5e5e5] py-6 sm:py-6 min-h-[100px] flex flex-col justify-center">
-                <div className="flex flex-col items-start w-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-24 2xl:px-20">
-                    {/* Espaço reservado para o ícone do menu fixo no mobile */}
-                    <div className="block lg:hidden w-[58px] min-w-[58px] h-[58px] mb-1" />
-                    <Typography
-                        variant="h1"
-                        color="primary500"
-                        className="text-2xl sm:text-3xl font-bold mt-0 lg:mt-2"
-                    >
-                        Colaboradores
-                    </Typography>
-                </div>
-            </header>
+            <PageHeader title="Colaboradores" />
             {/* Conteúdo principal */}
             <main className="w-full px-2 sm:px-3 md:px-7 lg:px-10 xl:px-14 2xl:px-20 pt-4 sm:pt-6">
                 <div className="flex flex-row items-stretch gap-2 sm:gap-4 mb-4">
