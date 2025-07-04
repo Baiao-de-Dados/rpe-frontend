@@ -3,6 +3,11 @@ import { PerformanceChart } from '../Charts/PerformanceChart';
 import { FaStar, FaArrowUp } from 'react-icons/fa';
 import CardContainer from '../common/CardContainer';
 import { AvaliacoesRealizadas } from './AvaliacoesRealizadas';
+import {
+    getScoreColor,
+    getScoreLabel,
+    CHART_COLORS,
+} from '../../utils/colorUtils';
 
 interface Cycle {
     cycleName: string;
@@ -28,12 +33,26 @@ export function PerfomanceEvolution({
     finalizedCyclesCount,
     sortedCycles,
 }: EvolucaoDesempenhoProps) {
+    const score = Number(displayedScore);
+    const scoreColor = getScoreColor(score);
+
+    const getGrowthColor = (growth: number) => {
+        if (growth > 0) return CHART_COLORS.AVERAGE;
+        if (growth === 0) return '#6B7280';
+        return CHART_COLORS.POOR;
+    };
+
+    const growthValue = parseFloat(growth);
+    const growthColor = getGrowthColor(growthValue);
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Nota atual */}
                 <CardContainer className="flex items-center justify-between">
-                    <div className="flex flex-col border-l-4 border-green-600 pl-4">
+                    <div
+                        className={`flex flex-col border-l-4 border-[${scoreColor}] pl-4`}
+                    >
                         <Typography variant="h2" className="text-lg font-bold">
                             Nota atual
                         </Typography>
@@ -46,53 +65,21 @@ export function PerfomanceEvolution({
                         </Typography>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <span
-                            className={`text-5xl ${
-                                Number(displayedScore) >= 4.5
-                                    ? 'text-green-600'
-                                    : Number(displayedScore) >= 3.5
-                                      ? 'text-yellow-600'
-                                      : Number(displayedScore) >= 2.5
-                                        ? 'text-orange-600'
-                                        : 'text-red-600'
-                            }`}
-                        >
+                        <span className={`text-5xl text-[${scoreColor}]`}>
                             <FaStar />
                         </span>
                         <div className="flex flex-col items-center">
                             <Typography
                                 variant="h1"
-                                className={`text-4xl font-bold ${
-                                    Number(displayedScore) >= 4.5
-                                        ? 'text-green-600'
-                                        : Number(displayedScore) >= 3.5
-                                          ? 'text-yellow-600'
-                                          : Number(displayedScore) >= 2.5
-                                            ? 'text-orange-600'
-                                            : 'text-red-600'
-                                }`}
+                                className={`text-4xl font-bold text-[${scoreColor}]`}
                             >
                                 {displayedScore}
                             </Typography>
                             <Typography
                                 variant="caption"
-                                className={`${
-                                    Number(displayedScore) >= 4.5
-                                        ? 'text-green-600'
-                                        : Number(displayedScore) >= 3.5
-                                          ? 'text-yellow-600'
-                                          : Number(displayedScore) >= 2.5
-                                            ? 'text-orange-600'
-                                            : 'text-red-600'
-                                }`}
+                                className={`text-[${scoreColor}]`}
                             >
-                                {Number(displayedScore) >= 4.5
-                                    ? 'Great'
-                                    : Number(displayedScore) >= 3.5
-                                      ? 'Good'
-                                      : Number(displayedScore) >= 2.5
-                                        ? 'Regular'
-                                        : 'Poor'}
+                                {getScoreLabel(score)}
                             </Typography>
                         </div>
                     </div>
@@ -100,7 +87,9 @@ export function PerfomanceEvolution({
 
                 {/* Crescimento */}
                 <CardContainer className="flex items-center justify-between">
-                    <div className="flex flex-col border-l-4 border-yellow-600 pl-4">
+                    <div
+                        className={`flex flex-col border-l-4 border-[${growthColor}] pl-4`}
+                    >
                         <Typography variant="h2" className="text-lg font-bold">
                             Crescimento
                         </Typography>
@@ -113,25 +102,15 @@ export function PerfomanceEvolution({
                     </div>
                     <div className="flex items-center space-x-2">
                         <span
-                            className={`text-4xl ${
-                                parseFloat(growth) > 0
-                                    ? 'text-yellow-600'
-                                    : parseFloat(growth) === 0
-                                      ? 'text-gray-600'
-                                      : 'text-red-600'
-                            } ${parseFloat(growth) >= 0 ? 'rotate-0' : 'rotate-180'}`}
+                            className={`text-4xl text-[${growthColor}] ${
+                                growthValue >= 0 ? 'rotate-0' : 'rotate-180'
+                            }`}
                         >
                             <FaArrowUp />
                         </span>
                         <Typography
                             variant="h1"
-                            className={`text-4xl font-bold ${
-                                parseFloat(growth) > 0
-                                    ? 'text-yellow-600'
-                                    : parseFloat(growth) === 0
-                                      ? 'text-gray-600'
-                                      : 'text-red-600'
-                            }`}
+                            className={`text-4xl font-bold text-[${growthColor}]`}
                         >
                             {growth}
                         </Typography>

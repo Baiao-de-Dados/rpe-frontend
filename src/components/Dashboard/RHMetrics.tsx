@@ -2,6 +2,7 @@
 import Typography from '../common/Typography';
 import CardContainer from '../common/CardContainer';
 import { LuFilePen, LuCalendarCheck2 } from 'react-icons/lu';
+import { CHART_COLORS } from '../../utils/colorUtils';
 
 interface RHMetricsProps {
     totalCollaborators: number;
@@ -38,7 +39,7 @@ function ProgressCircle({
                 cy={size / 2}
             />
             <circle
-                stroke="#255963"
+                stroke={CHART_COLORS.GOOD}
                 fill="transparent"
                 strokeWidth={stroke}
                 strokeLinecap="round"
@@ -52,7 +53,7 @@ function ProgressCircle({
                 x="50%"
                 y="54%"
                 textAnchor="middle"
-                className="fill-[#255963] font-bold"
+                className={`fill-[${CHART_COLORS.GOOD}] font-bold`}
                 fontSize={fontSize}
                 dy=".3em"
             >
@@ -72,7 +73,7 @@ export function RHMetrics({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {/* Card 1: Preenchimento de avaliação */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className="flex flex-col border-l-4 border-[#255963] pl-4 flex-1 min-w-0">
+                <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.GOOD}] pl-4 flex-1 min-w-0`}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Preenchimento de avaliação
                     </Typography>
@@ -80,7 +81,7 @@ export function RHMetrics({
                         variant="caption"
                         className="text-gray-500 mt-2 flex-1"
                     >
-                        <span className="font-semibold text-[#255963]">
+                        <span className={`font-semibold text-[${CHART_COLORS.GOOD}]`}>
                             {completionPercentage}%
                         </span>{' '}
                         dos colaboradores já fecharam suas avaliações
@@ -91,7 +92,7 @@ export function RHMetrics({
 
             {/* Card 2: Avaliações pendentes */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className="flex flex-col border-l-4 border-[#E53935] pl-4 flex-1 min-w-0">
+                <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.POOR}] pl-4 flex-1 min-w-0`}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Avaliações pendentes
                     </Typography>
@@ -99,18 +100,18 @@ export function RHMetrics({
                         variant="caption"
                         className="text-gray-500 mt-2 flex-1"
                     >
-                        <span className="font-semibold text-[#E53935]">
+                        <span className={`font-semibold text-[${CHART_COLORS.POOR}]`}>
                             {pendingEvaluations}
                         </span>{' '}
                         colaboradores ainda não fecharam sua avaliação
                     </Typography>
                 </div>
                 <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                    <LuFilePen className="text-[#E53935] w-8 h-8" />
+                    <LuFilePen className={`text-[${CHART_COLORS.POOR}] w-8 h-8`} />
                     <Typography
                         variant="h1"
                         color="inherit"
-                        className="text-4xl font-bold text-[#E53935]"
+                        className={`text-4xl font-bold text-[${CHART_COLORS.POOR}]`}
                     >
                         {pendingEvaluations}
                     </Typography>
@@ -119,7 +120,7 @@ export function RHMetrics({
 
             {/* Card 3: Fechamento de ciclo */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className="flex flex-col border-l-4 border-[#22C55E] pl-4 flex-1 min-w-0">
+                <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.EXCELLENT}] pl-4 flex-1 min-w-0`}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Fechamento de ciclo
                     </Typography>
@@ -128,26 +129,26 @@ export function RHMetrics({
                         className="text-gray-500 mt-2 flex-1"
                     >
                         Faltam{' '}
-                        <span className="font-semibold text-[#22C55E]">
+                        <span className={`font-semibold text-[${CHART_COLORS.EXCELLENT}]`}>
                             {daysUntilClosure} dias
                         </span>{' '}
                         para o fechamento do ciclo, no dia {closureDate}
                     </Typography>
                 </div>
                 <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                    <LuCalendarCheck2 className="text-[#22C55E] w-8 h-8" />
+                    <LuCalendarCheck2 className={`text-[${CHART_COLORS.EXCELLENT}] w-8 h-8`} />
                     <div className="flex flex-col items-center">
                         <Typography
                             variant="h1"
                             color="inherit"
-                            className="text-4xl font-bold text-[#22C55E]"
+                            className={`text-4xl font-bold text-[${CHART_COLORS.EXCELLENT}]`}
                         >
                             {daysUntilClosure}
                         </Typography>
                         <Typography
                             variant="caption"
                             color="inherit"
-                            className="text-[#22C55E] font-bold"
+                            className={`text-[${CHART_COLORS.EXCELLENT}] font-bold`}
                         >
                             dias
                         </Typography>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
     Legend,
 } from 'chart.js';
 import type { TooltipItem } from 'chart.js';
+import { getPercentageColor } from '../../utils/colorUtils';
 
 ChartJS.register(
     CategoryScale,
@@ -20,52 +21,31 @@ ChartJS.register(
     Legend,
 );
 
-interface TrackData {
-    track: string;
-    completed: number;
-    total: number;
+interface RHPerformanceChartProps {
+    data: { track: string; completed: number; total: number }[];
 }
 
-interface RHPerformanceChartProps {
-    data: TrackData[];
-}
+type FilterOption = 'Todas' | string;
 
 export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
-    const [selectedTrack, setSelectedTrack] = useState<string>('Todas');
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [selectedTrack, setSelectedTrack] = useState<FilterOption>('Todas');
+    const [showFilterMenu, setShowFilterMenu] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
+
         checkMobile();
         window.addEventListener('resize', checkMobile);
+
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Fechar dropdown ao clicar fora
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target as Node)
-            ) {
-                setShowDropdown(false);
-            }
-        }
-        if (showDropdown) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
-    }, [showDropdown]);
-
-    // Obter trilhas únicas
-    const uniqueTracks = Array.from(new Set(data.map(item => item.track)));
+    // Trilhas únicas para o filtro
+    const tracks = ['Todas', ...Array.from(new Set(data.map(item => item.track)))];
 
     // Filtrar dados pela trilha selecionada
     const filteredData =
@@ -73,13 +53,10 @@ export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
             ? data
             : data.filter(item => item.track === selectedTrack);
 
-    // Cor baseada na porcentagem
+    // Usando a função centralizada de cores baseada em porcentagem
     const getBarColor = (completed: number, total: number) => {
         const percentage = (completed / total) * 100;
-        if (percentage >= 90) return '#22C55E'; // Verde
-        if (percentage >= 70) return '#3B82F6'; // Azul
-        if (percentage >= 50) return '#F59E0B'; // Amarelo
-        return '#EF4444'; // Vermelho
+        return getPercentageColor(percentage);
     };
 
     const dataChart = {
@@ -175,12 +152,12 @@ export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
         <div className="w-full h-full relative">
             {/* Dropdown de trilhas */}
             <div
-                className={`${isMobile ? 'mb-4' : 'absolute top-[-60px] right-0'}`}
-                ref={dropdownRef}
+                className={`${isMobile ? 'mb-4' : 'absolute top-[-60px] right-0'} z-50`}
+                ref={inputRef}
             >
                 <button
                     className="flex items-center space-x-2 text-sm text-neutral-500 border border-neutral-300 rounded-md px-3 py-1.5 bg-white"
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => setShowFilterMenu(!showFilterMenu)}
                 >
                     <span>
                         {selectedTrack === 'Todas'
@@ -200,24 +177,24 @@ export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
                         />
                     </svg>
                 </button>
-                {showDropdown && (
-                    <div className="absolute mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-10 border border-neutral-200">
+                {showFilterMenu && (
+                    <div className="absolute mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-50 border border-neutral-200">
                         <button
                             className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${selectedTrack === 'Todas' ? 'text-primary-600 font-medium' : ''}`}
                             onClick={() => {
                                 setSelectedTrack('Todas');
-                                setShowDropdown(false);
+                                setShowFilterMenu(false);
                             }}
                         >
                             Todas as Trilhas
                         </button>
-                        {uniqueTracks.map(track => (
+                        {tracks.map(track => (
                             <button
                                 key={track}
                                 className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${selectedTrack === track ? 'text-primary-600 font-medium' : ''}`}
                                 onClick={() => {
                                     setSelectedTrack(track);
-                                    setShowDropdown(false);
+                                    setShowFilterMenu(false);
                                 }}
                             >
                                 {track}
@@ -228,7 +205,7 @@ export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
             </div>
             {/* Container do gráfico */}
             <div
-                className={`flex items-center justify-center ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}
+                className={`flex items-center justify-center relative z-10 ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}
             >
                 <Bar data={dataChart} options={options} />
             </div>

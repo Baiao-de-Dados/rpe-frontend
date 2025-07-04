@@ -7,8 +7,6 @@ import { DashboardHeader } from '../../components/Dashboard/DashboardHeader';
 import Typography from '../../components/common/Typography';
 import CardContainer from '../../components/common/CardContainer';
 import Button from '../../components/common/Button';
-import { RoleGuard } from '../../components/common/RoleGuard';
-import { UserRoleEnum } from '../../types/auth';
 import { mockCycles } from '../../data/mockCycles';
 
 // Filtrando os dados para o gráfico de desempenho (apenas ciclos finalizados) - remover isso dps com o back
@@ -69,45 +67,13 @@ export function CollaboratorDashboard() {
                                 >
                                     Suas avaliações
                                 </Typography>
-
-                                {/* 🎯 Botões condicionais baseados em role */}
-                                <RoleGuard
-                                    anyRole={[
-                                        UserRoleEnum.MANAGER,
-                                        UserRoleEnum.COMMITTEE,
-                                        UserRoleEnum.ADMIN,
-                                        UserRoleEnum.DEVELOPER,
-                                    ]}
-                                >
                                     <Button
                                         variant="link"
                                         size="sm"
                                         onClick={() => navigate('/evolucao')}
                                     >
-                                        Ver Evolução Completa
+                                        Ver mais
                                     </Button>
-                                </RoleGuard>
-
-                                <RoleGuard
-                                    anyRole={[
-                                        UserRoleEnum.EMPLOYER,
-                                        UserRoleEnum.MENTOR,
-                                        UserRoleEnum.LEADER,
-                                        UserRoleEnum.RH,
-                                    ]}
-                                >
-                                    <Button
-                                        variant="link"
-                                        size="sm"
-                                        onClick={() =>
-                                            alert(
-                                                'Relatórios de evolução disponíveis apenas para MANAGER ou superior',
-                                            )
-                                        }
-                                    >
-                                        Ver Resumo
-                                    </Button>
-                                </RoleGuard>
                             </div>
 
                             {/* Container com altura fixa e scrollbar */}

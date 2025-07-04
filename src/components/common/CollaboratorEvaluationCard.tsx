@@ -2,6 +2,7 @@ import React from 'react';
 import CollaboratorCard from './CollaboratorCard';
 import Badge, { type BadgeVariant } from './Badge';
 import Typography from './Typography';
+import { getScoreBgClasses } from '../../utils/colorUtils';
 
 export interface EvaluationField {
     label: string;
@@ -23,14 +24,6 @@ export interface CollaboratorEvaluationCardProps {
     className?: string;
 }
 
-const getScoreColor = (score: number) => {
-    if (score >= 4.5) return 'bg-green-600 text-white';
-    if (score >= 3.5) return 'bg-teal-600 text-white';
-    if (score >= 2.5) return 'bg-yellow-600 text-white';
-    if (score >= 1.5) return 'bg-orange-600 text-white';
-    return 'bg-red-600 text-white';
-};
-
 const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
     collaborator,
     evaluationFields,
@@ -51,11 +44,6 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
         }
     }
 
-    // Encontra o índice da nota de autoavaliação e nota final
-    const autoIdx = evaluationFields.findIndex(
-        f => f.label === 'Autoavaliação',
-    );
-    const finalIdx = evaluationFields.findIndex(f => f.label === 'Nota final');
     return (
         <div
             className={`flex ${isMobile ? 'flex-row items-center' : 'sm:flex-row items-center'} justify-between bg-white rounded-lg sm:rounded-2xl px-2 sm:px-6 py-2 sm:py-3 gap-2 sm:gap-4 border border-[#f0f0f0] min-h-0 h-auto ${className}`}
@@ -76,19 +64,20 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                     }}
                     variant="compact"
                 />
-            </div>
-            {/* Direita: Campos de avaliação + badge + seta */}
-            <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end w-full sm:max-w-[60%]">
-                {/* Badge fixa à esquerda da autoavaliação (desktop) ou nota final (mobile) */}
-                {isMobile && finalIdx !== -1 && (
+                
+                {/* Badge ao lado do nome no mobile */}
+                {isMobile && (
                     <Badge
                         label={collaborator.status}
                         variant={collaborator.statusVariant || 'default'}
                         size="sm"
-                        className="ml-1 sm:ml-2"
                     />
                 )}
-                {!isMobile && autoIdx !== -1 && (
+            </div>
+            {/* Direita: Campos de avaliação + badge + seta */}
+            <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end w-full sm:max-w-[60%]">
+                {/* Badge no desktop ao lado dos campos de avaliação */}
+                {!isMobile && (
                     <Badge
                         label={collaborator.status}
                         variant={collaborator.statusVariant || 'default'}
@@ -101,7 +90,7 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                         field.label === 'Nota final' &&
                         typeof field.value === 'number';
                     const colorClass = isNotaFinal
-                        ? getScoreColor(field.value as number)
+                        ? getScoreBgClasses(field.value as number)
                         : 'bg-neutral-100 text-[#167174]';
                     return (
                         <div

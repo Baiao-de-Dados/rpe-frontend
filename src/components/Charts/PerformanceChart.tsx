@@ -10,6 +10,7 @@ import {
     Legend,
 } from 'chart.js';
 import type { TooltipItem } from 'chart.js';
+import { getScoreColor } from '../../utils/colorUtils';
 
 ChartJS.register(
     CategoryScale,
@@ -75,13 +76,9 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
         }
     })();
 
-    // Cores baseadas na pontuação
+    // Usando a função centralizada de cores baseada em score
     const getBarColor = (score: number) => {
-        if (score >= 4.5) return '#5CB85C'; // Verde (ótimo)
-        if (score >= 3.5) return '#09A6A6'; // Verde azulado (bom)
-        if (score >= 2.5) return '#F0AD4E'; // Amarelo (regular)
-        if (score >= 1.5) return '#FF9800'; // Laranja (baixo)
-        return '#D9534F'; // Vermelho (crítico)
+        return getScoreColor(score);
     };
 
     // Limitando aos ciclos filtrados
@@ -183,9 +180,9 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
         <div className="w-full h-full relative">
             {/* Botão de filtro - posicionamento responsivo */}
             <div
-                className={`${isMobile ? 'relative mb-4' : 'absolute top-[-60px] right-0'}`}
+                className={`${isMobile ? 'relative mb-4' : 'absolute top-[-60px] right-0'} z-50`}
             >
-                <div className="relative">
+                <div className="relative z-50">
                     <button
                         className={`flex items-center space-x-2 text-sm text-neutral-500 border border-neutral-300 rounded-md px-3 py-1.5 ${isMobile ? 'w-full justify-between' : ''}`}
                         onClick={() => setShowFilterMenu(!showFilterMenu)}
@@ -207,7 +204,7 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
 
                     {showFilterMenu && (
                         <div
-                            className={`${isMobile ? 'absolute left-0 right-0' : 'absolute right-0'} mt-2 ${isMobile ? 'w-full' : 'w-64'} bg-white shadow-lg rounded-md py-2 z-10`}
+                            className={`${isMobile ? 'absolute left-0 right-0' : 'absolute right-0'} mt-2 ${isMobile ? 'w-full' : 'w-64'} bg-white shadow-lg rounded-md py-2 z-50 border border-gray-200`}
                         >
                             <button
                                 className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${filter === 'last3' ? 'text-primary-600 font-medium' : ''}`}
@@ -224,11 +221,9 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                             <div className="px-4 py-2 border-t border-gray-100">
                                 <form
                                     onSubmit={handleCustomNumberSubmit}
-                                    className={`flex items-center ${isMobile ? 'flex-col space-y-2' : ''}`}
+                                    className="flex flex-col space-y-2"
                                 >
-                                    <div
-                                        className={`flex items-center ${isMobile ? 'w-full justify-center' : ''}`}
-                                    >
+                                    <div className="flex items-center justify-center">
                                         <span className="text-sm mr-2">
                                             Últimos
                                         </span>
@@ -240,13 +235,13 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
                                             defaultValue={customNumber}
                                             className="w-16 p-1 border border-gray-300 rounded text-sm"
                                         />
-                                        <span className="text-sm mx-2">
+                                        <span className="text-sm ml-2">
                                             ciclos
                                         </span>
                                     </div>
                                     <button
                                         type="submit"
-                                        className={`text-xs bg-primary-500 text-white px-3 py-1 rounded hover:bg-primary-600 ${isMobile ? 'w-full' : 'ml-auto'}`}
+                                        className="text-xs bg-primary-500 text-white px-3 py-1 rounded hover:bg-primary-600 w-full"
                                     >
                                         Aplicar
                                     </button>
@@ -259,7 +254,7 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
 
             {/* Container do gráfico */}
             <div
-                className={`flex items-center justify-center ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}
+                className={`flex items-center justify-center relative z-10 ${isMobile ? 'h-[300px]' : 'h-[450px]'}`}
             >
                 <Bar data={data} options={options} />
             </div>
