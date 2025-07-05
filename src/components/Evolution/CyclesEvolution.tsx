@@ -4,7 +4,7 @@ import CardContainer from '../common/CardContainer';
 
 interface Cycle {
     cycleName: string;
-    status: 'Finalizado' | 'Pendente' | string;
+    status: 'Finalizado' | 'Em andamento' | string;
     score: number;
     summary: string;
 }
@@ -27,7 +27,7 @@ export function CyclesEvolution({ sortedCycles }: EvolucaoCiclosProps) {
                         status={
                             cycle.status as
                                 | 'Finalizado'
-                                | 'Pendente'
+                                | 'Em andamento'
                         }
                         finalScore={cycle.score}
                         selfEvalScore={cycle.score}

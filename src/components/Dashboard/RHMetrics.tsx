@@ -92,7 +92,7 @@ export function RHMetrics({
 
             {/* Card 2: Avaliações pendentes */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className="flex flex-col border-l-4 pl-4 flex-1 min-w-0" style={{ borderLeftColor: CHART_COLORS.POOR }}>
+                <div className="flex flex-col border-l-4 pl-4 flex-1 min-w-0" style={{ borderLeftColor: CHART_COLORS.BELOW }}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Avaliações pendentes
                     </Typography>
@@ -100,17 +100,17 @@ export function RHMetrics({
                         variant="caption"
                         className="text-gray-500 mt-2 flex-1"
                     >
-                        <span className="font-semibold" style={{ color: CHART_COLORS.POOR }}>
+                        <span className="font-semibold" style={{ color: CHART_COLORS.BELOW }}>
                             {pendingEvaluations}
                         </span>{' '}
                         colaboradores ainda não fecharam sua avaliação
                     </Typography>
                 </div>
                 <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                    <LuFilePen className="w-8 h-8" style={{ color: CHART_COLORS.POOR }} />
+                    <LuFilePen className="w-8 h-8" style={{ color: CHART_COLORS.BELOW }} />
                     <span
                         className="text-4xl font-bold"
-                        style={{ color: CHART_COLORS.POOR }}
+                        style={{ color: CHART_COLORS.BELOW }}
                     >
                         {pendingEvaluations}
                     </span>
