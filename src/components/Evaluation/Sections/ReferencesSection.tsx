@@ -111,8 +111,6 @@ export const ReferencesSection = memo(() => {
         [selectedCollaborators, selectedCollaboratorIds],
     );
 
-    console.log('🎨 Component render - showCards:', showCards, 'validFields length:', validFields.length, 'showEmptyMessage:', showEmptyMessage);
-
     return (
         <section>
             <div className="mb-8">

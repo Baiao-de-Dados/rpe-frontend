@@ -65,7 +65,8 @@ const SearchBar = <T,>({
             setResults([]);
             setIsOpen(false);
         }
-    }, [value, searchFunction, showResults, maxResults, excludeItems, getItemKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value, searchFunction, showResults, maxResults]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

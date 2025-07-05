@@ -66,7 +66,6 @@ export function Colaboradores() {
     const [search, setSearch] = useState('');
     const [isMobile, setIsMobile] = useState(false);
 
-    // Detecta mobile via window.innerWidth
     React.useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 640);
         checkMobile();
