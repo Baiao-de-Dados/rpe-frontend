@@ -12,7 +12,7 @@ export function AvaliacoesRealizadas({
 }: AvaliacoesRealizadasProps) {
     return (
         <CardContainer className="flex items-center justify-between">
-            <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.GOOD}] pl-4`}>
+            <div className="flex flex-col border-l-4 pl-4" style={{ borderLeftColor: CHART_COLORS.GOOD }}>
                 <Typography variant="h2" className="text-lg font-bold">
                     Avaliações realizadas
                 </Typography>
@@ -21,15 +21,15 @@ export function AvaliacoesRealizadas({
                 </Typography>
             </div>
             <div className="flex items-center space-x-2">
-                <span className={`text-[${CHART_COLORS.GOOD}] text-3xl`}>
+                <span className="text-3xl" style={{ color: CHART_COLORS.GOOD }}>
                     <LuNotebookPen />
                 </span>
-                <Typography
-                    variant="h1"
-                    className={`text-4xl font-bold text-[${CHART_COLORS.GOOD}]`}
+                <span
+                    className="text-4xl font-bold"
+                    style={{ color: CHART_COLORS.GOOD }}
                 >
                     {finalizedCyclesCount}
-                </Typography>
+                </span>
             </div>
         </CardContainer>
     );

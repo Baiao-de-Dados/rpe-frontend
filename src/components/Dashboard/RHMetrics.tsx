@@ -73,7 +73,7 @@ export function RHMetrics({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
             {/* Card 1: Preenchimento de avaliação */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.GOOD}] pl-4 flex-1 min-w-0`}>
+                <div className="flex flex-col border-l-4 pl-4 flex-1 min-w-0" style={{ borderLeftColor: CHART_COLORS.GOOD }}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Preenchimento de avaliação
                     </Typography>
@@ -81,7 +81,7 @@ export function RHMetrics({
                         variant="caption"
                         className="text-gray-500 mt-2 flex-1"
                     >
-                        <span className={`font-semibold text-[${CHART_COLORS.GOOD}]`}>
+                        <span className="font-semibold" style={{ color: CHART_COLORS.GOOD }}>
                             {completionPercentage}%
                         </span>{' '}
                         dos colaboradores já fecharam suas avaliações
@@ -92,7 +92,7 @@ export function RHMetrics({
 
             {/* Card 2: Avaliações pendentes */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.POOR}] pl-4 flex-1 min-w-0`}>
+                <div className="flex flex-col border-l-4 pl-4 flex-1 min-w-0" style={{ borderLeftColor: CHART_COLORS.POOR }}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Avaliações pendentes
                     </Typography>
@@ -100,27 +100,26 @@ export function RHMetrics({
                         variant="caption"
                         className="text-gray-500 mt-2 flex-1"
                     >
-                        <span className={`font-semibold text-[${CHART_COLORS.POOR}]`}>
+                        <span className="font-semibold" style={{ color: CHART_COLORS.POOR }}>
                             {pendingEvaluations}
                         </span>{' '}
                         colaboradores ainda não fecharam sua avaliação
                     </Typography>
                 </div>
                 <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                    <LuFilePen className={`text-[${CHART_COLORS.POOR}] w-8 h-8`} />
-                    <Typography
-                        variant="h1"
-                        color="inherit"
-                        className={`text-4xl font-bold text-[${CHART_COLORS.POOR}]`}
+                    <LuFilePen className="w-8 h-8" style={{ color: CHART_COLORS.POOR }} />
+                    <span
+                        className="text-4xl font-bold"
+                        style={{ color: CHART_COLORS.POOR }}
                     >
                         {pendingEvaluations}
-                    </Typography>
+                    </span>
                 </div>
             </CardContainer>
 
             {/* Card 3: Fechamento de ciclo */}
             <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4">
-                <div className={`flex flex-col border-l-4 border-[${CHART_COLORS.EXCELLENT}] pl-4 flex-1 min-w-0`}>
+                <div className="flex flex-col border-l-4 pl-4 flex-1 min-w-0" style={{ borderLeftColor: CHART_COLORS.EXCELLENT }}>
                     <Typography variant="h2" className="text-lg font-bold">
                         Fechamento de ciclo
                     </Typography>
@@ -129,29 +128,27 @@ export function RHMetrics({
                         className="text-gray-500 mt-2 flex-1"
                     >
                         Faltam{' '}
-                        <span className={`font-semibold text-[${CHART_COLORS.EXCELLENT}]`}>
+                        <span className="font-semibold" style={{ color: CHART_COLORS.EXCELLENT }}>
                             {daysUntilClosure} dias
                         </span>{' '}
                         para o fechamento do ciclo, no dia {closureDate}
                     </Typography>
                 </div>
                 <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-                    <LuCalendarCheck2 className={`text-[${CHART_COLORS.EXCELLENT}] w-8 h-8`} />
+                    <LuCalendarCheck2 className="w-8 h-8" style={{ color: CHART_COLORS.EXCELLENT }} />
                     <div className="flex flex-col items-center">
-                        <Typography
-                            variant="h1"
-                            color="inherit"
-                            className={`text-4xl font-bold text-[${CHART_COLORS.EXCELLENT}]`}
+                        <span
+                            className="text-4xl font-bold"
+                            style={{ color: CHART_COLORS.EXCELLENT }}
                         >
                             {daysUntilClosure}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            color="inherit"
-                            className={`text-[${CHART_COLORS.EXCELLENT}] font-bold`}
+                        </span>
+                        <span
+                            className="font-bold text-sm"
+                            style={{ color: CHART_COLORS.EXCELLENT }}
                         >
                             dias
-                        </Typography>
+                        </span>
                     </div>
                 </div>
             </CardContainer>

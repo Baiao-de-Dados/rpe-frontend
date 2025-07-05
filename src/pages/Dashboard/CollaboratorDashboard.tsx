@@ -23,7 +23,6 @@ const mapStatusToCycleBanner = (
             return 'open';
         case 'Finalizado':
             return 'closed';
-        case 'Pendente':
         default:
             return 'upcoming';
     }
@@ -87,7 +86,6 @@ export function CollaboratorDashboard() {
                                                 cycle.status as
                                                     | 'Finalizado'
                                                     | 'Em andamento'
-                                                    | 'Pendente'
                                             }
                                             cycleName={`Ciclo ${cycle.cycleName}`}
                                             summary={cycle.summary}

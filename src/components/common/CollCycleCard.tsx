@@ -3,11 +3,11 @@ import Typography from './Typography';
 import CardContainer from './CardContainer';
 import SummaryBox from './SummaryBox';
 import Badge from './Badge';
-import { getScoreBgClasses, getScoreTextClasses } from '../../utils/colorUtils';
+import { getScoreBgStyles, getScoreStyles } from '../../utils/colorUtils';
 
 interface CollCycleCardProps {
     cycleName: string;
-    status: 'Finalizado' | 'Em andamento' | 'Pendente';
+    status: 'Finalizado' | 'Em andamento';
     finalScore: number;
     selfEvalScore?: number;
     executionScore?: number;
@@ -56,7 +56,8 @@ const CollCycleCard: React.FC<CollCycleCardProps> = ({
                                 Nota final
                             </Typography>
                             <span
-                                className={`px-3 py-1 text-sm font-bold rounded text-white ${getScoreBgClasses(finalScore)}`}
+                                className="px-3 py-1 text-sm font-bold rounded text-white"
+                                style={getScoreBgStyles(finalScore)}
                             >
                                 {finalScore > 0 ? finalScore.toFixed(1) : '-'}
                             </span>
@@ -73,18 +74,19 @@ const CollCycleCard: React.FC<CollCycleCardProps> = ({
                             >
                                 Autoavaliação
                             </Typography>
-                            <Typography
-                                variant="caption"
-                                className={`${getScoreTextClasses(selfEvalScore)} font-bold text-sm`}
+                            <span
+                                className="font-bold text-sm"
+                                style={getScoreStyles(selfEvalScore)}
                             >
                                 {selfEvalScore.toFixed(1)}
-                            </Typography>
+                            </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
-                                className={`h-3 sm:h-4 rounded-full ${getScoreBgClasses(selfEvalScore)}`}
+                                className="h-3 sm:h-4 rounded-full"
                                 style={{
                                     width: `${selfEvalScore * 20}%`,
+                                    ...getScoreBgStyles(selfEvalScore)
                                 }}
                             ></div>
                         </div>
@@ -98,18 +100,19 @@ const CollCycleCard: React.FC<CollCycleCardProps> = ({
                             >
                                 Avaliação final - Execução
                             </Typography>
-                            <Typography
-                                variant="caption"
-                                className={`${getScoreTextClasses(executionScore)} font-bold text-sm`}
+                            <span
+                                className="font-bold text-sm"
+                                style={getScoreStyles(executionScore)}
                             >
                                 {executionScore.toFixed(1)}
-                            </Typography>
+                            </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
-                                className={`h-3 sm:h-4 rounded-full ${getScoreBgClasses(executionScore)}`}
+                                className="h-3 sm:h-4 rounded-full"
                                 style={{
                                     width: `${executionScore * 20}%`,
+                                    ...getScoreBgStyles(executionScore)
                                 }}
                             ></div>
                         </div>
@@ -123,18 +126,19 @@ const CollCycleCard: React.FC<CollCycleCardProps> = ({
                             >
                                 Avaliação final - Postura
                             </Typography>
-                            <Typography
-                                variant="caption"
-                                className={`${getScoreTextClasses(postureScore)} font-bold text-sm`}
+                            <span
+                                className="font-bold text-sm"
+                                style={getScoreStyles(postureScore)}
                             >
                                 {postureScore.toFixed(1)}
-                            </Typography>
+                            </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
-                                className={`h-3 sm:h-4 rounded-full ${getScoreBgClasses(postureScore)}`}
+                                className="h-3 sm:h-4 rounded-full"
                                 style={{
                                     width: `${postureScore * 20}%`,
+                                    ...getScoreBgStyles(postureScore)
                                 }}
                             ></div>
                         </div>

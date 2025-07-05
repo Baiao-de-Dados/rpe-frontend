@@ -39,7 +39,7 @@ export function PerfomanceEvolution({
     const getGrowthColor = (growth: number) => {
         if (growth > 0) return CHART_COLORS.AVERAGE;
         if (growth === 0) return '#6B7280';
-        return CHART_COLORS.POOR;
+        return CHART_COLORS.BELOW;
     };
 
     const growthValue = parseFloat(growth);
@@ -51,7 +51,8 @@ export function PerfomanceEvolution({
                 {/* Nota atual */}
                 <CardContainer className="flex items-center justify-between">
                     <div
-                        className={`flex flex-col border-l-4 border-[${scoreColor}] pl-4`}
+                        className="flex flex-col border-l-4 pl-4"
+                        style={{ borderLeftColor: scoreColor }}
                     >
                         <Typography variant="h2" className="text-lg font-bold">
                             Nota atual
@@ -65,22 +66,22 @@ export function PerfomanceEvolution({
                         </Typography>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <span className={`text-5xl text-[${scoreColor}]`}>
+                        <span className="text-5xl" style={{ color: scoreColor }}>
                             <FaStar />
                         </span>
                         <div className="flex flex-col items-center">
-                            <Typography
-                                variant="h1"
-                                className={`text-4xl font-bold text-[${scoreColor}]`}
+                            <span
+                                className="text-4xl font-bold"
+                                style={{ color: scoreColor }}
                             >
                                 {displayedScore}
-                            </Typography>
-                            <Typography
-                                variant="caption"
-                                className={`text-[${scoreColor}]`}
+                            </span>
+                            <span
+                                className="text-sm"
+                                style={{ color: scoreColor }}
                             >
                                 {getScoreLabel(score)}
-                            </Typography>
+                            </span>
                         </div>
                     </div>
                 </CardContainer>
@@ -88,7 +89,8 @@ export function PerfomanceEvolution({
                 {/* Crescimento */}
                 <CardContainer className="flex items-center justify-between">
                     <div
-                        className={`flex flex-col border-l-4 border-[${growthColor}] pl-4`}
+                        className="flex flex-col border-l-4 pl-4"
+                        style={{ borderLeftColor: growthColor }}
                     >
                         <Typography variant="h2" className="text-lg font-bold">
                             Crescimento
@@ -102,18 +104,19 @@ export function PerfomanceEvolution({
                     </div>
                     <div className="flex items-center space-x-2">
                         <span
-                            className={`text-4xl text-[${growthColor}] ${
+                            className={`text-4xl ${
                                 growthValue >= 0 ? 'rotate-0' : 'rotate-180'
                             }`}
+                            style={{ color: growthColor }}
                         >
                             <FaArrowUp />
                         </span>
-                        <Typography
-                            variant="h1"
-                            className={`text-4xl font-bold text-[${growthColor}]`}
+                        <span
+                            className="text-4xl font-bold"
+                            style={{ color: growthColor }}
                         >
                             {growth}
-                        </Typography>
+                        </span>
                     </div>
                 </CardContainer>
 
