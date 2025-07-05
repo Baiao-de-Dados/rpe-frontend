@@ -1,4 +1,4 @@
-import { memo } from 'react';
+    import { memo } from 'react';
 import { motion } from 'framer-motion';
 
 import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';

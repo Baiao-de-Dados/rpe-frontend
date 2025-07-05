@@ -135,8 +135,15 @@ export const Evaluation360Section = memo(() => {
             )}
 
             <AnimatePresence>
-                {showEmptyMessage && (
-                    <motion.div key="empty-message" variants={variants.emptyMessage} initial="initial" animate="animate" exit="exit" className="text-center py-12">
+                {showEmptyMessage && !searchQuery && (
+                    <motion.div 
+                        key="empty-message" 
+                        variants={variants.emptyMessage} 
+                        initial="initial" 
+                        animate="animate" 
+                        exit="exit" 
+                        className="text-center py-12"
+                    >
                         <Typography variant="body" className="text-gray-500">
                             Nenhuma avaliação adicionada
                         </Typography>

@@ -3,21 +3,16 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { CycleContext } from './CycleContextDefinition';
 import type { Cycle, EvaluationStatus, CycleContextType } from './CycleContextDefinition';
 
-import { useToast } from '../hooks/useToast';
-
 const mockCurrentCycle: Cycle = {
     id: '2025.1',
     nome: '2025.1',
     isOpen: true,
-    allTracksSet: true,
+    allTracksSet: false,
     dataInicio: '2025-01-01',
     dataFim: '2025-06-29',
 };
 
 export const CycleProvider = ({ children }: { children: ReactNode }) => {
-
-    const { showToast } = useToast();
-
     const [isLoading, setIsLoading] = useState(true);
     const [currentCycle, setCurrentCycle] = useState<Cycle | null>(null);
     const [evaluationStatus, setEvaluationStatus] = useState<EvaluationStatus | null>(null);
@@ -46,58 +41,6 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const submitEvaluation = async (): Promise<boolean> => {
-        try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            const success = Math.random() > 0.1;
-
-            if (success && currentCycle) {
-                const newStatus: EvaluationStatus = {
-                    cycleId: currentCycle.id,
-                    isSubmitted: true,
-                    submittedAt: new Date().toISOString(),
-                };
-
-                localStorage.setItem(
-                    `evaluation_${currentCycle.id}`,
-                    JSON.stringify(newStatus),
-                );
-                setEvaluationStatus(newStatus);
-
-                showToast(
-                    'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.','success',
-                    {
-                        title: 'Avaliação Enviada! 🎉',
-                        duration: 10000,
-                    },
-                );
-                return true;
-            } else {
-                showToast(
-                    'Não foi possível enviar sua avaliação no momento. Verifique sua conexão com a internet e tente novamente.',
-                    'error',
-                    {
-                        title: 'Falha no Envio',
-                        duration: 8000,
-                    },
-                );
-                return false;
-            }
-        } catch (error) {
-            console.error('Erro no envio:', error);
-            showToast(
-                'Ocorreu um erro técnico durante o envio. Nossa equipe foi notificada. Tente novamente em alguns minutos.',
-                'error',
-                {
-                    title: 'Erro Técnico',
-                    duration: 10000,
-                },
-            );
-            return false;
-        }
-    };
-
     useEffect(() => {
         checkCycleStatus();
     }, []);
@@ -107,7 +50,6 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         evaluationStatus,
         isLoading,
         checkCycleStatus,
-        submitEvaluation,
     };
 
     return (

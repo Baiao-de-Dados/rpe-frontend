@@ -20,7 +20,6 @@ export interface CycleContextType {
     evaluationStatus: EvaluationStatus | null;
     isLoading: boolean;
     checkCycleStatus: () => Promise<void>;
-    submitEvaluation: () => Promise<boolean>;
 }
 
 export const CycleContext = createContext<CycleContextType | undefined>(

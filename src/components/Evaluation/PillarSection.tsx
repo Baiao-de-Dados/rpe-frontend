@@ -104,13 +104,12 @@ export const PillarSection = memo(({ pillarTitle, criteria, validFields }: Pilla
                     />
                 }
                 headerRight={
-                    <>
+                    <div className="flex items-center gap-2 whitespace-nowrap">
                         <PillarRatingDisplay criteria={criteria} validFields={validFields} />
-                        <span className="text-sm text-gray-500">
-                            {completedCriteriaCount}/{criteria.length}{' '}
-                            preenchidos
+                        <span className="text-sm text-gray-500 whitespace-nowrap">
+                            {completedCriteriaCount}/{criteria.length} preenchidos
                         </span>
-                    </>
+                    </div>
                 }
                 defaultOpen={isOpen}
                 onHeaderClick={toggleMinimized}

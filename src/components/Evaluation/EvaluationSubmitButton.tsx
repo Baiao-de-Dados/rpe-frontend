@@ -1,10 +1,11 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import Button from '../common/Button';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
+import { useEvaluationSubmit } from '../../hooks/useEvaluationSubmit';
 
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
@@ -16,16 +17,12 @@ const EvaluationSubmitButton = memo(() => {
 
     const { showToast } = useToast();
 
-    const { currentCycle, submitEvaluation } = useCycle();
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { currentCycle } = useCycle();
+    const { submitEvaluation, isSubmitting } = useEvaluationSubmit();
 
     const onSubmit = () => {
-
         handleSubmit(async data => {
             try {
-                setIsSubmitting(true);
-
                 const transformedData = transformFormData(data, currentCycle?.id || '2025.1', '1');
 
                 const validation = validateTransformedData(transformedData);
@@ -54,8 +51,6 @@ const EvaluationSubmitButton = memo(() => {
                     title: 'Erro no Processamento',
                     duration: 7000,
                 });
-            } finally {
-                setIsSubmitting(false);
             }
         })();
     };

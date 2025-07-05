@@ -45,7 +45,6 @@ const SearchBar = <T,>({
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Memoize excludeItems and getItemKey to avoid unnecessary rerenders/loops
         const exclude = excludeItems || [];
         const getKey = getItemKey;
         if (searchFunction && value.trim() && showResults) {
@@ -53,11 +52,11 @@ const SearchBar = <T,>({
             const filteredResults =
                 exclude.length > 0 && getKey
                     ? searchResults.filter(item => {
-                          const itemKey = getKey(item);
-                          return !exclude.some(
-                              excludeItem => getKey(excludeItem) === itemKey,
-                          );
-                      })
+                            const itemKey = getKey(item);
+                            return !exclude.some(
+                                excludeItem => getKey(excludeItem) === itemKey,
+                            );
+                        })
                     : searchResults;
 
             setResults(filteredResults.slice(0, maxResults));
@@ -66,22 +65,26 @@ const SearchBar = <T,>({
             setResults([]);
             setIsOpen(false);
         }
-    }, [value, searchFunction, showResults, maxResults]);
+    }, [value, searchFunction, showResults, maxResults, excludeItems, getItemKey]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
             if (
                 containerRef.current &&
-                !containerRef.current.contains(event.target as Node)
+                !containerRef.current.contains(target) &&
+                isOpen
             ) {
                 setIsOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () =>
+                document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [isOpen]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && onSubmit) {
@@ -94,16 +97,31 @@ const SearchBar = <T,>({
     };
 
     const handleItemClick = (item: T) => {
-        if (onItemSelect) {
-            onItemSelect(item);
-        }
+        // Força fechamento imediato
         setIsOpen(false);
+        setResults([]);
+        
+        // Pequeno delay para garantir que o dropdown feche antes de executar a ação
+        setTimeout(() => {
+            if (onItemSelect) {
+                onItemSelect(item);
+            }
+        }, 50);
+        
+        // Limpa o campo de busca
         onChange('');
     };
 
     const clearSearch = () => {
         onChange('');
         setIsOpen(false);
+    };
+
+    const handleOverlayClick = (e: React.MouseEvent) => {
+        // Só executa clearSearch se o clique foi realmente fora do container
+        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+            clearSearch();
+        }
     };
 
     return (
@@ -122,14 +140,29 @@ const SearchBar = <T,>({
 
             {isOpen && (
                 <>
-                    <div className="fixed inset-0 z-5" onClick={clearSearch} />
-                    <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 z-10 max-h-80 overflow-y-auto">
+                    <div 
+                        className="fixed inset-0 z-[9998]" 
+                        onClick={handleOverlayClick}
+                    />
+                    <div 
+                        className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 max-h-80 overflow-y-auto"
+                        style={{ 
+                            zIndex: 9999,
+                            pointerEvents: 'auto',
+                            position: 'absolute'
+                        }}
+                    >
                         {results.length > 0 ? (
                             results.map((item, index) => (
                                 <div
                                     key={getItemKey ? getItemKey(item) : index}
-                                    className="px-4 py-3 mx-2 my-1 first:mt-2 last:mb-2 hover:bg-[var(--color-neutral-100)] cursor-pointer rounded-lg transition-all duration-200 border border-transparent"
+                                    className="px-4 py-3 hover:bg-gray-100 cursor-pointer transition-all duration-200 first:rounded-t-xl last:rounded-b-xl"
                                     onClick={() => handleItemClick(item)}
+                                    style={{ 
+                                        position: 'relative', 
+                                        zIndex: 10000,
+                                        pointerEvents: 'auto'
+                                    }}
                                 >
                                     {renderItem
                                         ? renderItem(item)
