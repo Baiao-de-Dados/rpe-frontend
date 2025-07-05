@@ -20,6 +20,9 @@ export interface CycleContextType {
     evaluationStatus: EvaluationStatus | null;
     isLoading: boolean;
     checkCycleStatus: () => Promise<void>;
+    updateAllTracksSet: (value: boolean) => void;
+    updateCycleStatus: (isOpen: boolean, endDate?: string) => void;
+    resetCycleToDefault: () => void;
 }
 
 export const CycleContext = createContext<CycleContextType | undefined>(
