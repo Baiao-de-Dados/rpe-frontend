@@ -1,8 +1,10 @@
 import React from 'react';
 import CollaboratorCard from './CollaboratorCard';
-import Badge, { type BadgeVariant } from './Badge';
+import Badge from './Badge';
 import Typography from './Typography';
-import { getScoreBgClasses } from '../../utils/colorUtils';
+import { getScoreBgStyles } from '../../utils/colorUtils';
+
+type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 
 export interface EvaluationField {
     label: string;
@@ -89,9 +91,15 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                     const isNotaFinal =
                         field.label === 'Nota final' &&
                         typeof field.value === 'number';
-                    const colorClass = isNotaFinal
-                        ? getScoreBgClasses(field.value as number)
-                        : 'bg-neutral-100 text-[#167174]';
+                    
+                    let badgeStyle: React.CSSProperties = {};
+                    let badgeClass = 'bg-neutral-100 text-[#167174]';
+                    
+                    if (isNotaFinal && typeof field.value === 'number') {
+                        badgeStyle = getScoreBgStyles(field.value as number);
+                        badgeClass = '';
+                    }
+                    
                     return (
                         <div
                             key={field.label + idx}
@@ -104,8 +112,8 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                                 {field.label}
                             </Typography>
                             <div
-                                className={`rounded text-base font-semibold px-2 sm:px-4 py-1 min-w-[32px] sm:min-w-[36px] text-center ${colorClass}`}
-                                style={{ minHeight: 28 }}
+                                className={`rounded text-base font-semibold px-2 sm:px-4 py-1 min-w-[32px] sm:min-w-[36px] text-center ${badgeClass}`}
+                                style={{ minHeight: 28, ...badgeStyle }}
                             >
                                 {field.value !== undefined &&
                                 field.value !== null &&

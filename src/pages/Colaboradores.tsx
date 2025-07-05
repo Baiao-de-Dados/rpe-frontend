@@ -6,7 +6,8 @@ import PageHeader from '../components/common/PageHeader';
 import Searchbar from '../components/common/Searchbar';
 import { mockCollaborators } from '../data/mockCollaborators';
 import { Filter } from 'lucide-react';
-import type { BadgeVariant } from '../components/common/Badge';
+
+type BadgeVariant = 'default' | 'success' | 'warning';
 
 const mockEvaluations: Record<
     string,
@@ -32,7 +33,7 @@ const mockEvaluations: Record<
         avaliacao360: 3.7,
         notaGestor: 4.0,
         notaFinal: 3.9,
-        status: 'Em andamento',
+        status: 'Pendente',
         statusVariant: 'warning',
     },
     'colab-003': {
@@ -49,7 +50,7 @@ const mockEvaluations: Record<
         notaGestor: 3.5,
         notaFinal: 3.4,
         status: 'Pendente',
-        statusVariant: 'error',
+        statusVariant: 'warning',
     },
     'colab-005': {
         autoavaliacao: 4.0,
