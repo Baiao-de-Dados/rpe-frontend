@@ -97,31 +97,16 @@ const SearchBar = <T,>({
     };
 
     const handleItemClick = (item: T) => {
-        // Força fechamento imediato
         setIsOpen(false);
         setResults([]);
         
-        // Pequeno delay para garantir que o dropdown feche antes de executar a ação
         setTimeout(() => {
             if (onItemSelect) {
                 onItemSelect(item);
             }
         }, 50);
         
-        // Limpa o campo de busca
         onChange('');
-    };
-
-    const clearSearch = () => {
-        onChange('');
-        setIsOpen(false);
-    };
-
-    const handleOverlayClick = (e: React.MouseEvent) => {
-        // Só executa clearSearch se o clique foi realmente fora do container
-        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-            clearSearch();
-        }
     };
 
     return (
@@ -139,48 +124,21 @@ const SearchBar = <T,>({
             />
 
             {isOpen && (
-                <>
-                    <div 
-                        className="fixed inset-0 z-[9998]" 
-                        onClick={handleOverlayClick}
-                    />
-                    <div 
-                        className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 max-h-80 overflow-y-auto"
-                        style={{ 
-                            zIndex: 9999,
-                            pointerEvents: 'auto',
-                            position: 'absolute'
-                        }}
-                    >
+                <div className="absolute z-50 top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg mt-2 max-h-80 overflow-y-auto">
                         {results.length > 0 ? (
                             results.map((item, index) => (
-                                <div
-                                    key={getItemKey ? getItemKey(item) : index}
-                                    className="px-4 py-3 hover:bg-gray-100 cursor-pointer transition-all duration-200 first:rounded-t-xl last:rounded-b-xl"
-                                    onClick={() => handleItemClick(item)}
-                                    style={{ 
-                                        position: 'relative', 
-                                        zIndex: 10000,
-                                        pointerEvents: 'auto'
-                                    }}
-                                >
-                                    {renderItem
-                                        ? renderItem(item)
-                                        : String(item)}
+                                <div key={getItemKey ? getItemKey(item) : index} className="px-4 py-3 hover:bg-gray-100 cursor-pointer transition-all duration-200 first:rounded-t-xl last:rounded-b-xl" onClick={() => handleItemClick(item)}>
+                                    { renderItem ? renderItem(item) : String(item) }
                                 </div>
                             ))
                         ) : (
                             <div className="p-6">
-                                <Typography
-                                    variant="body"
-                                    className="text-gray-500 text-center"
-                                >
+                                <Typography variant="body" className="text-gray-500 text-center">
                                     {noResultsMessage}
                                 </Typography>
                             </div>
                         )}
                     </div>
-                </>
             )}
         </div>
     );

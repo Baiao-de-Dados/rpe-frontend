@@ -110,7 +110,7 @@ export const Evaluation360Section = memo(() => {
             </div>
 
             {showCards && (
-                <div className="space-y-6">
+                <div className="space-y-6 relative -z-1">
                     <AnimatePresence>
                         {validFields.map((field, validIndex) => {
                             const collaborator = searchCollaborators('').find(c => c.id === field.collaboratorId);
