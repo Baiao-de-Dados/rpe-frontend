@@ -20,23 +20,19 @@ export function useEvaluationCompletion() {
         name: 'selfAssessment',
     });
 
-    const watchedMentoring = useWatch({
-        control,
-        name: ['mentoringRating', 'mentoringJustification'],
-    });
-
     const watchedEvaluation360 = useWatch({
         control,
         name: 'evaluation360',
     });
 
+    const watchedMentoring = useWatch({
+        control,
+        name: ['mentoringRating', 'mentoringJustification', 'mentoringIAValid'],
+    });
+
     const watchedReferences = useWatch({
         control,
         name: 'references',
-    });
-
-    const mentoringIAValid = useWatch({ 
-        control, name: 'mentoringIAValid' 
     });
 
     const incompleteSelfAssessmentCount = useMemo(() => {
@@ -61,18 +57,6 @@ export function useEvaluationCompletion() {
 
         return incompleteCount;
     }, [watchedSelfAssessment, allCriteria.length]);
-
-    const incompleteMentoringCount = useMemo(() => {
-        if (!watchedMentoring || !Array.isArray(watchedMentoring)) {
-            return 1;
-        }
-        const [rating, justification] = watchedMentoring;
-        const hasRating = rating && typeof rating === 'number' && rating > 0;
-
-        const hasJustification = justification && typeof justification === 'string' && justification.trim().length > 0;
-
-        return hasRating && hasJustification && mentoringIAValid === true ? 0 : 1;
-    }, [watchedMentoring, mentoringIAValid]);
 
     const incompleteEvaluation360Count = useMemo(() => {
         if (!watchedEvaluation360 || !Array.isArray(watchedEvaluation360)) {
@@ -118,6 +102,18 @@ export function useEvaluationCompletion() {
         return incompleteCount;
     }, [watchedEvaluation360]);
 
+    const incompleteMentoringCount = useMemo(() => {
+        if (!watchedMentoring || !Array.isArray(watchedMentoring)) {
+            return 1;
+        }
+        const [rating, justification, mentoringIAValid] = watchedMentoring;
+        const hasRating = rating && typeof rating === 'number' && rating > 0;
+
+        const hasJustification = justification && typeof justification === 'string' && justification.trim().length > 0;
+
+        return hasRating && hasJustification && mentoringIAValid === true ? 0 : 1;
+    }, [watchedMentoring]);
+
     const incompleteReferencesCount = useMemo(() => {
         if (!watchedReferences || !Array.isArray(watchedReferences)) {
             return 0;
@@ -153,8 +149,8 @@ export function useEvaluationCompletion() {
 
     return {
         incompleteSelfAssessmentCount,
-        incompleteMentoringCount,
         incompleteEvaluation360Count,
+        incompleteMentoringCount,
         incompleteReferencesCount,
     };
 }
