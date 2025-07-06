@@ -102,11 +102,14 @@ export function useEvaluationCompletion() {
             const hasImprovements = evaluation.improvements && typeof evaluation.improvements === 'string' &&
             evaluation.improvements.trim().length > 0;
 
+            const isIAValidated = evaluation.evaluation360IAValid === true;
+
             if (
                 !hasCollaboratorId ||
                 !hasRating ||
                 !hasStrengths ||
-                !hasImprovements
+                !hasImprovements ||
+                !isIAValidated
             ) {
                 incompleteCount++;
             }

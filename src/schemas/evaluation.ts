@@ -26,9 +26,8 @@ export const mentoringSchema = z.object({
             'A justificativa não pode conter apenas espaços em branco',
         ),
     mentoringIAValid: z.boolean({
-        required_error: 'A validação da IA é obrigatória',
-        invalid_type_error: 'A validação da IA deve ser booleana',
-    }).refine(v => v === true, 'A IA precisa validar o campo para enviar'),
+        required_error: 'Você precisa aceitar ou rejeitar a validação da IA',
+    }).refine(v => v === true, 'Você precisa aceitar a validação da IA')
 });
 
 export const referenceSchema = z.object({
@@ -47,9 +46,8 @@ export const referenceSchema = z.object({
             'A justificativa não pode conter apenas espaços em branco',
         ),
     referencesIAValid: z.boolean({
-        required_error: 'A validação da IA é obrigatória',
-        invalid_type_error: 'A validação da IA deve ser booleana',
-    }).refine(v => v === true, 'A IA precisa validar o campo para enviar').optional(),
+        required_error: 'Você precisa aceitar ou rejeitar a validação da IA',
+    }).refine(v => v === true, 'Você precisa aceitar a validação da IA')
 });
 
 export const evaluation360Schema = z.object({
@@ -88,6 +86,9 @@ export const evaluation360Schema = z.object({
             value => value.length > 0,
             'Os pontos de melhoria não podem conter apenas espaços em branco',
         ),
+    evaluation360IAValid: z.boolean({
+        required_error: 'Você precisa aceitar ou rejeitar a validação da IA',
+    }).refine(v => v === true, 'Você precisa aceitar a validação da IA')
 });
 
 export const selfAssessmentSchema = z.object({

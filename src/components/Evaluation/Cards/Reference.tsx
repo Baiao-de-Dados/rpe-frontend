@@ -1,4 +1,5 @@
 import { Trash } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import CardContainer from '../../common/CardContainer';
@@ -7,6 +8,8 @@ import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import IAValidateActions from '../../common/IAValidateActions';
 
 import type { Collaborator } from '../../../data/mockCollaborators';
+
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 interface ReferenceProps {
     collaborator: Collaborator;
@@ -18,6 +21,8 @@ interface ReferenceProps {
 const Reference = ({ collaborator, onRemove, name, index }: ReferenceProps) => {
 
     const { control, setValue } = useFormContext();
+
+    const { optimizedTransition } = useOptimizedAnimation();
 
     const watchedReferenceIAValid = useWatch({
         control,
@@ -34,18 +39,19 @@ const Reference = ({ collaborator, onRemove, name, index }: ReferenceProps) => {
     };
 
     return (
-        <CardContainer>
-            <Controller name={`references.${index}.referencesIAValid`} control={control}
-                render={({ field }) => (
-                    <input type="hidden" {...field} value={(watchedReferenceIAValid ?? true) ? 'true' : 'false'} />
+        <motion.div layout transition={optimizedTransition}>
+            <CardContainer>
+                <Controller name={`references.${index}.referencesIAValid`} control={control}
+                    render={({ field }) => (
+                        <input type="hidden" {...field} value={(watchedReferenceIAValid ?? true) ? 'true' : 'false'} />
+                    )}
+                />
+
+                {!(watchedReferenceIAValid ?? true) && (
+                    <IAValidateActions onCheck={handleCheck} onCancel={handleCancel} />
                 )}
-            />
 
-            {!(watchedReferenceIAValid ?? true) && (
-                <IAValidateActions onCheck={handleCheck} onCancel={handleCancel} />
-            )}
-
-            <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4">
                 <CollaboratorCard collaborator={collaborator} variant="compact"/>
                 <button type="button" onClick={onRemove} className="text-red-500 hover:text-red-700 cursor-pointer p-2">
                     <Trash size={20} />
@@ -66,6 +72,7 @@ const Reference = ({ collaborator, onRemove, name, index }: ReferenceProps) => {
                 />
             </div>
         </CardContainer>
+        </motion.div>
     );
 };
 

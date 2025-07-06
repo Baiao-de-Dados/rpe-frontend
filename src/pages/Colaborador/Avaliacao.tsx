@@ -30,7 +30,7 @@ export function Avaliacao() {
         const navigationState = location.state as NavigationState | null;
 
         if (navigationState?.geminiResponse) {
-            const { mentoring, references } = navigationState.geminiResponse;
+            const { mentoring, references, evaluation360 } = navigationState.geminiResponse;
 
             if (mentoring) {
                 methods.setValue('mentoringRating', mentoring.rating ?? 0);
@@ -43,6 +43,16 @@ export function Avaliacao() {
                     collaboratorId: ref.collaboratorId,
                     justification: ref.justification,
                     referencesIAValid: false
+                })));
+            }
+
+            if (evaluation360 && evaluation360.length > 0) {
+                methods.setValue('evaluation360', evaluation360.map(eval360 => ({
+                    collaboratorId: eval360.collaboratorId,
+                    rating: eval360.rating,
+                    strengths: eval360.strengths,
+                    improvements: eval360.improvements,
+                    evaluation360IAValid: false
                 })));
             }
         }
