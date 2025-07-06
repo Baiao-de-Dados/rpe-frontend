@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useFormContext, Controller, useWatch } from 'react-hook-form';
 
 import StarRating from '../../common/StarRating';
@@ -9,60 +10,62 @@ import { ErrorMessage } from '../../common/ErrorMessage';
 import CollaboratorCard from '../../common/CollaboratorCard';
 import IAValidateActions from '../../common/IAValidateActions';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
+
+const mentor = {
+    id: '3',
+    nome: 'Fulano de Tal',
+    cargo: 'Mentor',
+};
 
 const Mentoring = () => {
 
-    const { control, setValue, resetField } = useFormContext();
+    const { control, setValue } = useFormContext();
+    const { optimizedTransition } = useOptimizedAnimation();
 
     const watchedMentoringIAValid = useWatch({
         control,
         name: 'mentoringIAValid'
     });
 
-    const mentor = {
-        id: '3',
-        nome: 'Fulano de Tal',
-        cargo: 'Mentor',
-    };
-
     useEffect(() => {
         setValue('mentorId', mentor.id);
-        // Inicializa mentoringIAValid como true se não estiver definido
         if (watchedMentoringIAValid === undefined) {
             setValue('mentoringIAValid', true, { shouldValidate: true });
         }
-    }, [setValue, mentor.id, watchedMentoringIAValid]);
+    }, [setValue, watchedMentoringIAValid]);
 
     const handleCheck = () => {
         setValue('mentoringIAValid', true, { shouldValidate: true });
     };
 
-    const handleError = () => {
+    const handleCancel = () => {
         setValue('mentoringIAValid', true, { shouldValidate: true });
-        resetField('mentoringRating');
-        resetField('mentoringJustification');
+        setValue('mentoringRating', null);
+        setValue('mentoringJustification', '');
     };
 
     return (
-        <CardContainer>
-            <Controller
-                name="mentoringIAValid"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                    <input type="hidden" {...field} value={(watchedMentoringIAValid ?? true) ? 'true' : 'false'} />
-                )}
-            />
+        <motion.div layout transition={optimizedTransition}>
+            <CardContainer>
+                <Controller
+                    name="mentoringIAValid"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <input type="hidden" {...field} value={(watchedMentoringIAValid ?? true) ? 'true' : 'false'} />
+                    )}
+                />
 
-            {!(watchedMentoringIAValid ?? true) && (
-                <IAValidateActions onCheck={handleCheck} onError={handleError} />
-            )}
-
-            <Controller name="mentorId" control={control}
-                render={({ field }) => (
-                    <input type="hidden" {...field} value={mentor.id} />
+                {!(watchedMentoringIAValid ?? true) && (
+                    <IAValidateActions onCheck={handleCheck} onCancel={handleCancel} />
                 )}
-            />
+
+                <Controller name="mentorId" control={control}
+                    render={({ field }) => (
+                        <input type="hidden" {...field} value={mentor.id} />
+                    )}
+                />
 
             <Controller name="mentoringRating" control={control}
                 render={({ field, fieldState }) => (
@@ -97,6 +100,7 @@ const Mentoring = () => {
                 )}
             />
         </CardContainer>
+        </motion.div>
     );
 };
 

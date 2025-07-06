@@ -19,21 +19,24 @@ interface AnotacoesStepsModalProps {
     open: boolean;
     steps: Step[];
     onCancel: () => void;
+    onClose?: () => void;
     onContinue: () => void;
     canContinue?: boolean;
     avaliacaoSections?: string[];
     wasAborted?: boolean;
 }
 
-function AnotacoesStepsModal({ open, steps, onCancel, onContinue, canContinue, avaliacaoSections = [], wasAborted = false }: AnotacoesStepsModalProps) {
+function AnotacoesStepsModal({ open, steps, onCancel, onClose, onContinue, canContinue, avaliacaoSections = [], wasAborted = false }: AnotacoesStepsModalProps) {
 
     const hasInsightError = open && steps[1]?.error;
     const hasConnectionError = open && steps[0]?.error && !wasAborted;
 
     const { variants } = useOptimizedAnimation();
 
+    const handleModalClose = onClose || onCancel;
+
     return (
-        <Modal open={open} onClose={onCancel} className="w-full h-full sm:min-w-[600px] sm:max-w-[800px] sm:h-[540px] sm:max-h-[540px] flex flex-col sm:rounded-lg">
+        <Modal open={open} onClose={handleModalClose} className="w-full h-full sm:min-w-[600px] sm:max-w-[800px] sm:h-[540px] sm:max-h-[540px] flex flex-col sm:rounded-lg">
             <div className="flex flex-col h-full p-4 sm:p-6">
                 <Typography variant="h2" className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-center sm:text-left">
                     Processando avaliações

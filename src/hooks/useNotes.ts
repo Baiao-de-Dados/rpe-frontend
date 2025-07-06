@@ -8,28 +8,39 @@ import { evaluationAI } from '../services/evaluationAI';
 
 import type { GeminiEvaluationResponse } from '../types/evaluationAI';
 
+export type EvaluationSection = 'Mentoring' | 'Avaliação 360' | 'Autoavaliação' | 'Referências';
+
 export interface NavigationState {
     geminiResponse: GeminiEvaluationResponse;
 }
 
 export function useNotes() {
-    
     const navigate = useNavigate();
-
     const { showToast } = useToast();
-
     const { currentCycle } = useCycle();
 
     const [modalStep, setModalStep] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEvaluating, setIsEvaluating] = useState(false);
     const [stepErrors, setStepErrors] = useState([false, false, false]);
-    const [evaluationSections, setEvaluationSections] = useState<string[]>([]);
+    const [evaluationSections, setEvaluationSections] = useState<EvaluationSection[]>([]);
     const [generatedEvaluation, setGeneratedEvaluation] = useState<GeminiEvaluationResponse | null>(null);
-    
+
     const abortControllerRef = useRef<AbortController | null>(null);
 
+    function resetState() {
+        setModalStep(0);
+        setStepErrors([false, false, false]);
+        setEvaluationSections([]);
+        setGeneratedEvaluation(null);
+        setIsEvaluating(false);
+        abortControllerRef.current = null;
+    }
+
     async function handleEvaluateWithAI(data: { text: string }) {
+        resetState(); 
+        setIsModalOpen(true);
+
         if (!currentCycle || !currentCycle.isOpen) {
             showToast(
                 'Não há ciclo de avaliação aberto no momento. Aguarde a abertura de um novo ciclo.',
@@ -41,46 +52,65 @@ export function useNotes() {
             );
             return;
         }
-        
-        setIsModalOpen(true);
-        setStepErrors([false, false, false]);
-        setEvaluationSections([]);
+
         let errorStep = 0;
         abortControllerRef.current = new AbortController();
-        
+
         try {
             errorStep = 1;
             await new Promise(r => setTimeout(r, 1000));
+            if (abortControllerRef.current.signal.aborted) return;
+
             const { geminiResponse, noInsight } = await evaluationAI(
                 data.text,
                 abortControllerRef.current.signal,
             );
+
+            if (abortControllerRef.current.signal.aborted) return;
+
             if (!geminiResponse && !noInsight) {
-                setGeneratedEvaluation(null);
                 throw new Error('Resposta da IA inválida');
             }
+
             setIsEvaluating(true);
             setModalStep(1);
 
             errorStep = 2;
             await new Promise(r => setTimeout(r, 2000));
+            if (abortControllerRef.current.signal.aborted) return;
+
             if (noInsight) {
-                setGeneratedEvaluation(null);
                 throw new Error('No insight');
             }
-            setModalStep(2);
 
+            setModalStep(2);
             setGeneratedEvaluation(geminiResponse);
-            setEvaluationSections([
-                'Mentoring',
-                'Avaliação 360',
-                'Autoavaliação',
-                'Referências',
-            ]);
+
+            const sections: EvaluationSection[] = [];
+
+            if (geminiResponse) {
+                if (geminiResponse.selfAssessment?.length > 0) {
+                    sections.push('Autoavaliação');
+                }
+                if (geminiResponse.evaluation360?.length > 0) {
+                    sections.push('Avaliação 360');
+                }
+                if (geminiResponse.mentoring) {
+                    sections.push('Mentoring');
+                }
+                if (geminiResponse.references?.length > 0) {
+                    sections.push('Referências');
+                }
+            }
+
+            setEvaluationSections(sections);
 
             errorStep = 3;
             await new Promise(r => setTimeout(r, 1000));
+            if (abortControllerRef.current.signal.aborted) return;
+
             setModalStep(3);
+
         } catch (e: unknown) {
             switch (errorStep) {
                 case 1:
@@ -95,9 +125,8 @@ export function useNotes() {
                 default:
                     setStepErrors([true, false, false]);
             }
-            console.log(e)
+            console.log(e);
             setGeneratedEvaluation(null);
-            setIsEvaluating(false);
         } finally {
             setIsEvaluating(false);
             abortControllerRef.current = null;
@@ -108,23 +137,25 @@ export function useNotes() {
         setIsModalOpen(false);
         setModalStep(0);
         if (generatedEvaluation) {
-            const navigationState: NavigationState = { 
-                geminiResponse: generatedEvaluation 
+            const navigationState: NavigationState = {
+                geminiResponse: generatedEvaluation,
             };
-            navigate('/avaliacao?section=Mentoring', {
+
+            const firstSection = evaluationSections[0];
+            const sectionParam = firstSection ? `?section=${encodeURIComponent(firstSection)}` : '';
+
+            navigate(`/avaliacao${sectionParam}`, {
                 state: navigationState,
             });
         }
     }
 
     function handleModalCancel() {
-        setIsModalOpen(false);
-        setModalStep(0);
-        setGeneratedEvaluation(null);
-        setIsEvaluating(false);
-        if (abortControllerRef.current) {
+        if (modalStep <= 1 && abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
+        resetState();
+        setIsModalOpen(false);
     }
 
     const steps = [

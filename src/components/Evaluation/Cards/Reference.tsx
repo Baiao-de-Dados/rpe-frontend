@@ -28,7 +28,7 @@ const Reference = ({ collaborator, onRemove, name, index }: ReferenceProps) => {
         setValue(`references.${index}.referencesIAValid`, true, { shouldValidate: true });
     };
 
-    const handleError = () => {
+    const handleCancel = () => {
         setValue(`references.${index}.referencesIAValid`, true, { shouldValidate: true });
         setValue(`references.${index}.justification`, '');
     };
@@ -42,7 +42,7 @@ const Reference = ({ collaborator, onRemove, name, index }: ReferenceProps) => {
             />
 
             {!(watchedReferenceIAValid ?? true) && (
-                <IAValidateActions onCheck={handleCheck} onError={handleError} />
+                <IAValidateActions onCheck={handleCheck} onCancel={handleCancel} />
             )}
 
             <div className="flex items-center justify-between mb-4">
