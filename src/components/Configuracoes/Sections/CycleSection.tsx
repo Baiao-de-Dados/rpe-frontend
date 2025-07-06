@@ -21,7 +21,7 @@ export function CycleSection() {
 
     const { showToast } = useToast();
 
-    const { currentCycle, checkCycleStatus } = useCycle();
+    const { currentCycle, checkCycleStatus, updateCycleStatus, updateAllTracksSet } = useCycle();
 
     const [startModalOpen, setStartModalOpen] = useState(false);
     const [cancelModalOpen, setCancelModalOpen] = useState(false);
@@ -32,6 +32,10 @@ export function CycleSection() {
 
     const handleStartCycle = async (endDate: string) => {
         console.log({ cycle: cycleLabel, endDate });
+        
+        // Atualiza o status do ciclo para aberto e a data de fim
+        updateCycleStatus(true, endDate);
+        
         showToast(`O ciclo foi iniciado com sucesso! Data de término: ${formatDate(endDate)}`, 'success', { 
             title: 'Ciclo iniciado', duration: 10000 
         });
@@ -42,6 +46,11 @@ export function CycleSection() {
 
     const handleCancelCycle = async () => {
         console.log({ cycle: cycleLabel });
+        
+        // Reseta os status do ciclo
+        updateCycleStatus(false);
+        updateAllTracksSet(false);
+        
         showToast('Ciclo cancelado com sucesso! As avaliações foram apagadas.', 'success', { 
             title: 'Ciclo cancelado', duration: 10000 
         });
@@ -51,6 +60,10 @@ export function CycleSection() {
 
     const handleExtendCycle = async (newDate: string) => {
         console.log({ cycle: cycleLabel, newDate });
+        
+        // Atualiza a data de fim do ciclo
+        updateCycleStatus(true, newDate);
+        
         showToast(`Ciclo prorrogado para ${formatDate(newDate)}`, 'success', {
             title: 'Ciclo prorrogado',
             duration: 10000,

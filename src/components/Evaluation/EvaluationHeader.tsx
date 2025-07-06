@@ -57,7 +57,7 @@ function EvaluationHeaderComponent({ activeSection, onSectionChange, sections, i
 
     return (
         <PageHeader
-            title="Ciclo 2025.1"
+            title="Ciclo 2025.2"
             button={<EvaluationSubmitButton />}
             sections={pageHeaderSections}
             activeSection={activeSection}

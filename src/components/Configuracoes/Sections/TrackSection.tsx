@@ -24,7 +24,7 @@ export function TrackSection() {
 
     const { showToast } = useToast();
 
-    const { currentCycle } = useCycle();
+    const { currentCycle, updateAllTracksSet } = useCycle();
     const isCycleClosed = !currentCycle?.isOpen;
 
     const [search, setSearch] = useState('');
@@ -128,6 +128,9 @@ export function TrackSection() {
         }
         const payload = processTracksForAPI(data);
         await setTracksMutation.mutateAsync(payload);
+        
+        // Atualiza o status de trilhas configuradas
+        updateAllTracksSet(true);
     };
 
     return (

@@ -30,9 +30,6 @@ const mockEvaluations: Record<
     },
     'colab-002': {
         autoavaliacao: 3.9,
-        avaliacao360: 3.7,
-        notaGestor: 4.0,
-        notaFinal: 3.9,
         status: 'Pendente',
         statusVariant: 'warning',
     },
@@ -47,8 +44,6 @@ const mockEvaluations: Record<
     'colab-004': {
         autoavaliacao: 3.2,
         avaliacao360: 3.4,
-        notaGestor: 3.5,
-        notaFinal: 3.4,
         status: 'Pendente',
         statusVariant: 'warning',
     },
