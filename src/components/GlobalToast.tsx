@@ -1,8 +1,9 @@
-import React from 'react';
-import Toast from './Toast';
+import Toast from './common/Toast';
+
 import { useToast } from '../hooks/useToast';
 
-const GlobalToast: React.FC = () => {
+const GlobalToast = () => {
+
     const { toasts, hideToast } = useToast();
 
     if (!toasts.length) return null;
@@ -21,6 +22,7 @@ const GlobalToast: React.FC = () => {
             ))}
         </div>
     );
+
 };
 
 export default GlobalToast;

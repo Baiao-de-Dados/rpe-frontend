@@ -6,6 +6,7 @@ export interface Cycle {
     isOpen: boolean;
     dataInicio: string;
     dataFim: string;
+    allTracksSet: boolean;
 }
 
 export interface EvaluationStatus {
@@ -19,7 +20,6 @@ export interface CycleContextType {
     evaluationStatus: EvaluationStatus | null;
     isLoading: boolean;
     checkCycleStatus: () => Promise<void>;
-    submitEvaluation: () => Promise<boolean>;
 }
 
 export const CycleContext = createContext<CycleContextType | undefined>(

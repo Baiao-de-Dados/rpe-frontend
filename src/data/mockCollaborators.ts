@@ -3,6 +3,7 @@ export interface Collaborator {
     nome: string;
     cargo: string;
     avatar?: string;
+    image?: string; // Adicionado para compatibilidade com componentes
 }
 
 export interface CollaboratorEvaluation {
@@ -21,7 +22,7 @@ export const mockCollaborators: Collaborator[] = [
     },
     {
         id: 'colab-002',
-        nome: 'Colaborador 2',
+        nome: 'Colaborador Lorenzo',
         cargo: 'Frontend Developer',
     },
     {

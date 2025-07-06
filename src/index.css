@@ -8,8 +8,8 @@
     --color-primary-300: #6dd4ce; /* Bom para indicadores, bordas médias */
     --color-primary-400: #3eb8b0; /* Cor média, boa para botões secundários, ícones */
     --color-primary-500: #2b5f60; /* Cor principal da marca, boa para cabeçalhos, banners */
-    --color-primary-600: #1f4a4d; /* Versão mais escura, boa para botões de hover */
-    --color-primary-700: #163a3d; /* Boa para texto sobre fundos claros */
+    --color-primary-600: #245256; /* Versão mais escura, boa para botões de hover */
+    --color-primary-700: #1d454a; /* Boa para texto sobre fundos claros */
     --color-primary-800: #0f2d30; /* Muito escura, boa para texto de alto contraste */
     --color-primary-900: #0a2224; /* Quase preto, boa para texto muito importante */
 
@@ -66,4 +66,29 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    will-change: transform;
+    scroll-behavior: smooth;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-neutral-300);
+    border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-button {
+    display: none;
+    height: 0;
+    width: 0;
+}
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-300) transparent;
 }

@@ -1,21 +1,17 @@
-import React from 'react';
 import { Lock, Calendar, Clock } from 'lucide-react';
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
+
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
+
+import { formatDate } from '../../utils/globalUtils';
+
 import type { Cycle } from '../../contexts/CycleContextDefinition';
 
 interface CycleClosedMessageProps {
     cycle: Cycle;
 }
 
-const CycleClosedMessage: React.FC<CycleClosedMessageProps> = ({ cycle }) => {
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-        });
-    };
+const CycleClosedMessage = ({ cycle }: CycleClosedMessageProps) => {
 
     return (
         <div className="flex items-center justify-center min-h-[60vh] p-6">
@@ -30,11 +26,7 @@ const CycleClosedMessage: React.FC<CycleClosedMessageProps> = ({ cycle }) => {
                     Ciclo de Avaliação Fechado
                 </Typography>
 
-                <Typography
-                    variant="body"
-                    color="muted"
-                    className="mb-6 leading-relaxed"
-                >
+                <Typography variant="body" color="muted" className="mb-6 leading-relaxed">
                     O ciclo de avaliação{' '}
                     <span className="text-primary-700 font-semibold">
                         {cycle.nome}
@@ -59,10 +51,7 @@ const CycleClosedMessage: React.FC<CycleClosedMessageProps> = ({ cycle }) => {
                     </div>
                 </div>
 
-                <CardContainer
-                    className="bg-primary-100 border border-primary-200"
-                    noPadding
-                >
+                <CardContainer className="bg-primary-100 border border-primary-200" noPadding>
                     <div className="p-4">
                         <Typography variant="body" className="leading-relaxed">
                             <span className="font-semibold">

@@ -1,10 +1,11 @@
-import React from 'react';
 import { AlertCircle, RefreshCw } from 'lucide-react';
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
-import Button from '../Button';
 
-const CycleLoadErrorMessage: React.FC = () => {
+import Button from '../common/Button';
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
+
+const CycleLoadErrorMessage = () => {
+
     const handleRetry = () => {
         window.location.reload();
     };
@@ -22,36 +23,21 @@ const CycleLoadErrorMessage: React.FC = () => {
                     Ops! Algo deu errado
                 </Typography>
 
-                <Typography
-                    variant="body"
-                    color="muted"
-                    className="mb-6 leading-relaxed"
-                >
+                <Typography variant="body" color="muted" className="mb-6 leading-relaxed">
                     Não foi possível carregar as informações do ciclo de
                     avaliação. Verifique sua conexão e tente novamente.
                 </Typography>
 
                 <div className="space-y-4 mb-6">
-                    <Button
-                        variant="primary"
-                        onClick={handleRetry}
-                        className="w-full gap-2"
-                    >
+                    <Button variant="primary" onClick={handleRetry} className="w-full gap-2">
                         <RefreshCw className="w-4 h-4" />
                         Tentar novamente
                     </Button>
                 </div>
 
-                <CardContainer
-                    className="bg-neutral-50 border border-neutral-200"
-                    noPadding
-                >
+                <CardContainer className="bg-neutral-50 border border-neutral-200" noPadding>
                     <div className="p-4">
-                        <Typography
-                            variant="body"
-                            color="muted"
-                            className="leading-relaxed"
-                        >
+                        <Typography variant="body" color="muted" className="leading-relaxed">
                             <span className="font-semibold">
                                 Precisa de ajuda?
                             </span>{' '}

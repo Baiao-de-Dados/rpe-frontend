@@ -1,7 +1,10 @@
 import { memo, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import RatingDisplay from '../RatingDisplay';
+
+import RatingDisplay from '../common/RatingDisplay';
+
 import type { Criterion } from '../../data/mockEvaluationPIllars';
+
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
 interface PillarRatingDisplayProps {
@@ -14,8 +17,8 @@ interface PillarRatingDisplayProps {
     }>;
 }
 
-export const PillarRatingDisplay = memo(
-    ({ criteria, validFields }: PillarRatingDisplayProps) => {
+export const PillarRatingDisplay = memo(({ criteria, validFields }: PillarRatingDisplayProps) => {
+
         const { control } = useFormContext<EvaluationFormData>();
 
         const fieldIndices = useMemo(() => {
@@ -36,18 +39,14 @@ export const PillarRatingDisplay = memo(
         const average = useMemo(() => {
             if (!watchedRatings || fieldIndices.length === 0) return null;
 
-            const validRatings = watchedRatings.filter(
-                (rating): rating is number =>
-                    typeof rating === 'number' && rating > 0,
+            const validRatings = watchedRatings.filter((rating): rating is number => 
+                typeof rating === 'number' && rating > 0
             );
 
-            return validRatings.length > 0
-                ? Math.round(
-                      (validRatings.reduce((sum, rating) => sum + rating, 0) /
-                          validRatings.length) *
-                          10,
-                  ) / 10
+            return validRatings.length > 0 
+                ? Math.round((validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length) * 10) / 10 
                 : null;
+
         }, [watchedRatings, fieldIndices.length]);
 
         return <RatingDisplay rating={average} />;

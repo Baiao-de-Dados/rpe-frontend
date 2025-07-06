@@ -1,30 +1,18 @@
-import React from 'react';
 import { CheckCircle, Calendar, Clock } from 'lucide-react';
-import Typography from '../Typography';
-import CardContainer from '../CardContainer';
-import type {
-    Cycle,
-    EvaluationStatus,
-} from '../../contexts/CycleContextDefinition';
+
+import Typography from '../common/Typography';
+import CardContainer from '../common/CardContainer';
+
+import { formatDateTime } from '../../utils/globalUtils';
+
+import type { Cycle, EvaluationStatus } from '../../contexts/CycleContextDefinition';
 
 interface EvaluationSubmittedMessageProps {
     cycle: Cycle;
     evaluationStatus: EvaluationStatus;
 }
 
-const EvaluationSubmittedMessage: React.FC<EvaluationSubmittedMessageProps> = ({
-    cycle,
-    evaluationStatus,
-}) => {
-    const formatDateTime = (dateString: string) => {
-        return new Date(dateString).toLocaleString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
+const EvaluationSubmittedMessage = ({ cycle, evaluationStatus }: EvaluationSubmittedMessageProps) => {
 
     return (
         <div className="flex items-center justify-center min-h-[60vh] p-6">
@@ -39,11 +27,7 @@ const EvaluationSubmittedMessage: React.FC<EvaluationSubmittedMessageProps> = ({
                     Avaliação Enviada com Sucesso!
                 </Typography>
 
-                <Typography
-                    variant="body"
-                    color="muted"
-                    className="mb-6 leading-relaxed"
-                >
+                <Typography variant="body" color="muted" className="mb-6 leading-relaxed">
                     Sua avaliação para o ciclo{' '}
                     <span className="text-primary-700 font-semibold">
                         {cycle.nome}
@@ -70,31 +54,18 @@ const EvaluationSubmittedMessage: React.FC<EvaluationSubmittedMessageProps> = ({
                 </div>
 
                 <div className="space-y-4">
-                    <CardContainer
-                        className="bg-primary-100 border border-check-color/20"
-                        noPadding
-                    >
+                    <CardContainer className="bg-primary-100 border border-check-color/20" noPadding>
                         <div className="p-4">
-                            <Typography
-                                variant="body"
-                                className="leading-relaxed"
-                            >
+                            <Typography variant="body" className="leading-relaxed">
                                 <span className="font-semibold">Status:</span>{' '}
                                 Avaliação confirmada e salva no sistema.
                             </Typography>
                         </div>
                     </CardContainer>
 
-                    <CardContainer
-                        className="bg-primary-50 border border-primary-200"
-                        noPadding
-                    >
+                    <CardContainer className="bg-primary-50 border border-primary-200" noPadding>
                         <div className="p-4">
-                            <Typography
-                                variant="body"
-                                color="primary"
-                                className="leading-relaxed"
-                            >
+                            <Typography variant="body" color="primary" className="leading-relaxed">
                                 <span className="font-semibold">
                                     Próximos passos:
                                 </span>{' '}

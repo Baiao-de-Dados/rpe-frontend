@@ -1,10 +1,17 @@
 {
     "semi": true,
     "singleQuote": true,
-    "tabWidth": 4,
     "trailingComma": "all",
-    "printWidth": 80,
-    "bracketSpacing": true,
     "arrowParens": "avoid",
-    "useTabs": false
+    "useTabs": false,
+    "tabWidth": 4,
+    "printWidth": 999,
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "endOfLine": "lf",
+    "insertPragma": false,
+    "proseWrap": "preserve",
+    "quoteProps": "as-needed",
+    "requirePragma": false,
+    "comment": "Note: TypeScript/JavaScript files are ignored via .prettierignore to preserve manual indentation"
 }

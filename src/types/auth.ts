@@ -37,10 +37,27 @@ export interface User {
     updatedAt: Date;
 }
 
+export interface DecodedToken {
+    sub: number;
+    email: string;
+    roles?: UserRoleEnum[]; // Opcional como no seu backend
+    iat?: number;
+    exp?: number;
+}
+
 export interface LoginRequest {
     email: string;
     password: string;
     rememberMe?: boolean;
+}
+
+export interface UserFromJwt {
+    id: number;
+    email: string;
+    name: string | null;
+    roles: UserRoleEnum[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface LoginResponse {
@@ -68,3 +85,8 @@ export interface AuthError {
     message: string;
     statusCode?: number;
 }
+
+export type LoginPayload = {
+    email: string;
+    password: string;
+};

@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Typography from '../components/Typography';
+import Button from '../components/common/Button';
+import Input from '../components/common/Input';
+import Typography from '../components/common/Typography';
 import { useAuth } from '../hooks/useAuth';
 import type { LoginRequest } from '../types/auth';
+import { useToast } from '../hooks/useToast';
+import type { AxiosError } from 'axios';
 
 interface LoginFormErrors {
     email?: string;
     password?: string;
     general?: string;
+
 }
 
 export default function LoginPage() {
@@ -23,8 +26,8 @@ export default function LoginPage() {
     });
     const [errors, setErrors] = useState<LoginFormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
+    const {showToast}= useToast(); 
 
-    // REDIRECIONA IMEDIATAMENTE SE JÁ ESTIVER LOGADO
     if (isAuthenticated) {
         return <Navigate to="/dashboard" replace />;
     }
@@ -53,10 +56,21 @@ export default function LoginPage() {
             // Após login bem-sucedido, navegar para dashboard
             navigate('/dashboard', { replace: true });
         } catch (error: unknown) {
-            console.error('[LoginPage] Erro no login:', error);
-            let message = 'Erro desconhecido ao tentar fazer login';
-            if (error instanceof Error) message = error.message;
-            setErrors({ general: message });
+            
+            const errorStatus = (error as AxiosError).status;
+            const title = "Erro ao fazer login";
+            let message = "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.";
+            switch (errorStatus) {
+                case 401: message = "Email ou senha inválidos."; break;
+                case 403: message = "Acesso negado. Você não tem permissão para acessar esta área."; break;
+                case 404: message = "Usuário não encontrado."; break;
+                case 500: message = "Erro interno do servidor. Tente novamente mais tarde."; break;
+                default: message = "Erro desconhecido. Tente novamente mais tarde."; break;
+            }
+            showToast(message,'error', {
+                        title: title,
+                        duration: 10000,
+                    });
         } finally {
             setIsLoading(false);
         }

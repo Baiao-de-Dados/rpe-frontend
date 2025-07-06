@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+
 import { CycleContext } from '../contexts/CycleContextDefinition';
 import type { CycleContextType } from '../contexts/CycleContextDefinition';
 

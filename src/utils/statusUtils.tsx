@@ -1,9 +1,8 @@
-import type { BadgeVariant } from '../components/Badge';
+type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 
 type CycleStatus =
     | 'Finalizado'
     | 'Em andamento'
-    | 'Pendente'
     | 'Cancelado'
     | string;
 
@@ -13,8 +12,6 @@ export const getStatusVariant = (status: CycleStatus): BadgeVariant => {
             return 'success';
         case 'Em andamento':
             return 'warning';
-        case 'Pendente':
-            return 'default';
         case 'Cancelado':
             return 'error';
         default:

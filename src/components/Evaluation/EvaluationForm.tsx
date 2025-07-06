@@ -1,14 +1,22 @@
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { SectionRenderer } from './SectionRenderer';
+
 import { EvaluationHeader } from './EvaluationHeader';
-import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
-import { useSectionNavigation } from '../../hooks/useSectionNavigation';
+
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
+import { useSectionNavigation } from '../../hooks/useSectionNavigation';
+
+import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
+
+import { SectionRenderer } from './Sections/SectionRenderer';
+import { evaluationSections, type SectionType } from './Sections/EvaluationSections';
+
+
 export function EvaluationForm() {
+
     const { activeSection, navigateToSection, sections } =
-        useSectionNavigation();
+        useSectionNavigation<SectionType>(evaluationSections);
 
     const { control } = useFormContext<EvaluationFormData>();
 
@@ -49,14 +57,11 @@ export function EvaluationForm() {
 
         for (let i = 0; i < allCriteria.length; i++) {
             const assessment = watchedSelfAssessment[i];
-            const hasRating =
-                assessment?.rating &&
-                typeof assessment.rating === 'number' &&
-                assessment.rating > 0;
-            const hasJustification =
-                assessment?.justification &&
-                typeof assessment.justification === 'string' &&
-                assessment.justification.trim().length > 0;
+
+            const hasRating = assessment?.rating && typeof assessment.rating === 'number' && assessment.rating > 0;
+
+            const hasJustification = assessment?.justification && typeof assessment.justification === 'string' && 
+            assessment.justification.trim().length > 0;
 
             if (!hasRating || !hasJustification) {
                 incompleteCount++;
@@ -72,10 +77,8 @@ export function EvaluationForm() {
         }
         const [rating, justification] = watchedMentoring;
         const hasRating = rating && typeof rating === 'number' && rating > 0;
-        const hasJustification =
-            justification &&
-            typeof justification === 'string' &&
-            justification.trim().length > 0;
+
+        const hasJustification = justification && typeof justification === 'string' && justification.trim().length > 0;
 
         return hasRating && hasJustification && mentoringIAValid === true ? 0 : 1;
     }, [watchedMentoring, mentoringIAValid]);
@@ -97,22 +100,16 @@ export function EvaluationForm() {
                 continue;
             }
 
-            const hasCollaboratorId =
-                evaluation.collaboratorId &&
-                typeof evaluation.collaboratorId === 'string' &&
-                evaluation.collaboratorId.trim().length > 0;
-            const hasRating =
-                evaluation.rating &&
-                typeof evaluation.rating === 'number' &&
-                evaluation.rating > 0;
-            const hasStrengths =
-                evaluation.strengths &&
-                typeof evaluation.strengths === 'string' &&
-                evaluation.strengths.trim().length > 0;
-            const hasImprovements =
-                evaluation.improvements &&
-                typeof evaluation.improvements === 'string' &&
-                evaluation.improvements.trim().length > 0;
+            const hasCollaboratorId = evaluation.collaboratorId && typeof evaluation.collaboratorId === 'string' &&
+            evaluation.collaboratorId.trim().length > 0;
+
+            const hasRating = evaluation.rating && typeof evaluation.rating === 'number' && evaluation.rating > 0;
+
+            const hasStrengths = evaluation.strengths && typeof evaluation.strengths === 'string' && 
+            evaluation.strengths.trim().length > 0;
+
+            const hasImprovements = evaluation.improvements && typeof evaluation.improvements === 'string' &&
+            evaluation.improvements.trim().length > 0;
 
             if (
                 !hasCollaboratorId ||
@@ -144,14 +141,11 @@ export function EvaluationForm() {
                 continue;
             }
 
-            const hasCollaboratorId =
-                reference.collaboratorId &&
-                typeof reference.collaboratorId === 'string' &&
-                reference.collaboratorId.trim().length > 0;
-            const hasJustification =
-                reference.justification &&
-                typeof reference.justification === 'string' &&
-                reference.justification.trim().length > 0;
+            const hasCollaboratorId = reference.collaboratorId && typeof reference.collaboratorId === 'string' &&
+            reference.collaboratorId.trim().length > 0;
+
+            const hasJustification = reference.justification && typeof reference.justification === 'string' &&
+            reference.justification.trim().length > 0;
 
             if (!hasCollaboratorId || !hasJustification) {
                 incompleteCount++;
