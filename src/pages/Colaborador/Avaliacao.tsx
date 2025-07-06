@@ -5,6 +5,8 @@ import { useForm, FormProvider } from 'react-hook-form';
 
 import { useCycle } from '../../hooks/useCycle';
 
+import type { NavigationState } from '../../hooks/useNotes';
+
 import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
 
 import CycleLoading from '../../components/common/CycleLoading';
@@ -25,21 +27,15 @@ export function Avaliacao() {
     });
 
     useEffect(() => {
-        if (location.state) {
-            const { mentoringNota, mentoringJustificativa, nota, justificativa, geminiResponse } = location.state;
-            let finalNota = mentoringNota ?? nota;
-            let finalJustificativa = mentoringJustificativa ?? justificativa;
+        const navigationState = location.state as NavigationState | null;
 
-            if (geminiResponse) {
-                const gemini = typeof geminiResponse === 'string' ? JSON.parse(geminiResponse) : geminiResponse;
-                finalNota = gemini.nota;
-                finalJustificativa = gemini.justificativa;
-            }
-            if (finalNota) {
-                methods.setValue('mentoringRating', finalNota);
-            }
-            if (finalJustificativa) {
-                methods.setValue('mentoringJustification', finalJustificativa);
+        if (navigationState?.geminiResponse) {
+            const { mentoring } = navigationState.geminiResponse;
+
+            if (mentoring) {
+                methods.setValue('mentoringRating', mentoring.rating);
+                methods.setValue('mentoringJustification', mentoring.justification);
+                methods.setValue('mentoringIAValid', false, { shouldValidate: true });
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

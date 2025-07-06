@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useCycle } from './useCycle';
 import { useToast } from './useToast';
 
-import { avaliarComIA } from '../services/iaService';
+import { avaliarComIA, type GeminiEvaluationResponse } from '../services/iaService';
 
-export function useAnotacoes() {
+export interface NavigationState {
+    geminiResponse: GeminiEvaluationResponse;
+}
+
+export function useNotes() {
     
     const navigate = useNavigate();
 
@@ -14,16 +18,16 @@ export function useAnotacoes() {
 
     const { currentCycle } = useCycle();
 
-    const [modalOpen, setModalOpen] = useState(false);
     const [modalStep, setModalStep] = useState(0);
-    const [isAvaliando, setIsAvaliando] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEvaluating, setIsEvaluating] = useState(false);
     const [stepErrors, setStepErrors] = useState([false, false, false]);
-    const [avaliacaoGerada, setAvaliacaoGerada] = useState<unknown>(null);
-    const [avaliacaoSections, setAvaliacaoSections] = useState<string[]>([]);
+    const [evaluationSections, setEvaluationSections] = useState<string[]>([]);
+    const [generatedEvaluation, setGeneratedEvaluation] = useState<GeminiEvaluationResponse | null>(null);
     
     const abortControllerRef = useRef<AbortController | null>(null);
 
-    async function handleAvaliarComIA(data: { text: string }) {
+    async function handleEvaluateWithAI(data: { text: string }) {
         if (!currentCycle || !currentCycle.isOpen) {
             showToast(
                 'Não há ciclo de avaliação aberto no momento. Aguarde a abertura de um novo ciclo.',
@@ -36,32 +40,32 @@ export function useAnotacoes() {
             return;
         }
         
-        setModalOpen(true);
+        setIsModalOpen(true);
         setStepErrors([false, false, false]);
-        setAvaliacaoSections([]);
+        setEvaluationSections([]);
         let errorStep = 0;
         abortControllerRef.current = new AbortController();
         
         try {
             errorStep = 1;
             await new Promise(r => setTimeout(r, 1000));
-            const { geminiResponse, semInsight } = await avaliarComIA(
+            const { geminiResponse, noInsight } = await avaliarComIA(
                 data.text,
                 abortControllerRef.current.signal,
             );
-            setIsAvaliando(true);
+            setIsEvaluating(true);
             setModalStep(1);
 
             errorStep = 2;
             await new Promise(r => setTimeout(r, 2000));
-            if (semInsight) {
-                setAvaliacaoGerada(null);
-                throw new Error('Sem insight');
+            if (noInsight) {
+                setGeneratedEvaluation(null);
+                throw new Error('No insight');
             }
             setModalStep(2);
 
-            setAvaliacaoGerada(geminiResponse || null);
-            setAvaliacaoSections([
+            setGeneratedEvaluation(geminiResponse);
+            setEvaluationSections([
                 'Mentoring',
                 'Avaliação 360',
                 'Autoavaliação',
@@ -85,30 +89,33 @@ export function useAnotacoes() {
                 default:
                     setStepErrors([true, false, false]);
             }
-            setAvaliacaoGerada(null);
-            setIsAvaliando(false);
-            console.log('Erro ao avaliar com IA', e);
+            setGeneratedEvaluation(null);
+            setIsEvaluating(false);
+            console.log('Error evaluating with AI', e);
         } finally {
-            setIsAvaliando(false);
+            setIsEvaluating(false);
             abortControllerRef.current = null;
         }
     }
 
     function handleModalContinue() {
-        setModalOpen(false);
+        setIsModalOpen(false);
         setModalStep(0);
-        if (avaliacaoGerada) {
+        if (generatedEvaluation) {
+            const navigationState: NavigationState = { 
+                geminiResponse: generatedEvaluation 
+            };
             navigate('/avaliacao?section=Mentoring', {
-                state: { geminiResponse: avaliacaoGerada },
+                state: navigationState,
             });
         }
     }
 
     function handleModalCancel() {
-        setModalOpen(false);
+        setIsModalOpen(false);
         setModalStep(0);
-        setAvaliacaoGerada(null);
-        setIsAvaliando(false);
+        setGeneratedEvaluation(null);
+        setIsEvaluating(false);
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
@@ -132,17 +139,17 @@ export function useAnotacoes() {
         },
     ];
 
-    const canContinue = modalStep === 3 && !!avaliacaoGerada && stepErrors.every(e => !e);
-    const avaliacaoSectionsToShow = modalStep === 3 && stepErrors.every(e => !e) ? avaliacaoSections : [];
+    const canContinue = modalStep === 3 && !!generatedEvaluation && stepErrors.every(e => !e);
+    const evaluationSectionsToShow = modalStep === 3 && stepErrors.every(e => !e) ? evaluationSections : [];
 
     return {
-        isAvaliando,
-        modalOpen,
-        handleAvaliarComIA,
+        isEvaluating,
+        isModalOpen,
+        handleEvaluateWithAI,
         handleModalContinue,
         handleModalCancel,
         steps,
-        avaliacaoSectionsToShow,
+        evaluationSectionsToShow,
         canContinue,
     };
 }

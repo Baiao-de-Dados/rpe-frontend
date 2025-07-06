@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useFormContext, Controller, useWatch } from 'react-hook-form';
 
 import StarRating from '../../common/StarRating';
 import Typography from '../../common/Typography';
@@ -7,13 +7,17 @@ import RatingDisplay from '../../common/RatingDisplay';
 import CardContainer from '../../common/CardContainer';
 import { ErrorMessage } from '../../common/ErrorMessage';
 import CollaboratorCard from '../../common/CollaboratorCard';
+import IAValidateActions from '../../common/IAValidateActions';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 
 const Mentoring = () => {
 
-    const { control, setValue } = useFormContext();
+    const { control, setValue, resetField } = useFormContext();
 
-    const [isIAValid] = useState(false);
+    const watchedMentoringIAValid = useWatch({
+        control,
+        name: 'mentoringIAValid'
+    });
 
     const mentor = {
         id: '3',
@@ -23,11 +27,21 @@ const Mentoring = () => {
 
     useEffect(() => {
         setValue('mentorId', mentor.id);
-    }, [setValue, mentor.id]);
+        // Inicializa mentoringIAValid como true se não estiver definido
+        if (watchedMentoringIAValid === undefined) {
+            setValue('mentoringIAValid', true, { shouldValidate: true });
+        }
+    }, [setValue, mentor.id, watchedMentoringIAValid]);
 
-    useEffect(() => {
-        setValue('mentoringIAValid', isIAValid, { shouldValidate: true });
-    }, [isIAValid, setValue]);
+    const handleCheck = () => {
+        setValue('mentoringIAValid', true, { shouldValidate: true });
+    };
+
+    const handleError = () => {
+        setValue('mentoringIAValid', true, { shouldValidate: true });
+        resetField('mentoringRating');
+        resetField('mentoringJustification');
+    };
 
     return (
         <CardContainer>
@@ -36,9 +50,13 @@ const Mentoring = () => {
                 control={control}
                 rules={{ required: true }}
                 render={({ field }) => (
-                    <input type="hidden" {...field} value={isIAValid ? 'true' : 'false'} />
+                    <input type="hidden" {...field} value={(watchedMentoringIAValid ?? true) ? 'true' : 'false'} />
                 )}
             />
+
+            {!(watchedMentoringIAValid ?? true) && (
+                <IAValidateActions onCheck={handleCheck} onError={handleError} />
+            )}
 
             <Controller name="mentorId" control={control}
                 render={({ field }) => (
@@ -68,7 +86,14 @@ const Mentoring = () => {
 
             <Controller name="mentoringJustification" control={control}
                 render={({ field, fieldState }) => (
-                    <TextAreaWithTitle title="Justifique sua nota" placeholder="Justifique sua nota" maxLength={1000} value={field.value || ''} onChange={field.onChange} error={fieldState.error?.message}/>
+                    <TextAreaWithTitle 
+                        title="Justifique sua nota" 
+                        placeholder="Justifique sua nota" 
+                        maxLength={1000} 
+                        value={field.value || ''} 
+                        onChange={field.onChange} 
+                        error={fieldState.error?.message}
+                    />
                 )}
             />
         </CardContainer>

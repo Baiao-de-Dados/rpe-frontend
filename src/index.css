@@ -15,6 +15,8 @@
 
     /* Cores de estado/feedback */
     --color-check-color: #539959; /* Verde para confirmação, sucesso, itens concluídos */
+    /* Versão hover para check-color */
+    --color-check-color-hover: #417a47; /* Verde mais escuro para hover em elementos de confirmação */
 
     /* Cores secundárias - tons complementares */
     --color-secondary-400: #6b9999; /* Versão média, útil para elementos secundários */

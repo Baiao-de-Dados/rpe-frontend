@@ -33,13 +33,13 @@ function AnotacoesStepsModal({ open, steps, onCancel, onContinue, canContinue, a
     const { variants } = useOptimizedAnimation();
 
     return (
-        <Modal open={open} onClose={onCancel} className="min-w-[600px] max-w-[800px] h-[540px] flex flex-col">
-            <div className="flex flex-col h-full">
-                <Typography variant="h2" className="mb-6 text-xl font-semibold">
+        <Modal open={open} onClose={onCancel} className="w-full h-full sm:min-w-[600px] sm:max-w-[800px] sm:h-[540px] sm:max-h-[540px] flex flex-col sm:rounded-lg">
+            <div className="flex flex-col h-full p-4 sm:p-6">
+                <Typography variant="h2" className="mb-4 sm:mb-6 text-lg sm:text-xl font-semibold text-center sm:text-left">
                     Processando avaliações
                 </Typography>
-                <div className="flex-1 overflow-y-auto">
-                    <div className="flex flex-col gap-4 border-b border-gray-200 pb-8">
+                <div className="flex-1 overflow-y-auto sm:overflow-y-visible">
+                    <div className="flex flex-col gap-3 sm:gap-4 border-b border-gray-200 pb-4 sm:pb-8">
                         { steps.map((step, idx) => { 
                             const isCurrent = !step.completed && !step.error && (idx === 0 || steps[idx - 1].completed);
                             return (
@@ -72,8 +72,8 @@ function AnotacoesStepsModal({ open, steps, onCancel, onContinue, canContinue, a
                             );
                         })}
                     </div>
-                    <div className="mb-6 mt-6 min-h-[70px] flex flex-col justify-center items-center">
-                        <div className="w-full max-w-120 h-40 flex items-center justify-center">
+                    <div className="mb-4 sm:mb-6 mt-4 sm:mt-6 min-h-[50px] sm:min-h-[70px] flex flex-col justify-center items-center">
+                        <div className="w-full max-w-120 h-32 sm:h-40 flex items-start justify-center px-4 sm:px-0">
                             {hasConnectionError && (
                                 <div className="w-full flex flex-col items-center justify-center">
                                     <Typography variant="h2" className="text-base font-bolder text-red-600 mb-1 text-center">
@@ -104,17 +104,17 @@ function AnotacoesStepsModal({ open, steps, onCancel, onContinue, canContinue, a
                                 </div>
                             )}
                         </div>
-                        <div className="w-full -mt-40 min-h-[30px] flex flex-col justify-center">
+                        <div className="w-full -mt-32 sm:-mt-40 min-h-[30px] flex flex-col justify-center">
                             {avaliacaoSections.length > 0 && (
                                 <>
                                     <AnimatePresence>
                                         <motion.div variants={variants.avaliacaoSectionTitle} initial="initial" animate="animate" exit="exit">
-                                            <Typography variant="h3" className="mb-2 text-lg font-semibold text-primary-500">
+                                            <Typography variant="h3" className="mb-2 text-lg font-semibold text-primary-500 text-center sm:text-left">
                                                 Seções avaliadas:
                                             </Typography>
                                         </motion.div>
                                     </AnimatePresence>
-                                    <ul className="list-disc pl-6 overflow-x-hidden">
+                                    <ul className="list-none sm:list-disc pl-0 sm:pl-6 overflow-x-hidden text-center sm:text-left">
                                         <AnimatePresence>
                                             {avaliacaoSections.map(
                                                 (section, idx) => (
@@ -130,11 +130,11 @@ function AnotacoesStepsModal({ open, steps, onCancel, onContinue, canContinue, a
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-auto">
-                    <Button variant="secondary" size="md" onClick={onCancel}>
+                <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-200 mt-auto">
+                    <Button variant="secondary" size="md" onClick={onCancel} className="w-full sm:w-auto">
                         Cancelar
                     </Button>
-                    <Button variant="primary" size="md" onClick={onContinue} disabled={!canContinue}>
+                    <Button variant="primary" size="md" onClick={onContinue} disabled={!canContinue} className="w-full sm:w-auto">
                         Continuar
                     </Button>
                 </div>
