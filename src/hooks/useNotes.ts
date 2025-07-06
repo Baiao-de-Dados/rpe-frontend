@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useCycle } from './useCycle';
 import { useToast } from './useToast';
 
-import { avaliarComIA, type GeminiEvaluationResponse } from '../services/iaService';
+import { evaluationAI } from '../services/evaluationAI';
+
+import type { GeminiEvaluationResponse } from '../types/evaluationAI';
 
 export interface NavigationState {
     geminiResponse: GeminiEvaluationResponse;
@@ -49,7 +51,7 @@ export function useNotes() {
         try {
             errorStep = 1;
             await new Promise(r => setTimeout(r, 1000));
-            const { geminiResponse, noInsight } = await avaliarComIA(
+            const { geminiResponse, noInsight } = await evaluationAI(
                 data.text,
                 abortControllerRef.current.signal,
             );

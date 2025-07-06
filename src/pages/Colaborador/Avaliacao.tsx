@@ -33,8 +33,8 @@ export function Avaliacao() {
             const { mentoring } = navigationState.geminiResponse;
 
             if (mentoring) {
-                methods.setValue('mentoringRating', mentoring.rating);
-                methods.setValue('mentoringJustification', mentoring.justification);
+                methods.setValue('mentoringRating', mentoring.rating ?? 0);
+                methods.setValue('mentoringJustification', mentoring.justification ?? '');
                 methods.setValue('mentoringIAValid', false, { shouldValidate: true });
             }
         }
