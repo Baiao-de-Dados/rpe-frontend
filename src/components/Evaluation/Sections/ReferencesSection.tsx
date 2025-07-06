@@ -35,8 +35,6 @@ export const ReferencesSection = memo(() => {
     const validFields = useMemo(
         () => {
             const valid = fields.filter(field => field.collaboratorId);
-            console.log('📋 All fields:', fields);
-            console.log('✅ Valid fields:', valid);
             return valid;
         },
         [fields],
@@ -53,15 +51,10 @@ export const ReferencesSection = memo(() => {
     );
 
     useEffect(() => {
-        console.log('📊 Valid fields length changed:', validFields.length);
-        console.log('📊 Valid fields:', validFields);
-        
         if (validFields.length > 0) {
-            console.log('✅ Showing cards');
             setShowCards(true);
             setShowEmptyMessage(false);
         } else {
-            console.log('❌ No valid fields, will show empty message');
             const timeout = setTimeout(() => {
                 setShowCards(false);
                 setShowEmptyMessage(true);
@@ -77,18 +70,12 @@ export const ReferencesSection = memo(() => {
     );
 
     const addCollaborator = useCallback((collaborator: Collaborator) => { 
-            console.log('🔍 Adding collaborator:', collaborator);
-            console.log('📋 Fields before append:', fields);
-            
-            // Verificar se o colaborador já foi adicionado
             const alreadyExists = fields.some(field => field.collaboratorId === collaborator.id);
             if (alreadyExists) {
-                console.log('⚠️ Collaborator already exists, skipping');
                 return;
             }
             
             append({collaboratorId: collaborator.id, justification: ''});
-            console.log('✅ Collaborator added to form');
         },
         [append, fields]
     );
@@ -132,18 +119,14 @@ export const ReferencesSection = memo(() => {
                 <div className="space-y-6 relative -z-1">
                     <AnimatePresence>
                         {validFields.map((field, validIndex) => {
-                            console.log('🔍 Processing field:', field, 'validIndex:', validIndex);
                             const collaborator = searchCollaborators('').find(c => c.id === field.collaboratorId);
-                            console.log('👤 Found collaborator:', collaborator);
                             
                             if (!collaborator) {
-                                console.log('❌ No collaborator found for field:', field);
                                 return null;
                             }
 
                             const originalIndex = fields.findIndex(f => f.id === field.id);
                             const fieldName = `references.${originalIndex}.justification`;
-                            console.log('📝 Field name:', fieldName, 'originalIndex:', originalIndex);
 
                             return (
                                 <AnimatedCard key={`ref-${field.collaboratorId}`} index={validIndex}>
