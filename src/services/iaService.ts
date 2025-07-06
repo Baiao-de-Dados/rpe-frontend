@@ -29,6 +29,7 @@ export async function avaliarComIA(text: string, signal?: AbortSignal): Promise<
 
     
     const parsed = await response.json();
+
     let geminiResponse = null;
     let noInsight = false;
 

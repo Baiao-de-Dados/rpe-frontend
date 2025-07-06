@@ -14,6 +14,7 @@ export interface Pillar {
 
 export interface EvaluationPillars {
     gestaoLideranca: Pillar;
+    teste: Pillar
 }
 
 export const mockEvaluationPillars: EvaluationPillars = {
@@ -26,6 +27,30 @@ export const mockEvaluationPillars: EvaluationPillars = {
                 nome: 'Gente',
                 descricao:
                     'Desenvolve, motiva e orienta pessoas para alcançar seu potencial',
+            },
+            {
+                id: 'criativa',
+                nome: 'Mente criativa',
+                descricao:
+                    'Busca soluções inovadoras e criativas para problemas',
+            },
+        ],
+    },
+    teste: {
+        id: '13',
+        titulo: 'Sentimento de dono',
+        criterios: [
+            {
+                id: 'pensamento',
+                nome: 'Pensamento empreendedor',
+                descricao:
+                    'Gosta de negócios',
+            },
+            {
+                id: 'crescimento',
+                nome: 'Crescimento da empresa',
+                descricao:
+                    'Busca crescimento e desenvolvimento da empresa',
             },
         ],
     },

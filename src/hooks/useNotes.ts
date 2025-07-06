@@ -53,6 +53,10 @@ export function useNotes() {
                 data.text,
                 abortControllerRef.current.signal,
             );
+            if (!geminiResponse && !noInsight) {
+                setGeneratedEvaluation(null);
+                throw new Error('Resposta da IA inválida');
+            }
             setIsEvaluating(true);
             setModalStep(1);
 
@@ -89,9 +93,9 @@ export function useNotes() {
                 default:
                     setStepErrors([true, false, false]);
             }
+            console.log(e)
             setGeneratedEvaluation(null);
             setIsEvaluating(false);
-            console.log('Error evaluating with AI', e);
         } finally {
             setIsEvaluating(false);
             abortControllerRef.current = null;
