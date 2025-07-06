@@ -138,7 +138,9 @@ export function useEvaluationCompletion() {
             const hasJustification = reference.justification && typeof reference.justification === 'string' &&
             reference.justification.trim().length > 0;
 
-            if (!hasCollaboratorId || !hasJustification) {
+            const isIAValidated = reference.referencesIAValid === true;
+
+            if (!hasCollaboratorId || !hasJustification || !isIAValidated) {
                 incompleteCount++;
             }
         }

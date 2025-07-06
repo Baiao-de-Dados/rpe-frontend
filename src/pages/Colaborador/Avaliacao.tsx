@@ -30,12 +30,20 @@ export function Avaliacao() {
         const navigationState = location.state as NavigationState | null;
 
         if (navigationState?.geminiResponse) {
-            const { mentoring } = navigationState.geminiResponse;
+            const { mentoring, references } = navigationState.geminiResponse;
 
             if (mentoring) {
                 methods.setValue('mentoringRating', mentoring.rating ?? 0);
                 methods.setValue('mentoringJustification', mentoring.justification ?? '');
                 methods.setValue('mentoringIAValid', false, { shouldValidate: true });
+            }
+
+            if (references && references.length > 0) {
+                methods.setValue('references', references.map(ref => ({
+                    collaboratorId: ref.collaboratorId,
+                    justification: ref.justification,
+                    referencesIAValid: false
+                })));
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

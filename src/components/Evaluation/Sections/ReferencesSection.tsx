@@ -32,16 +32,15 @@ export const ReferencesSection = memo(() => {
         name: 'references',
     });
 
-    const validFields = useMemo(
-        () => {
+    const validFields = useMemo(() => {
             const valid = fields.filter(field => field.collaboratorId);
             return valid;
         },
         [fields],
     );
 
-    const selectedCollaboratorIds = useMemo(
-        () => validFields.map(f => f.collaboratorId),
+    const selectedCollaboratorIds = useMemo(() => 
+        validFields.map(f => f.collaboratorId),
         [validFields],
     );
 
@@ -75,7 +74,11 @@ export const ReferencesSection = memo(() => {
                 return;
             }
             
-            append({collaboratorId: collaborator.id, justification: ''});
+            append({
+                collaboratorId: collaborator.id, 
+                justification: '', 
+                referencesIAValid: true
+            });
         },
         [append, fields]
     );
@@ -130,7 +133,10 @@ export const ReferencesSection = memo(() => {
 
                             return (
                                 <AnimatedCard key={`ref-${field.collaboratorId}`} index={validIndex}>
-                                    <Reference collaborator={collaborator} name={fieldName}
+                                    <Reference 
+                                        collaborator={collaborator} 
+                                        name={fieldName}
+                                        index={originalIndex}
                                         onRemove={() =>
                                             removeCollaborator(
                                                 field.collaboratorId,
@@ -146,14 +152,7 @@ export const ReferencesSection = memo(() => {
 
             <AnimatePresence>
                 {showEmptyMessage && !searchQuery && (
-                    <motion.div 
-                        key="empty-message" 
-                        variants={variants.emptyMessage} 
-                        initial="initial" 
-                        animate="animate" 
-                        exit="exit" 
-                        className="text-center py-12"
-                    >
+                    <motion.div  key="empty-message" variants={variants.emptyMessage} initial="initial" animate="animate" exit="exit" className="text-center py-12">
                         <Typography variant="body" className="text-gray-500">
                             Nenhuma referência adicionada
                         </Typography>

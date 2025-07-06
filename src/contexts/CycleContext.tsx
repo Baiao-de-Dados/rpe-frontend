@@ -6,7 +6,7 @@ import type { Cycle, EvaluationStatus, CycleContextType } from './CycleContextDe
 const mockCurrentCycle: Cycle = {
     id: '2025.2',
     nome: '2025.2',
-    isOpen: false,
+    isOpen: true,
     allTracksSet: false,
     dataInicio: '2025-01-01',
     dataFim: '2025-06-29',

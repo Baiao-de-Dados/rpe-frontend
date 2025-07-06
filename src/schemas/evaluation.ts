@@ -46,6 +46,10 @@ export const referenceSchema = z.object({
             value => value.length > 0,
             'A justificativa não pode conter apenas espaços em branco',
         ),
+    referencesIAValid: z.boolean({
+        required_error: 'A validação da IA é obrigatória',
+        invalid_type_error: 'A validação da IA deve ser booleana',
+    }).refine(v => v === true, 'A IA precisa validar o campo para enviar').optional(),
 });
 
 export const evaluation360Schema = z.object({
