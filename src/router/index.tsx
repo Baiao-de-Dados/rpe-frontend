@@ -13,7 +13,7 @@ import { Configuracoes } from '../pages/RH/Configuracoes';
 import { ImportarHistoricos } from '../pages/RH/ImportarHistoricos';
 import { Avaliacao } from '../pages/Colaborador/Avaliacao';
 import { Evolucao } from '../pages/Colaborador/Evolucao';
-import Anotacoes from '../pages/Anotacoes';
+import Anotacoes from '../pages/Colaborador/Anotacoes';
 
 // Spinner enquanto o estado de auth é carregado
 const LoadingSpinner = () => (
