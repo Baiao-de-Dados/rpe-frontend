@@ -12,6 +12,7 @@ import { Colaboradores } from '../pages/Colaboradores';
 import { Configuracoes } from '../pages/RH/Configuracoes';
 import { ImportarHistoricos } from '../pages/RH/ImportarHistoricos';
 import { Avaliacao } from '../pages/Colaborador/Avaliacao';
+import { ColaboradorAvaliacao } from '../pages/Colaborador/AvaliacaoMentor';
 import { Evolucao } from '../pages/Colaborador/Evolucao';
 
 // Spinner enquanto o estado de auth é carregado
@@ -72,6 +73,22 @@ export function Router() {
                                 ]}
                             >
                                 <Colaboradores />
+                            </RoleRoute>
+                        }
+                    />
+
+                    <Route
+                        path="colaboradores/:collaboratorId/avaliacao"
+                        element={
+                            <RoleRoute
+                                requiredRoles={[
+                                    UserRoleEnum.MENTOR,
+                                    UserRoleEnum.RH,
+                                    UserRoleEnum.ADMIN,
+                                    UserRoleEnum.DEVELOPER,
+                                ]}
+                            >
+                                <ColaboradorAvaliacao />
                             </RoleRoute>
                         }
                     />

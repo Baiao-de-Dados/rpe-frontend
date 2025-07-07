@@ -10,7 +10,8 @@ export type PageHeaderSection<T extends string = string> = {
 };
 
 type PageHeaderProps<T extends string = string> = {
-    title: string;
+    title?: string;
+    titleContent?: ReactNode; // Novo prop para conteúdo customizado
     button?: ReactNode;
     children?: ReactNode;
     sections?: PageHeaderSection<T>[];
@@ -20,6 +21,7 @@ type PageHeaderProps<T extends string = string> = {
 
 export default function PageHeader<T extends string = string>({
     title,
+    titleContent,
     button,
     children,
     sections,
@@ -53,12 +55,14 @@ export default function PageHeader<T extends string = string>({
             <div
                 className={`h-20 mt-4 sm:mt-0 px-8  pl-5 sm:pl-8 flex items-center ${hasSections ? 'mb-8 sm:mb-4' : 'mb-10'} justify-between`}
             >
-                <Typography
-                    variant="h1"
-                    color="primary500"
-                >
-                    {title}
-                </Typography>
+                {titleContent || (
+                    <Typography
+                        variant="h1"
+                        color="primary500"
+                    >
+                        {title}
+                    </Typography>
+                )}
                 <div className="flex gap-4 items-center">{button}</div>
             </div>
             {sections && onSectionChange && (
