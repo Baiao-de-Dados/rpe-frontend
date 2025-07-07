@@ -8,10 +8,10 @@ import Button from '../../common/Button';
 import Typography from '../../common/Typography';
 import { ErrorMessage } from '../../common/ErrorMessage';
 
-import { formatDate } from '../../../utils/globalUtils';
-import { getSemesterEndDate, getSemesterStartDate } from '../Sections/utils';
+import { formatDate, getDateOnly } from '../../../utils/globalUtils';
 
 import { getExtendCycleSchema, type ExtendCycleSchema } from '../../../schemas/extendCycleSchema';
+import { getSemesterEndDate, getSemesterStartDate } from '../../../utils/cycleUtils';
 
 interface ExtendCycleModalProps {
     open: boolean;
@@ -27,20 +27,23 @@ function ExtendCycleModal({ open, onClose, onConfirm, currentEndDate, year, seme
     const maxDate = getSemesterEndDate(year, semester);
     const minDate = getSemesterStartDate(year, semester);
     const schema = getExtendCycleSchema(minDate, maxDate, currentEndDate);
+    
+    const currentDateOnly = getDateOnly(currentEndDate);
 
     const { register, handleSubmit, reset, watch, formState: { isSubmitting, isValid, errors } } = useForm<ExtendCycleSchema>({
         resolver: zodResolver(schema),
-        defaultValues: { newDate: currentEndDate },
+        defaultValues: { endDate: currentDateOnly },
         mode: 'onChange',
     });
 
     useEffect(() => {
-        if (!open) reset({ newDate: currentEndDate });
-    }, [open, reset, currentEndDate]);
+        if (!open) reset({ endDate: currentDateOnly });
+    }, [open, reset, currentDateOnly]);
 
-    const onSubmit = (data: { newDate: string }) => {
-        onConfirm(data.newDate);
-        reset({ newDate: currentEndDate });
+    const onSubmit = (data: { endDate: string }) => {
+        const datetimeString = `${data.endDate}T00:00:00.000Z`;
+        onConfirm(datetimeString);
+        reset({ endDate: currentDateOnly });
     };
 
     return (
@@ -54,15 +57,15 @@ function ExtendCycleModal({ open, onClose, onConfirm, currentEndDate, year, seme
                         <label className="text-sm font-medium text-gray-700" htmlFor="extend-date-input">
                             Nova data de término
                         </label>
-                        <ErrorMessage error={errors.newDate?.message} />
+                        <ErrorMessage error={errors.endDate?.message} />
                     </div>
-                    <Input id="extend-date-input" type="date" min={minDate} max={maxDate} defaultValue={currentEndDate} {...register('newDate')} />
+                    <Input id="extend-date-input" type="date" min={minDate} max={maxDate} defaultValue={currentDateOnly} {...register('endDate')} />
                 </div>
                 <Typography variant="body" className="text-gray-700">
                     Data de término atual: <span className="font-semibold">{formatDate(currentEndDate)}</span>
                 </Typography>
                 <Typography variant="body" className="text-gray-700 -mt-2">
-                    Nova data: <span className="font-semibold">{watch('newDate') ? formatDate(watch('newDate')) : '-'}</span>
+                    Nova data: <span className="font-semibold">{watch('endDate') ? formatDate(watch('endDate')) : '-'}</span>
                 </Typography>
                 <div className="flex gap-2 justify-end mt-4">
                     <Button variant="secondary" type="button" onClick={onClose}>

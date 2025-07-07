@@ -4,14 +4,10 @@ import { Clock, History } from 'lucide-react';
 import CycleCard from '../Cards/CycleCard';
 
 import { useCycle } from '../../../hooks/useCycle';
-import { useToast } from '../../../hooks/useToast';
 
 import AlertMessage from '../../common/AlertMessage';
 
-import { mockCycles } from '../../../data/mockCycles';
-
-import { formatDate } from '../../../utils/globalUtils';
-import { getCycleLabel, parseCycleString } from './utils';
+import { parseCycleString } from '../../../utils/cycleUtils';
 
 import StartCycleModal from '../Modals/StartCycleModal';
 import CancelCycleModal from '../Modals/CancelCycleModal';
@@ -19,65 +15,40 @@ import ExtendCycleModal from '../Modals/ExtendCycleModal';
 
 export function CycleSection() {
 
-    const { showToast } = useToast();
-
-    const { currentCycle, checkCycleStatus, updateCycleStatus, updateAllTracksSet } = useCycle();
-
     const [startModalOpen, setStartModalOpen] = useState(false);
     const [cancelModalOpen, setCancelModalOpen] = useState(false);
     const [extendModalOpen, setExtendModalOpen] = useState(false);
 
-    const cycleLabel = getCycleLabel();
+    const { currentCycle, allTracksSet, cycles, startCycle, extendCycle, cancelCycle } = useCycle();
+
+    const cycleLabel = `Ciclo ${currentCycle.name}`;
     const { year, semester } = parseCycleString(cycleLabel);
 
     const handleStartCycle = async (endDate: string) => {
-        console.log({ cycle: cycleLabel, endDate });
-        
-        // Atualiza o status do ciclo para aberto e a data de fim
-        updateCycleStatus(true, endDate);
-        
-        showToast(`O ciclo foi iniciado com sucesso! Data de término: ${formatDate(endDate)}`, 'success', { 
-            title: 'Ciclo iniciado', duration: 10000 
-        });
+        startCycle({ endDate });
         setStartModalOpen(false);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await checkCycleStatus();
     };
 
     const handleCancelCycle = async () => {
-        console.log({ cycle: cycleLabel });
-        
-        // Reseta os status do ciclo
-        updateCycleStatus(false);
-        updateAllTracksSet(false);
-        
-        showToast('Ciclo cancelado com sucesso! As avaliações foram apagadas.', 'success', { 
-            title: 'Ciclo cancelado', duration: 10000 
-        });
+        if (currentCycle.id) {
+            cancelCycle(currentCycle.id);
+        }
         setCancelModalOpen(false);
-        await checkCycleStatus();
     };
 
-    const handleExtendCycle = async (newDate: string) => {
-        console.log({ cycle: cycleLabel, newDate });
-        
-        // Atualiza a data de fim do ciclo
-        updateCycleStatus(true, newDate);
-        
-        showToast(`Ciclo prorrogado para ${formatDate(newDate)}`, 'success', {
-            title: 'Ciclo prorrogado',
-            duration: 10000,
-        });
+    const handleExtendCycle = async (newEndDate: string) => {
+        if (currentCycle.id) {
+            extendCycle(currentCycle.id, { endDate: newEndDate });
+        }
         setExtendModalOpen(false);
-        await checkCycleStatus();
     };
 
-    const canStartCycle = !!currentCycle && !currentCycle.isOpen && currentCycle.allTracksSet;
+    const canStartCycle = !!currentCycle && !currentCycle.isActive && allTracksSet;
 
     return (
         <div className="flex flex-col gap-8 sm:gap-6 px-2 sm:px-0">
             {
-                !currentCycle?.allTracksSet && 
+                !allTracksSet && 
                 <AlertMessage message="É necessário definir os critérios de todas as trilhas antes de iniciar o ciclo." type="alert" />
             }
             <section className="pb-8 sm:pb-6 border-b border-gray-300 mb-4 sm:mb-2">
@@ -85,10 +56,15 @@ export function CycleSection() {
                     <Clock size={18} className="text-primary-700" />
                     Ciclo atual
                 </span>
-                <CycleCard label={cycleLabel} showButton={!!currentCycle && !currentCycle.isOpen} canStart={canStartCycle} status={currentCycle?.isOpen ? 'aberto' : undefined} 
-                onStartClick={() => setStartModalOpen(true)} 
-                onCancelClick={() => setCancelModalOpen(true)} 
-                onExtendClick={() => setExtendModalOpen(true)} />
+                <CycleCard 
+                    label={cycleLabel} 
+                    showButton={!!currentCycle && !currentCycle.isActive} 
+                    canStart={canStartCycle} 
+                    status={currentCycle.isActive ? 'aberto' : undefined} 
+                    onStartClick={() => setStartModalOpen(true)} 
+                    onCancelClick={() => setCancelModalOpen(true)} 
+                    onExtendClick={() => setExtendModalOpen(true)}
+                />
             </section>
             <section>
                 <span className="text-primary-700 font-semibold text-base sm:text-sm flex mb-6 sm:mb-4 items-center gap-2">
@@ -96,16 +72,34 @@ export function CycleSection() {
                     Ciclos anteriores
                 </span>
                 <div className="max-h-96 md:max-h-96 lg:max-h-96 xl:max-h-96 2xl:max-h-96 sm:max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                    {mockCycles
-                        .filter(c => c.cycleName !== cycleLabel.replace('Ciclo ', ''))
+                    {cycles
+                        .filter(c => c.name !== currentCycle.name)
                         .map(cycle => (
-                            <CycleCard key={cycle.cycleName} label={`Ciclo ${cycle.cycleName}`} status="finalizado" />
+                            <CycleCard 
+                                key={cycle.name} 
+                                label={`Ciclo ${cycle.name}`} 
+                                status="finalizado" 
+                                endDate={cycle.endDate}
+                            />
                         ))}
                 </div>
             </section>
-            <StartCycleModal open={startModalOpen} onClose={() => setStartModalOpen(false)} onStart={handleStartCycle} semester={semester} year={year} />
-            <CancelCycleModal open={cancelModalOpen} onClose={() => setCancelModalOpen(false)} onConfirm={handleCancelCycle} cycleName={cycleLabel} />
-            <ExtendCycleModal open={extendModalOpen} onClose={() => setExtendModalOpen(false)} onConfirm={handleExtendCycle} currentEndDate={currentCycle?.dataFim || ''} year={year} semester={semester} />
+            <StartCycleModal semester={semester} year={year}
+                open={startModalOpen} 
+                onClose={() => setStartModalOpen(false)} 
+                onStart={handleStartCycle}  
+            />
+            <ExtendCycleModal year={year} semester={semester}
+                open={extendModalOpen} 
+                onClose={() => setExtendModalOpen(false)} 
+                onConfirm={handleExtendCycle} 
+                currentEndDate={currentCycle.endDate || ''}  
+            />
+            <CancelCycleModal cycleName={cycleLabel}
+                open={cancelModalOpen} 
+                onClose={() => setCancelModalOpen(false)} 
+                onConfirm={handleCancelCycle}  
+            />
         </div>
     );
 }

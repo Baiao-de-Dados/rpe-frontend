@@ -10,7 +10,7 @@ export interface EvaluationSubmissionResult {
 export const useEvaluationSubmit = () => {
 
     const { showToast } = useToast();
-    const { currentCycle, evaluationStatus, checkCycleStatus } = useCycle();
+    const { currentCycle, evaluationStatus, refetchEvaluationStatus } = useCycle();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const submitEvaluation = async (): Promise<boolean> => {
@@ -43,11 +43,11 @@ export const useEvaluationSubmit = () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const success = Math.random() > 0.1;
+            const success = Math.random() > 0.1; 
 
             if (success) {
                 const newStatus = {
-                    cycleId: currentCycle.id,
+                    cycleId: currentCycle.id!,
                     isSubmitted: true,
                     submittedAt: new Date().toISOString(),
                 };
@@ -57,7 +57,7 @@ export const useEvaluationSubmit = () => {
                     JSON.stringify(newStatus),
                 );
 
-                await checkCycleStatus();
+                refetchEvaluationStatus();
 
                 showToast(
                     'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.',

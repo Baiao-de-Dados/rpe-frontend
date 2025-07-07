@@ -1,17 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
-import {
-    fullEvaluationSchema,
-    type EvaluationFormData,
-} from '../../schemas/evaluation';
+
+import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
+
+import { useCycle } from '../../hooks/useCycle';
+
+import CycleLoading from '../../components/common/CycleLoading';
 import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
 import CycleClosedMessage from '../../components/Evaluation/CycleClosedMessage';
-import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
-import { useCycle } from '../../hooks/useCycle';
-import CycleLoading from '../../components/common/CycleLoading';
+import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
 
 export function Avaliacao() {
+
     const { currentCycle, evaluationStatus, isLoading } = useCycle();
 
     const methods = useForm<EvaluationFormData>({
@@ -27,7 +28,7 @@ export function Avaliacao() {
         return <CycleLoadErrorMessage />;
     }
 
-    if (!currentCycle.isOpen) {
+    if (!currentCycle.isActive) {
         return <CycleClosedMessage cycle={currentCycle} />;
     }
 

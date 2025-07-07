@@ -1,28 +1,20 @@
 import { createContext } from 'react';
-
-export interface Cycle {
-    id: string;
-    nome: string;
-    isOpen: boolean;
-    dataInicio: string;
-    dataFim: string;
-    allTracksSet: boolean;
-}
-
-export interface EvaluationStatus {
-    cycleId: string;
-    isSubmitted: boolean;
-    submittedAt?: string;
-}
+import type { Cycles, StartCyclePayload, ExtendCyclePayload, CurrentCycle, EvaluationStatus } from '../types/cycle';
 
 export interface CycleContextType {
-    currentCycle: Cycle | null;
-    evaluationStatus: EvaluationStatus | null;
+    cycles: Cycles;
+    currentCycle: CurrentCycle;
+    allTracksSet: boolean;
     isLoading: boolean;
-    checkCycleStatus: () => Promise<void>;
-    updateAllTracksSet: (value: boolean) => void;
-    updateCycleStatus: (isOpen: boolean, endDate?: string) => void;
-    resetCycleToDefault: () => void;
+    evaluationStatus: EvaluationStatus | null;
+    refetchCycleData: () => void;
+    refetchEvaluationStatus: () => void;
+    startCycle: (payload: StartCyclePayload) => void;
+    extendCycle: (id: number, payload: ExtendCyclePayload) => void;
+    cancelCycle: (id: number) => void;
+    isStarting: boolean;
+    isExtending: boolean;
+    isCanceling: boolean;
 }
 
 export const CycleContext = createContext<CycleContextType | undefined>(

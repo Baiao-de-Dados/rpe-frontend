@@ -5,7 +5,7 @@ export const getExtendCycleSchema = (minDate: string, maxDate: string, currentEn
     today.setHours(0, 0, 0, 0);
     const todayStr = today.toISOString().split('T')[0];
     return z.object({
-        newDate: z
+        endDate: z
             .string()
             .min(1, 'Selecione uma nova data de término')
             .refine(date => date >= minDate && date <= maxDate, {

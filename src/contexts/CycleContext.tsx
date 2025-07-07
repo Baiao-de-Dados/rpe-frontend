@@ -1,120 +1,150 @@
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useMemo, useState, useEffect, type ReactNode } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { CycleContext } from './CycleContextDefinition';
-import type { Cycle, EvaluationStatus, CycleContextType } from './CycleContextDefinition';
+import { cycleEndpoints } from '../services/api/cycle';
 
-const mockCurrentCycle: Cycle = {
-    id: '2025.2',
-    nome: '2025.2',
-    isOpen: false,
-    allTracksSet: false,
-    dataInicio: '2025-01-01',
-    dataFim: '2025-06-29',
-};
+import { formatDate } from '../utils/globalUtils';
+import { getCurrentCycleName } from '../utils/cycleUtils';
 
-const CYCLE_STORAGE_KEY = 'cycle_state';
+import { useToast } from '../hooks/useToast';
+import { useTracksCriteriaQuery } from '../hooks/useTracksCriteriaQuery';
+
+import { CycleContext, type CycleContextType  } from './CycleContextDefinition';
+
+import type { StartCyclePayload, ExtendCyclePayload, CurrentCycle, EvaluationStatus } from '../types/cycle';
 
 export const CycleProvider = ({ children }: { children: ReactNode }) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentCycle, setCurrentCycle] = useState<Cycle | null>(null);
+
+    const { showToast } = useToast();
+
+    const queryClient = useQueryClient();
+
+    const { data: cycles = [], isLoading, refetch: refetchCycleData } = useQuery({
+        queryKey: ['cycles'],
+        queryFn: () => cycleEndpoints.getCycles().then(response => response.data),
+        staleTime: 5 * 60 * 1000, 
+        refetchOnWindowFocus: false,
+    });
+
+    const { data: tracksCriteria } = useTracksCriteriaQuery();
+
+    const allTracksSet = useMemo(() => {
+        if (!tracksCriteria || !tracksCriteria.length) {
+            return false;
+        }
+        
+        return tracksCriteria.every(track => 
+            track.pillars && track.pillars.length > 0 && 
+            track.pillars.every(pillar => 
+                pillar.criteria && pillar.criteria.length > 0
+            )
+        );
+    }, [tracksCriteria]);
+
+    const currentCycle: CurrentCycle = useMemo(() => {
+        const currentCycleName = getCurrentCycleName();
+        const foundCurrentCycle = cycles.find(cycle => cycle.name === currentCycleName);
+        
+        if (foundCurrentCycle) {
+            return foundCurrentCycle;
+        }
+        
+        return {
+            name: currentCycleName,
+            isActive: false
+        };
+    }, [cycles]);
+
     const [evaluationStatus, setEvaluationStatus] = useState<EvaluationStatus | null>(null);
 
-    // Função para carregar o ciclo do localStorage
-    const loadCycleFromStorage = (): Cycle => {
+    const getEvaluationStatus = useMemo(() => (): EvaluationStatus | null => {
+        if (!currentCycle?.id) return null;
+        
+        const stored = localStorage.getItem(`evaluation_${currentCycle.id}`);
+        if (!stored) return null;
+        
         try {
-            const savedCycle = localStorage.getItem(CYCLE_STORAGE_KEY);
-            if (savedCycle) {
-                const parsedCycle = JSON.parse(savedCycle);
-                // Merge com o mockCurrentCycle para garantir que todos os campos estejam presentes
-                return { ...mockCurrentCycle, ...parsedCycle };
-            }
-        } catch (error) {
-            console.error('Erro ao carregar ciclo do localStorage:', error);
+            return JSON.parse(stored);
+        } catch {
+            return null;
         }
-        return mockCurrentCycle;
-    };
-
-    // Função para salvar o ciclo no localStorage
-    const saveCycleToStorage = (cycle: Cycle) => {
-        try {
-            localStorage.setItem(CYCLE_STORAGE_KEY, JSON.stringify(cycle));
-        } catch (error) {
-            console.error('Erro ao salvar ciclo no localStorage:', error);
-        }
-    };
-
-    const checkCycleStatus = useCallback(async () => {
-        setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        try {
-            const loadedCycle = loadCycleFromStorage();
-            setCurrentCycle(loadedCycle);
-
-            const savedStatus = localStorage.getItem(
-                `evaluation_${loadedCycle.id}`,
-            );
-            if (savedStatus) {
-                setEvaluationStatus(JSON.parse(savedStatus));
-            } else {
-                setEvaluationStatus({
-                    cycleId: loadedCycle.id,
-                    isSubmitted: false,
-                });
-            }
-        } catch (error) {
-            console.error('Erro ao carregar status do ciclo:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+    }, [currentCycle?.id]);
 
     useEffect(() => {
-        checkCycleStatus();
-    }, [checkCycleStatus]);
+        setEvaluationStatus(getEvaluationStatus());
+    }, [getEvaluationStatus]);
 
-    const updateAllTracksSet = (value: boolean) => {
-        setCurrentCycle(prev => {
-            if (!prev) return null;
-            const updatedCycle = { ...prev, allTracksSet: value };
-            saveCycleToStorage(updatedCycle);
-            return updatedCycle;
-        });
+    const refetchEvaluationStatus = () => {
+        setEvaluationStatus(getEvaluationStatus());
     };
 
-    const updateCycleStatus = (isOpen: boolean, endDate?: string) => {
-        setCurrentCycle(prev => {
-            if (!prev) return null;
-            const updatedCycle = { 
-                ...prev, 
-                isOpen,
-                ...(endDate && { dataFim: endDate })
-            };
-            saveCycleToStorage(updatedCycle);
-            return updatedCycle;
-        });
-    };
+    const startCycleMutation = useMutation({
+        mutationFn: (payload: StartCyclePayload) => cycleEndpoints.startCycle(payload),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['cycles'] });
+            showToast(`O ciclo foi iniciado com sucesso! Data de término: ${formatDate(variables.endDate)}`, 'success', { 
+                title: 'Ciclo iniciado', duration: 5000 
+            });
+        },
+        onError: () => {
+            showToast('Erro ao iniciar o ciclo. Tente novamente mais tarde!', 'error', {
+                title: 'Erro',
+                duration: 10000
+            });
+        },
+    });
 
-    const resetCycleToDefault = () => {
-        try {
-            localStorage.removeItem(CYCLE_STORAGE_KEY);
-            setCurrentCycle(mockCurrentCycle);
-            saveCycleToStorage(mockCurrentCycle);
-        } catch (error) {
-            console.error('Erro ao resetar ciclo:', error);
-        }
-    };
+    const extendCycleMutation = useMutation({
+        mutationFn: ({ id, payload }: { id: number; payload: ExtendCyclePayload }) => cycleEndpoints.extendCycle(id, payload),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['cycles'] });
+            showToast(`Ciclo prorrogado para ${formatDate(variables.payload.endDate)}`, 'success', {
+                title: 'Ciclo prorrogado',
+                duration: 5000,
+            });
+        },
+        onError: () => {
+            showToast('Erro ao prorrogar o ciclo. Tente novamente mais tarde!', 'error', {
+                title: 'Erro',
+                duration: 10000
+            });
+        },
+    });
+
+    const cancelCycleMutation = useMutation({
+        mutationFn: (id: number) => cycleEndpoints.cancelCycle(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['cycles'] });
+            showToast('Ciclo cancelado com sucesso! As avaliações foram apagadas.', 'success', { 
+                title: 'Ciclo cancelado', duration: 5000 
+            });
+        },
+        onError: () => {
+            showToast('Erro ao cancelar o ciclo. Tente novamente mais tarde!', 'error', {
+                title: 'Erro',
+                duration: 10000
+            });
+        },
+    });
 
     const value: CycleContextType = {
+        cycles,
         currentCycle,
-        evaluationStatus,
+        allTracksSet,
         isLoading,
-        checkCycleStatus,
-        updateAllTracksSet,
-        updateCycleStatus,
-        resetCycleToDefault,
+        evaluationStatus,
+        refetchCycleData,
+        refetchEvaluationStatus,
+        startCycle: (payload: StartCyclePayload) => startCycleMutation.mutate(payload),
+        extendCycle: (id: number, payload: ExtendCyclePayload) => extendCycleMutation.mutate({ id, payload }),
+        cancelCycle: (id: number) => cancelCycleMutation.mutate(id),
+        isStarting: startCycleMutation.isPending,
+        isExtending: extendCycleMutation.isPending,
+        isCanceling: cancelCycleMutation.isPending,
     };
 
     return (
         <CycleContext.Provider value={value}>{children}</CycleContext.Provider>
     );
+
 };

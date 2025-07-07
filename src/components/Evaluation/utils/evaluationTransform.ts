@@ -33,7 +33,7 @@ export interface TransformedEvaluationData {
     }>;
 }
 
-export const transformFormData = (data: EvaluationFormData, ciclo: string = '2025.1', colaboradorId: string = '1'): TransformedEvaluationData => {
+export const transformFormData = (data: EvaluationFormData, ciclo: string, colaboradorId: string = '1'): TransformedEvaluationData => {
 
     const pilaresMap = new Map<string, CriterioOutput[]>();
 
