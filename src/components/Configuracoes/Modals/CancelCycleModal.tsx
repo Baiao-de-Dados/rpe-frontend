@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import Modal from '../../common/Modal';
-import Button from '../../common/Button';
 import Input from '../../common/Input';
+import Button from '../../common/Button';
 import Typography from '../../common/Typography';
 
 interface CancelCycleModalProps {
@@ -20,6 +20,11 @@ function CancelCycleModal({ open, onClose, onConfirm, cycleName }: CancelCycleMo
     const handleClose = () => {
         setInput('');
         onClose();
+    };
+
+    const handleConfirm = () => {
+        onConfirm();
+        setInput('');
     };
 
     return (
@@ -47,7 +52,7 @@ function CancelCycleModal({ open, onClose, onConfirm, cycleName }: CancelCycleMo
                     <Button variant="secondary" onClick={handleClose} className="w-full md:w-auto">
                         Voltar
                     </Button>
-                    <Button variant="danger" onClick={onConfirm} disabled={!isMatch} className="w-full md:w-auto">
+                    <Button variant="danger" onClick={handleConfirm} disabled={!isMatch} className="w-full md:w-auto">
                         Confirmar cancelamento
                     </Button>
                 </div>

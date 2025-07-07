@@ -24,8 +24,7 @@ export function TrackSection() {
 
     const { showToast } = useToast();
 
-    const { currentCycle, updateAllTracksSet } = useCycle();
-    const isCycleClosed = !currentCycle?.isOpen;
+    const { currentCycle: {isActive : isCycleOpened} } = useCycle();
 
     const [search, setSearch] = useState('');
 
@@ -119,7 +118,7 @@ export function TrackSection() {
     }
 
     const processTracks = async (data: TrackSectionFormType) => {
-        if (!isCycleClosed) {
+        if (isCycleOpened) {
             showToast('Não é possível editar pois o ciclo está aberto.', 'error', {
                 title: 'Edição não permitida',
                 duration: 5000,
@@ -128,9 +127,6 @@ export function TrackSection() {
         }
         const payload = processTracksForAPI(data);
         await setTracksMutation.mutateAsync(payload);
-        
-        // Atualiza o status de trilhas configuradas
-        updateAllTracksSet(true);
     };
 
     return (
@@ -140,7 +136,7 @@ export function TrackSection() {
                     <SearchBar value={search} onChange={setSearch} placeholder="Buscar trilha..." showResults={false} className="w-full" excludeItems={memoizedExcludeItems} />
                 </div>
 
-                <TrackSubmitButton isCycleClosed={isCycleClosed} isSubmitting={isSubmitting || setTracksMutation.isPending} isValid={isValid && !!tracks && tracks.length > 0 && !tracksLoadingError} />
+                <TrackSubmitButton isCycleClosed={!isCycleOpened} isSubmitting={isSubmitting || setTracksMutation.isPending} isValid={isValid && !!tracks && tracks.length > 0 && !tracksLoadingError} />
             </div>
 
             {filteredTrackIndexes.map((trackIdx: number) => (
@@ -148,7 +144,7 @@ export function TrackSection() {
                 name={`tracks.${trackIdx}` as const}
                     render={({ field }) => (
                         <motion.div variants={variants.trackMotion} initial="initial" animate="animate" exit="exit" transition={{ duration: shouldReduceMotion ? 0.01 : 0.3, delay: shouldReduceMotion ? 0 : trackIdx * 0.13 }}>
-                            <TrackCard track={watchedTracks?.[trackIdx] || field.value} trackIdx={trackIdx} control={control} isCycleClosed={isCycleClosed} errors={errors?.tracks?.[trackIdx]} />
+                            <TrackCard track={watchedTracks?.[trackIdx] || field.value} trackIdx={trackIdx} control={control} isCycleClosed={!isCycleOpened} errors={errors?.tracks?.[trackIdx]} />
                         </motion.div>
                     )}
                 />

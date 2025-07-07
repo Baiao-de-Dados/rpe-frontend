@@ -1,21 +1,19 @@
-import { Lock, Calendar, Clock } from 'lucide-react';
+import { Lock, Clock } from 'lucide-react';
 
 import Typography from '../common/Typography';
 import CardContainer from '../common/CardContainer';
 
-import { formatDate } from '../../utils/globalUtils';
-
-import type { Cycle } from '../../contexts/CycleContextDefinition';
+import type { CurrentCycle } from '../../types/cycle';
 
 interface CycleClosedMessageProps {
-    cycle: Cycle;
+    cycle: CurrentCycle;
 }
 
 const CycleClosedMessage = ({ cycle }: CycleClosedMessageProps) => {
 
     return (
-        <div className="flex items-center justify-center min-h-[60vh] p-6">
-            <CardContainer className="max-w-210 mx-auto text-center border-2 border-neutral-200">
+        <div className="flex items-center justify-center min-h-[60vh] p-4">
+            <CardContainer className="mt-20 sm:mt-0 max-w-210 mx-auto text-center border-2 border-neutral-200">
                 <div className="flex justify-center mb-6">
                     <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
                         <Lock className="w-8 h-8 text-primary-500" />
@@ -29,24 +27,15 @@ const CycleClosedMessage = ({ cycle }: CycleClosedMessageProps) => {
                 <Typography variant="body" color="muted" className="mb-6 leading-relaxed">
                     O ciclo de avaliação{' '}
                     <span className="text-primary-700 font-semibold">
-                        {cycle.nome}
+                        {cycle.name}
                     </span>{' '}
-                    foi encerrado e não é mais possível enviar ou modificar
-                    avaliações.
+                    ainda não foi iniciado
                 </Typography>
-
                 <div className="space-y-3 mb-6">
-                    <div className="flex items-center justify-center gap-2 p-2 bg-primary-50 rounded-lg">
-                        <Calendar className="w-4 h-4 text-primary-400" />
-                        <Typography variant="caption" color="muted">
-                            Período: {formatDate(cycle.dataInicio)} -{' '}
-                            {formatDate(cycle.dataFim)}
-                        </Typography>
-                    </div>
                     <div className="flex items-center justify-center gap-2 p-2 bg-primary-50 rounded-lg">
                         <Clock className="w-4 h-4 text-primary-400" />
                         <Typography variant="caption" color="muted">
-                            Status: Encerrado
+                            Status: Fechado
                         </Typography>
                     </div>
                 </div>

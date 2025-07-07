@@ -33,11 +33,11 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                                         render={({ field: justificationField,}) => {
                                             const isCompleted = ratingField.value && justificationField.value?.trim();
                                             return (
-                                                <div className={`w-6 h-6 rounded-full border-1 text-gray-600 flex items-center justify-center ${ !isCompleted ? 'border-gray-600' : 'bg-check-color border-check-color' }`}>
+                                                <div className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full border-1 text-gray-600 flex items-center justify-center text-sm font-medium ${ !isCompleted ? 'border-gray-600' : 'bg-check-color border-check-color' }`}>
                                                     {!isCompleted ? (
                                                         topicNumber
                                                     ) : (
-                                                        <Check fill="none" stroke="white" strokeWidth={2} size={20} />
+                                                        <Check fill="none" stroke="white" strokeWidth={2} size={16} />
                                                     )}
                                                 </div>
                                             );

@@ -1,9 +1,10 @@
-export function getCycleLabel(date: Date = new Date()): string {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
+export const getCurrentCycleName = (): string => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1; 
     const semester = month <= 6 ? 1 : 2;
-    return `Ciclo ${year}.${semester}`;
-}
+    return `${year}.${semester}`;
+};
 
 export function parseCycleString(cycleString: string): {
     year: number;

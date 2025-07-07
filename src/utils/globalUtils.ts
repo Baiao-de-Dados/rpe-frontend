@@ -1,7 +1,18 @@
+export const getDateOnly = (dateString: string): string => {
+    if (dateString.includes('T')) {
+        return dateString.split('T')[0];
+    }
+    if (dateString.includes(' ')) {
+        return dateString.split(' ')[0];
+    }
+    return dateString;
+};
+
 export function formatDate(date: string | Date): string {
     let d: Date;
     if (typeof date === 'string') {
-        const [year, month, day] = date.split('-').map(Number);
+        const dateOnly = getDateOnly(date);
+        const [year, month, day] = dateOnly.split('-').map(Number);
         d = new Date(year, month - 1, day);
     } else {
         d = date;

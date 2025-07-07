@@ -1,13 +1,15 @@
 import { useCycle } from '../../hooks/useCycle';
+import { useSectionNavigation } from '../../hooks/useSectionNavigation';
+
 import CycleLoading from '../../components/common/CycleLoading';
+import { ConfigHeader } from '../../components/Configuracoes/ConfigHeader';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import { SectionRenderer } from '../../components/Configuracoes/Sections/SectionRenderer';
 import type { SectionType } from '../../components/Configuracoes/Sections/CriterionSections';
-import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 import { criterionSections } from '../../components/Configuracoes/Sections/CriterionSections';
-import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
-import { ConfigHeader } from '../../components/Configuracoes/ConfigHeader';
 
 export function Configuracoes() {
+
     const { currentCycle, isLoading } = useCycle();
 
     const { activeSection, navigateToSection } = useSectionNavigation<SectionType>(criterionSections);
@@ -28,4 +30,5 @@ export function Configuracoes() {
             </main>
         </>
     );
+
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CollaboratorEvaluationCard, {
     type EvaluationField,
 } from '../components/common/CollaboratorEvaluationCard';
@@ -60,6 +61,7 @@ const mockEvaluations: Record<
 export function Colaboradores() {
     const [search, setSearch] = useState('');
     const [isMobile, setIsMobile] = useState(false);
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -142,7 +144,8 @@ export function Colaboradores() {
                                         evalData.statusVariant || 'default',
                                 }}
                                 evaluationFields={evaluationFields}
-                                className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full"
+                                onClick={() => navigate(`/colaboradores/${colab.id}/avaliacao`)}
+                                className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                             />
                         );
                     })}

@@ -3,17 +3,16 @@ import { ArrowLeft, ChevronDown } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 
-
-import Button from '../../common/Button';
-import InputWithTitle from '../../common/InputWithTitle';
-import TextAreaWithTitle from '../../common/TextAreaWithTitle';
-
 import { useToast } from '../../../hooks/useToast';
 import { useCycle } from '../../../hooks/useCycle';
 
 import type { Criteria } from '../../../types/pillar';
 
 import AddCriterionModal from '../Modals/AddCriterionModal';
+
+import Button from '../../common/Button';
+import InputWithTitle from '../../common/InputWithTitle';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 
 import { useUpdateCriteriasMutation, useCreateCriteriaMutation } from '../../../hooks/usePillarsQuery';
 
@@ -29,8 +28,8 @@ interface PillarCriteriaCardProps {
 export function PillarCriteriaCard({ pillarName, criteria, pillarId, onBack }: PillarCriteriaCardProps) {
 
     const { showToast } = useToast();
-    const { currentCycle } = useCycle();
-    const isCycleOpen = currentCycle?.isOpen;
+
+    const { currentCycle: { isActive: isCycleOpen } = {} } = useCycle();
 
     const [openIds, setOpenIds] = useState<number[]>([]);
     const [isModified, setIsModified] = useState(false);
