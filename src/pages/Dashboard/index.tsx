@@ -3,12 +3,18 @@ import { useAuth } from '../../hooks/useAuth';
 import { UserRoleEnum } from '../../types/auth';
 import { CollaboratorDashboard } from './CollaboratorDashboard';
 import { RHDashboard } from './RHDashboard';
+import { CommitteeDashboard } from './CommitteeDashboard';
 
 export function Dashboard() {
     const { hasRole } = useAuth();
 
-    // RH Dashboard
+    // Committee Dashboard
     if (hasRole(UserRoleEnum.RH)) {
+        return <CommitteeDashboard />;
+    }
+
+    // RH Dashboard
+    if (hasRole(UserRoleEnum.COMMITTEE)) {
         return <RHDashboard />;
     }
 

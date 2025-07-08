@@ -48,7 +48,7 @@ export function RHCollaboratorList({ collaborators }: RHCollaboratorListProps) {
             </div>
 
             {/* Lista rolável */}
-            <div className="flex-1 flex flex-col max-h-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent space-y-3 pr-2">
+            <div className="flex-1 flex flex-col max-h-full overflow-y-auto overflow-x-hidden custom-scrollbar space-y-3 pr-2">
                 {collaborators.map(collab => (
                     <div
                         key={collab.id}

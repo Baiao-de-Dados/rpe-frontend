@@ -94,3 +94,27 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-neutral-300) transparent;
 }
+
+/* Classe específica para listas de colaboradores */
+.collaborator-list-scroll {
+    overflow-y: auto !important;
+    max-height: 100% !important;
+}
+
+.collaborator-list-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.collaborator-list-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.collaborator-list-scroll::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.collaborator-list-scroll::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
