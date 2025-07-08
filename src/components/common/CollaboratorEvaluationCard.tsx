@@ -66,15 +66,6 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                     }}
                     variant="compact"
                 />
-                
-                {/* Badge ao lado do nome no mobile */}
-                {isMobile && (
-                    <Badge
-                        label={collaborator.status}
-                        variant={collaborator.statusVariant || 'default'}
-                        size="sm"
-                    />
-                )}
             </div>
             {/* Direita: Campos de avaliação + badge + seta */}
             <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end w-full sm:max-w-[60%]">
@@ -87,6 +78,16 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                         className="ml-1 sm:ml-2"
                     />
                 )}
+                
+                {/* Badge no mobile ao lado esquerdo da nota final */}
+                {isMobile && (
+                    <Badge
+                        label={collaborator.status}
+                        variant={collaborator.statusVariant || 'default'}
+                        size="sm"
+                    />
+                )}
+                
                 {evaluationFields.map((field, idx) => {
                     const isNotaFinal =
                         field.label === 'Nota final' &&
