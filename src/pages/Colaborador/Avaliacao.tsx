@@ -31,7 +31,7 @@ export function Avaliacao() {
         return <CycleLoadErrorMessage />;
     }
 
-    if (!currentCycle.isOpen) {
+    if (!currentCycle.isActive) {
         return <CycleClosedMessage cycle={currentCycle} />;
     }
 

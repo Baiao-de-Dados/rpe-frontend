@@ -8,7 +8,7 @@ import Button from '../../common/Button';
 import Typography from '../../common/Typography';
 import { ErrorMessage } from '../../common/ErrorMessage';
 
-import { getSemesterEndDate, getSemesterStartDate } from '../Sections/utils';
+import { getSemesterEndDate, getSemesterStartDate } from '../../../utils/cycleUtils';
 
 import { getStartCycleSchema, type StartCycleSchema } from '../../../schemas/startCycleSchema';
 

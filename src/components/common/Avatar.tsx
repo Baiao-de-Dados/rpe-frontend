@@ -21,7 +21,7 @@ const Avatar: React.FC<AvatarProps> = props => {
 
     return (
         <div>
-            <div className="w-[7vw] h-[7vw] max-w-[50px] max-h-[50px] bg-gray-300 rounded-full flex flex-row justify-center items-center text-lg sm:text-xl md:text-xl lg:text-xl font-bold overflow-hidden">
+            <div className="w-[10vw] h-[10vw] sm:w-[7vw] sm:h-[7vw] max-w-[60px] max-h-[60px] sm:max-w-[50px] sm:max-h-[50px] bg-gray-300 rounded-full flex flex-row justify-center items-center text-lg sm:text-xl md:text-xl lg:text-xl font-bold overflow-hidden">
                 {props.image && !imageError ? (
                     <img
                         src={props.image}

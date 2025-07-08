@@ -30,8 +30,8 @@ export default function AddPillarModal({ open, onClose }: AddPillarModalProps) {
     });
 
     const { showToast } = useToast();
-    const { currentCycle } = useCycle();
-    const isCycleOpen = currentCycle?.isOpen;
+
+    const { currentCycle: { isActive: isCycleOpen } = {} } = useCycle();
 
     const queryClient = useQueryClient();
     const createPillarMutation = useMutation({

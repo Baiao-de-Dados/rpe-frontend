@@ -18,16 +18,16 @@ const EvaluationSubmitButton = memo(() => {
     const { showToast } = useToast();
 
     const { currentCycle } = useCycle();
+
     const { submitEvaluation, isSubmitting } = useEvaluationSubmit();
 
     const onSubmit = () => {
         handleSubmit(async data => {
             try {
-                const transformedData = transformFormData(data, currentCycle?.id || '2025.1', '1');
+                const transformedData = transformFormData(data, currentCycle.name, '1');
 
                 const validation = validateTransformedData(transformedData);
                 if (validation !== true) {
-                    console.error('Erro na validação dos dados:', validation);
                     showToast(
                         'Alguns campos obrigatórios não foram preenchidos ou contêm dados inválidos.', 
                         'error', {
@@ -39,11 +39,8 @@ const EvaluationSubmitButton = memo(() => {
 
                 console.log('Dados formatados para API:', JSON.stringify(transformedData, null, 2));
 
-                const success = await submitEvaluation();
+                await submitEvaluation();
 
-                if (success) {
-                    console.log('Avaliação enviada com sucesso!');
-                }
             } catch (error) {
                 console.error('Erro ao processar dados do formulário:', error);
                 showToast(
@@ -58,7 +55,7 @@ const EvaluationSubmitButton = memo(() => {
     return (
         <Button 
             variant="primary" 
-            size="md" 
+            size="sm" 
             disabled={!isValid || isSubmitting} 
             onClick={onSubmit} 
             className={`transition-all duration-200 

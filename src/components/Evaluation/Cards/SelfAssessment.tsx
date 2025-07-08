@@ -50,6 +50,7 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
         return (
             <motion.div layout transition={optimizedTransition}>
                 <div className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}>
+
                     <Controller name={`${name}.selfAssessmentIAValid`} control={control}
                         render={({ field }) => (
                             <input type="hidden" {...field} value={(watchedSelfAssessmentIAValid ?? true) ? 'true' : 'false'} />
@@ -60,8 +61,8 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                         <IAValidateActions onCheck={handleCheck} onCancel={handleCancel} />
                     )}
 
-                    <div className="p-4 pl-0" onClick={toggleMinimized}>
-                        <div className="flex items-center justify-between cursor-pointer">
+                    <div className={`p-4 pl-0 ${!(watchedSelfAssessmentIAValid ?? true) ? 'pt-0' : ''}`}>
+                        <div className="mb-4 flex items-center justify-between cursor-pointer" onClick={toggleMinimized}>
                             <div className="flex items-center gap-2">
                                 <Controller name={`${name}.rating`} control={control}
                                     render={({ field: ratingField }) => (
@@ -69,11 +70,11 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                                             render={({ field: justificationField,}) => {
                                                 const isCompleted = ratingField.value && justificationField.value?.trim();
                                                 return (
-                                                    <div className={`w-6 h-6 rounded-full border-1 text-gray-600 flex items-center justify-center ${ !isCompleted ? 'border-gray-600' : 'bg-check-color border-check-color' }`}>
+                                                    <div className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full border-1 text-gray-600 flex items-center justify-center text-sm font-medium ${ !isCompleted ? 'border-gray-600' : 'bg-check-color border-check-color' }`}>
                                                         {!isCompleted ? (
                                                             topicNumber
                                                         ) : (
-                                                            <Check fill="none" stroke="white" strokeWidth={2} size={20} />
+                                                            <Check fill="none" stroke="white" strokeWidth={2} size={16} />
                                                         )}
                                                     </div>
                                                 );
@@ -96,37 +97,37 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className={`transition-all duration-300 ease-in-out origin-top ${ isMinimized ? 'max-h-0 opacity-0 scale-y-0' : 'max-h-[500px] opacity-100 scale-y-100' }`}>
-                        <div className="p-4 pt-0 pl-0">
-                            <Controller name={`${name}.rating`} control={control}
-                                render={({ field, fieldState }) => (
-                                    <div className="mb-6">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <p className="text-sm font-medium text-gray-700">
-                                                Dê uma avaliação de 1 a 5 com base
-                                                no critério
-                                            </p>
-                                            <ErrorMessage error={fieldState.error?.message} />
+                        <div className={`transition-all duration-300 ease-in-out origin-top ${ isMinimized ? 'max-h-0 opacity-0 scale-y-0' : 'max-h-[500px] opacity-100 scale-y-100' }`}>
+                            <div className="p-4 pt-0 pl-0">
+                                <Controller name={`${name}.rating`} control={control}
+                                    render={({ field, fieldState }) => (
+                                        <div className="mb-6">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <p className="text-sm font-medium text-gray-700">
+                                                    Dê uma avaliação de 1 a 5 com base
+                                                    no critério
+                                                </p>
+                                                <ErrorMessage error={fieldState.error?.message} />
+                                            </div>
+                                            <StarRating value={field.value} onChange={field.onChange} />
                                         </div>
-                                        <StarRating value={field.value} onChange={field.onChange} />
-                                    </div>
-                                )}
-                            />
+                                    )}
+                                />
 
-                            <Controller name={`${name}.justification`} control={control}
-                                render={({ field, fieldState }) => (
-                                    <TextAreaWithTitle
-                                        title="Justifique sua nota"
-                                        placeholder="Justifique sua nota"
-                                        value={field.value || ''}
-                                        onChange={field.onChange}
-                                        maxLength={1000}
-                                        error={fieldState.error?.message}
-                                    />
-                                )}
-                            />
+                                <Controller name={`${name}.justification`} control={control}
+                                    render={({ field, fieldState }) => (
+                                        <TextAreaWithTitle
+                                            title="Justifique sua nota"
+                                            placeholder="Justifique sua nota"
+                                            value={field.value || ''}
+                                            onChange={field.onChange}
+                                            maxLength={1000}
+                                            error={fieldState.error?.message}
+                                        />
+                                    )}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
