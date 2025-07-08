@@ -17,7 +17,7 @@ import { anotacoesSchema, type AnotacoesFormData } from '../../schemas/anotacoes
 
 export default function Anotacoes() {
 
-    const { currentCycle } = useCycle();
+    const { currentCycle: {isActive} } = useCycle();
     const { variants } = useOptimizedAnimation();
 
     const { control, handleSubmit, watch, formState: { isValid } } = useForm<AnotacoesFormData>({
@@ -31,7 +31,7 @@ export default function Anotacoes() {
     const notes = useNotes();
 
     const textValue = watch('text');
-    const isButtonDisabled = !isValid || textValue.trim().length === 0 || notes.isEvaluating || notes.isModalOpen || !currentCycle?.isOpen;
+    const isButtonDisabled = !isValid || textValue.trim().length === 0 || notes.isEvaluating || notes.isModalOpen || !isActive;
 
     return (
         <>
@@ -53,7 +53,7 @@ export default function Anotacoes() {
                             className="flex items-center gap-2"  
                             disabled={isButtonDisabled}
                             onClick={handleSubmit(notes.handleEvaluateWithAI)}
-                            title={!currentCycle?.isOpen ? 'Não há ciclo de avaliação aberto' : ''}
+                            title={!isActive ? 'Não há ciclo de avaliação aberto' : ''}
                         >
                             {notes.isEvaluating ? 'Avaliando...' : 'Avaliar com IA'}
                             <Sparkles size={18} />

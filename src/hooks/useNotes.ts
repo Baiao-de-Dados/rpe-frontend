@@ -15,9 +15,10 @@ export interface NavigationState {
 }
 
 export function useNotes() {
+
     const navigate = useNavigate();
     const { showToast } = useToast();
-    const { currentCycle } = useCycle();
+    const { currentCycle: { isActive } } = useCycle();
 
     const [modalStep, setModalStep] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,7 +42,7 @@ export function useNotes() {
         resetState(); 
         setIsModalOpen(true);
 
-        if (!currentCycle || !currentCycle.isOpen) {
+        if (!isActive) {
             showToast(
                 'Não há ciclo de avaliação aberto no momento. Aguarde a abertura de um novo ciclo.',
                 'error',
