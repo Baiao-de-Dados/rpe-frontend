@@ -24,6 +24,7 @@ export const SelfAssessmentSection = memo(() => {
                     criterionId: criterion.id,
                     rating: null,
                     justification: '',
+                    selfAssessmentIAValid: true,
                 })),
         );
         if ((!fields || fields.length !== allCriteria.length) && !isInitialized.current) {
@@ -37,6 +38,7 @@ export const SelfAssessmentSection = memo(() => {
             id: field.id,
             pilarId: field.pilarId,
             criterionId: field.criterionId,
+            selfAssessmentIAValid: field.selfAssessmentIAValid,
             index: index,
         })),
         [fields],

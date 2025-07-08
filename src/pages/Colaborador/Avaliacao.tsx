@@ -30,7 +30,7 @@ export function Avaliacao() {
         const navigationState = location.state as NavigationState | null;
 
         if (navigationState?.geminiResponse) {
-            const { mentoring, references, evaluation360 } = navigationState.geminiResponse;
+            const { mentoring, references, evaluation360, selfAssessment } = navigationState.geminiResponse;
 
             if (mentoring) {
                 methods.setValue('mentoringRating', mentoring.rating ?? 0);
@@ -53,6 +53,16 @@ export function Avaliacao() {
                     strengths: eval360.strengths,
                     improvements: eval360.improvements,
                     evaluation360IAValid: false
+                })));
+            }
+
+            if (selfAssessment && selfAssessment.length > 0) {
+                methods.setValue('selfAssessment', selfAssessment.map(selfAssess => ({
+                    pilarId: selfAssess.pillarId,
+                    criterionId: selfAssess.criteriaId,
+                    rating: selfAssess.rating,
+                    justification: selfAssess.justification,
+                    selfAssessmentIAValid: false
                 })));
             }
         }

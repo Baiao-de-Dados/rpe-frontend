@@ -1,4 +1,5 @@
 export interface SelfSelfAssessmentItem {
+    pillarId: string;
     criteriaId: string;
     rating: number;
     justification: string

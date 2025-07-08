@@ -28,6 +28,9 @@ export const selfAssessmentSchema = z.object({
             value => value.length > 0,
             'A justificativa não pode conter apenas espaços em branco',
         ),
+    selfAssessmentIAValid: z.boolean({
+        required_error: 'Você precisa aceitar ou rejeitar a validação da IA',
+    }).refine(v => v === true, 'Você precisa aceitar a validação da IA')
 });
 
 export const evaluation360Schema = z.object({

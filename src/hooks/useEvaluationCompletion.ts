@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import type { EvaluationFormData } from '../schemas/evaluation';
 
+import type { Criterion } from '../data/mockEvaluationPIllars';
 import { mockEvaluationPillars } from '../data/mockEvaluationPIllars';
 
 export function useEvaluationCompletion() {
@@ -10,9 +11,7 @@ export function useEvaluationCompletion() {
     const { control } = useFormContext<EvaluationFormData>();
 
     const allCriteria = useMemo(() => {
-        return [
-            ...mockEvaluationPillars.gestaoLideranca.criterios,
-        ];
+        return Object.values(mockEvaluationPillars).flatMap(pillar => pillar.criterios);
     }, []);
 
     const watchedSelfAssessment = useWatch({
@@ -35,6 +34,44 @@ export function useEvaluationCompletion() {
         name: 'references',
     });
 
+    const getIncompleteCriteriaCountForPillar = (
+        criteria: Criterion[],
+        validFields: Array<{
+            id: string;
+            pilarId: string;
+            criterionId: string;
+            index: number;
+        }>
+    ) => {
+        if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
+            return criteria.length;
+        }
+
+        const fieldIndices = criteria
+            .map(criterion =>
+                validFields.findIndex(f => f.criterionId === criterion.id),
+            )
+            .filter(index => index !== -1);
+
+        let incompleteCount = 0;
+
+        for (let i = 0; i < fieldIndices.length; i++) {
+            const fieldIndex = fieldIndices[i];
+            const assessment = watchedSelfAssessment[fieldIndex];
+
+            const hasRating = assessment?.rating && typeof assessment.rating === 'number' && assessment.rating > 0;
+            const hasJustification = assessment?.justification && typeof assessment.justification === 'string' && 
+                assessment.justification.trim().length > 0;
+            const isIAValid = assessment?.selfAssessmentIAValid === true;
+
+            if (!hasRating || !hasJustification || !isIAValid) {
+                incompleteCount++;
+            }
+        }
+
+        return incompleteCount;
+    };
+
     const incompleteSelfAssessmentCount = useMemo(() => {
         if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
             return allCriteria.length;
@@ -50,7 +87,9 @@ export function useEvaluationCompletion() {
             const hasJustification = assessment?.justification && typeof assessment.justification === 'string' && 
             assessment.justification.trim().length > 0;
 
-            if (!hasRating || !hasJustification) {
+            const isIAValid = assessment?.selfAssessmentIAValid === true;
+
+            if (!hasRating || !hasJustification || !isIAValid) {
                 incompleteCount++;
             }
         }
@@ -147,10 +186,43 @@ export function useEvaluationCompletion() {
         return incompleteCount;
     }, [watchedReferences]);
 
+    const getHasPendingIAForPillar = (
+        criteria: Criterion[],
+        validFields: Array<{
+            id: string;
+            pilarId: string;
+            criterionId: string;
+            index: number;
+        }>
+    ) => {
+        if (!watchedSelfAssessment || !Array.isArray(watchedSelfAssessment)) {
+            return false;
+        }
+
+        const fieldIndices = criteria
+            .map(criterion =>
+                validFields.findIndex(f => f.criterionId === criterion.id),
+            )
+            .filter(index => index !== -1);
+
+        for (let i = 0; i < fieldIndices.length; i++) {
+            const fieldIndex = fieldIndices[i];
+            const assessment = watchedSelfAssessment[fieldIndex];
+            
+            if (assessment?.selfAssessmentIAValid === false) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     return {
         incompleteSelfAssessmentCount,
         incompleteEvaluation360Count,
         incompleteMentoringCount,
         incompleteReferencesCount,
+        getIncompleteCriteriaCountForPillar,
+        getHasPendingIAForPillar,
     };
 }
