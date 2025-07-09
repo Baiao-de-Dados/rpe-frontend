@@ -17,13 +17,13 @@ const Evaluation360Section = lazy(() =>
     import('./Evaluation360Section').then(module => ({
         default: module.Evaluation360Section,
     })),
-);
+); */
 
 const ReferencesSection = lazy(() =>
     import('./ReferencesSection').then(module => ({
         default: module.ReferencesSection,
     })),
-); */
+);
 
 const MentoringSection = lazy(() =>
     import('./MentoringSection').then(module => ({
@@ -45,9 +45,9 @@ export function SectionRenderer({ activeSection, selectedCycle }: SectionRendere
             /* case 'Autoavaliação':
                 return <SelfAssessmentSection selectedCycle={selectedCycle} />;
             case 'Avaliação 360':
-                return <Evaluation360Section selectedCycle={selectedCycle} />;
+                return <Evaluation360Section selectedCycle={selectedCycle} />; */
             case 'Referências':
-                return <ReferencesSection selectedCycle={selectedCycle} />; */
+                return <ReferencesSection selectedCycle={selectedCycle} />;
             case 'Mentoring':
                 return <MentoringSection selectedCycle={selectedCycle} />;
             /* default:
