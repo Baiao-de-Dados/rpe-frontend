@@ -162,6 +162,21 @@ export default function AsideMenu() {
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink to="/lideranca" onClick={closeMenu} title="Liderança" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                    <Icons.Star size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
+                                    <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
+                                        Liderança
+                                    </span>
+                                </NavLink>
+                            </li>
+                        </RoleGuard>
+
+                        <RoleGuard anyRole={[
+                                UserRoleEnum.RH,
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.DEVELOPER,
+                            ]}>
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/configuracoes" onClick={closeMenu} title="Configurações" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                     <Icons.Settings size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
@@ -170,6 +185,7 @@ export default function AsideMenu() {
                                 </NavLink>
                             </li>
                         </RoleGuard>
+
                     </ul>
 
                     <div className="flex w-full mt-auto lg:mt-auto max-lg:mt-8 max-lg:mb-32 max-lg:justify-start max-lg:pl-20">

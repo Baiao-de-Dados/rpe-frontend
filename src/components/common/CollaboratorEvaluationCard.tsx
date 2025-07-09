@@ -2,7 +2,7 @@ import React from 'react';
 import CollaboratorCard from './CollaboratorCard';
 import Badge from './Badge';
 import Typography from './Typography';
-import { getScoreBgStyles } from '../../utils/colorUtils';
+import EvaluationScoreDisplay from './EvaluationScoreDisplay';
 
 type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
 
@@ -89,17 +89,20 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                 )}
                 
                 {evaluationFields.map((field, idx) => {
-                    const isNotaFinal =
-                        field.label === 'Nota final' &&
-                        typeof field.value === 'number';
-                    
-                    let badgeStyle: React.CSSProperties = {};
-                    let badgeClass = 'bg-neutral-100 text-[#167174]';
-                    
-                    if (isNotaFinal && typeof field.value === 'number') {
-                        badgeStyle = getScoreBgStyles(field.value as number);
-                        badgeClass = '';
+
+                    if (typeof field.value === 'number' || field.value === null || field.value === undefined) {
+                        return (
+                            <EvaluationScoreDisplay
+                                key={field.label + idx}
+                                score={typeof field.value === 'number' ? field.value : null}
+                                label={field.label}
+                                showLabel={true}
+                            />
+                        );
                     }
+                    
+                    const badgeStyle: React.CSSProperties = {};
+                    const badgeClass = 'bg-neutral-100 text-[#167174]';
                     
                     return (
                         <div
@@ -119,9 +122,7 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                                 {field.value !== undefined &&
                                 field.value !== null &&
                                 field.value !== ''
-                                    ? typeof field.value === 'number'
-                                        ? field.value.toFixed(1)
-                                        : field.value
+                                    ? field.value
                                     : '-'}
                             </div>
                         </div>

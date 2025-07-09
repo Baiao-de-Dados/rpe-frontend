@@ -93,7 +93,7 @@ const Badge: React.FC<BadgeProps> = ({
         <div className="relative">
             {/* Badge para desktop */}
             <span
-                className={`hidden sm:inline-block rounded-full font-medium ${sizeClasses[size].badge} ${className}`}
+                className={`hidden sm:inline-block rounded-full font-bold ${sizeClasses[size].badge} ${className}`}
                 style={badgeStyles}
             >
                 {label}
