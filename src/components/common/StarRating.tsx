@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import Rating from '@mui/material/Rating';
 import { styled } from '@mui/material/styles';
 import { Star } from 'lucide-react';
@@ -25,17 +25,35 @@ const StyledRating = styled(Rating)({
     },
 });
 
-const StarRating: React.FC<StarRatingProps> = ({ value, onChange, readOnly }) => {
+const STAR_LABELS = [
+    '', 
+    'Ruim',
+    'Regular',
+    'Bom',
+    'Muito bom',
+    'Excelente',
+];
+
+function StarRating({ value, onChange, readOnly }: StarRatingProps) {
+    const [hover, setHover] = useState<number | null>(null);
+
     return (
-        <StyledRating
-            name="rating"
-            value={value}
-            onChange={readOnly ? undefined : ((_, newValue) => onChange && onChange(newValue))}
-            readOnly={readOnly}
-            emptyIcon={<Star />}
-            icon={<Star fill="var(--color-primary-500)" />}
-        />
+        <div className="flex items-center">
+            <StyledRating
+                name="rating"
+                value={value}
+                onChange={readOnly ? undefined : ((_, newValue) => onChange && onChange(newValue))}
+                readOnly={readOnly}
+                emptyIcon={<Star />}
+                icon={<Star fill="var(--color-primary-500)" />}
+                onChangeActive={(_event, newHover) => setHover(newHover)}
+                onMouseLeave={() => setHover(null)}
+            />
+            <span className="min-w-[90px] ml-1 mt-1 text-primary-500 text-[0.95rem] flex-shrink-0 leading-none">
+                {hover ? STAR_LABELS[hover] : value ? STAR_LABELS[value] : ''}
+            </span>
+        </div>
     );
-};
+}
 
 export default StarRating;

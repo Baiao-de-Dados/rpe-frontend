@@ -11,7 +11,7 @@ interface MentoringProps {
     mentoringJustification: string;
 }
 
-const Mentoring = ({ mentorName, mentoringRating, mentoringJustification }: MentoringProps) => {
+const MentoringCard = ({ mentorName, mentoringRating, mentoringJustification }: MentoringProps) => {
 
     const mentor = {
         id: 'readonly',
@@ -42,4 +42,4 @@ const Mentoring = ({ mentorName, mentoringRating, mentoringJustification }: Ment
     );
 };
 
-export default Mentoring;
+export default MentoringCard;

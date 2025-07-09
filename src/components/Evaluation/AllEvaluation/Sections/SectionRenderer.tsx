@@ -11,13 +11,13 @@ import { SectionLoadingSpinner } from '../../../common/SectionLoadingSpinner';
     import('./SelfAssessmentSection').then(module => ({
         default: module.SelfAssessmentSection,
     })),
-);
+); */
 
 const Evaluation360Section = lazy(() =>
     import('./Evaluation360Section').then(module => ({
         default: module.Evaluation360Section,
     })),
-); */
+);
 
 const ReferencesSection = lazy(() =>
     import('./ReferencesSection').then(module => ({
@@ -43,9 +43,9 @@ export function SectionRenderer({ activeSection, selectedCycle }: SectionRendere
     const renderSection = () => {
         switch (activeSection) {
             /* case 'Autoavaliação':
-                return <SelfAssessmentSection selectedCycle={selectedCycle} />;
+                return <SelfAssessmentSection selectedCycle={selectedCycle} />; */
             case 'Avaliação 360':
-                return <Evaluation360Section selectedCycle={selectedCycle} />; */
+                return <Evaluation360Section selectedCycle={selectedCycle} />;
             case 'Referências':
                 return <ReferencesSection selectedCycle={selectedCycle} />;
             case 'Mentoring':

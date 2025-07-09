@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 import AnimatedCard from '../../../common/AnimatedCard';
 import NoEvaluationMessage from '../NoEvaluationMessage';
-import ReferenceCard from '../Cards/Reference';
+import ReferenceCard from '../Cards/ReferenceCard';
 import mockEvaluations, { type Cycle } from '../../../../data/mockEvaluations';
 
 interface ReferencesSectionProps {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import MentoringCard from '../Cards/Mentoring';
+import MentoringCard from '../Cards/MentoringCard';
 
 import NoEvaluationMessage from '../NoEvaluationMessage';
 
