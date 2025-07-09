@@ -15,8 +15,7 @@ import { evaluationSections, type SectionType } from './Sections/EvaluationSecti
 
 export function EvaluationForm() {
 
-    const { activeSection, navigateToSection, sections } =
-        useSectionNavigation<SectionType>(evaluationSections);
+    const { activeSection, navigateToSection, sections } = useSectionNavigation<SectionType>(evaluationSections);
 
     const { control } = useFormContext<EvaluationFormData>();
 

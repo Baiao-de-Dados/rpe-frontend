@@ -5,7 +5,8 @@ import { Star } from 'lucide-react';
 
 interface StarRatingProps {
     value: number | null;
-    onChange: (newValue: number | null) => void;
+    onChange?: (newValue: number | null) => void;
+    readOnly?: boolean;
 }
 
 const StyledRating = styled(Rating)({
@@ -24,12 +25,13 @@ const StyledRating = styled(Rating)({
     },
 });
 
-const StarRating: React.FC<StarRatingProps> = ({ value, onChange }) => {
+const StarRating: React.FC<StarRatingProps> = ({ value, onChange, readOnly }) => {
     return (
         <StyledRating
             name="rating"
             value={value}
-            onChange={(_, newValue) => onChange(newValue)}
+            onChange={readOnly ? undefined : ((_, newValue) => onChange && onChange(newValue))}
+            readOnly={readOnly}
             emptyIcon={<Star />}
             icon={<Star fill="var(--color-primary-500)" />}
         />
