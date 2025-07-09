@@ -1,8 +1,9 @@
-// src/components/Dashboard/CommitteeMetrics.tsx
-import React from 'react';
+import { LuCalendarCheck2, LuUsers } from 'react-icons/lu';
+
 import Typography from '../common/Typography';
 import CardContainer from '../common/CardContainer';
-import { LuCalendarCheck2, LuUsers } from 'react-icons/lu';
+import ProgressCircle from '../common/ProgressCircle';
+
 import { CHART_COLORS } from '../../utils/colorUtils';
 
 interface CommitteeMetricsProps {
@@ -11,51 +12,6 @@ interface CommitteeMetricsProps {
     completionPercentage: number;
     pendingEqualizations: number;
 }
-
-interface ProgressCircleProps {
-    percentage: number;
-}
-
-const ProgressCircle: React.FC<ProgressCircleProps> = ({ percentage }) => {
-    const circumference = 2 * Math.PI * 45;
-    const strokeDasharray = circumference;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-    return (
-        <div className="relative w-24 h-24 sm:w-28 sm:h-28">
-            <svg
-                className="w-full h-full transform -rotate-90"
-                viewBox="0 0 100 100"
-            >
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke="#e5e7eb"
-                    strokeWidth="10"
-                    fill="none"
-                />
-                <circle
-                    cx="50"
-                    cy="50"
-                    r="45"
-                    stroke={CHART_COLORS.GOOD}
-                    strokeWidth="10"
-                    fill="none"
-                    strokeDasharray={strokeDasharray}
-                    strokeDashoffset={strokeDashoffset}
-                    strokeLinecap="round"
-                    className="transition-all duration-700 ease-in-out"
-                />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl sm:text-3xl font-bold" style={{ color: CHART_COLORS.GOOD }}>
-                    {percentage}%
-                </span>
-            </div>
-        </div>
-    );
-};
 
 export function CommitteeMetrics({
     daysToDeadline,

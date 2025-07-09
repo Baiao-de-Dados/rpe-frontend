@@ -9,6 +9,7 @@ interface ToastProps {
     show: boolean;
     title?: string;
     onClose: () => void;
+    isMobile?: boolean;
 }
 
 const Toast: React.FC<ToastProps> = ({
@@ -17,6 +18,7 @@ const Toast: React.FC<ToastProps> = ({
     show,
     title,
     onClose,
+    isMobile = false,
 }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -65,6 +67,8 @@ const Toast: React.FC<ToastProps> = ({
             className={`w-full transform transition-all duration-300 ease-in-out ${
                 isAnimating
                     ? 'translate-y-0 opacity-100 scale-100'
+                    : isMobile
+                    ? 'translate-y-8 opacity-0 scale-95'
                     : 'translate-y-4 opacity-0 scale-95'
             }`}
         >

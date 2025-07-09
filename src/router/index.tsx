@@ -13,6 +13,7 @@ import LoadingSpinner from '../components/RouterLoadingSpinner';
 
 import LoginPage from '../pages/LoginPage';
 import { Dashboard } from '../pages/Dashboard/index';
+import { Lideranca } from '../pages/Gestor/Lideranca';
 import { Colaboradores } from '../pages/Colaboradores';
 import { Evolucao } from '../pages/Colaborador/Evolucao';
 import { Configuracoes } from '../pages/RH/Configuracoes';
@@ -145,18 +146,16 @@ export function Router() {
                         }
                     />
 
-                    <Route path="mentoria"
+                    <Route path="lideranca"
                         element={
                             <MultiRoleRoute redirectTo="/dashboard" allowedRoles={[
                                 UserRoleEnum.MENTOR, 
                                 UserRoleEnum.LEADER, 
                                 UserRoleEnum.MANAGER, 
-                                UserRoleEnum.ADMIN
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.RH
                             ]}>
-                                <div className="p-6">
-                                    <h1 className="text-2xl font-bold">Mentoria</h1>
-                                    <p>Esta página é acessível para mentores, líderes e gestores</p>
-                                </div>
+                                <Lideranca />
                             </MultiRoleRoute>
                         }
                     />
