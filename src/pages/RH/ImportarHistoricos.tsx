@@ -1,9 +1,13 @@
-import ImportarHistoricoCard from "../../components/ImportarHistoricoCard";
+import PageHeader from "../../components/common/PageHeader";
+import ImportarHistoricoCard from "../../components/Importar/ImportarHistoricoCard";
 
 export function ImportarHistoricos() {
     return (
-        <div className="p-6">
-            <ImportarHistoricoCard />
-        </div>
+        <>
+            <PageHeader title="Importar Histórico" />
+            <main className="p-8 pt-6">
+                <ImportarHistoricoCard />
+            </main>
+        </>
     );
 }
