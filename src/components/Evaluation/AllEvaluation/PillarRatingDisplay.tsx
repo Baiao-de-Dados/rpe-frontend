@@ -1,54 +1,22 @@
 import { memo, useMemo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
 
-import RatingDisplay from '../common/RatingDisplay';
-
-import type { Criterion } from '../../data/mockEvaluationPIllars';
-
-import type { EvaluationFormData } from '../../schemas/evaluation';
+import type { PillarCriteria } from '../../../data/mockEvaluations';
+import RatingDisplay from '../../common/RatingDisplay';
 
 interface PillarRatingDisplayProps {
-    criteria: Criterion[];
-    validFields: Array<{
-        id: string;
-        pilarId: string;
-        criterionId: string;
-        index: number;
-    }>;
+    criteria: PillarCriteria[];
+    ratingKey?: 'rating' | 'managerRating';
 }
 
-export const PillarRatingDisplay = memo(({ criteria, validFields }: PillarRatingDisplayProps) => {
+export const PillarRatingDisplay = memo(({ criteria, ratingKey = 'rating' }: PillarRatingDisplayProps) => {
+    const average = useMemo(() => {
+        if (!criteria || criteria.length === 0) return null;
+        const validRatings = criteria.filter(c => typeof c[ratingKey] === 'number' && c[ratingKey]! > 0 && typeof c.weight === 'number' && c.weight > 0);
+        const totalWeight = validRatings.reduce((sum, c) => sum + c.weight, 0);
+        if (totalWeight === 0) return null;
+        const weightedSum = validRatings.reduce((sum, c) => sum + (c[ratingKey]! as number) * c.weight, 0);
+        return Math.round((weightedSum / totalWeight) * 10) / 10;
+    }, [criteria, ratingKey]);
 
-        const { control } = useFormContext<EvaluationFormData>();
-
-        const fieldIndices = useMemo(() => {
-            return criteria
-                .map(criterion =>
-                    validFields.findIndex(f => f.criterionId === criterion.id),
-                )
-                .filter(index => index !== -1);
-        }, [criteria, validFields]);
-
-        const watchedRatings = useWatch({
-            control,
-            name: fieldIndices.map(
-                index => `selfAssessment.${index}.rating` as const,
-            ),
-        });
-
-        const average = useMemo(() => {
-            if (!watchedRatings || fieldIndices.length === 0) return null;
-
-            const validRatings = watchedRatings.filter((rating): rating is number => 
-                typeof rating === 'number' && rating > 0
-            );
-
-            return validRatings.length > 0 
-                ? Math.round((validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length) * 10) / 10 
-                : null;
-
-        }, [watchedRatings, fieldIndices.length]);
-
-        return <RatingDisplay rating={average} />;
-    },
-);
+    return <RatingDisplay rating={average} pillar final={ratingKey === 'managerRating'} />;
+});

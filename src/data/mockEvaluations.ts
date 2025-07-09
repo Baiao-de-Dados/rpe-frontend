@@ -1,8 +1,8 @@
-// Tipos para cada parte do mock
 export interface PillarCriteria {
     criteriaName: string;
     rating: number;
-    finalRating: number;
+    weight: number;
+    managerRating: number;
     justification: string;
 }
 
@@ -63,13 +63,15 @@ export default {
                             {
                                 criteriaName: "Qualidade de Código",
                                 rating: 4,
-                                finalRating: 4,
+                                weight: 20,
+                                managerRating: 3,
                                 justification: "Entrega consistente de código limpo e funcional."
                             },
                             {
                                 criteriaName: "Boas Práticas",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 2,
                                 justification: "Seguiu padrões de projeto e boas práticas de forma exemplar."
                             }
                         ]
@@ -80,7 +82,8 @@ export default {
                             {
                                 criteriaName: "Trabalho em Equipe",
                                 rating: 4,
-                                finalRating: 4,
+                                weight: 20,
+                                managerRating: 4,
                                 justification: "Colaborou bem com colegas e apoiou decisões em grupo."
                             }
                         ]
@@ -133,13 +136,15 @@ export default {
                             {
                                 criteriaName: "Clareza e Objetividade",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 5,
                                 justification: "Conseguiu expressar ideias com clareza em reuniões e documentação."
                             },
                             {
                                 criteriaName: "Feedback",
                                 rating: 4,
-                                finalRating: 4,
+                                weight: 20,
+                                managerRating: 4,
                                 justification: "Deu e recebeu feedbacks de forma construtiva."
                             }
                         ]
@@ -150,7 +155,8 @@ export default {
                             {
                                 criteriaName: "Iniciativa",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 5,
                                 justification: "Tomou frente em iniciativas importantes no time."
                             }
                         ]
@@ -203,13 +209,15 @@ export default {
                             {
                                 criteriaName: "Comprometimento com Prazos",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 5,
                                 justification: "Todas as entregas foram realizadas dentro do prazo com qualidade."
                             },
                             {
                                 criteriaName: "Autonomia",
                                 rating: 4,
-                                finalRating: 4,
+                                weight: 20,
+                                managerRating: 4,
                                 justification: "Executou atividades complexas com pouca supervisão."
                             }
                         ]
@@ -220,7 +228,8 @@ export default {
                             {
                                 criteriaName: "Criatividade em Soluções",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 5,
                                 justification: "Sugeriu melhorias significativas em processos internos."
                             }
                         ]
@@ -273,13 +282,15 @@ export default {
                             {
                                 criteriaName: "Influência no Time",
                                 rating: 4,
-                                finalRating: 4,
+                                weight: 20,
+                                managerRating: 4,
                                 justification: "Conduziu reuniões técnicas e tomou decisões assertivas."
                             },
                             {
                                 criteriaName: "Desenvolvimento de Pessoas",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 5,
                                 justification: "Mentorou colegas e ajudou no crescimento do time."
                             }
                         ]
@@ -290,7 +301,8 @@ export default {
                             {
                                 criteriaName: "Testes Automatizados",
                                 rating: 5,
-                                finalRating: 5,
+                                weight: 20,
+                                managerRating: 5,
                                 justification: "Cobertura de testes aumentou significativamente."
                             }
                         ]

@@ -7,11 +7,11 @@ import { useOptimizedAnimation } from '../../../../hooks/useOptimizedAnimation';
 import { SectionLoadingSpinner } from '../../../common/SectionLoadingSpinner';
 
 
-/* const SelfAssessmentSection = lazy(() =>
+const SelfAssessmentSection = lazy(() =>
     import('./SelfAssessmentSection').then(module => ({
         default: module.SelfAssessmentSection,
     })),
-); */
+);
 
 const Evaluation360Section = lazy(() =>
     import('./Evaluation360Section').then(module => ({
@@ -42,16 +42,16 @@ export function SectionRenderer({ activeSection, selectedCycle }: SectionRendere
     
     const renderSection = () => {
         switch (activeSection) {
-            /* case 'Autoavaliação':
-                return <SelfAssessmentSection selectedCycle={selectedCycle} />; */
+            case 'Autoavaliação':
+                return <SelfAssessmentSection selectedCycle={selectedCycle} />;
             case 'Avaliação 360':
                 return <Evaluation360Section selectedCycle={selectedCycle} />;
             case 'Referências':
                 return <ReferencesSection selectedCycle={selectedCycle} />;
             case 'Mentoring':
                 return <MentoringSection selectedCycle={selectedCycle} />;
-            /* default:
-                return <SelfAssessmentSection selectedCycle={selectedCycle} />; */
+            default:
+                return <SelfAssessmentSection selectedCycle={selectedCycle} />;
         }
     };
 
