@@ -89,7 +89,7 @@ export default function AsideMenu() {
 
                     <ul className="flex flex-col gap-4 pl-0 w-full max-lg:justify-start max-lg:gap-8 max-lg:mt-8 max-lg:pl-20 max-lg:w-auto">
                         <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                            <NavLink to="/dashboard" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative  transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                            <NavLink to="/dashboard" onClick={closeMenu} title="Dashboard" className={({ isActive }) => `flex items-center gap-4 no-underline relative  transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                 <Icons.LayoutGrid size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                 <span className={` opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                     Dashboard
@@ -99,7 +99,7 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[UserRoleEnum.EMPLOYER, UserRoleEnum.ADMIN]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                                <NavLink to="/avaliacao" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                <NavLink to="/avaliacao" onClick={closeMenu} title="Avaliação de ciclo" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                     <Icons.ClipboardPen size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                         Avaliação de ciclo
@@ -115,7 +115,7 @@ export default function AsideMenu() {
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                                <NavLink to="/evolucao" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                <NavLink to="/evolucao" onClick={closeMenu} title="Evolução" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                     <Icons.ChartNoAxesCombined size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                         Evolução
@@ -132,7 +132,7 @@ export default function AsideMenu() {
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                                <NavLink to="/colaboradores" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                <NavLink to="/colaboradores" onClick={closeMenu} title="Colaboradores" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                     <Icons.Users size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                         Colaboradores
@@ -147,7 +147,7 @@ export default function AsideMenu() {
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                                <NavLink to="/importar" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                <NavLink to="/importar" onClick={closeMenu} title="Importar Histórico" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                     <Icons.FileUp size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                         Importar Histórico
@@ -162,7 +162,7 @@ export default function AsideMenu() {
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
-                                <NavLink to="/configuracoes" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                <NavLink to="/configuracoes" onClick={closeMenu} title="Configurações" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
                                     <Icons.Settings size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                         Configurações
@@ -173,7 +173,7 @@ export default function AsideMenu() {
                     </ul>
 
                     <div className="flex w-full mt-auto lg:mt-auto max-lg:mt-8 max-lg:mb-32 max-lg:justify-start max-lg:pl-20">
-                        <div onClick={handleLogout} className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0">
+                        <div onClick={handleLogout} title="Sair" className="flex items-center gap-4 cursor-pointer ml-4 text-secondary-400 hover:text-secondary-600 transition-colors duration-200 max-lg:text-2xl max-lg:gap-4 max-lg:ml-0">
                             <Icons.LogOut size={32} strokeWidth={2.5} className="flex-shrink-0 max-lg:w-12 max-lg:h-12" />
                             <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                 Sair
