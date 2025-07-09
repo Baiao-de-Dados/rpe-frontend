@@ -67,7 +67,7 @@ export default function PageHeader<T extends string = string>({
             </div>
             {sections && onSectionChange && (
                 <>
-                    <nav className="hidden lg:flex w-full mt-2 sm:mt-0 border-t-3 pt-5 bg border-gray-50 overflow-x-auto">
+                    <nav className="hidden lg:flex w-full mt-2 sm:mt-0 border-t-3 pt-5 bg -z-1 border-gray-50 overflow-x-auto">
                         <div className="flex w-full justify-start gap-x-4">
                             {sections.map(section => {
                                 const isActive = section.name === activeSection;
