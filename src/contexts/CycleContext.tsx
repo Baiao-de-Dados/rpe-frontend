@@ -51,7 +51,7 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         
         return {
             name: currentCycleName,
-            isActive: true
+            isActive: false
         };
     }, [cycles]);
 
