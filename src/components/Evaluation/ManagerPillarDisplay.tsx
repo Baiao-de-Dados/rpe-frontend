@@ -4,9 +4,9 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import RatingDisplay from '../common/RatingDisplay';
 
 import type { Criterion } from '../../data/mockEvaluationPIllars';
-import type { FullMentorEvaluationFormData } from '../../schemas/mentorEvaluation';
+import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
-interface MentorPillarRatingDisplayProps {
+interface ManagerPillarRatingDisplayProps {
     criteria: Criterion[];
     validFields: Array<{
         id: string;
@@ -22,13 +22,13 @@ interface MentorPillarRatingDisplayProps {
     }>;
 }
 
-export const MentorPillarRatingDisplay = memo(({ 
+export const ManagerPillarRatingDisplay = memo(({ 
     criteria, 
     validFields, 
     collaboratorData = [] 
-}: MentorPillarRatingDisplayProps) => {
+}: ManagerPillarRatingDisplayProps) => {
 
-    const { control } = useFormContext<FullMentorEvaluationFormData>();
+    const { control } = useFormContext<FullManagerEvaluationFormData>();
 
     const fieldIndices = useMemo(() => {
         return criteria
@@ -38,11 +38,11 @@ export const MentorPillarRatingDisplay = memo(({
             .filter(index => index !== -1);
     }, [criteria, validFields]);
 
-    // Watch para as notas do mentor
-    const watchedMentorRatings = useWatch({
+    // Watch para as notas do manager
+    const watchedManagerRatings = useWatch({
         control,
         name: fieldIndices.map(
-            index => `mentorAssessment.${index}.rating` as const,
+            index => `managerAssessment.${index}.rating` as const,
         ),
     });
 
@@ -57,21 +57,18 @@ export const MentorPillarRatingDisplay = memo(({
         return collaboratorRatings.length > 0 
             ? Math.round((collaboratorRatings.reduce((sum, rating) => sum + rating, 0) / collaboratorRatings.length) * 10) / 10 
             : null;
-    }, [criteria, collaboratorData]);
+    }, [criteria, collaboratorData]);    // Calcular média do manager para este pilar
+    const managerAverage = useMemo(() => {
+        if (!watchedManagerRatings || fieldIndices.length === 0) return null;
 
-    // Calcular média do mentor para este pilar
-    const mentorAverage = useMemo(() => {
-        if (!watchedMentorRatings || fieldIndices.length === 0) return null;
-
-        const validRatings = watchedMentorRatings.filter((rating): rating is number => 
+        const validRatings = watchedManagerRatings.filter((rating): rating is number => 
             typeof rating === 'number' && rating > 0
         );
 
-        return validRatings.length > 0 
-            ? Math.round((validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length) * 10) / 10 
+        return validRatings.length > 0
+            ? Math.round((validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length) * 10) / 10
             : null;
-
-    }, [watchedMentorRatings, fieldIndices.length]);
+    }, [watchedManagerRatings, fieldIndices.length]);
 
     return (
         <div className="flex items-center gap-2">
@@ -87,19 +84,19 @@ export const MentorPillarRatingDisplay = memo(({
                 </div>
             </div>
 
-            {/* Nota média do mentor - background primary-500 com texto branco */}
+            {/* Nota média do manager - background primary-500 com texto branco */}
             <div className="group relative">
                 <RatingDisplay 
-                    rating={mentorAverage} 
+                    rating={managerAverage} 
                     className="!bg-primary-500 !text-white font-bold"
                 />
-                {/* Tooltip para mentor */}
+                {/* Tooltip para manager */}
                 <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-[9999] shadow-lg">
-                    Média - Mentor
+                    Média - Manager
                 </div>
             </div>
         </div>
     );
 });
 
-export default MentorPillarRatingDisplay;
+export default ManagerPillarRatingDisplay;

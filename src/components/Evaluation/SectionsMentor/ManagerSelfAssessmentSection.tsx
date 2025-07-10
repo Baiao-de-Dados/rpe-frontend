@@ -1,13 +1,13 @@
 import { useEffect, useMemo, memo, useRef } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import { MentorPillarSection } from '../MentorPillarSection';
+import { ManagerPillarSection } from '../ManagerPillarSection';
 
-import type { FullMentorEvaluationFormData } from '../../../schemas/mentorEvaluation';
+import type { FullManagerEvaluationFormData } from '../../../schemas/managerEvaluation';
 
 import { mockEvaluationPillars, type Criterion } from '../../../data/mockEvaluationPIllars';
 
-interface MentorSelfAssessmentSectionProps {
+interface ManagerSelfAssessmentSectionProps {
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{
         pilarId: string;
@@ -17,16 +17,16 @@ interface MentorSelfAssessmentSectionProps {
     }>;
 }
 
-export const MentorSelfAssessmentSection = memo(({ 
+export const ManagerSelfAssessmentSection = memo(({ 
     collaboratorSelfAssessment = [] 
-}: MentorSelfAssessmentSectionProps) => {
+}: ManagerSelfAssessmentSectionProps) => {
 
-    const { control } = useFormContext<FullMentorEvaluationFormData>();
+    const { control } = useFormContext<FullManagerEvaluationFormData>();
     const isInitialized = useRef(false);
 
     const { fields, replace } = useFieldArray({
         control,
-        name: 'mentorAssessment',
+        name: 'managerAssessment',
     });
 
     useEffect(() => {
@@ -44,26 +44,32 @@ export const MentorSelfAssessmentSection = memo(({
         }
     }, [fields, replace]);
 
-    const validFields = useMemo(() =>
-        fields.map((field, index) => ({
+    const validFields = useMemo(() => {
+        const allCriteria = Object.values(mockEvaluationPillars).flatMap(pillar =>
+            pillar.criterios.map((criterion: Criterion) => ({
+                pilarId: pillar.id,
+                criterionId: criterion.id,
+            }))
+        );
+        
+        return fields.map((field, index) => ({
             id: field.id,
-            pilarId: field.pilarId,
-            criterionId: field.criterionId,
+            pilarId: allCriteria[index]?.pilarId || '',
+            criterionId: allCriteria[index]?.criterionId || '',
             index: index,
-        })),
-        [fields],
-    );
+        }));
+    }, [fields]);
 
     // Função para obter dados do colaborador por pilar
     const getCollaboratorDataByPillar = (pillarId: string) => {
-        return collaboratorSelfAssessment.filter(data => data.pilarId === pillarId);
+        return collaboratorSelfAssessment.filter((data: { pilarId: string }) => data.pilarId === pillarId);
     };
 
     return (
         <section>
             <div className="space-y-8">
                 {Object.values(mockEvaluationPillars).map(pillar => (
-                    <MentorPillarSection
+                    <ManagerPillarSection
                         key={pillar.titulo}
                         pillarTitle={pillar.titulo}
                         criteria={pillar.criterios}

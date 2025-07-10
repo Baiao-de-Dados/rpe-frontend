@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { fullMentorEvaluationSchema, type FullMentorEvaluationFormData } from '../../schemas/mentorEvaluation';
+import { fullLeaderEvaluationSchema, type FullLeaderEvaluationFormData } from '../../schemas/leaderEvaluation';
 
-import { MentorEvaluationForm } from '../../components/Evaluation/MentorEvaluationForm';
+import { LeaderEvaluationForm } from '../../components/Evaluation/LeaderEvaluationForm';
 import CycleLoading from '../../components/common/CycleLoading';
 import Typography from '../../components/common/Typography';
 
@@ -13,12 +13,14 @@ import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
 
 import { mockCollaborators } from '../../data/mockCollaborators';
-import { getCollaboratorSelfAssessment } from '../../data/mockCollaboratorSelfAssessment';
 
-export function ColaboradorAvaliacao() {
-    const { collaboratorId } = useParams<{ collaboratorId: string }>();
+interface LeaderAvaliacaoProps {
+    collaboratorId: string;
+}
+
+export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
     const navigate = useNavigate();
-    const { currentCycle, isLoading: cycleLoading } = useCycle();
+    const { currentCycle, isLoading } = useCycle();
     const { showToast } = useToast();
     
     const [collaborator, setCollaborator] = useState<{
@@ -28,24 +30,17 @@ export function ColaboradorAvaliacao() {
         image?: string;
         avatar?: string;
     } | null>(null);
-    const [collaboratorSelfAssessment, setCollaboratorSelfAssessment] = useState<Array<{
-        pilarId: string;
-        criterionId: string;
-        rating?: number | null;
-        justification?: string;
-    }>>([]);
 
-    const methods = useForm<FullMentorEvaluationFormData>({
-        resolver: zodResolver(fullMentorEvaluationSchema),
+    const methods = useForm<FullLeaderEvaluationFormData>({
+        resolver: zodResolver(fullLeaderEvaluationSchema),
         mode: 'onSubmit',
         defaultValues: {
             collaboratorId: collaboratorId || '',
             cycleId: currentCycle?.id?.toString() || '',
-            mentorAssessment: [],
-            generalRating: null,
+            generalRating: 0,
             generalJustification: '',
             strengths: '',
-            improvements: ''
+            improvements: '',
         }
     });
 
@@ -55,10 +50,6 @@ export function ColaboradorAvaliacao() {
             const foundCollaborator = mockCollaborators.find(c => c.id === collaboratorId);
             if (foundCollaborator) {
                 setCollaborator(foundCollaborator);
-                
-                // Buscar autoavaliação do colaborador
-                const selfAssessment = getCollaboratorSelfAssessment(collaboratorId);
-                setCollaboratorSelfAssessment(selfAssessment);
                 
                 // Atualizar form values
                 methods.setValue('collaboratorId', collaboratorId);
@@ -76,9 +67,9 @@ export function ColaboradorAvaliacao() {
         }
     }, [collaboratorId, currentCycle, methods, navigate, showToast]);
 
-    const handleSubmit = async (data: FullMentorEvaluationFormData) => {
+    const handleSubmit = async (data: FullLeaderEvaluationFormData) => {
         try {
-            console.log('Dados da avaliação do mentor:', data);
+            console.log('Dados da avaliação do líder:', data);
             
             // Simular envio para API
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -110,7 +101,7 @@ export function ColaboradorAvaliacao() {
         }
     };
 
-    if (cycleLoading) {
+    if (isLoading) {
         return <CycleLoading />;
     }
 
@@ -156,10 +147,9 @@ export function ColaboradorAvaliacao() {
     return (
         <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(handleSubmit)}>
-                <MentorEvaluationForm 
+                <LeaderEvaluationForm 
                     collaborator={collaborator}
                     cycleName={currentCycle.name}
-                    collaboratorSelfAssessment={collaboratorSelfAssessment}
                 />
             </form>
         </FormProvider>

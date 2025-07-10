@@ -1,16 +1,16 @@
 import { useMemo, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import MentorEvaluationHeader from './MentorEvaluationHeader';
-import { MentorSectionRenderer } from './SectionsMentor/MentorSectionRenderer';
-import { mentorEvaluationSections, type MentorSectionType } from './SectionsMentor/MentorEvaluationSections';
+import ManagerEvaluationHeader from './ManagerEvaluationHeader';
+import { ManagerSectionRenderer } from './SectionsMentor/ManagerSectionRenderer';
+import { managerEvaluationSections, type ManagerSectionType } from './SectionsMentor/ManagerEvaluationSections';
 
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 
-import type { FullMentorEvaluationFormData } from '../../schemas/mentorEvaluation';
+import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
 
-interface MentorEvaluationFormProps {
+interface ManagerEvaluationFormProps {
     collaborator: {
         id: string;
         nome: string;
@@ -26,18 +26,34 @@ interface MentorEvaluationFormProps {
         rating?: number | null;
         justification?: string;
     }>;
+    // Dados das avaliações 360° recebidas
+    evaluations360?: Array<{
+        collaratorName: string;
+        collaboratorPosition: string;
+        rating: number;
+        improvements: string;
+        strengths: string;
+    }>;
+    // Dados das referências recebidas
+    referencesReceived?: Array<{
+        collaratorName: string;
+        collaboratorPosition: string;
+        justification: string;
+    }>;
 }
 
-export const MentorEvaluationForm = memo(({
+export const ManagerEvaluationForm = memo(({
     collaborator,
     cycleName,
-    collaboratorSelfAssessment
-}: MentorEvaluationFormProps) => {
+    collaboratorSelfAssessment,
+    evaluations360,
+    referencesReceived
+}: ManagerEvaluationFormProps) => {
 
     const { activeSection, navigateToSection, sections } =
-        useSectionNavigation<MentorSectionType>([...mentorEvaluationSections]);
+        useSectionNavigation<ManagerSectionType>([...managerEvaluationSections]);
 
-    const { control } = useFormContext<FullMentorEvaluationFormData>();
+    const { control } = useFormContext<FullManagerEvaluationFormData>();
 
     const allCriteria = useMemo(() => {
         return [
@@ -47,25 +63,20 @@ export const MentorEvaluationForm = memo(({
         ];
     }, []);
 
-    const watchedMentorAssessment = useWatch({
+    const watchedManagerAssessment = useWatch({
         control,
-        name: 'mentorAssessment',
-    });
-
-    const watchedGeneralAssessment = useWatch({
-        control,
-        name: ['generalRating', 'generalJustification'],
+        name: 'managerAssessment',
     });
 
     const incompleteSelfAssessmentCount = useMemo(() => {
-        if (!watchedMentorAssessment || !Array.isArray(watchedMentorAssessment)) {
+        if (!watchedManagerAssessment || !Array.isArray(watchedManagerAssessment)) {
             return allCriteria.length;
         }
 
         let incompleteCount = 0;
 
         for (let i = 0; i < allCriteria.length; i++) {
-            const assessment = watchedMentorAssessment[i];
+            const assessment = watchedManagerAssessment[i];
 
             const hasRating = assessment?.rating && typeof assessment.rating === 'number' && assessment.rating > 0;
 
@@ -78,38 +89,26 @@ export const MentorEvaluationForm = memo(({
         }
 
         return incompleteCount;
-    }, [watchedMentorAssessment, allCriteria.length]);
-
-    const incompleteGeneralAssessmentCount = useMemo(() => {
-        if (!watchedGeneralAssessment || !Array.isArray(watchedGeneralAssessment)) {
-            return 1;
-        }
-
-        const [rating, justification] = watchedGeneralAssessment;
-
-        const hasRating = rating && typeof rating === 'number' && rating > 0;
-
-        const hasJustification = justification && typeof justification === 'string' && justification.trim().length > 0;
-
-        return hasRating && hasJustification ? 0 : 1;
-    }, [watchedGeneralAssessment]);
+    }, [watchedManagerAssessment, allCriteria.length]);
 
     return (
         <>
-            <MentorEvaluationHeader
+            <ManagerEvaluationHeader
                 activeSection={activeSection}
                 onSectionChange={navigateToSection}
                 sections={sections}
                 collaborator={collaborator}
                 cycleName={cycleName}
                 incompleteSelfAssessmentCount={incompleteSelfAssessmentCount}
-                incompleteGeneralAssessmentCount={incompleteGeneralAssessmentCount}
             />
             
             <main className="p-8 pt-6">
-                <MentorSectionRenderer 
+                <ManagerSectionRenderer 
                     activeSection={activeSection}
                     collaboratorSelfAssessment={collaboratorSelfAssessment}
+                    evaluations360={evaluations360}
+                    referencesReceived={referencesReceived}
+                    cycleName={cycleName}
                 />
             </main>
         </>

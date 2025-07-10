@@ -26,6 +26,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
         if (maxLength && currentLength >= maxLength) return 'text-red-500';
         return 'text-gray-500';
     };
+    
 
     const getBorderColor = () => {
         if (readOnly) return 'border-gray-200';

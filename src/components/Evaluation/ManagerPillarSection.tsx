@@ -5,13 +5,13 @@ import { useQueryState } from 'nuqs';
 import CollapsibleCardSection from '../common/CollapsibleCardSection';
 import NotificationBadge from '../common/NotificationBadge';
 import Typography from '../common/Typography';
-import MentorAssessment from './CardsMentor/MentorAssessment';
-import MentorPillarRatingDisplay from './MentorPillarRatingDisplay';
+import ManagerAssessment from './CardsManager/ManagerAssessment';
+import ManagerPillarRatingDisplay from './ManagerPillarDisplay';
 
 import type { Criterion } from '../../data/mockEvaluationPIllars';
-import type { FullMentorEvaluationFormData } from '../../schemas/mentorEvaluation';
+import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
-interface MentorPillarSectionProps {
+interface ManagerPillarSectionProps {
     pillarTitle: string;
     criteria: Criterion[];
     validFields: Array<{
@@ -28,14 +28,14 @@ interface MentorPillarSectionProps {
     }>;
 }
 
-export const MentorPillarSection = memo(({ 
+export const ManagerPillarSection = memo(({ 
     pillarTitle, 
     criteria, 
     validFields,
     collaboratorData = []
-}: MentorPillarSectionProps) => {
+}: ManagerPillarSectionProps) => {
 
-    const [pillarOpenList, setPillarOpenList] = useQueryState('mentor_pillar_open', {
+    const [pillarOpenList, setPillarOpenList] = useQueryState('manager_pillar_open', {
         defaultValue: '',
         history: 'replace',
     });
@@ -44,7 +44,7 @@ export const MentorPillarSection = memo(({
     const openArray = pillarOpenList ? pillarOpenList.split(',') : [];
     const isOpen = openArray.includes(pillarId);
 
-    const { control } = useFormContext<FullMentorEvaluationFormData>();
+    const { control } = useFormContext<FullManagerEvaluationFormData>();
 
     const fieldIndices = useMemo(() => {
         return criteria
@@ -57,8 +57,8 @@ export const MentorPillarSection = memo(({
     const watchedData = useWatch({
         control,
         name: fieldIndices.flatMap(index => [
-            `mentorAssessment.${index}.rating` as const,
-            `mentorAssessment.${index}.justification` as const,
+            `managerAssessment.${index}.rating` as const,
+            `managerAssessment.${index}.justification` as const,
         ]),
     });
 
@@ -117,7 +117,7 @@ export const MentorPillarSection = memo(({
             }
             headerRight={
                 <div className="flex items-center gap-2 whitespace-nowrap">
-                    <MentorPillarRatingDisplay 
+                    <ManagerPillarRatingDisplay 
                         criteria={criteria} 
                         validFields={validFields}
                         collaboratorData={collaboratorData}
@@ -141,10 +141,10 @@ export const MentorPillarSection = memo(({
                     const collaboratorCriterionData = getCollaboratorDataForCriterion(criterion.id);
 
                     return (
-                        <MentorAssessment
+                        <ManagerAssessment
                             key={criterion.id}
                             criterionName={criterion.nome}
-                            name={`mentorAssessment.${fieldIndex}`}
+                            name={`managerAssessment.${fieldIndex}`}
                             topicNumber={index + 1}
                             isLast={index === criteria.length - 1}
                             collaboratorRating={collaboratorCriterionData?.rating}

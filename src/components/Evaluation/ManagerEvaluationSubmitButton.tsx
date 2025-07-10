@@ -3,17 +3,17 @@ import { useFormContext } from 'react-hook-form';
 
 import Button from '../common/Button';
 
-import type { FullMentorEvaluationFormData } from '../../schemas/mentorEvaluation';
+import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
-const MentorEvaluationSubmitButton = memo(() => {
+const ManagerEvaluationSubmitButton = memo(() => {
 
-    const { handleSubmit, formState: { isValid, isSubmitting } } = useFormContext<FullMentorEvaluationFormData>();
+    const { handleSubmit, formState: { isValid, isSubmitting } } = useFormContext<FullManagerEvaluationFormData>();
 
     const onSubmit = () => {
         handleSubmit(async (data) => {
             // O submit real será feito no componente pai (página)
             // Este botão apenas ativa o handleSubmit do form
-            console.log('Trigger submit for mentor evaluation:', data);
+            console.log('Trigger submit for manager evaluation:', data);
         })();
     };
 
@@ -36,4 +36,4 @@ const MentorEvaluationSubmitButton = memo(() => {
     );
 });
 
-export default MentorEvaluationSubmitButton;
+export default ManagerEvaluationSubmitButton;

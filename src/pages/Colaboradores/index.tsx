@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CollaboratorEvaluationCard, {
     type EvaluationField,
-} from '../components/common/CollaboratorEvaluationCard';
-import PageHeader from '../components/common/PageHeader';
-import Searchbar from '../components/common/Searchbar';
-import { mockCollaborators } from '../data/mockCollaborators';
+} from '../../components/common/CollaboratorEvaluationCard';
+import PageHeader from '../../components/common/PageHeader';
+import Searchbar from '../../components/common/Searchbar';
+import { mockCollaborators } from '../../data/mockCollaborators';
+import { useAuth } from '../../hooks/useAuth';
+import { UserRoleEnum } from '../../types/auth';
 import { Filter } from 'lucide-react';
 
 type BadgeVariant = 'default' | 'success' | 'warning';
@@ -62,6 +64,7 @@ export function Colaboradores() {
     const [search, setSearch] = useState('');
     const [isMobile, setIsMobile] = useState(false);
     const navigate = useNavigate();
+    const { hasRole } = useAuth();
 
     React.useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -70,13 +73,41 @@ export function Colaboradores() {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    // Filtrar colaboradores baseado no role
+    const getFilteredCollaboratorsByRole = () => {
+        // RH e COMMITTEE veem todos os colaboradores
+        if (hasRole(UserRoleEnum.RH) || hasRole(UserRoleEnum.COMMITTEE) || hasRole(UserRoleEnum.ADMIN) || hasRole(UserRoleEnum.DEVELOPER)) {
+            return mockCollaborators;
+        }
+        
+        // MANAGER vê apenas colaboradores que ele gere (mock: todos por enquanto)
+        if (hasRole(UserRoleEnum.MANAGER)) {
+            return mockCollaborators; // TODO: Filtrar apenas colaboradores gerenciados
+        }
+        
+        // LEADER vê apenas colaboradores que ele lidera (mock: todos por enquanto)
+        if (hasRole(UserRoleEnum.LEADER)) {
+            return mockCollaborators; // TODO: Filtrar apenas colaboradores liderados
+        }
+        
+        // Default: nenhum colaborador
+        return [];
+    };
+
+    const collaboratorsByRole = getFilteredCollaboratorsByRole();
+
     const filtered = search
-        ? mockCollaborators.filter(
+        ? collaboratorsByRole.filter(
               c =>
                   c.nome.toLowerCase().includes(search.toLowerCase()) ||
                   c.cargo.toLowerCase().includes(search.toLowerCase()),
           )
-        : mockCollaborators;
+        : collaboratorsByRole;
+
+    // Definir rota de navegação - TODOS usam a mesma rota
+    const getNavigationRoute = (collaboratorId: string) => {
+        return `/colaboradores/${collaboratorId}/avaliacao`;
+    };
 
     return (
         <>
@@ -122,7 +153,7 @@ export function Colaboradores() {
                                     value: evalData.avaliacao360,
                                 },
                                 {
-                                    label: 'Nota mentor',
+                                    label: 'Nota manager',
                                     value: evalData.notaGestor,
                                 },
                                 {
@@ -144,7 +175,7 @@ export function Colaboradores() {
                                         evalData.statusVariant || 'default',
                                 }}
                                 evaluationFields={evaluationFields}
-                                onClick={() => navigate(`/colaboradores/${colab.id}/avaliacao`)}
+                                onClick={() => navigate(getNavigationRoute(colab.id))}
                                 className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                             />
                         );
@@ -154,3 +185,5 @@ export function Colaboradores() {
         </>
     );
 }
+
+export default Colaboradores;

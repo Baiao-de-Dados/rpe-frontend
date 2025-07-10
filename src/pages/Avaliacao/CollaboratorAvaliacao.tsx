@@ -11,7 +11,7 @@ import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
 
-export function Avaliacao() {
+export function CollaboratorAvaliacao() {
 
     const { currentCycle, evaluationStatus, isLoading } = useCycle();
 

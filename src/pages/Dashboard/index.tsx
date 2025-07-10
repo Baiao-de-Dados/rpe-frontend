@@ -10,7 +10,7 @@ export function Dashboard() {
     const { hasRole } = useAuth();
 
     // RH Dashboard
-    if (hasRole(UserRoleEnum.COMMITTEE)) {
+    if (hasRole(UserRoleEnum.RH)) {
         return <RHDashboard />;
     }
 
@@ -20,7 +20,7 @@ export function Dashboard() {
     }
 
     // Manager Dashboard
-    if (hasRole(UserRoleEnum.RH)) {
+    if (hasRole(UserRoleEnum.MANAGER)) {
         return <ManagerDashboard />;
     }
 

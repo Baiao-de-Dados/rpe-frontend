@@ -11,15 +11,15 @@ import { ProtectedRoute, RoleRoute } from './ProtectedRoute';
 
 import LoadingSpinner from '../components/RouterLoadingSpinner';
 
-import LoginPage from '../pages/LoginPage';
 import { Dashboard } from '../pages/Dashboard/index';
-import { Lideranca } from '../pages/Gestor/Lideranca';
+import { Lideranca } from '../pages/Lideranca';
 import { Colaboradores } from '../pages/Colaboradores';
-import { Evolucao } from '../pages/Colaborador/Evolucao';
-import { Configuracoes } from '../pages/RH/Configuracoes';
-import { Avaliacao } from '../pages/Colaborador/Avaliacao';
-import { ImportarHistoricos } from '../pages/RH/ImportarHistoricos';
-import { ColaboradorAvaliacao } from '../pages/Colaborador/AvaliacaoMentor';
+import { AvaliacaoIndividual } from '../pages/Colaboradores/AvaliacaoIndividual';
+import { Evolucao } from '../pages/Evolucao';
+import { Configuracoes } from '../pages/Configuracoes';
+import { Avaliacao } from '../pages/Avaliacao';
+import { ImportarHistoricos } from '../pages/ImportarHistorico';
+import LoginPage from '../pages/Login';
 
 export function Router() {
 
@@ -50,6 +50,8 @@ export function Router() {
                                     UserRoleEnum.COMMITTEE,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
+                                    UserRoleEnum.LEADER,
+                                    UserRoleEnum.MANAGER,
                             ]}>
                                 <Avaliacao />
                             </RoleRoute>
@@ -73,7 +75,8 @@ export function Router() {
                         element={
                             <RoleRoute requiredRoles={[
                                     UserRoleEnum.RH,
-                                    UserRoleEnum.MENTOR,
+                                    UserRoleEnum.LEADER,
+                                    UserRoleEnum.MANAGER,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
                             ]}>
@@ -83,16 +86,7 @@ export function Router() {
                     />
 
                     <Route path="colaboradores/:collaboratorId/avaliacao"
-                        element={
-                            <RoleRoute requiredRoles={[
-                                    UserRoleEnum.MENTOR,
-                                    UserRoleEnum.RH,
-                                    UserRoleEnum.ADMIN,
-                                    UserRoleEnum.DEVELOPER,
-                            ]}>
-                                <ColaboradorAvaliacao />
-                            </RoleRoute>
-                        }
+                        element={<AvaliacaoIndividual />}
                     />
 
                     <Route path="configuracoes"

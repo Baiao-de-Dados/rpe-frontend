@@ -6,17 +6,17 @@ import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import Typography from '../../common/Typography';
 import CardContainer from '../../common/CardContainer';
 
-import type { FullMentorEvaluationFormData } from '../../../schemas/mentorEvaluation';
+import type { FullLeaderEvaluationFormData } from '../../../schemas/leaderEvaluation';
 
-export const MentorGeneralAssessmentSection = memo(() => {
+export const LeaderGeneralAssessmentSection = memo(() => {
 
-    const { control } = useFormContext<FullMentorEvaluationFormData>();
+    const { control } = useFormContext<FullLeaderEvaluationFormData>();
 
     return (
         <section className="space-y-6">
             <CardContainer className="p-6">
                 <Typography variant="h3" className="mb-6 text-primary-700">
-                    Avaliação Geral do Mentor
+                    Avaliação Geral do Líder
                 </Typography>
 
                 <div className="space-y-6">
@@ -30,7 +30,7 @@ export const MentorGeneralAssessmentSection = memo(() => {
                                     Nota Geral do Colaborador
                                 </Typography>
                                 <Typography variant="body" color="muted" className="mb-4">
-                                    Considerando todos os critérios avaliados, qual seria sua nota geral para este colaborador?
+                                    Considerando todos os critérios avaliados pelo manager e sua perspectiva como líder, qual seria sua nota geral para este colaborador?
                                 </Typography>
                                 <StarRating 
                                     value={field.value} 
@@ -52,7 +52,7 @@ export const MentorGeneralAssessmentSection = memo(() => {
                         render={({ field, fieldState }) => (
                             <TextAreaWithTitle
                                 title="Justificativa da Nota Geral"
-                                placeholder="Explique de forma abrangente o motivo da nota geral atribuída, considerando os critérios avaliados e o desempenho geral do colaborador..."
+                                placeholder="Explique de forma abrangente o motivo da nota geral atribuída, considerando a perspectiva de liderança e o desempenho estratégico do colaborador..."
                                 value={field.value || ''}
                                 onChange={field.onChange}
                                 maxLength={2000}
@@ -68,7 +68,7 @@ export const MentorGeneralAssessmentSection = memo(() => {
                         render={({ field, fieldState }) => (
                             <TextAreaWithTitle
                                 title="Pontos Fortes (Opcional)"
-                                placeholder="Destaque os principais pontos fortes e qualidades do colaborador..."
+                                placeholder="Destaque os principais pontos fortes e qualidades do colaborador do ponto de vista da liderança..."
                                 value={field.value || ''}
                                 onChange={field.onChange}
                                 maxLength={1000}
@@ -84,7 +84,7 @@ export const MentorGeneralAssessmentSection = memo(() => {
                         render={({ field, fieldState }) => (
                             <TextAreaWithTitle
                                 title="Pontos de Melhoria (Opcional)"
-                                placeholder="Sugira áreas de desenvolvimento e melhorias para o colaborador..."
+                                placeholder="Sugira áreas de desenvolvimento e melhorias estratégicas para o colaborador..."
                                 value={field.value || ''}
                                 onChange={field.onChange}
                                 maxLength={1000}

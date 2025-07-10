@@ -1,0 +1,115 @@
+import { Suspense, lazy } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import { SectionPreloader } from '../Sections/SectionPreloader';
+import { managerEvaluationSections, type ManagerSectionType } from './ManagerEvaluationSections';
+
+import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
+
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
+
+const ManagerSelfAssessmentSection = lazy(() =>
+    import('./ManagerSelfAssessmentSection').then(module => ({
+        default: module.ManagerSelfAssessmentSection,
+    })),
+);
+
+const Manager360ReceivedSection = lazy(() =>
+    import('./Manager360ReceivedSection').then(module => ({
+        default: module.Manager360ReceivedSection,
+    })),
+);
+
+const ManagerReferencesReceivedSection = lazy(() =>
+    import('./ManagerReferencesReceivedSection').then(module => ({
+        default: module.ManagerReferencesReceivedSection,
+    })),
+);
+
+interface ManagerSectionRendererProps {
+    activeSection: ManagerSectionType;
+    // Dados da autoavaliação do colaborador (read-only)
+    collaboratorSelfAssessment?: Array<{
+        pilarId: string;
+        criterionId: string;
+        rating?: number | null;
+        justification?: string;
+    }>;
+    // Dados das avaliações 360° recebidas
+    evaluations360?: Array<{
+        collaratorName: string;
+        collaboratorPosition: string;
+        rating: number;
+        improvements: string;
+        strengths: string;
+    }>;
+    // Dados das referências recebidas
+    referencesReceived?: Array<{
+        collaratorName: string;
+        collaboratorPosition: string;
+        justification: string;
+    }>;
+    cycleName?: string;
+}
+
+export function ManagerSectionRenderer({ 
+    activeSection, 
+    collaboratorSelfAssessment,
+    evaluations360,
+    referencesReceived,
+    cycleName
+}: ManagerSectionRendererProps) {
+
+    const { variants } = useOptimizedAnimation();
+    
+    const renderSection = () => {
+        switch (activeSection) {
+            case 'Autoavaliação':
+                return (
+                    <ManagerSelfAssessmentSection 
+                        collaboratorSelfAssessment={collaboratorSelfAssessment}
+                    />
+                );
+            case 'Avaliações 360° Recebidas':
+                return (
+                    <Manager360ReceivedSection 
+                        evaluations360={evaluations360 || []}
+                        cycleName={cycleName || 'Não definido'}
+                    />
+                );
+            case 'Referências Recebidas':
+                return (
+                    <ManagerReferencesReceivedSection 
+                        referencesReceived={referencesReceived || []}
+                        cycleName={cycleName || 'Não definido'}
+                    />
+                );
+            default:
+                return (
+                    <ManagerSelfAssessmentSection 
+                        collaboratorSelfAssessment={collaboratorSelfAssessment}
+                    />
+                );
+        }
+    };
+
+    return (
+        <>
+            <SectionPreloader activeSection={activeSection} sections={[...managerEvaluationSections]} />
+            <AnimatePresence mode="wait">
+                <motion.div 
+                    key={activeSection} 
+                    variants={variants.evaluationSectionRenderer} 
+                    initial="initial" 
+                    animate="animate" 
+                    exit="exit" 
+                    className="min-h-[200px]"
+                >
+                    <Suspense fallback={<SectionLoadingSpinner />}>
+                        {renderSection()}
+                    </Suspense>
+                </motion.div>
+            </AnimatePresence>
+        </>
+    );
+}

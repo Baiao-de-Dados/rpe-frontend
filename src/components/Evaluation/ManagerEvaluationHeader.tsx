@@ -4,15 +4,15 @@ import Typography from '../common/Typography';
 import CollaboratorCard from '../common/CollaboratorCard';
 import PageHeader from '../common/PageHeader';
 
-import MentorEvaluationSubmitButton from './MentorEvaluationSubmitButton';
+import ManagerEvaluationSubmitButton from './ManagerEvaluationSubmitButton';
 
-import type { MentorSectionType } from './SectionsMentor/MentorEvaluationSections';
+import type { ManagerSectionType } from './SectionsMentor/ManagerEvaluationSections';
 import type { PageHeaderSection } from '../common/PageHeader';
 
-interface MentorEvaluationHeaderProps {
-    activeSection: MentorSectionType;
-    onSectionChange: (section: MentorSectionType) => void;
-    sections: MentorSectionType[];
+interface ManagerEvaluationHeaderProps {
+    activeSection: ManagerSectionType;
+    onSectionChange: (section: ManagerSectionType) => void;
+    sections: ManagerSectionType[];
     collaborator: {
         id: string;
         nome: string;
@@ -22,33 +22,24 @@ interface MentorEvaluationHeaderProps {
     };
     cycleName: string;
     incompleteSelfAssessmentCount?: number;
-    incompleteGeneralAssessmentCount?: number;
 }
 
-const MentorEvaluationHeader = memo(({
+const ManagerEvaluationHeader = memo(({
     activeSection,
     onSectionChange,
     sections,
     collaborator,
     cycleName,
     incompleteSelfAssessmentCount = 0,
-    incompleteGeneralAssessmentCount = 0,
-}: MentorEvaluationHeaderProps) => {
+}: ManagerEvaluationHeaderProps) => {
 
-    const pageHeaderSections: PageHeaderSection<MentorSectionType>[] = sections.map(
+    const pageHeaderSections: PageHeaderSection<ManagerSectionType>[] = sections.map(
         section => {
             if (section === 'Autoavaliação') {
                 return {
                     name: section,
                     showBadge: incompleteSelfAssessmentCount > 0,
                     badgeCount: incompleteSelfAssessmentCount,
-                };
-            }
-            if (section === 'Avaliação Geral') {
-                return {
-                    name: section,
-                    showBadge: incompleteGeneralAssessmentCount > 0,
-                    badgeCount: incompleteGeneralAssessmentCount,
                 };
             }
             return { name: section };
@@ -80,7 +71,7 @@ const MentorEvaluationHeader = memo(({
     return (
         <PageHeader
             titleContent={titleContent}
-            button={<MentorEvaluationSubmitButton />}
+            button={<ManagerEvaluationSubmitButton />}
             sections={pageHeaderSections}
             activeSection={activeSection}
             onSectionChange={onSectionChange}
@@ -88,4 +79,4 @@ const MentorEvaluationHeader = memo(({
     );
 });
 
-export default MentorEvaluationHeader;
+export default ManagerEvaluationHeader;

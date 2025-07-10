@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Button from '../components/common/Button';
-import Input from '../components/common/Input';
-import Typography from '../components/common/Typography';
-import { useAuth } from '../hooks/useAuth';
-import type { LoginRequest } from '../types/auth';
-import { useToast } from '../hooks/useToast';
+import Button from '../../components/common/Button';
+import Input from '../../components/common/Input';
+import Typography from '../../components/common/Typography';
+import { useAuth } from '../../hooks/useAuth';
+import type { LoginRequest } from '../../types/auth';
+import { useToast } from '../../hooks/useToast';
 import type { AxiosError } from 'axios';
 
 interface LoginFormErrors {
