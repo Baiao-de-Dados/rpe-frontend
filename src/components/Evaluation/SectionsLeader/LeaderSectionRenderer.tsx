@@ -14,12 +14,27 @@ const LeaderGeneralAssessmentSection = lazy(() =>
     })),
 );
 
+const CollaboratorHistorySection = lazy(() =>
+    import('../SectionsMentor/CollaboratorHistorySection').then(module => ({
+        default: module.CollaboratorHistorySection,
+    })),
+);
+
 interface LeaderSectionRendererProps {
     activeSection: LeaderSectionType;
+    // Dados do colaborador para a seção de histórico
+    collaborator?: {
+        id: string;
+        nome: string;
+        cargo: string;
+        image?: string;
+        avatar?: string;
+    };
 }
 
 export function LeaderSectionRenderer({ 
-    activeSection
+    activeSection,
+    collaborator
 }: LeaderSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -28,6 +43,13 @@ export function LeaderSectionRenderer({
         switch (activeSection) {
             case 'Avaliação Geral':
                 return <LeaderGeneralAssessmentSection />;
+            case 'Histórico':
+                return (
+                    <CollaboratorHistorySection 
+                        collaboratorId={collaborator?.id || ''}
+                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                    />
+                );
             default:
                 return <LeaderGeneralAssessmentSection />;
         }

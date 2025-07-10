@@ -10,7 +10,9 @@ interface StarRatingProps {
     final?: boolean;
 }
 
-const StyledRating = styled(Rating)<{ $readonlyStyle?: boolean }>(({ $readonlyStyle }) => ({
+const StyledRating = styled(Rating, {
+    shouldForwardProp: (prop) => prop !== '$readonlyStyle',
+})<{ $readonlyStyle?: boolean }>(({ $readonlyStyle }) => ({
     '& .MuiRating-icon': {
         fontSize: '1.7rem',
         margin: '0 0.5rem 0 0',

@@ -105,6 +105,7 @@ export const ManagerEvaluationForm = memo(({
             <main className="p-8 pt-6">
                 <ManagerSectionRenderer 
                     activeSection={activeSection}
+                    collaborator={collaborator}
                     collaboratorSelfAssessment={collaboratorSelfAssessment}
                     evaluations360={evaluations360}
                     referencesReceived={referencesReceived}

@@ -90,6 +90,7 @@ export const LeaderEvaluationForm = memo(({
             <main className="p-8 pt-6">
                 <LeaderSectionRenderer 
                     activeSection={activeSection}
+                    collaborator={collaborator}
                 />
             </main>
         </>

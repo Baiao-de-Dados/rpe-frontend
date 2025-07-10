@@ -26,8 +26,22 @@ const ManagerReferencesReceivedSection = lazy(() =>
     })),
 );
 
+const CollaboratorHistorySection = lazy(() =>
+    import('./CollaboratorHistorySection').then(module => ({
+        default: module.CollaboratorHistorySection,
+    })),
+);
+
 interface ManagerSectionRendererProps {
     activeSection: ManagerSectionType;
+    // Dados do colaborador
+    collaborator?: {
+        id: string;
+        nome: string;
+        cargo: string;
+        image?: string;
+        avatar?: string;
+    };
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{
         pilarId: string;
@@ -54,6 +68,7 @@ interface ManagerSectionRendererProps {
 
 export function ManagerSectionRenderer({ 
     activeSection, 
+    collaborator,
     collaboratorSelfAssessment,
     evaluations360,
     referencesReceived,
@@ -82,6 +97,13 @@ export function ManagerSectionRenderer({
                     <ManagerReferencesReceivedSection 
                         referencesReceived={referencesReceived || []}
                         cycleName={cycleName || 'Não definido'}
+                    />
+                );
+            case 'Histórico':
+                return (
+                    <CollaboratorHistorySection 
+                        collaboratorId={collaborator?.id || ''}
+                        collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );
             default:
