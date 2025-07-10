@@ -19,6 +19,7 @@ import { Evolucao } from '../pages/Evolucao';
 import { Configuracoes } from '../pages/Configuracoes';
 import { Avaliacao } from '../pages/Avaliacao';
 import { ImportarHistoricos } from '../pages/ImportarHistorico';
+import BrutalFactsPage  from '../pages/BrutalFacts';
 import LoginPage from '../pages/Login';
 
 export function Router() {
@@ -150,6 +151,18 @@ export function Router() {
                                 UserRoleEnum.RH
                             ]}>
                                 <Lideranca />
+                            </MultiRoleRoute>
+                        }
+                    />
+                    <Route path="brutalfacts"
+                        element={
+                            <MultiRoleRoute redirectTo="/dashboard" allowedRoles={[
+                                UserRoleEnum.LEADER, 
+                                UserRoleEnum.MANAGER, 
+                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.RH
+                            ]}>
+                                <BrutalFactsPage />
                             </MultiRoleRoute>
                         }
                     />

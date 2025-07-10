@@ -1,13 +1,13 @@
-import BrutalFactsMetrics from '../components/Lideranca/BrutalFactsMetrics';
-import CardContainer from '../components/common/CardContainer';
-import SummaryBox from '../components/common/SummaryBox';
-import Typography from '../components/common/Typography';
-import CollaboratorEvaluationCard from '../components/common/CollaboratorEvaluationCard';
-import PageHeader from '../components/common/PageHeader';
-import { PerformanceChart } from '../components/Charts/PerformanceChart';
-import { mockCycles } from '../data/mockCycles';
-import { mockCommitteeData } from '../data/mockCommitteeData';
-import SearchBar from '../components/common/Searchbar';
+import BrutalFactsMetrics from '../../components/Lideranca/BrutalFactsMetrics';
+import CardContainer from '../../components/common/CardContainer';
+import SummaryBox from '../../components/common/SummaryBox';
+import Typography from '../../components/common/Typography';
+import CollaboratorEvaluationCard from '../../components/common/CollaboratorEvaluationCard';
+import PageHeader from '../../components/common/PageHeader';
+import { PerformanceChart } from '../../components/Charts/PerformanceChart';
+import { mockCycles } from '../../data/mockCycles';
+import { mockCommitteeData } from '../../data/mockCommitteeData';
+import SearchBar from '../../components/common/Searchbar';
 import { useState } from 'react';
 
 const chartData: { cycleName: string; score: number }[] = mockCycles.map(cycle => ({
