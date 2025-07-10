@@ -1,8 +1,13 @@
+import PageHeader from "../../components/common/PageHeader";
+import ImportarHistoricoCard from "../../components/Importar/ImportarHistoricoCard";
+
 export function ImportarHistoricos() {
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold">Importar Históricos</h1>
-            <p>Esta página só é acessível para RH, Gestor e Mentor</p>
-        </div>
+        <>
+            <PageHeader title="Importar Histórico" />
+            <main className="p-8 pt-6">
+                <ImportarHistoricoCard />
+            </main>
+        </>
     );
 }

@@ -74,7 +74,6 @@ export default function Anotacoes() {
                                                 placeholder="Descreva observações, feedbacks, pontos de melhoria e destaques no seu dia a dia de trabalho..."
                                                 value={field.value || ''}
                                                 onChange={field.onChange}
-                                                readOnly={notes.isEvaluating}
                                                 minHeight="min-h-[500px] md:min-h-[600px]"
                                                 className="text-lg bg-[#f8fdfa]"
                                             />

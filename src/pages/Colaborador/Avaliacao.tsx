@@ -7,8 +7,8 @@ import { useEvaluationFormPopulation } from '../../hooks/useEvaluationFormPopula
 import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
 
 import CycleLoading from '../../components/common/CycleLoading';
+import AllEvaluation from '../../components/Evaluation/AllEvaluation';
 import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
-import CycleClosedMessage from '../../components/Evaluation/CycleClosedMessage';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
 
@@ -31,10 +31,6 @@ export function Avaliacao() {
         return <CycleLoadErrorMessage />;
     }
 
-    if (!currentCycle.isActive) {
-        return <CycleClosedMessage cycle={currentCycle} />;
-    }
-
     if (evaluationStatus?.isSubmitted) {
         return (
             <EvaluationSubmittedMessage
@@ -42,6 +38,10 @@ export function Avaliacao() {
                 evaluationStatus={evaluationStatus}
             />
         );
+    }
+
+    if (!currentCycle.isActive) {
+        return <AllEvaluation />;
     }
 
     return (

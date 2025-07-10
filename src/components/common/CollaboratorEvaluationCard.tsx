@@ -10,6 +10,7 @@ export interface EvaluationField {
     label: string;
     value?: string | number;
     bold?: boolean;
+    customStyle?: 'manager-evaluated'; // Para styling especial da nota do gestor
 }
 
 export interface CollaboratorEvaluationCardProps {
@@ -46,6 +47,30 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
         }
     }
 
+    // Cargo abreviado no mobile
+    let displayCargo = collaborator.cargo;
+    if (isMobile) {
+        // Primeiro, substitui palavras muito comuns por abreviações
+        displayCargo = displayCargo
+            .replace(/Desenvolvedor|Desenvolvedora/gi, 'Dev')
+            .replace(/Analista/gi, 'Ana')
+            .replace(/Coordenador|Coordenadora/gi, 'Coord')
+            .replace(/Gerente/gi, 'Ger')
+            .replace(/Especialista/gi, 'Esp');
+
+        // Depois aplica a lógica de abreviação geral
+        if (displayCargo.length > 10) {
+            const words = displayCargo.split(' ');
+            if (words.length > 1) {
+                // Pega só a primeira palavra + primeira letra da segunda
+                displayCargo = words[0] + ' ' + words[1][0].toUpperCase() + '.';
+            } else {
+                // Se for uma palavra só, corta bem mais
+                displayCargo = displayCargo.substring(0, 8) + '...';
+            }
+        }
+    }
+
     return (
         <div
             className={`flex ${isMobile ? 'flex-row items-center' : 'sm:flex-row items-center'} justify-between bg-white rounded-lg sm:rounded-2xl px-2 sm:px-6 py-2 sm:py-3 gap-2 sm:gap-4 border border-[#f0f0f0] min-h-0 h-auto ${className}`}
@@ -61,7 +86,7 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                     collaborator={{
                         id: collaborator.nome,
                         nome: displayName,
-                        cargo: collaborator.cargo,
+                        cargo: displayCargo,
                         image,
                     }}
                     variant="compact"
@@ -93,10 +118,16 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
                         field.label === 'Nota final' &&
                         typeof field.value === 'number';
                     
+                    const isManagerEvaluated = field.customStyle === 'manager-evaluated';
+                    
                     let badgeStyle: React.CSSProperties = {};
                     let badgeClass = 'bg-neutral-100 text-[#167174]';
                     
-                    if (isNotaFinal && typeof field.value === 'number') {
+                    if (isManagerEvaluated && typeof field.value === 'number') {
+                        // Nota do gestor finalizada: background primary-500 com texto branco
+                        badgeStyle = { backgroundColor: '#167174', color: 'white' };
+                        badgeClass = '';
+                    } else if (isNotaFinal && typeof field.value === 'number') {
                         badgeStyle = getScoreBgStyles(field.value as number);
                         badgeClass = '';
                     }

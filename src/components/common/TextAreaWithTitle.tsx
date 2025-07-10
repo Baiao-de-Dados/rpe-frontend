@@ -32,6 +32,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
     };
 
     const getBorderColor = () => {
+        if (readOnly) return 'border-gray-200';
         if (maxLength && currentLength >= maxLength) return 'border-red-500';
         if (error) return 'border-red-500';
         return 'border-gray-300 focus:border-primary-500';
@@ -39,6 +40,8 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
 
     const shouldShowCounter = maxLength && currentLength >= maxLength;
     const textareaId = React.useId();
+
+    const readonlyClass = readOnly ? 'bg-gray-100 text-gray-800' : '';
 
     return (
         <div>
@@ -57,7 +60,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
             </div>
             <textarea
                 id={textareaId}
-                className={`w-full ${minHeight} p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none ${getBorderColor()} ${className}`}
+                className={`w-full ${minHeight} p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none ${readonlyClass} ${getBorderColor()} ${className}`}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
