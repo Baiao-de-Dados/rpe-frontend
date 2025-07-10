@@ -8,11 +8,10 @@ import { CommitteeDashboard } from './CommitteeDashboard';
 import { ManagerDashboard } from './ManagerDashboard';
 
 export function Dashboard() {
+
     const { hasRole } = useAuth();
 
-    return <LeaderDashboard />;
-
-    // RH Dashboard
+    // Leader Dashboard
     if (hasRole(UserRoleEnum.LEADER)) {
         return <LeaderDashboard />;
     }
@@ -34,4 +33,5 @@ export function Dashboard() {
 
     // Colaborador Dashboard (padrão para todos os outros)
     return <CollaboratorDashboard />;
+
 }
