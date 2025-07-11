@@ -177,7 +177,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.RH,
-                                UserRoleEnum.MANAGER,
                                 UserRoleEnum.ADMIN,
                                 UserRoleEnum.DEVELOPER,
                             ]}>

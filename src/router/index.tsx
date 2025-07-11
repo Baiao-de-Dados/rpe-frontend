@@ -14,7 +14,7 @@ import LoadingSpinner from '../components/RouterLoadingSpinner';
 import { Auditoria } from '../pages/Auditoria';
 import { Dashboard } from '../pages/Dashboard/index';
 import { Lideranca } from '../pages/Lideranca';
-import { Colaboradores } from '../pages/Colaboradores';
+import Colaboradores from '../pages/Colaboradores';
 import { AvaliacaoIndividual } from '../pages/Colaboradores/AvaliacaoIndividual';
 import { Evolucao } from '../pages/Evolucao';
 import { Configuracoes } from '../pages/Configuracoes';

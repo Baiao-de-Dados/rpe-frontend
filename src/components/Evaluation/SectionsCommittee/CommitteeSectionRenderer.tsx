@@ -8,6 +8,9 @@ import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
 
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
+// Importando o componente de equalização
+import Equalizacao from '../../../pages/Colaboradores/Equalizacao';
+
 // Reutilizando componentes do gestor em modo readonly
 const ReadOnlyManagerSelfAssessmentSection = lazy(() =>
     import('./ReadOnlyManagerSelfAssessmentSection').then(module => ({
@@ -39,11 +42,10 @@ const ManagerMentoringEvaluationSection = lazy(() =>
     })),
 );
 
-// Seção de equalização (placeholder)
+// Seção de equalização
 const EqualizationSection = () => (
     <div className="bg-white rounded-xl p-6 shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">Equalização</h2>
-        <p className="text-gray-500">Espaço reservado para equalização do comitê.</p>
+        <Equalizacao />
     </div>
 );
 

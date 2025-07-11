@@ -186,4 +186,4 @@ export function Colaboradores() {
     );
 }
 
-export default Colaboradores;
+export { Colaboradores as default };
