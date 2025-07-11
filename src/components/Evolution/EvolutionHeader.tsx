@@ -1,32 +1,29 @@
-import PageHeader from '../common/PageHeader';
 import { mockCycles } from '../../data/mockCycles';
+
+import PageHeader from '../common/PageHeader';
+import DropdownButton from '../common/DropdownButton';
 
 interface EvolutionHeaderProps {
     selectedCycle: string;
     onSelectCycle: (cycle: string) => void;
 }
 
-export function EvolutionHeader({
-    selectedCycle,
-    onSelectCycle,
-}: EvolutionHeaderProps) {
+export function EvolutionHeader({ selectedCycle, onSelectCycle }: EvolutionHeaderProps) {
+
     const sortedCycles = mockCycles
         .slice()
-        .sort((a, b) => b.cycleName.localeCompare(a.cycleName));
+        .sort((a, b) => b.cycleName.localeCompare(a.cycleName))
+        .map(cycle => cycle.cycleName);
+
+    const cyclesWithAll = ['Todos', ...sortedCycles];
+    const selected = selectedCycle === 'all' ? 'Todos' : selectedCycle;
 
     const cycleSelector = (
-        <select
-            className="border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-600"
-            value={selectedCycle}
-            onChange={e => onSelectCycle(e.target.value)}
-        >
-            <option value="all">Todos os ciclos</option>
-            {sortedCycles.map(cycle => (
-                <option key={cycle.cycleName} value={cycle.cycleName}>
-                    {cycle.cycleName}
-                </option>
-            ))}
-        </select>
+        <DropdownButton
+            items={cyclesWithAll}
+            selected={selected}
+            onSelect={item => onSelectCycle(item === 'Todos' ? 'all' : item)}
+        />
     );
 
     return (
