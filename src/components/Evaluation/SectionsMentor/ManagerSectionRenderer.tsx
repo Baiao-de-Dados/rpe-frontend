@@ -32,6 +32,18 @@ const CollaboratorHistorySection = lazy(() =>
     })),
 );
 
+const ManagerLeaderEvaluationSection = lazy(() =>
+    import('./ManagerLeaderEvaluationSection').then(module => ({
+        default: module.ManagerLeaderEvaluationSection,
+    })),
+);
+
+const ManagerMentoringEvaluationSection = lazy(() =>
+    import('./ManagerMentoringEvaluationSection').then(module => ({
+        default: module.ManagerMentoringEvaluationSection,
+    })),
+);
+
 interface ManagerSectionRendererProps {
     activeSection: ManagerSectionType;
     // Dados do colaborador
@@ -90,6 +102,20 @@ export function ManagerSectionRenderer({
                     <Manager360ReceivedSection 
                         evaluations360={evaluations360 || []}
                         cycleName={cycleName || 'Não definido'}
+                    />
+                );
+            case 'Líderes':
+                return (
+                    <ManagerLeaderEvaluationSection 
+                        collaboratorId={collaborator?.id || ''}
+                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                    />
+                );
+            case 'Mentoring':
+                return (
+                    <ManagerMentoringEvaluationSection 
+                        collaboratorId={collaborator?.id || ''}
+                        collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );
             case 'Referências':
