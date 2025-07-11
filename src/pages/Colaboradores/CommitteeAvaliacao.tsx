@@ -69,7 +69,7 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: string 
             <div className="min-h-screen bg-[#FAFAFA]">
                 <CommitteeEvaluationForm
                     collaborator={collaborator}
-                    cycleName="Ciclo de Avaliação 2023.2"
+                    cycleName="2025.2"
                     collaboratorSelfAssessment={mockSelfAssessment}
                     evaluations360={evaluations360}
                     referencesReceived={referencesReceived}

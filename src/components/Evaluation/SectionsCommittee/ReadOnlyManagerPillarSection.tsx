@@ -1,22 +1,24 @@
-import { memo, useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { memo, useEffect } from 'react';
+import { useQueryState } from 'nuqs';
 
+import CollapsibleCardSection from '../../common/CollapsibleCardSection';
 import Typography from '../../common/Typography';
-import { ReadOnlyManagerAssessment } from './ReadOnlyManagerAssessment';
+import ManagerAssessment from '../CardsManager/ManagerAssessment';
+import ManagerPillarRatingDisplay from '../ManagerPillarDisplay';
 
 import type { Criterion } from '../../../data/mockEvaluationPIllars';
 
 interface ReadOnlyManagerPillarSectionProps {
     pillarTitle: string;
     criteria: Criterion[];
+    validFields: Array<{
+        id: string;
+        pilarId: string;
+        criterionId: string;
+        index: number;
+    }>;
     // Dados do colaborador (read-only)
     collaboratorData?: Array<{
-        criterionId: string;
-        rating?: number | null;
-        justification?: string;
-    }>;
-    // Dados do gestor (read-only)
-    managerData?: Array<{
         criterionId: string;
         rating?: number | null;
         justification?: string;
@@ -26,58 +28,78 @@ interface ReadOnlyManagerPillarSectionProps {
 export const ReadOnlyManagerPillarSection = memo(({ 
     pillarTitle, 
     criteria, 
+    validFields,
     collaboratorData = [],
-    managerData = []
 }: ReadOnlyManagerPillarSectionProps) => {
 
-    const [isOpen, setIsOpen] = useState(true);
+    const [pillarOpenList, setPillarOpenList] = useQueryState('committee_pillar_open', {
+        defaultValue: '',
+        history: 'replace',
+    });
 
-    const toggleOpen = () => {
-        setIsOpen(!isOpen);
+    const pillarId = pillarTitle;
+    const openArray = pillarOpenList ? pillarOpenList.split(',') : [];
+    const isOpen = openArray.includes(pillarId);
+
+    const toggleMinimized = () => {
+        if (isOpen) {
+            setPillarOpenList(openArray.filter(id => id !== pillarId).join(','));
+        } else {
+            setPillarOpenList([...openArray, pillarId].join(','));
+        }
+    };
+
+    useEffect(() => {}, [pillarOpenList]);
+
+    // Função para buscar os dados do colaborador para um critério específico
+    const getCollaboratorDataForCriterion = (criterionId: string) => {
+        return collaboratorData.find(data => data.criterionId === criterionId);
     };
 
     return (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            {/* Header do Pilar */}
-            <button
-                onClick={toggleOpen}
-                className="w-full px-6 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
-            >
-                <Typography variant="h3" className="text-gray-900">
-                    {pillarTitle}
-                </Typography>
-                {isOpen ? (
-                    <ChevronUp className="w-5 h-5 text-gray-500" />
-                ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-500" />
-                )}
-            </button>
-
-            {/* Conteúdo do Pilar */}
-            {isOpen && (
-                <div className="p-6 space-y-6">
-                    {criteria.map((criterion) => {
-                        // Buscar dados do colaborador para este critério
-                        const collaboratorCriterion = collaboratorData.find(
-                            data => data.criterionId === criterion.id
-                        );
-                        
-                        // Buscar dados do gestor para este critério
-                        const managerCriterion = managerData.find(
-                            data => data.criterionId === criterion.id
-                        );
-
-                        return (
-                            <ReadOnlyManagerAssessment
-                                key={criterion.id}
-                                criterion={criterion}
-                                collaboratorData={collaboratorCriterion}
-                                managerData={managerCriterion}
-                            />
-                        );
-                    })}
+        <CollapsibleCardSection
+            title={`Avaliação de ${pillarTitle}`}
+            // Remover a badge de pendente para o comitê
+            notificationBadge={undefined}
+            headerRight={
+                <div className="flex items-center gap-2 whitespace-nowrap">
+                    <ManagerPillarRatingDisplay 
+                        criteria={criteria} 
+                        validFields={validFields}
+                        collaboratorData={collaboratorData}
+                    />
+                    <div className="flex items-center bg-primary-50 px-2 py-1 rounded-lg">
+                        <Typography variant="caption" color="muted" className="text-xs">
+                            {criteria.length} critérios
+                        </Typography>
+                    </div>
                 </div>
-            )}
-        </div>
+            }
+            defaultOpen={isOpen}
+            onHeaderClick={toggleMinimized}
+            className="pt-14 p-10 mb-5"
+        >
+            <div className="space-y-4">
+                {criteria.map((criterion, index) => {
+                    const fieldIndex = validFields.findIndex(f => f.criterionId === criterion.id);
+                    if (fieldIndex === -1) return null;
+
+                    const collaboratorCriterionData = getCollaboratorDataForCriterion(criterion.id);
+
+                    return (
+                        <ManagerAssessment
+                            key={criterion.id}
+                            criterionName={criterion.nome}
+                            name={`managerAssessment.${fieldIndex}`}
+                            topicNumber={index + 1}
+                            isLast={index === criteria.length - 1}
+                            collaboratorRating={collaboratorCriterionData?.rating}
+                            collaboratorJustification={collaboratorCriterionData?.justification}
+                            isReadOnly={true}
+                        />
+                    );
+                })}
+            </div>
+        </CollapsibleCardSection>
     );
 });

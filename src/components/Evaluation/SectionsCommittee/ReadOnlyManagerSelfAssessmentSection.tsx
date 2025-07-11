@@ -1,7 +1,7 @@
 import { useEffect, useMemo, memo, useRef } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import { ManagerPillarSection } from '../ManagerPillarSection';
+import { ReadOnlyManagerPillarSection } from './ReadOnlyManagerPillarSection';
 
 import type { FullManagerEvaluationFormData } from '../../../schemas/managerEvaluation';
 
@@ -69,13 +69,12 @@ export const ReadOnlyManagerSelfAssessmentSection = memo(({
         <section>
             <div className="space-y-8">
                 {Object.values(mockEvaluationPillars).map(pillar => (
-                    <ManagerPillarSection
+                    <ReadOnlyManagerPillarSection
                         key={pillar.titulo}
                         pillarTitle={pillar.titulo}
                         criteria={pillar.criterios}
                         validFields={validFields}
                         collaboratorData={getCollaboratorDataByPillar(pillar.id)}
-                        isReadOnly={true}
                     />
                 ))}
             </div>
