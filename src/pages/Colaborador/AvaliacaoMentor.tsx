@@ -8,6 +8,7 @@ import { fullMentorEvaluationSchema, type FullMentorEvaluationFormData } from '.
 import { MentorEvaluationForm } from '../../components/Evaluation/MentorEvaluationForm';
 import CycleLoading from '../../components/common/CycleLoading';
 import Typography from '../../components/common/Typography';
+import CycleClosedEvaluationMessage from '../../components/CycleMessages/CycleClosedEvaluationMessage';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
@@ -141,16 +142,7 @@ export function ColaboradorAvaliacao() {
     }
 
     if (!currentCycle.isActive) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4">Ciclo fechado</Typography>
-                    <Typography variant="body" color="muted">
-                        O ciclo de avaliação atual está fechado. Não é possível realizar avaliações.
-                    </Typography>
-                </div>
-            </div>
-        );
+        return <CycleClosedEvaluationMessage cycleName={currentCycle?.name} className="mb-6" />;
     }
 
     return (

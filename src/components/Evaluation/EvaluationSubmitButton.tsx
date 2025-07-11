@@ -55,7 +55,7 @@ const EvaluationSubmitButton = memo(() => {
     return (
         <Button 
             variant="primary" 
-            size="sm" 
+            size="md" 
             disabled={!isValid || isSubmitting} 
             onClick={onSubmit} 
             className={`transition-all duration-200 
