@@ -1,16 +1,24 @@
-// src/pages/Dashboard/index.tsx
 import { useAuth } from '../../hooks/useAuth';
+
 import { UserRoleEnum } from '../../types/auth';
-import { CollaboratorDashboard } from './CollaboratorDashboard';
+
 import { RHDashboard } from './RHDashboard';
-import { CommitteeDashboard } from './CommitteeDashboard';
+import { AdminDashboard } from './AdminDashboard';
 import { ManagerDashboard } from './ManagerDashboard';
+import { CommitteeDashboard } from './CommitteeDashboard';
+import { CollaboratorDashboard } from './CollaboratorDashboard';
 
 export function Dashboard() {
+
     const { hasRole } = useAuth();
 
+    // Admin Dashboard
+    if (hasRole(UserRoleEnum.ADMIN)) {
+        return <AdminDashboard />;
+    }
+
     // RH Dashboard
-    if (hasRole(UserRoleEnum.COMMITTEE)) {
+    if (hasRole(UserRoleEnum.RH)) {
         return <RHDashboard />;
     }
 
@@ -20,10 +28,11 @@ export function Dashboard() {
     }
 
     // Manager Dashboard
-    if (hasRole(UserRoleEnum.RH)) {
+    if (hasRole(UserRoleEnum.MANAGER)) {
         return <ManagerDashboard />;
     }
 
     // Colaborador Dashboard (padrão para todos os outros)
     return <CollaboratorDashboard />;
+
 }

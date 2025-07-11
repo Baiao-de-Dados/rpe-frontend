@@ -33,3 +33,7 @@ export const formatDateTime = (dateString: string) => {
         minute: '2-digit',
     });
 };
+
+export function getBadgeText(start: string, end?: string | null) {
+    return `${formatDate(start)} - ${end ? formatDate(end) : 'hoje'}`;
+}
