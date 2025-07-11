@@ -85,14 +85,14 @@ export function ManagerSectionRenderer({
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
                     />
                 );
-            case 'Avaliações 360° Recebidas':
+            case 'Avaliações 360°':
                 return (
                     <Manager360ReceivedSection 
                         evaluations360={evaluations360 || []}
                         cycleName={cycleName || 'Não definido'}
                     />
                 );
-            case 'Referências Recebidas':
+            case 'Referências':
                 return (
                     <ManagerReferencesReceivedSection 
                         referencesReceived={referencesReceived || []}
