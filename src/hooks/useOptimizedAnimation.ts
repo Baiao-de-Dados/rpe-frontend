@@ -158,6 +158,11 @@ export const useOptimizedAnimation = () => {
                     transition: { duration: 0.18, ease: easeIn },
                 },
             },
+            projectManagerCollapse: {
+                initial: { opacity: 0, height: 0 },
+                animate: { opacity: 1, height: 'auto', transition: { duration: shouldReduceMotion ? 0.01 : 0.18, ease: easeOut } },
+                exit: { opacity: 0, height: 0, transition: { duration: shouldReduceMotion ? 0.01 : 0.18, ease: easeIn } },
+            },
         },
     };
 };

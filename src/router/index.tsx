@@ -11,6 +11,7 @@ import { ProtectedRoute, RoleRoute } from './ProtectedRoute';
 
 import LoadingSpinner from '../components/RouterLoadingSpinner';
 
+import { Auditoria } from '../pages/Auditoria';
 import { Dashboard } from '../pages/Dashboard/index';
 import { Lideranca } from '../pages/Lideranca';
 import { Colaboradores } from '../pages/Colaboradores';
@@ -87,7 +88,19 @@ export function Router() {
                     />
 
                     <Route path="colaboradores/:collaboratorId/avaliacao"
-                        element={<AvaliacaoIndividual />}
+                        element={
+                            <AvaliacaoIndividual />
+                        }
+                    />
+
+                    <Route path="auditoria"
+                        element={
+                            <RoleRoute requiredRoles={[
+                                    UserRoleEnum.ADMIN
+                            ]}>
+                                <Auditoria />
+                            </RoleRoute>
+                        }
                     />
 
                     <Route path="configuracoes"
