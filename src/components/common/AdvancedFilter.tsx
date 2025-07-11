@@ -112,7 +112,7 @@ export default function AdvancedFilter({ className, cargos = [], trilhas = [], o
               {/* Cargos */}
               <div className="flex flex-col justify-center text-gray-700 gap-2">
                 Cargos
-                <div className="pl-8">
+                <div className="pl-8 max-h-12 overflow-y-auto">
                   {cargos.map(cargo => (
                     <label key={cargo} className="flex items-center justify-between gap-3 text-gray-700 cursor-pointer select-none">
                       {cargo}
@@ -137,7 +137,7 @@ export default function AdvancedFilter({ className, cargos = [], trilhas = [], o
               {/* Trilhas */}
                 <div className="flex flex-col justify-center text-gray-700 gap-2">
                   Trilhas
-                  <div className="pl-8">
+                  <div className="pl-8 max-h-12 overflow-y-auto">
                     {trilhas.map(trilha => (
                       <label key={trilha} className="flex items-center justify-between gap-3 text-gray-700 cursor-pointer select-none">
                         {trilha}
