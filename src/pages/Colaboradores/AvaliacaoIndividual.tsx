@@ -10,7 +10,7 @@ export function AvaliacaoIndividual() {
     const { collaboratorId } = useParams<{ collaboratorId: string }>();
 
     // Manager - Formulário de avaliação de gestor
-    if (hasRole(UserRoleEnum.RH)) {
+    if (hasRole(UserRoleEnum.MANAGER)) {
         return <ManagerAvaliacao collaboratorId={collaboratorId || ''} />;
     }
 

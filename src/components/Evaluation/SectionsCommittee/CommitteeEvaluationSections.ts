@@ -1,10 +1,10 @@
 export const committeeEvaluationSections = [
-    'autoavaliacao',
-    'avaliacao360',
-    'mentoring',
-    'lideres',
-    'historico',
-    'equalizacao',
+    'Avaliação',
+    'Avaliações 360',
+    'Líderes',
+    'Mentoring',
+    'Histórico',
+    'Equalização',
 ] as const;
 
 export type CommitteeSectionType = (typeof committeeEvaluationSections)[number];
