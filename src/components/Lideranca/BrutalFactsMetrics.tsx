@@ -24,7 +24,7 @@ export default function BrutalFactMetrics({
   performanceDescription,
 }: BrutalFactMetricsProps) {
   return (
-    <div className="grid grid-cols-3 md:grid-cols-3 gap-4 w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-4 w-full">
       <BrutalFactsRate score={score} cycleLabel={cycleLabel} description={rateDescription} />
       <SubordinatesPerformance growth={growth} cycleLabel={growthCycleLabel} description={performanceDescription} />
       <EvaluatedSubordinates total={total} description={avaliadosDescription} />
