@@ -17,6 +17,7 @@ type CollaboratorWithNotas = typeof mockCommitteeData.collaborators[number] & {
   avaliacao360: number;
   notaGestor: number;
   notaFinal?: number;
+  trilha?: string;
 };
 
 const chartData: { cycleName: string; score: number }[] = mockCycles.map(cycle => ({
@@ -27,6 +28,13 @@ const chartData: { cycleName: string; score: number }[] = mockCycles.map(cycle =
 const uniqueDepartments = Array.from(
   new Set(mockCommitteeData.collaborators.map(c => c.department))
 );
+
+const uniqueTracks = Array.from(
+  new Set(mockCommitteeData.collaborators.map(c => c.track))
+);
+
+const cargos = uniqueDepartments;
+const trilhas = uniqueTracks;   
 
 export default function BrutalFactsPage() {
   const [search, setSearch] = useState('');
@@ -72,8 +80,11 @@ export default function BrutalFactsPage() {
         finalizados,
         notaRange,
         maiorParaMenor,
-        ...cargoFilters
+        ...restFilters
       } = activeFilters;
+
+      const selectedDepartments = cargos.filter(cargo => restFilters[cargo]);
+      const selectedTrilhas = trilhas.filter(trilha => restFilters[trilha]);
 
       results = results.filter(collab => {
         const matchesStatus =
@@ -81,17 +92,16 @@ export default function BrutalFactsPage() {
           (finalizados && collab.status === 'Finalizado') ||
           (!pendentes && !finalizados);
 
-        const selectedDepartments = Object.entries(cargoFilters)
-        .filter(([,value]) => value === true)
-        .map(([cargo]) => cargo);
-
         const matchesDepartment =
-        selectedDepartments.length === 0 || selectedDepartments.includes(collab.department);
+          selectedDepartments.length === 0 || selectedDepartments.includes(collab.department);
+
+        const matchesTrilha =
+          selectedTrilhas.length === 0 || selectedTrilhas.includes(collab.track ?? '');
 
         const nota = collab.notaFinal ?? 0;
         const matchesNota = nota >= notaRange[0] && nota <= notaRange[1];
 
-        return matchesStatus && matchesDepartment && matchesNota;
+        return matchesStatus && matchesDepartment && matchesTrilha && matchesNota;
       });
 
       results = results.sort((a, b) =>
@@ -146,7 +156,7 @@ export default function BrutalFactsPage() {
                   showResults={filteredCollaborators.length === 0}
                 />
               </div>
-              <AdvancedFilter cargos={uniqueDepartments} onApply={setFilters} />
+              <AdvancedFilter cargos={cargos} trilhas={trilhas} onApply={setFilters} />
             </div>
           </div>
 

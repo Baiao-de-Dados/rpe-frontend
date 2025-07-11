@@ -8,7 +8,7 @@ interface Filters {
   maiorParaMenor: boolean;
   menorParaMaior: boolean;
   notaRange: [number, number];
-  [cargo: string]: boolean | [number, number];
+  [key: string]: boolean | [number, number];
 }
 
 type BooleanFilterKey = Exclude<keyof Filters, 'notaRange'>;
@@ -16,10 +16,11 @@ type BooleanFilterKey = Exclude<keyof Filters, 'notaRange'>;
 interface AdvancedFiltersProps {
   className?: string;
   cargos?: string[];
+  trilhas?: string[];
   onApply: (filters: Filters) => void;
 }
 
-function createInitialFilters(cargos: string[] = []): Filters {
+function createInitialFilters(cargos: string[] = [], trilhas: string[] = []): Filters {
   return {
     pendentes: true,
     finalizados: true,
@@ -27,12 +28,13 @@ function createInitialFilters(cargos: string[] = []): Filters {
     menorParaMaior: false,
     notaRange: [0, 5],
     ...Object.fromEntries(cargos.map(cargo => [cargo, true])),
+    ...Object.fromEntries(trilhas.map(trilha => [trilha, true])),
   };
 }
 
-export default function AdvancedFilter({ className, cargos = [], onApply }: AdvancedFiltersProps) {
+export default function AdvancedFilter({ className, cargos = [], trilhas = [], onApply }: AdvancedFiltersProps) {
   const [open, setOpen] = useState(false);
-  const [filters, setFilters] = useState<Filters>(() => createInitialFilters(cargos));
+  const [filters, setFilters] = useState<Filters>(() => createInitialFilters(cargos, trilhas));
 
   const marks = Array.from({ length: 6 }, (_, i) => ({
     value: i,
@@ -131,6 +133,32 @@ export default function AdvancedFilter({ className, cargos = [], onApply }: Adva
                   ))}
                 </div>
               </div>
+
+              {/* Trilhas */}
+                <div className="flex flex-col justify-center text-gray-700 gap-2">
+                  Trilhas
+                  <div className="pl-8">
+                    {trilhas.map(trilha => (
+                      <label key={trilha} className="flex items-center justify-between gap-3 text-gray-700 cursor-pointer select-none">
+                        {trilha}
+                        <span className={`w-5 h-5 border rounded-sm flex items-center justify-center ${filters[trilha] ? 'bg-[#167174] border-[#167174]' : 'border-gray-400'}`}>
+                          {filters[trilha] && (
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={!!filters[trilha]}
+                          onChange={() => handleCheckboxChange(trilha as BooleanFilterKey)}
+                          className="hidden"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
 
               {/* Ordem das notas */}
               <div className="flex items-center justify-between text-gray-700">
