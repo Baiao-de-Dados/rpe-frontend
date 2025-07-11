@@ -8,7 +8,7 @@ interface Filters {
   maiorParaMenor: boolean;
   menorParaMaior: boolean;
   notaRange: [number, number];
-  [cargo: string]: boolean | [number, number]; // cargos dinâmicos
+  [cargo: string]: boolean | [number, number];
 }
 
 type BooleanFilterKey = Exclude<keyof Filters, 'notaRange'>;
@@ -160,6 +160,9 @@ export default function AdvancedFilter({ className, cargos = [], onApply }: Adva
                     marks={marks}
                     min={0}
                     max={5}
+                    sx={{
+                      color: '#2b5f60',
+                    }}
                   />
                 </div>
               </div>
