@@ -2,7 +2,6 @@ import { useQueryState } from 'nuqs';
 import * as Icons from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-
 import { useAuth } from '../hooks/useAuth';
 
 import { UserRoleEnum } from '../types/auth';
@@ -160,6 +159,17 @@ export default function AsideMenu() {
                                     <Icons.FileUp size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
                                         Importar Histórico
+                                    </span>
+                                </NavLink>
+                            </li>
+                        </RoleGuard>
+
+                        <RoleGuard anyRole={[ UserRoleEnum.EMPLOYER ]}>
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink to="/anotacoes" onClick={closeMenu} className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>
+                                    <Icons.MessageSquareMore size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
+                                    <span className={`opacity-0 invisible whitespace-nowrap transition-all duration-200 ease-in-out ${isNavExpanded ? 'opacity-100 visible' : ''} max-lg:opacity-100 max-lg:visible`}>
+                                        Anotações
                                     </span>
                                 </NavLink>
                             </li>

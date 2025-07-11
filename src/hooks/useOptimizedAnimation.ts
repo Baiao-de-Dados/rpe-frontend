@@ -163,6 +163,24 @@ export const useOptimizedAnimation = () => {
                 animate: { opacity: 1, height: 'auto', transition: { duration: shouldReduceMotion ? 0.01 : 0.18, ease: easeOut } },
                 exit: { opacity: 0, height: 0, transition: { duration: shouldReduceMotion ? 0.01 : 0.18, ease: easeIn } },
             },
+            avaliacaoSectionTitle: {
+                initial: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 0 },
+                animate: { opacity: 1, x: 0 },
+                exit: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 0 },
+                transition: {
+                    duration: shouldReduceMotion ? 0.01 : 0.5,
+                    delay: shouldReduceMotion ? 0 : 0,
+                },
+            },
+            avaliacaoSectionItem: (idx: number) => ({
+                initial: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 16 },
+                animate: { opacity: 1, x: 0 },
+                exit: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 16 },
+                transition: {
+                    duration: shouldReduceMotion ? 0.01 : 0.5,
+                    delay: shouldReduceMotion ? 0 : idx * 0.12,
+                },
+            }),
         },
     };
 };

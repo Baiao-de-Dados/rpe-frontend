@@ -1,16 +1,15 @@
 import { useQueryState } from 'nuqs';
 import { memo, useMemo, useEffect } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
 
 import SelfAssessment from './Cards/SelfAssessment';
 import { PillarRatingDisplay } from './PillarRatingDisplay';
 
+import type { Criterion } from '../../data/mockEvaluationPIllars';
+
 import NotificationBadge from '../common/NotificationBadge';
 import CollapsibleCardSection from '../common/CollapsibleCardSection';
 
-import type { Criterion } from '../../data/mockEvaluationPIllars';
-
-import type { EvaluationFormData } from '../../schemas/evaluation';
+import { useEvaluationCompletion } from '../../hooks/useEvaluationCompletion';
 
 interface PillarSectionProps {
     pillarTitle: string;
@@ -32,54 +31,24 @@ export const PillarSection = memo(({ pillarTitle, criteria, validFields }: Pilla
         );
 
         const pillarId = pillarTitle;
-        const openArray = pillarOpenList ? pillarOpenList.split(',') : [];
-        const isOpen = openArray.includes(pillarId);
+        const openArray = useMemo(() => 
+            pillarOpenList ? pillarOpenList.split(',') : [], 
+            [pillarOpenList]
+        );
 
-        const { control } = useFormContext<EvaluationFormData>();
+        const { getIncompleteCriteriaCountForPillar, getHasPendingIAForPillar } = useEvaluationCompletion();
 
-        const fieldIndices = useMemo(() => {
-            return criteria
-                .map(criterion =>
-                    validFields.findIndex(f => f.criterionId === criterion.id),
-                )
-                .filter(index => index !== -1);
-        }, [criteria, validFields]);
-
-        const watchedData = useWatch({
-            control,
-            name: fieldIndices.flatMap(index => [
-                `selfAssessment.${index}.rating` as const,
-                `selfAssessment.${index}.justification` as const,
-            ]),
-        });
-
-        const incompleteCriteriaCount = useMemo(() => {
-            if (!watchedData || fieldIndices.length === 0)
-                return criteria.length;
-
-            let incompleteCount = 0;
-
-            for (let i = 0; i < fieldIndices.length; i++) {
-                const ratingIndex = i * 2;
-                const justificationIndex = i * 2 + 1;
-
-                const rating = watchedData[ratingIndex];
-                const justification = watchedData[justificationIndex];
-
-                const hasRating = typeof rating === 'number' && rating > 0;
-                const hasJustification = typeof justification === 'string' && justification.trim().length > 0;
-
-                if (!hasRating || !hasJustification) {
-                    incompleteCount++;
-                }
-            }
-
-            return incompleteCount;
-        }, [watchedData, fieldIndices.length, criteria.length]);
+        const incompleteCriteriaCount = getIncompleteCriteriaCountForPillar(criteria, validFields);
+        const hasPendingIA = getHasPendingIAForPillar(criteria, validFields);
 
         const completedCriteriaCount = criteria.length - incompleteCriteriaCount;
 
         const toggleMinimized = () => {
+
+            if (hasPendingIA && isOpen) {
+                return;
+            }
+            
             let newArray: string[];
             if (isOpen) {
                 newArray = openArray.filter(id => id !== pillarId);
@@ -89,11 +58,17 @@ export const PillarSection = memo(({ pillarTitle, criteria, validFields }: Pilla
             setPillarOpenList(newArray.join(','));
         };
 
-        useEffect(() => {}, [pillarOpenList]);
+        const isOpen = openArray.includes(pillarId) || hasPendingIA;
+
+        useEffect(() => {
+            if (hasPendingIA && !openArray.includes(pillarId)) {
+                const newArray = [...openArray, pillarId];
+                setPillarOpenList(newArray.join(','));
+            }
+        }, [hasPendingIA, pillarId, openArray, setPillarOpenList]);
 
         return (
-            <CollapsibleCardSection
-                title={`Critérios de ${pillarTitle}`}
+            <CollapsibleCardSection title={`Critérios de ${pillarTitle}`} className="pt-14 p-10 mb-5"
                 notificationBadge={
                     <NotificationBadge
                         show={incompleteCriteriaCount > 0}
@@ -111,9 +86,8 @@ export const PillarSection = memo(({ pillarTitle, criteria, validFields }: Pilla
                         </span>
                     </div>
                 }
-                defaultOpen={isOpen}
+                isOpen={isOpen}
                 onHeaderClick={toggleMinimized}
-                className="pt-14 p-10 mb-5"
             >
                 <div className="space-y-4">
                     {criteria.map((criterion: Criterion, index: number) => {

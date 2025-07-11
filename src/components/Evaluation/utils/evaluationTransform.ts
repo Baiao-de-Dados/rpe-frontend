@@ -21,7 +21,6 @@ export interface TransformedEvaluationData {
         avaliadoId: string;
         pontosFortes: string;
         pontosMelhoria: string;
-        justificativa: string;
     }>;
     mentoring: Array<{
         mentorId: string;
@@ -60,7 +59,6 @@ export const transformFormData = (data: EvaluationFormData, ciclo: string, colab
             avaliadoId: evaluation.collaboratorId,
             pontosFortes: evaluation.strengths,
             pontosMelhoria: evaluation.improvements,
-            justificativa: 'Justifique sua nota',
         })) || [];
 
     const mentoring = data.mentoringRating && data.mentoringJustification && data.mentorId ? [{

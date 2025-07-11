@@ -9,6 +9,8 @@ interface TextAreaWithTitleProps {
     error?: string;
     maxLength?: number;
     readOnly?: boolean;
+    className?: string;
+    minHeight?: string;
 }
 
 const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
@@ -19,6 +21,8 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
     error,
     maxLength,
     readOnly,
+    className = '',
+    minHeight = 'h-21',
 }) => {
     const currentLength = value?.length || 0;
 
@@ -57,7 +61,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
             </div>
             <textarea
                 id={textareaId}
-                className={`w-full h-21 p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none ${getBorderColor()} ${readonlyClass}`}
+                className={`w-full ${minHeight} p-2 border-2 rounded-md text-sm text-gray-600 placeholder-gray-400 focus:outline-none resize-none ${readonlyClass} ${getBorderColor()} ${className}`}
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}

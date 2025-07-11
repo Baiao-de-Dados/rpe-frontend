@@ -65,7 +65,13 @@ export const Evaluation360Section = memo(() => {
     );
 
     const addCollaborator = useCallback((collaborator: Collaborator) => {
-            append({collaboratorId: collaborator.id, rating: null, strengths: '', improvements: ''});
+            append({
+                collaboratorId: collaborator.id, 
+                rating: null, 
+                strengths: '', 
+                improvements: '',
+                evaluation360IAValid: true
+            });
             setSearchQuery('');
         },
         [append, setSearchQuery],
@@ -121,7 +127,10 @@ export const Evaluation360Section = memo(() => {
 
                             return (
                                 <AnimatedCard key={`eval360-${field.collaboratorId}`} index={validIndex}>
-                                    <Evaluation360 collaborator={collaborator} name={fieldName}
+                                    <Evaluation360 
+                                        collaborator={collaborator} 
+                                        name={fieldName}
+                                        index={originalIndex}
                                         onRemove={() =>
                                             removeCollaborator(
                                                 field.collaboratorId,

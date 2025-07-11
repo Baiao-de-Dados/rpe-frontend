@@ -20,6 +20,7 @@ import { Evolucao } from '../pages/Evolucao';
 import { Configuracoes } from '../pages/Configuracoes';
 import { Avaliacao } from '../pages/Avaliacao';
 import { ImportarHistoricos } from '../pages/ImportarHistorico';
+import Anotacoes  from '../pages/Colaborador/Anotacoes';
 import BrutalFactsPage  from '../pages/BrutalFacts';
 import LoginPage from '../pages/Login';
 
@@ -166,6 +167,18 @@ export function Router() {
                                 <Lideranca />
                             </MultiRoleRoute>
                         }
+                    />
+                     <Route path="anotacoes" 
+                        element={
+                            <RoleRoute requiredRoles={[
+                                    UserRoleEnum.MENTOR,
+                                    UserRoleEnum.RH,
+                                    UserRoleEnum.ADMIN,
+                                    UserRoleEnum.DEVELOPER,
+                            ]}>
+                                <Anotacoes />
+                            </RoleRoute>
+                    } 
                     />
                     <Route path="brutalfacts"
                         element={

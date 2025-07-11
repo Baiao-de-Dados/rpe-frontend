@@ -1,5 +1,6 @@
 import { Trash } from 'lucide-react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import { motion } from 'framer-motion';
 
 import StarRating from '../../common/StarRating';
 import CardContainer from '../../common/CardContainer';
@@ -7,6 +8,8 @@ import RatingDisplay from '../../common/RatingDisplay';
 import { ErrorMessage } from '../../common/ErrorMessage';
 import CollaboratorCard from '../../common/CollaboratorCard';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+import IAValidateActions from '../../common/IAValidateActions';
+import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 import type { Collaborator } from '../../../data/mockCollaborators';
 
@@ -14,15 +17,44 @@ interface Evaluation360Props {
     collaborator: Collaborator;
     onRemove: () => void;
     name: string;
+    index: number;
 }
 
-const Evaluation360 = ({ collaborator, onRemove, name, }: Evaluation360Props) => {
+const Evaluation360 = ({ collaborator, onRemove, name, index }: Evaluation360Props) => {
 
-    const { control } = useFormContext();
+    const { control, setValue } = useFormContext();
+    const { optimizedTransition } = useOptimizedAnimation();
+
+    const watchedEvaluation360IAValid = useWatch({
+        control,
+        name: `evaluation360.${index}.evaluation360IAValid`
+    });
+
+    const handleCheck = () => {
+        setValue(`evaluation360.${index}.evaluation360IAValid`, true, { shouldValidate: true });
+    };
+
+    const handleCancel = () => {
+        setValue(`evaluation360.${index}.evaluation360IAValid`, true, { shouldValidate: true });
+        setValue(`evaluation360.${index}.rating`, null);
+        setValue(`evaluation360.${index}.strengths`, '');
+        setValue(`evaluation360.${index}.improvements`, '');
+    };
 
     return (
-        <CardContainer>
-            <div className="flex items-center justify-between mb-4">
+        <motion.div layout transition={optimizedTransition}>
+            <CardContainer>
+                <Controller name={`evaluation360.${index}.evaluation360IAValid`} control={control}
+                    render={({ field }) => (
+                        <input type="hidden" {...field} value={(watchedEvaluation360IAValid ?? true) ? 'true' : 'false'} />
+                    )}
+                />
+
+                {!(watchedEvaluation360IAValid ?? true) && (
+                    <IAValidateActions onCheck={handleCheck} onCancel={handleCancel} />
+                )}
+
+                <div className="flex items-center justify-between mb-4">
                 <CollaboratorCard collaborator={collaborator} variant="compact"/>
                 <div className="flex items-center gap-2">
                     <Controller name={`${name}.rating`} control={control}
@@ -72,6 +104,7 @@ const Evaluation360 = ({ collaborator, onRemove, name, }: Evaluation360Props) =>
                 </div>
             </div>
         </CardContainer>
+        </motion.div>
     );
 };
 

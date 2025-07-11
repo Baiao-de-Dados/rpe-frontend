@@ -1,9 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
-
 import { useCycle } from '../../hooks/useCycle';
+import { useEvaluationFormPopulation } from '../../hooks/useEvaluationFormPopulation';
+
+import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
 
 import CycleLoading from '../../components/common/CycleLoading';
 import AllEvaluation from '../../components/Evaluation/AllEvaluation';
@@ -19,6 +20,8 @@ export function CollaboratorAvaliacao() {
         resolver: zodResolver(fullEvaluationSchema),
         mode: 'onSubmit',
     });
+
+    useEvaluationFormPopulation(methods);
 
     if (isLoading) {
         return <CycleLoading />;
