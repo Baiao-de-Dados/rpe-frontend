@@ -3,24 +3,14 @@ import { useAuth } from '../../hooks/useAuth';
 import { UserRoleEnum } from '../../types/auth';
 import { ManagerAvaliacao } from './ManagerAvaliacao';
 import { LeaderAvaliacao } from './LeaderAvaliacao';
-
-// Componente para Committee/RH (view-only das avaliações)
-export function CommitteeAvaliacao() {
-    // TODO: Implementar visualização read-only para Committee/RH
-    return (
-        <div className="p-8">
-            <h1>Visualização de Avaliações - Committee/RH</h1>
-            <p>Em desenvolvimento: visualização read-only das avaliações</p>
-        </div>
-    );
-}
+import { CommitteeAvaliacao } from './CommitteeAvaliacao';
 
 export function AvaliacaoIndividual() {
     const { hasRole } = useAuth();
     const { collaboratorId } = useParams<{ collaboratorId: string }>();
 
     // Manager - Formulário de avaliação de gestor
-    if (hasRole(UserRoleEnum.MANAGER)) {
+    if (hasRole(UserRoleEnum.RH)) {
         return <ManagerAvaliacao collaboratorId={collaboratorId || ''} />;
     }
 
@@ -29,9 +19,9 @@ export function AvaliacaoIndividual() {
         return <LeaderAvaliacao collaboratorId={collaboratorId || ''} />;
     }
 
-    // Committee/RH - Visualização read-only
+    // Committee/RH - Visualização e equalização
     if (hasRole(UserRoleEnum.COMMITTEE) || hasRole(UserRoleEnum.RH)) {
-        return <CommitteeAvaliacao />;
+        return <CommitteeAvaliacao collaboratorId={collaboratorId || ''} />;
     }
 
     // Default - não deveria chegar aqui

@@ -15,6 +15,8 @@ interface ManagerAssessmentProps {
     // Dados do colaborador (read-only)
     collaboratorRating?: number | null;
     collaboratorJustification?: string;
+    // Modo somente leitura
+    isReadOnly?: boolean;
 }
 
 const ManagerAssessment = memo(({ 
@@ -23,7 +25,8 @@ const ManagerAssessment = memo(({
     topicNumber, 
     isLast = false,
     collaboratorRating,
-    collaboratorJustification
+    collaboratorJustification,
+    isReadOnly = false
 }: ManagerAssessmentProps) => {
 
     const { control } = useFormContext();
@@ -127,18 +130,27 @@ const ManagerAssessment = memo(({
                             </div>
                         </div>
 
-                        {/* Coluna do Mentor (Editável) */}
+                        {/* Coluna do Mentor (Editável ou Read-only) */}
                         <div>
                             <Controller name={`${name}.rating`} control={control}
                                 render={({ field, fieldState }) => (
                                     <div className="mb-4 sm:mb-6">
                                         <div className="flex items-center justify-between mb-2 sm:mb-3">
                                             <Typography variant="body" color="primary" className="font-medium text-sm sm:text-base">
-                                                Dê uma avaliação de 1 a 5 com base no critério
+                                                {isReadOnly ? 'Avaliação do gestor' : 'Dê uma avaliação de 1 a 5 com base no critério'}
                                             </Typography>
-                                            <ErrorMessage error={fieldState.error?.message} />
+                                            {!isReadOnly && <ErrorMessage error={fieldState.error?.message} />}
                                         </div>
-                                        <StarRating value={field.value} onChange={field.onChange} />
+                                        {isReadOnly ? (
+                                            <div className="pointer-events-none opacity-70">
+                                                <StarRating 
+                                                    value={field.value ?? null} 
+                                                    onChange={() => {}} 
+                                                />
+                                            </div>
+                                        ) : (
+                                            <StarRating value={field.value} onChange={field.onChange} />
+                                        )}
                                     </div>
                                 )}
                             />
@@ -148,17 +160,25 @@ const ManagerAssessment = memo(({
                                     <div>
                                         <div className="flex items-center justify-between mb-2">
                                             <Typography variant="body" color="primary" className="font-medium text-sm sm:text-base">
-                                                Justifique sua nota
+                                                {isReadOnly ? 'Justificativa do gestor' : 'Justifique sua nota'}
                                             </Typography>
-                                            <ErrorMessage error={fieldState.error?.message} />
+                                            {!isReadOnly && <ErrorMessage error={fieldState.error?.message} />}
                                         </div>
-                                        <textarea
-                                            className="w-full h-24 sm:h-32 p-2 sm:p-3 border-2 border-gray-300 rounded-lg text-xs sm:text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-primary-500 resize-none"
-                                            placeholder="Justifique sua nota"
-                                            value={field.value || ''}
-                                            onChange={field.onChange}
-                                            maxLength={1000}
-                                        />
+                                        {isReadOnly ? (
+                                            <div className="bg-gray-100 rounded-lg p-2 sm:p-3 border border-gray-200 h-24 sm:h-32 overflow-y-auto">
+                                                <Typography variant="body" color="muted" className="text-xs sm:text-sm">
+                                                    {field.value || 'Nenhuma justificativa fornecida'}
+                                                </Typography>
+                                            </div>
+                                        ) : (
+                                            <textarea
+                                                className="w-full h-24 sm:h-32 p-2 sm:p-3 border-2 border-gray-300 rounded-lg text-xs sm:text-sm text-gray-600 placeholder-gray-400 focus:outline-none focus:border-primary-500 resize-none"
+                                                placeholder="Justifique sua nota"
+                                                value={field.value || ''}
+                                                onChange={field.onChange}
+                                                maxLength={1000}
+                                            />
+                                        )}
                                     </div>
                                 )}
                             />

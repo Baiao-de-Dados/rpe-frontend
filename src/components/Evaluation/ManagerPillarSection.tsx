@@ -26,13 +26,16 @@ interface ManagerPillarSectionProps {
         rating?: number | null;
         justification?: string;
     }>;
+    // Modo somente leitura
+    isReadOnly?: boolean;
 }
 
 export const ManagerPillarSection = memo(({ 
     pillarTitle, 
     criteria, 
     validFields,
-    collaboratorData = []
+    collaboratorData = [],
+    isReadOnly = false,
 }: ManagerPillarSectionProps) => {
 
     const [pillarOpenList, setPillarOpenList] = useQueryState('manager_pillar_open', {
@@ -149,6 +152,7 @@ export const ManagerPillarSection = memo(({
                             isLast={index === criteria.length - 1}
                             collaboratorRating={collaboratorCriterionData?.rating}
                             collaboratorJustification={collaboratorCriterionData?.justification}
+                            isReadOnly={isReadOnly}
                         />
                     );
                 })}
