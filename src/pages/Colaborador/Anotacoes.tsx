@@ -38,6 +38,7 @@ export default function Anotacoes() {
             <AnotacoesStepsModal
                 open={notes.isModalOpen}
                 steps={notes.steps}
+                error={notes.error}
                 avaliacaoSections={notes.evaluationSectionsToShow}
                 onCancel={notes.handleModalCancel}
                 onContinue={notes.handleModalContinue}

@@ -20,6 +20,7 @@ export function useNotes() {
     const { showToast } = useToast();
     const { currentCycle: { isActive } } = useCycle();
 
+    const [error, setError] = useState('');
     const [modalStep, setModalStep] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEvaluating, setIsEvaluating] = useState(false);
@@ -59,18 +60,19 @@ export function useNotes() {
 
         try {
             errorStep = 1;
-            await new Promise(r => setTimeout(r, 1000));
+
             if (abortControllerRef.current.signal.aborted) return;
 
-            const { geminiResponse, noInsight } = await evaluationAI(
+            const { geminiResponse, noInsight, error } = await evaluationAI(
                 data.text,
                 abortControllerRef.current.signal,
             );
 
             if (abortControllerRef.current.signal.aborted) return;
 
-            if (!geminiResponse && !noInsight) {
-                throw new Error('Resposta da IA inválida');
+            if (error) {
+                setError(error);
+                throw new Error(error);
             }
 
             setIsEvaluating(true);
@@ -85,11 +87,11 @@ export function useNotes() {
             }
 
             setModalStep(2);
-            setGeneratedEvaluation(geminiResponse);
+            setGeneratedEvaluation(geminiResponse.code === 'SUCCESS' ? geminiResponse : null);
 
             const sections: EvaluationSection[] = [];
 
-            if (geminiResponse) {
+            if (geminiResponse.code === 'SUCCESS') {
                 if (geminiResponse.selfAssessment?.length > 0) {
                     sections.push('Autoavaliação');
                 }
@@ -180,6 +182,7 @@ export function useNotes() {
     const canContinue = modalStep === 3 && !!generatedEvaluation && stepErrors.every(e => !e);
     const evaluationSectionsToShow = modalStep === 3 && stepErrors.every(e => !e) ? evaluationSections : [];
 
+
     return {
         isEvaluating,
         isModalOpen,
@@ -187,7 +190,8 @@ export function useNotes() {
         handleModalContinue,
         handleModalCancel,
         steps,
+        error,
         evaluationSectionsToShow,
-        canContinue,
+        canContinue
     };
 }

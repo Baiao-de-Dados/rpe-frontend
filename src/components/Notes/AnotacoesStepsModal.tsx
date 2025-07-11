@@ -18,6 +18,7 @@ interface Step {
 interface AnotacoesStepsModalProps {
     open: boolean;
     steps: Step[];
+    error?: string;
     onCancel: () => void;
     onClose?: () => void;
     onContinue: () => void;
@@ -26,7 +27,7 @@ interface AnotacoesStepsModalProps {
     wasAborted?: boolean;
 }
 
-function AnotacoesStepsModal({ open, steps, onCancel, onClose, onContinue, canContinue, avaliacaoSections = [], wasAborted = false }: AnotacoesStepsModalProps) {
+function AnotacoesStepsModal({ open, steps, error, onCancel, onClose, onContinue, canContinue, avaliacaoSections = [], wasAborted = false }: AnotacoesStepsModalProps) {
 
     const hasInsightError = open && steps[1]?.error;
     const hasConnectionError = open && steps[0]?.error && !wasAborted;
@@ -83,9 +84,7 @@ function AnotacoesStepsModal({ open, steps, onCancel, onClose, onContinue, canCo
                                         Erro ao se conectar com a IA
                                     </Typography>
                                     <Typography variant="body" className="text-2 text-gray-700 text-center">
-                                        Não foi possível se conectar ao serviço
-                                        de avaliação automática. Tente novamente
-                                        em instantes.
+                                        {error}
                                     </Typography>
                                 </div>
                             )}
@@ -101,7 +100,7 @@ function AnotacoesStepsModal({ open, steps, onCancel, onClose, onContinue, canCo
                                     </Typography>
                                 </div>
                             )}
-                            {!hasConnectionError && !hasInsightError && avaliacaoSections.length === 0 && (
+                            {!hasConnectionError && !hasInsightError && !error && avaliacaoSections.length === 0 && (
                                 <div className="flex items-center justify-center">
                                     <Loader2 className="h-10 w-10 animate-spin text-primary-500" />
                                 </div>

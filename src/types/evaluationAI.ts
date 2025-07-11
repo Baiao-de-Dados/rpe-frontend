@@ -23,6 +23,7 @@ export interface ReferencesItem {
 }
 
 export interface GeminiEvaluationResponse {
+    code: 'SUCCESS';
     selfAssessment: SelfSelfAssessmentItem[];
     evaluation360: Evaluation360Item[];
     mentoring: MentoringItem | null;
@@ -33,7 +34,15 @@ export interface GeminiNoInsightResponse {
     code: 'NO_INSIGHT';
 }
 
-export interface IAEvaluationServiceResponse {
-    geminiResponse: GeminiEvaluationResponse | null;
+export interface GeminiErrorResponse {
+    code: 'ERROR';
+    error: string;
+}
+
+export type GeminiResponse = GeminiEvaluationResponse | GeminiNoInsightResponse | GeminiErrorResponse;
+
+export type IAEvaluationServiceResponse = { 
+    geminiResponse: GeminiResponse;
     noInsight: boolean;
+    error?: string;
 }
