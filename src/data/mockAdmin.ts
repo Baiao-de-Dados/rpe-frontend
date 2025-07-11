@@ -1,3 +1,37 @@
+export interface UserExtra {
+    email: string;
+    name: string;
+    position?: string;
+    track?: string;
+    primaryRole?: string;
+}
+
+export interface ProjectPerson {
+    email: string;
+    startDate: string;
+    endDate?: string | null;
+}
+
+export interface ProjectType {
+    name: string;
+    manager: ProjectPerson;
+    leaders: ProjectPerson[];
+    collaborators: ProjectPerson[];
+}
+
+export type AuditLogAction = 'LOGIN' | 'EXPORT_EVALUATIONS' | 'UNAUTHORIZED_ACCESS';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AuditLogMetadata = Record<string, any>;
+
+export interface AuditLogEntry {
+    id: number;
+    userId: number;
+    action: AuditLogAction;
+    metadata: AuditLogMetadata;
+    createdAt: string;
+}
+
 export const mockERP = {
     users: [
         {
@@ -394,21 +428,433 @@ export const mockERP = {
     ]
 };
 
-export interface UserExtra {
-    email: string;
-    name: string;
-    position?: string;
-    track?: string;
-    primaryRole?: string;
-}
-export interface ProjectPerson {
-    email: string;
-    startDate: string;
-    endDate?: string | null;
-}
-export interface ProjectType {
-    name: string;
-    manager: ProjectPerson;
-    leaders: ProjectPerson[];
-    collaborators: ProjectPerson[];
-}
+export const mockAuditLogs: AuditLogEntry[] = [
+    {
+        id: 1,
+        userId: 42,
+        action: 'LOGIN',
+        metadata: {
+            ip: '192.168.0.1',
+            userAgent: 'Mozilla/5.0',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-10T14:30:00.000Z',
+    },
+    {
+        id: 2,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'csv',
+        },
+        createdAt: '2025-07-10T15:00:00.000Z',
+    },
+    {
+        id: 3,
+        userId: 99,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '192.168.0.2',
+            attemptedUrl: '/admin/secret',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-10T15:05:00.000Z',
+    },
+    {
+        id: 4,
+        userId: 17,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.5',
+            userAgent: 'Mozilla/5.0 (Linux)',
+            details: 'Login failed: wrong password',
+        },
+        createdAt: '2025-07-11T08:10:00.000Z',
+    },
+    {
+        id: 5,
+        userId: 21,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'gestor@empresa.com',
+            exportType: 'xlsx',
+        },
+        createdAt: '2025-07-11T09:00:00.000Z',
+    },
+    {
+        id: 6,
+        userId: 42,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '192.168.0.1',
+            attemptedUrl: '/admin/delete',
+            reason: 'Attempted to delete user without permission',
+        },
+        createdAt: '2025-07-11T09:15:00.000Z',
+    },
+    {
+        id: 7,
+        userId: 17,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.5',
+            userAgent: 'Mozilla/5.0 (Linux)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T09:30:00.000Z',
+    },
+    {
+        id: 8,
+        userId: 21,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'gestor@empresa.com',
+            exportType: 'pdf',
+        },
+        createdAt: '2025-07-11T10:00:00.000Z',
+    },
+    {
+        id: 9,
+        userId: 99,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '192.168.0.2',
+            attemptedUrl: '/admin/settings',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T10:05:00.000Z',
+    },
+    {
+        id: 10,
+        userId: 42,
+        action: 'LOGIN',
+        metadata: {
+            ip: '192.168.0.1',
+            userAgent: 'Mozilla/5.0',
+            details: 'Logout',
+        },
+        createdAt: '2025-07-11T10:10:00.000Z',
+    },
+    {
+        id: 11,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T10:20:00.000Z',
+    },
+    {
+        id: 12,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'csv',
+        },
+        createdAt: '2025-07-11T10:30:00.000Z',
+    },
+    {
+        id: 13,
+        userId: 17,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '10.0.0.5',
+            attemptedUrl: '/admin/logs',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T10:35:00.000Z',
+    },
+    {
+        id: 14,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login failed: wrong password',
+        },
+        createdAt: '2025-07-11T10:40:00.000Z',
+    },
+    {
+        id: 15,
+        userId: 99,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'user@empresa.com',
+            exportType: 'pdf',
+        },
+        createdAt: '2025-07-11T10:45:00.000Z',
+    },
+    {
+        id: 16,
+        userId: 17,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '10.0.0.5',
+            attemptedUrl: '/admin/export',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T10:50:00.000Z',
+    },
+    {
+        id: 17,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T10:55:00.000Z',
+    },
+    {
+        id: 18,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'xlsx',
+        },
+        createdAt: '2025-07-11T11:00:00.000Z',
+    },
+    {
+        id: 19,
+        userId: 99,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '192.168.0.2',
+            attemptedUrl: '/admin/monitor',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T11:05:00.000Z',
+    },
+    {
+        id: 20,
+        userId: 17,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.5',
+            userAgent: 'Mozilla/5.0 (Linux)',
+            details: 'Logout',
+        },
+        createdAt: '2025-07-11T11:10:00.000Z',
+    },
+    {
+        id: 21,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T11:15:00.000Z',
+    },
+    {
+        id: 22,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'csv',
+        },
+        createdAt: '2025-07-11T11:20:00.000Z',
+    },
+    {
+        id: 23,
+        userId: 17,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '10.0.0.5',
+            attemptedUrl: '/admin/usuarios',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T11:25:00.000Z',
+    },
+    {
+        id: 24,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login failed: wrong password',
+        },
+        createdAt: '2025-07-11T11:30:00.000Z',
+    },
+    {
+        id: 25,
+        userId: 99,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'user@empresa.com',
+            exportType: 'pdf',
+        },
+        createdAt: '2025-07-11T11:35:00.000Z',
+    },
+    {
+        id: 26,
+        userId: 17,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '10.0.0.5',
+            attemptedUrl: '/admin/relatorios',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T11:40:00.000Z',
+    },
+    {
+        id: 27,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T11:45:00.000Z',
+    },
+    {
+        id: 28,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'xlsx',
+        },
+        createdAt: '2025-07-11T11:50:00.000Z',
+    },
+    {
+        id: 29,
+        userId: 99,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '192.168.0.2',
+            attemptedUrl: '/admin/monitor',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T11:55:00.000Z',
+    },
+    {
+        id: 30,
+        userId: 17,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.5',
+            userAgent: 'Mozilla/5.0 (Linux)',
+            details: 'Logout',
+        },
+        createdAt: '2025-07-11T12:00:00.000Z',
+    },
+    {
+        id: 31,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T12:05:00.000Z',
+    },
+    {
+        id: 32,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'csv',
+        },
+        createdAt: '2025-07-11T12:10:00.000Z',
+    },
+    {
+        id: 33,
+        userId: 17,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '10.0.0.5',
+            attemptedUrl: '/admin/usuarios',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T12:15:00.000Z',
+    },
+    {
+        id: 34,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login failed: wrong password',
+        },
+        createdAt: '2025-07-11T12:20:00.000Z',
+    },
+    {
+        id: 35,
+        userId: 99,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'user@empresa.com',
+            exportType: 'pdf',
+        },
+        createdAt: '2025-07-11T12:25:00.000Z',
+    },
+    {
+        id: 36,
+        userId: 17,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '10.0.0.5',
+            attemptedUrl: '/admin/relatorios',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T12:30:00.000Z',
+    },
+    {
+        id: 37,
+        userId: 21,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.6',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0)',
+            details: 'Login successful',
+        },
+        createdAt: '2025-07-11T12:35:00.000Z',
+    },
+    {
+        id: 38,
+        userId: 42,
+        action: 'EXPORT_EVALUATIONS',
+        metadata: {
+            exportedBy: 'admin@empresa.com',
+            exportType: 'xlsx',
+        },
+        createdAt: '2025-07-11T12:40:00.000Z',
+    },
+    {
+        id: 39,
+        userId: 99,
+        action: 'UNAUTHORIZED_ACCESS',
+        metadata: {
+            ip: '192.168.0.2',
+            attemptedUrl: '/admin/monitor',
+            reason: 'User does not have admin privileges',
+        },
+        createdAt: '2025-07-11T12:45:00.000Z',
+    },
+    {
+        id: 40,
+        userId: 17,
+        action: 'LOGIN',
+        metadata: {
+            ip: '10.0.0.5',
+            userAgent: 'Mozilla/5.0 (Linux)',
+            details: 'Logout',
+        },
+        createdAt: '2025-07-11T12:50:00.000Z',
+    },
+];
