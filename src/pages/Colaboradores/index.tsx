@@ -13,7 +13,7 @@ import { Filter } from 'lucide-react';
 type BadgeVariant = 'default' | 'success' | 'warning';
 
 const mockEvaluations: Record<
-    string,
+    number,
     {
         autoavaliacao?: number;
         avaliacao360?: number;
@@ -23,7 +23,7 @@ const mockEvaluations: Record<
         statusVariant: BadgeVariant;
     }
 > = {
-    'colab-001': {
+    1 : {
         autoavaliacao: 4.3,
         avaliacao360: 4.1,
         notaGestor: 4.4,
@@ -31,12 +31,12 @@ const mockEvaluations: Record<
         status: 'Finalizado',
         statusVariant: 'success',
     },
-    'colab-002': {
+    2 : {
         autoavaliacao: 3.9,
         status: 'Pendente',
         statusVariant: 'warning',
     },
-    'colab-003': {
+    3 : {
         autoavaliacao: 4.5,
         avaliacao360: 4.3,
         notaGestor: 4.6,
@@ -44,13 +44,13 @@ const mockEvaluations: Record<
         status: 'Finalizado',
         statusVariant: 'success',
     },
-    'colab-004': {
+    4 : {
         autoavaliacao: 3.2,
         avaliacao360: 3.4,
         status: 'Pendente',
         statusVariant: 'warning',
     },
-    'colab-005': {
+    5 : {
         autoavaliacao: 4.0,
         avaliacao360: 4.0,
         notaGestor: 4.1,

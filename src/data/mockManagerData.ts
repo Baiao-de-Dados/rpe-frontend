@@ -3,7 +3,7 @@
 type BadgeVariant = 'default' | 'success' | 'warning';
 
 export const mockManagerEvaluations: Record<
-    string,
+    number ,
     {
         autoavaliacao?: number;
         notaLider?: number;
@@ -12,35 +12,35 @@ export const mockManagerEvaluations: Record<
         statusVariant: BadgeVariant;
     }
 > = {
-    'colab-001': {
+    1 : {
         autoavaliacao: 4.3,
         notaLider: 4.2,
         notaGestor: 4.4, // Gestor já avaliou
         status: 'Finalizado',
         statusVariant: 'success',
     },
-    'colab-002': {
+    2 : {
         autoavaliacao: 3.9,
         notaLider: 3.8,
         // Sem notaGestor - ainda não avaliou
         status: 'Pendente',
         statusVariant: 'warning',
     },
-    'colab-003': {
+    3 : {
         autoavaliacao: 4.5,
         notaLider: 4.3,
         notaGestor: 4.6, // Gestor já avaliou
         status: 'Finalizado',
         statusVariant: 'success',
     },
-    'colab-004': {
+    4 : {
         autoavaliacao: 3.2,
         notaLider: 3.4,
         // Sem notaGestor - ainda não avaliou
         status: 'Pendente',
         statusVariant: 'warning',
     },
-    'colab-005': {
+    5 : {
         autoavaliacao: 4.0,
         notaLider: 4.0,
         notaGestor: 4.1, // Gestor já avaliou
