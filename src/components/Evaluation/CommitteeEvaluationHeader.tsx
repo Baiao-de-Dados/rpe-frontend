@@ -12,7 +12,7 @@ interface CommitteeEvaluationHeaderProps {
     onSectionChange: (section: CommitteeSectionType) => void;
     sections: CommitteeSectionType[];
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;

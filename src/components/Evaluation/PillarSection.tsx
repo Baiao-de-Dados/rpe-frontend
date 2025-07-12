@@ -15,7 +15,7 @@ interface PillarSectionProps {
     pillarTitle: string;
     criteria: Criterion[];
     validFields: Array<{
-        id: string;
+        id: number;
         pilarId: number;
         criterionId: number;
         index: number;

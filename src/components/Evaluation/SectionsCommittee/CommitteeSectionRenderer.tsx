@@ -52,15 +52,15 @@ const EqualizationSection = () => (
 interface CommitteeSectionRendererProps {
     activeSection: CommitteeSectionType;
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
         avatar?: string;
     };
     collaboratorSelfAssessment?: Array<{
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
@@ -107,21 +107,21 @@ export function CommitteeSectionRenderer({
             case 'Mentoring':
                 return (
                     <ManagerMentoringEvaluationSection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator?.id || 0}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );
             case 'Líderes':
                 return (
                     <ManagerLeaderEvaluationSection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator?.id || 0}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );
             case 'Histórico':
                 return (
                     <CollaboratorHistorySection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator?.id || 0}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );

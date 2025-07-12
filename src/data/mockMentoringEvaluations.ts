@@ -20,8 +20,8 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         mentorName: 'Colaborador 1',
         menteeId: 5,
         menteeName: 'Ana Silva',
-        menteeCargo: 'Product Manager', // <- Novo campo
-        cycleId: 20241,
+        menteeCargo: 'Product Manager',
+        cycleId: 1,
         cycleName: '2024.1',
         rating: 4.5,
         justification: 'Excelente mentor, sempre disponível para ajudar e compartilhar conhecimento. Suas orientações foram fundamentais para meu desenvolvimento.',
@@ -34,8 +34,8 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         mentorName: 'Colaborador 1',
         menteeId: 6,
         menteeName: 'João Costa',
-        menteeCargo: 'UX Designer', // <- Novo campo
-        cycleId: 20241,
+        menteeCargo: 'UX Designer',
+        cycleId: 1,
         cycleName: '2024.1',
         rating: 4.8,
         justification: 'Mentor excepcional! Tem uma didática incrível e sempre me motivou a buscar soluções criativas. Aprendi muito com ele.',
@@ -48,8 +48,8 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         mentorName: 'Colaborador 3',
         menteeId: 7,
         menteeName: 'Lucas Oliveira',
-        menteeCargo: 'Frontend Developer', // <- Novo campo
-        cycleId: 20241,
+        menteeCargo: 'Frontend Developer',
+        cycleId: 1,
         cycleName: '2024.1',
         rating: 4.2,
         justification: 'Ótimo mentor, me ajudou muito no desenvolvimento técnico e pessoal. Sempre paciente e disposto a explicar os conceitos.',
@@ -62,8 +62,8 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         mentorName: 'Colaborador 2',
         menteeId: 8,
         menteeName: 'Fernanda Lima',
-        menteeCargo: 'Data Analyst', // <- Novo campo
-        cycleId: 20241,
+        menteeCargo: 'Data Analyst',
+        cycleId: 1,
         cycleName: '2024.1',
         rating: 4.0,
         justification: 'Bom mentor, me orientou bem nas questões técnicas. Poderia ser mais proativo em acompanhar o progresso.',

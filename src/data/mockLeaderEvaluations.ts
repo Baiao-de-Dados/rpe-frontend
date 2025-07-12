@@ -5,7 +5,7 @@ export interface LeaderEvaluation {
     leaderName: string;
     leaderImage?: string;
     leaderAvatar?: string;
-    cycleId?: string;
+    cycleId?: number;
     cycleName: string;
     generalRating: number;
     generalJustification: string;
@@ -22,7 +22,7 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         leaderId: 1,
         leaderName: 'Ana Silva',
         leaderImage: '/avatars/ana-silva.jpg',
-        cycleId: 'cycle-2024-1',
+        cycleId: 1,
         cycleName: '2024.1',
         generalRating: 4.2,
         generalJustification: 'Colaborador demonstra excelente capacidade técnica e boa comunicação com a equipe. Tem se destacado nas entregas e no cumprimento de prazos.',
@@ -37,7 +37,7 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         leaderId: 1,
         leaderName: 'Ana Silva',
         leaderImage: '/avatars/ana-silva.jpg',
-        cycleId: 'cycle-2024-1',
+        cycleId: 1,
         cycleName: '2024.1',
         generalRating: 3.8,
         generalJustification: 'Colaborador tem boa performance técnica, mas precisa melhorar aspectos de liderança e comunicação.',
@@ -52,7 +52,7 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         leaderId: 2,
         leaderName: 'Carlos Mendes',
         leaderImage: '/avatars/carlos-mendes.jpg',
-        cycleId: 'cycle-2024-1',
+        cycleId: 1,
         cycleName: '2024.1',
         generalRating: 4.5,
         generalJustification: 'Excelente colaborador, demonstra maturidade técnica e ótimas habilidades interpessoais.',
@@ -67,7 +67,7 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         leaderId: 2,
         leaderName: 'Carlos Mendes',
         leaderImage: '/avatars/carlos-mendes.jpg',
-        cycleId: 'cycle-2024-1',
+        cycleId: 1,
         cycleName: '2024.1',
         generalRating: 3.5,
         generalJustification: 'Colaborador em desenvolvimento, mostra potencial mas precisa de mais experiência.',

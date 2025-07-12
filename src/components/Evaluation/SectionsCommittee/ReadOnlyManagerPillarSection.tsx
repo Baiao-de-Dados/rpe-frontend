@@ -12,14 +12,14 @@ interface ReadOnlyManagerPillarSectionProps {
     pillarTitle: string;
     criteria: Criterion[];
     validFields: Array<{
-        id: string;
-        pilarId: string;
-        criterionId: string;
+        id: number;
+        pilarId: number;
+        criterionId: number;
         index: number;
     }>;
     // Dados do colaborador (read-only)
     collaboratorData?: Array<{
-        criterionId: string;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
@@ -52,7 +52,7 @@ export const ReadOnlyManagerPillarSection = memo(({
     useEffect(() => {}, [pillarOpenList]);
 
     // Função para buscar os dados do colaborador para um critério específico
-    const getCollaboratorDataForCriterion = (criterionId: string) => {
+    const getCollaboratorDataForCriterion = (criterionId: number) => {
         return collaboratorData.find(data => data.criterionId === criterionId);
     };
 

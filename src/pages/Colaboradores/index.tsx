@@ -105,7 +105,7 @@ export function Colaboradores() {
         : collaboratorsByRole;
 
     // Definir rota de navegação - TODOS usam a mesma rota
-    const getNavigationRoute = (collaboratorId: string) => {
+    const getNavigationRoute = (collaboratorId: number) => {
         return `/colaboradores/${collaboratorId}/avaliacao`;
     };
 
@@ -175,7 +175,7 @@ export function Colaboradores() {
                                         evalData.statusVariant || 'default',
                                 }}
                                 evaluationFields={evaluationFields}
-                                onClick={() => navigate(getNavigationRoute(String(colab.id)))}
+                                onClick={() => navigate(getNavigationRoute(colab.id))}
                                 className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                             />
                         );

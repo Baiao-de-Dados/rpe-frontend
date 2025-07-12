@@ -52,10 +52,10 @@ export const ManagerSelfAssessmentSection = memo(({
             }))
         );
         
-        return fields.map((field, index) => ({
-            id: field.id,
-            pilarId: allCriteria[index]?.pilarId || '',
-            criterionId: allCriteria[index]?.criterionId || '',
+        return fields.map((_, index) => ({
+            id: index,
+            pilarId: allCriteria[index]?.pilarId || 0,
+            criterionId: allCriteria[index]?.criterionId || 0,
             index: index,
         }));
     }, [fields]);

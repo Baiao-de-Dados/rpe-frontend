@@ -23,7 +23,7 @@ export function AvaliacaoIndividual() {
 
     // Committee/RH - Visualização e equalização
     if (hasRole(UserRoleEnum.COMMITTEE) || hasRole(UserRoleEnum.RH)) {
-        return <CommitteeAvaliacao collaboratorId={collaboratorId || ''} />;
+        return <CommitteeAvaliacao collaboratorId={Number(collaboratorId)} />;
     }
 
     // Default - não deveria chegar aqui

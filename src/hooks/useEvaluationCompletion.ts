@@ -37,7 +37,7 @@ export function useEvaluationCompletion() {
     const getIncompleteCriteriaCountForPillar = (
         criteria: Criterion[],
         validFields: Array<{
-            id: string;
+            id: number;
             pilarId: number;
             criterionId: number;
             index: number;
@@ -156,7 +156,7 @@ export function useEvaluationCompletion() {
     const getHasPendingIAForPillar = (
         criteria: Criterion[],
         validFields: Array<{
-            id: string;
+            id: number;
             pilarId: number;
             criterionId: number;
             index: number;

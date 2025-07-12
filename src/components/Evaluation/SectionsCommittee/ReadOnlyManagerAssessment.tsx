@@ -9,13 +9,13 @@ interface ReadOnlyManagerAssessmentProps {
     criterion: Criterion;
     // Dados do colaborador (read-only)
     collaboratorData?: {
-        criterionId: string;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     };
     // Dados do gestor (read-only)
     managerData?: {
-        criterionId: string;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     };

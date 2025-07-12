@@ -9,7 +9,7 @@ import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluat
 interface ManagerPillarRatingDisplayProps {
     criteria: Criterion[];
     validFields: Array<{
-        id: string;
+        id: number;
         pilarId: number;
         criterionId: number;
         index: number;

@@ -4,20 +4,20 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { CommitteeEvaluationForm } from '../../components/Evaluation/CommitteeEvaluationForm';
 import { mockCollaborators } from '../../data/mockCollaborators';
 
-export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: string }) {
+export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     
     // Mock do colaborador selecionado
     const collaborator = mockCollaborators.find(c => c.id === collaboratorId) || {
-        id: '',
+        id: 0,
         nome: 'Colaborador não encontrado',
         cargo: '',
     };
 
     // Mock da autoavaliação do colaborador
     const mockSelfAssessment = [
-        { pilarId: 'comportamento', criterionId: 'criterio1', rating: 4, justification: 'Autoavaliação do colaborador para critério 1.' },
-        { pilarId: 'comportamento', criterionId: 'criterio2', rating: 3, justification: 'Autoavaliação do colaborador para critério 2.' },
+        { pilarId: 1, criterionId: 1, rating: 4, justification: 'Autoavaliação do colaborador para critério 1.' },
+        { pilarId: 1, criterionId: 2, rating: 3, justification: 'Autoavaliação do colaborador para critério 2.' },
     ];
 
     // Mock de avaliações 360

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Filters } from '../../components/common/AdvancedFilter';
 
 interface EvaluationData {
-    id: string;
+    id: number;
     collaboratorName: string;
     position: string;
     status: 'Finalizado' | 'Em andamento';
@@ -32,7 +32,7 @@ const Equalizacao: React.FC = () => {
     // Mock data - em produção, isso viria de uma API
     const mockEvaluations: EvaluationData[] = [
         {
-            id: '1',
+            id: 1,
             collaboratorName: 'João Silva',
             position: 'Desenvolvedor Senior',
             status: 'Finalizado',
@@ -43,7 +43,7 @@ const Equalizacao: React.FC = () => {
             summary: 'Colaborador demonstrou excelente desempenho técnico e liderança.'
         },
         {
-            id: '2',
+            id: 2,
             collaboratorName: 'Maria Santos',
             position: 'Product Manager',
             status: 'Em andamento',
@@ -54,7 +54,7 @@ const Equalizacao: React.FC = () => {
             summary: 'Bom desempenho geral com oportunidades de melhoria em comunicação.'
         },
         {
-            id: '3',
+            id: 3,
             collaboratorName: 'Pedro Oliveira',
             position: 'Designer UX/UI',
             status: 'Finalizado',
@@ -65,7 +65,7 @@ const Equalizacao: React.FC = () => {
             summary: 'Excelente colaborador com forte capacidade de inovação e colaboração.'
         },
         {
-            id: '4',
+            id: 4,
             collaboratorName: 'Ana Costa',
             position: 'QA Engineer',
             status: 'Finalizado',
@@ -76,7 +76,7 @@ const Equalizacao: React.FC = () => {
             summary: 'Desempenho sólido com foco em qualidade e atenção aos detalhes.'
         },
         {
-            id: '5',
+            id: 5,
             collaboratorName: 'Carlos Rodrigues',
             position: 'DevOps Engineer',
             status: 'Em andamento',
@@ -121,7 +121,7 @@ const Equalizacao: React.FC = () => {
         filteredEvaluations.sort((a, b) => a.finalScore - b.finalScore);
     }
 
-    const handleCardClick = (evaluationId: string) => {
+    const handleCardClick = (evaluationId: number) => {
         navigate(`/avaliacao/${evaluationId}`);
     };
 

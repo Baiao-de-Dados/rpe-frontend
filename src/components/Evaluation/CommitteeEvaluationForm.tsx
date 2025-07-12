@@ -9,7 +9,7 @@ import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 
 interface CommitteeEvaluationFormProps {
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
@@ -17,8 +17,8 @@ interface CommitteeEvaluationFormProps {
     };
     cycleName: string;
     collaboratorSelfAssessment?: Array<{
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;

@@ -35,7 +35,7 @@ export const SelfAssessmentSection = memo(() => {
 
     const validFields = useMemo(() =>
         fields.map((field, index) => ({
-            id: field.id,
+            id: index,
             pilarId: field.pilarId,
             criterionId: field.criterionId,
             selfAssessmentIAValid: field.selfAssessmentIAValid,
