@@ -20,10 +20,10 @@ const ManagerEvaluationSubmitButton = memo(() => {
     return (
         <Button 
             variant="primary" 
-            size="sm" // Tamanho menor para mobile
+            size="md" // Tamanho menor para mobile
             disabled={!isValid || isSubmitting} 
             onClick={onSubmit} 
-            className={`transition-all duration-200 sm:px-4 sm:py-2 px-3 py-1.5 text-xs sm:text-sm
+            className={`transition-all duration-200
             ${!isValid || isSubmitting 
                 ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200' 
                 : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'

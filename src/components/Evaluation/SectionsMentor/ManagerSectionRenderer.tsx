@@ -91,7 +91,7 @@ export function ManagerSectionRenderer({
     
     const renderSection = () => {
         switch (activeSection) {
-            case 'Autoavaliação':
+            case 'Avaliação':
                 return (
                     <ManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
@@ -104,7 +104,7 @@ export function ManagerSectionRenderer({
                         cycleName={cycleName || 'Não definido'}
                     />
                 );
-            case 'Líderes':
+            case 'Liderança':
                 return (
                     <ManagerLeaderEvaluationSection 
                         collaboratorId={collaborator!.id}

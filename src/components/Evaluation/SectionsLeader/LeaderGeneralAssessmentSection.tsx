@@ -16,7 +16,7 @@ export const LeaderGeneralAssessmentSection = memo(() => {
         <section className="space-y-6">
             <CardContainer className="p-6">
                 <Typography variant="h3" className="mb-6 text-primary-700">
-                    Avaliação Geral do Líder
+                    Avaliação Geral do Líder 
                 </Typography>
 
                 <div className="space-y-6">
@@ -27,10 +27,10 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                         render={({ field, fieldState }) => (
                             <div>
                                 <Typography variant="h4" className="mb-3">
-                                    Nota Geral do Colaborador
+                                    Nota Geral do Colaborador*
                                 </Typography>
                                 <Typography variant="body" color="muted" className="mb-4">
-                                    Considerando todos os critérios avaliados pelo manager e sua perspectiva como líder, qual seria sua nota geral para este colaborador?
+                                    Dê uma nota de 1 a 5 para o liderado
                                 </Typography>
                                 <StarRating 
                                     value={field.value} 
@@ -51,8 +51,8 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                         control={control}
                         render={({ field, fieldState }) => (
                             <TextAreaWithTitle
-                                title="Justificativa da Nota Geral"
-                                placeholder="Explique de forma abrangente o motivo da nota geral atribuída, considerando a perspectiva de liderança e o desempenho estratégico do colaborador..."
+                                title="Justificativa da Nota Geral*"
+                                placeholder="Explique o motivo da nota geral atribuída..."
                                 value={field.value || ''}
                                 onChange={field.onChange}
                                 maxLength={2000}
@@ -67,8 +67,8 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                         control={control}
                         render={({ field, fieldState }) => (
                             <TextAreaWithTitle
-                                title="Pontos Fortes (Opcional)"
-                                placeholder="Destaque os principais pontos fortes e qualidades do colaborador do ponto de vista da liderança..."
+                                title="Pontos Fortes"
+                                placeholder="Destaque os principais pontos fortes e qualidades do colaborador..."
                                 value={field.value || ''}
                                 onChange={field.onChange}
                                 maxLength={1000}
@@ -83,7 +83,7 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                         control={control}
                         render={({ field, fieldState }) => (
                             <TextAreaWithTitle
-                                title="Pontos de Melhoria (Opcional)"
+                                title="Pontos de Melhoria"
                                 placeholder="Sugira áreas de desenvolvimento e melhorias estratégicas para o colaborador..."
                                 value={field.value || ''}
                                 onChange={field.onChange}

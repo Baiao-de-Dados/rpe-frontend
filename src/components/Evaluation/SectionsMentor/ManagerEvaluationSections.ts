@@ -1,9 +1,9 @@
 export const managerEvaluationSections = [
-    'Autoavaliação',
+    'Avaliação',
     'Avaliações 360°',
-    'Líderes',
     'Mentoring',
     'Referências',
+    'Liderança',
     'Histórico',
 ] as const;
 

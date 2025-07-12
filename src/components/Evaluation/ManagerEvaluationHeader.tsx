@@ -35,7 +35,7 @@ const ManagerEvaluationHeader = memo(({
 
     const pageHeaderSections: PageHeaderSection<ManagerSectionType>[] = sections.map(
         section => {
-            if (section === 'Autoavaliação') {
+            if (section === 'Avaliação') {
                 return {
                     name: section,
                     showBadge: incompleteSelfAssessmentCount > 0,

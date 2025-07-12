@@ -40,15 +40,6 @@ export const LeaderEvaluationForm = memo(({
         name: 'generalJustification',
     });
 
-    const watchedStrengths = useWatch({
-        control,
-        name: 'strengths',
-    });
-
-    const watchedImprovements = useWatch({
-        control,
-        name: 'improvements',
-    });
 
     const incompleteAssessmentCount = useMemo(() => {
         let incompleteCount = 0;
@@ -63,18 +54,8 @@ export const LeaderEvaluationForm = memo(({
             incompleteCount++;
         }
 
-        // Verificar se os pontos fortes estão preenchidos
-        if (!watchedStrengths || watchedStrengths.trim().length === 0) {
-            incompleteCount++;
-        }
-
-        // Verificar se as melhorias estão preenchidas
-        if (!watchedImprovements || watchedImprovements.trim().length === 0) {
-            incompleteCount++;
-        }
-
         return incompleteCount;
-    }, [watchedGeneralRating, watchedGeneralJustification, watchedStrengths, watchedImprovements]);
+    }, [watchedGeneralRating, watchedGeneralJustification]);
 
     return (
         <>
