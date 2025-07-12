@@ -7,7 +7,7 @@ import Typography from '../../../common/Typography';
 
 interface Evaluation360CardProps {
     collaborator: { 
-        id: string; 
+        id: number; 
         nome: string; 
         cargo: string 
     };

@@ -23,7 +23,7 @@ export const ReferencesSection = memo(({ selectedCycle }: ReferencesSectionProps
                     {references.map((ref, idx) => (
                         <AnimatedCard key={`ref-${ref.collaratorName}-${idx}`} index={idx}>
                             <ReferenceCard
-                                collaborator={{ id: String(idx), nome: ref.collaratorName, cargo: ref.collaboratorPosition }}
+                                collaborator={{ id: idx, nome: ref.collaratorName, cargo: ref.collaboratorPosition }}
                                 justification={ref.justification}
                             />
                         </AnimatedCard>

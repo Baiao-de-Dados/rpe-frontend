@@ -39,10 +39,19 @@ export interface GeminiErrorResponse {
     error: string;
 }
 
-export type GeminiResponse = GeminiEvaluationResponse | GeminiNoInsightResponse | GeminiErrorResponse;
+export interface GeminiNoIdentificationResponse {
+    code: 'NO_IDENTIFICATION';
+    written: string;
+    applicable: string[]
+}
+
+export type GeminiResponse = GeminiEvaluationResponse | GeminiNoInsightResponse | GeminiErrorResponse | GeminiNoIdentificationResponse;
 
 export type IAEvaluationServiceResponse = { 
     geminiResponse: GeminiResponse;
     noInsight: boolean;
+    noIdentification: boolean;
     error?: string;
+    written?: string;
+    applicable?: string[];
 }

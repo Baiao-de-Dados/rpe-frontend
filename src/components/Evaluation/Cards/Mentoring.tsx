@@ -13,8 +13,8 @@ import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 const mentor = {
-    id: '3',
-    nome: 'Fulano de Tal',
+    id: 1,
+    nome: 'Miguel Alencar',
     cargo: 'Mentor',
 };
 

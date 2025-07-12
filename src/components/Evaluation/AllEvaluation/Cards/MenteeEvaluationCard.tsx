@@ -20,7 +20,7 @@ const MenteeEvaluationCard = ({
 }: MenteeEvaluationCardProps) => {
 
     const mentee = {
-        id: 'readonly',
+        id: 1,
         nome: menteeName,
         cargo: menteeCargo,
     };

@@ -84,7 +84,7 @@ const CollaboratorEvaluationCard: React.FC<CollaboratorEvaluationCardProps> = ({
             <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
                 <CollaboratorCard
                     collaborator={{
-                        id: collaborator.nome,
+                        id: 1,
                         nome: displayName,
                         cargo: displayCargo,
                         image,

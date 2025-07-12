@@ -90,7 +90,7 @@ const LeaderAssignmentCard = ({ leader, collaborators, onAssignCollaborator, onU
                                         <motion.div key={collaborator.id} variants={variants.pillarMotion} initial="initial" animate="animate" exit="exit" transition={{ ...optimizedTransition, delay: index * 0.05}} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg transition-colors duration-200">
                                             <CollaboratorCard
                                                 collaborator={{
-                                                    id: collaborator.id.toString(),
+                                                    id: collaborator.id,
                                                     nome: collaborator.name,
                                                     cargo: collaborator.position
                                                 }}
@@ -128,7 +128,7 @@ const LeaderAssignmentCard = ({ leader, collaborators, onAssignCollaborator, onU
                                         <motion.div key={collaborator.id} variants={variants.pillarMotion} initial="initial" animate="animate" exit="exit" transition={{ ...optimizedTransition, delay: index * 0.05}} className="flex items-center justify-between p-3 bg-primary-50 rounded-lg transition-colors duration-200">
                                             <CollaboratorCard
                                                 collaborator={{
-                                                    id: collaborator.id.toString(),
+                                                    id: collaborator.id,
                                                     nome: collaborator.name,
                                                     cargo: collaborator.position
                                                 }}

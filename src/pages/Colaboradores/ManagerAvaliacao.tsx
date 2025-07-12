@@ -17,7 +17,7 @@ import { getCollaboratorSelfAssessment } from '../../data/mockCollaboratorSelfAs
 import { getCollaborator360Evaluations } from '../../data/mockCollaborator360Data';
 
 interface ManagerAvaliacaoProps {
-    collaboratorId: string;
+    collaboratorId: number;
 }
 
 export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
@@ -26,15 +26,15 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
     const { showToast } = useToast();
     
     const [collaborator, setCollaborator] = useState<{
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
         avatar?: string;
     } | null>(null);
     const [collaboratorSelfAssessment, setCollaboratorSelfAssessment] = useState<Array<{
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>>([]);
@@ -55,8 +55,8 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
         resolver: zodResolver(fullManagerEvaluationSchema),
         mode: 'onSubmit',
         defaultValues: {
-            collaboratorId: collaboratorId || '',
-            cycleId: currentCycle?.id?.toString() || '',
+            collaboratorId: collaboratorId,
+            cycleId: currentCycle?.id,
             managerAssessment: [],
         }
     });
@@ -80,7 +80,7 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
                 // Atualizar form values
                 methods.setValue('collaboratorId', collaboratorId);
                 if (currentCycle?.id) {
-                    methods.setValue('cycleId', currentCycle.id.toString());
+                    methods.setValue('cycleId', currentCycle.id);
                 }
             } else {
                 showToast(

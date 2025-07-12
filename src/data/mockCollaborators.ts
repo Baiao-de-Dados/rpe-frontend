@@ -1,5 +1,5 @@
 export interface Collaborator {
-    id: string;
+    id: number;
     nome: string;
     cargo: string;
     avatar?: string;
@@ -7,7 +7,7 @@ export interface Collaborator {
 }
 
 export interface CollaboratorEvaluation {
-    collaboratorId: string;
+    collaboratorId: number;
     ratings: Record<string, number>;
     pontosFortes: string;
     pontosMelhoria: string;
@@ -16,33 +16,33 @@ export interface CollaboratorEvaluation {
 
 export const mockCollaborators: Collaborator[] = [
     {
-        id: 'colab-001',
-        nome: 'Colaborador 1',
+        id: 1,
+        nome: 'Paulo Rosado',
         cargo: 'Product Designer',
     },
     {
-        id: 'colab-002',
-        nome: 'Colaborador Lorenzo',
+        id: 2,
+        nome: 'Lorenzo Renzo',
         cargo: 'Frontend Developer',
     },
     {
-        id: 'colab-003',
-        nome: 'Colaborador 3',
+        id: 3,
+        nome: 'Luan Kato',
         cargo: 'Backend Developer',
     },
     {
-        id: 'colab-004',
-        nome: 'Colaborador 4',
+        id: 4,
+        nome: 'Ícaro Melo',
         cargo: 'UI/UX Designer',
     },
     {
-        id: 'colab-005',
-        nome: 'Colaborador 5',
+        id: 5,
+        nome: 'Ícaro Paes',
         cargo: 'Product Manager',
     },
 ];
 
-export const getCollaboratorById = (id: string): Collaborator | undefined => {
+export const getCollaboratorById = (id: number): Collaborator | undefined => {
     return mockCollaborators.find(collaborator => collaborator.id === id);
 };
 

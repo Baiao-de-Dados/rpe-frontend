@@ -14,7 +14,7 @@ interface MentoringProps {
 const MentoringCard = ({ mentorName, mentoringRating, mentoringJustification }: MentoringProps) => {
 
     const mentor = {
-        id: 'readonly',
+        id: 1,
         nome: mentorName,
         cargo: 'Mentor',
     };

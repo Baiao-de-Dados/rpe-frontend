@@ -24,7 +24,7 @@ const EvaluationSubmitButton = memo(() => {
     const onSubmit = () => {
         handleSubmit(async data => {
             try {
-                const transformedData = transformFormData(data, currentCycle.name, '1');
+                const transformedData = transformFormData(data, currentCycle.name, 1);
 
                 const validation = validateTransformedData(transformedData);
                 if (validation !== true) {

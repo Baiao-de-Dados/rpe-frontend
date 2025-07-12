@@ -10,8 +10,8 @@ import { mockEvaluationPillars, type Criterion } from '../../../data/mockEvaluat
 interface ManagerSelfAssessmentSectionProps {
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
@@ -61,8 +61,8 @@ export const ManagerSelfAssessmentSection = memo(({
     }, [fields]);
 
     // Função para obter dados do colaborador por pilar
-    const getCollaboratorDataByPillar = (pillarId: string) => {
-        return collaboratorSelfAssessment.filter((data: { pilarId: string }) => data.pilarId === pillarId);
+    const getCollaboratorDataByPillar = (pillarId: number) => {
+        return collaboratorSelfAssessment.filter((data: { pilarId: number }) => data.pilarId === pillarId);
     };
 
     return (

@@ -1,6 +1,6 @@
 import mockEvaluations from './mockEvaluations';
 
-export function getCollaborator360Evaluations(collaboratorId: string) {
+export function getCollaborator360Evaluations(collaboratorId: number) {
     // Simular busca de avaliações 360° recebidas pelo colaborador
     // Na realidade, isso viria de uma API
     

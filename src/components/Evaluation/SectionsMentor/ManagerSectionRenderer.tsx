@@ -48,7 +48,7 @@ interface ManagerSectionRendererProps {
     activeSection: ManagerSectionType;
     // Dados do colaborador
     collaborator?: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
@@ -56,8 +56,8 @@ interface ManagerSectionRendererProps {
     };
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
@@ -107,14 +107,14 @@ export function ManagerSectionRenderer({
             case 'Líderes':
                 return (
                     <ManagerLeaderEvaluationSection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator!.id}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );
             case 'Mentoring':
                 return (
                     <ManagerMentoringEvaluationSection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator!.id}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );
@@ -128,7 +128,7 @@ export function ManagerSectionRenderer({
             case 'Histórico':
                 return (
                     <CollaboratorHistorySection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator!.id}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );

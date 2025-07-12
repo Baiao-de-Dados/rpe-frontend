@@ -59,14 +59,15 @@ export const Evaluation360Section = memo(() => {
         }
     }, [validFields.length]);
 
-    const selectedCollaborators = useCallback((searchCollaboratorIds: string[]) =>
+    const selectedCollaborators = useCallback(
+        (searchCollaboratorIds: number[]) =>
             searchCollaborators('').filter(c => searchCollaboratorIds.includes(c.id)),
-        [],
+        []
     );
 
     const addCollaborator = useCallback((collaborator: Collaborator) => {
             append({
-                collaboratorId: collaborator.id, 
+                collaboratorId: collaborator.id,
                 rating: null, 
                 strengths: '', 
                 improvements: '',
@@ -77,7 +78,7 @@ export const Evaluation360Section = memo(() => {
         [append, setSearchQuery],
     );
 
-    const removeCollaborator = useCallback(async (collaboratorId: string) => {
+    const removeCollaborator = useCallback(async (collaboratorId: number) => {
             const currentEvaluations = getValues('evaluation360') || [];
             const newEvaluations = currentEvaluations.filter(
                 evaluation => evaluation.collaboratorId !== collaboratorId,
@@ -110,7 +111,7 @@ export const Evaluation360Section = memo(() => {
                     onItemSelect={addCollaborator}
                     renderItem={renderItem} 
                     excludeItems={excludeItems} 
-                    getItemKey={collaborator => collaborator.id} 
+                    getItemKey={collaborator => String(collaborator.id)} 
                     noResultsMessage="Nenhum colaborador encontrado"
                 />
             </div>

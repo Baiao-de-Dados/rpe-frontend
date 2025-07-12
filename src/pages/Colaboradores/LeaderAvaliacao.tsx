@@ -16,7 +16,7 @@ import { useToast } from '../../hooks/useToast';
 import { mockCollaborators } from '../../data/mockCollaborators';
 
 interface LeaderAvaliacaoProps {
-    collaboratorId: string;
+    collaboratorId: number;
 }
 
 export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
@@ -25,7 +25,7 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
     const { showToast } = useToast();
     
     const [collaborator, setCollaborator] = useState<{
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
@@ -36,8 +36,8 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
         resolver: zodResolver(fullLeaderEvaluationSchema),
         mode: 'onSubmit',
         defaultValues: {
-            collaboratorId: collaboratorId || '',
-            cycleId: currentCycle?.id?.toString() || '',
+            collaboratorId: collaboratorId,
+            cycleId: currentCycle?.id,
             generalRating: 0,
             generalJustification: '',
             strengths: '',
@@ -53,9 +53,9 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
                 setCollaborator(foundCollaborator);
                 
                 // Atualizar form values
-                methods.setValue('collaboratorId', collaboratorId);
+                methods.setValue('collaboratorId', foundCollaborator.id);
                 if (currentCycle?.id) {
-                    methods.setValue('cycleId', currentCycle.id.toString());
+                    methods.setValue('cycleId', currentCycle.id);
                 }
             } else {
                 showToast(

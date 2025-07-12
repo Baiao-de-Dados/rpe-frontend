@@ -38,7 +38,7 @@ export const ManagerReferencesReceivedSection = memo(({
                         <ReferenceCard
                             key={index}
                             collaborator={{
-                                id: `reference-${index}`,
+                                id: index,
                                 nome: reference.collaratorName,
                                 cargo: reference.collaboratorPosition,
                                 image: undefined,

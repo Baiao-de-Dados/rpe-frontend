@@ -34,7 +34,7 @@ export function ERPViewer({ users, projects }: ERPViewerProps) {
                 <div className="space-y-0 max-h-[400px] overflow-y-auto pr-2">
                     {users.map((user, idx) => (
                         <div key={user.email} className={`flex items-center justify-between gap-4 ${idx !== 0 ? 'py-4' : 'pb-4'} ${idx !== users.length - 1 ? 'border-b-2 border-b-gray-300' : ''}`}>
-                            <CollaboratorCard collaborator={{ id: user.email, nome: user.name, cargo: user.position ?? '' }} />
+                            <CollaboratorCard collaborator={{ id: 4, nome: user.name, cargo: user.position ?? '' }} />
                             <div className="flex flex-col min-w-0 items-end text-right">
                                 <Typography color='primary' variant="body" className="font-medium truncate">
                                     {user.track ?? ''}
@@ -83,7 +83,7 @@ export function ERPViewer({ users, projects }: ERPViewerProps) {
                                                     <span className="text-xs font-semibold text-gray-500 mb-1">Gestor</span>
                                                     <div className="flex flex-row flex-wrap gap-5 pb-1">
                                                         <div className="flex flex-col items-start max-w-xs">
-                                                            <CollaboratorCard collaborator={{ id: managerUser.email, nome: managerUser.name, cargo: managerUser.position ?? '' }} variant="compact" />
+                                                            <CollaboratorCard collaborator={{ id: 1, nome: managerUser.name, cargo: managerUser.position ?? '' }} variant="compact" />
                                                             <span className={`px-2 py-0.5 rounded text-xs mt-3 ${project.manager.endDate ? 'bg-gray-200 text-gray-600' : 'bg-primary-100 text-primary-700'}`}>{getBadgeText(project.manager.startDate, project.manager.endDate)}</span>
                                                         </div>
                                                     </div>
@@ -96,7 +96,7 @@ export function ERPViewer({ users, projects }: ERPViewerProps) {
                                                                 const leaderUser = users.find(u => u.email === leader.email);
                                                                 return leaderUser ? (
                                                                     <div key={leader.email} className="flex flex-col items-start max-w-xs">
-                                                                        <CollaboratorCard collaborator={{ id: leaderUser.email, nome: leaderUser.name, cargo: leaderUser.position ?? '' }} variant="compact" />
+                                                                        <CollaboratorCard collaborator={{ id: 2, nome: leaderUser.name, cargo: leaderUser.position ?? '' }} variant="compact" />
                                                                         <span className={`px-2 py-0.5 rounded text-xs mt-3 ${leader.endDate ? 'bg-gray-200 text-gray-600' : 'bg-primary-100 text-primary-700'}`}>{getBadgeText(leader.startDate, leader.endDate)}</span>
                                                                     </div>
                                                                 ) : null;
@@ -114,7 +114,7 @@ export function ERPViewer({ users, projects }: ERPViewerProps) {
                                                                 const collabUser = users.find(u => u.email === collab.email);
                                                                 return collabUser ? (
                                                                     <div key={collab.email} className="flex flex-col items-start max-w-xs">
-                                                                        <CollaboratorCard collaborator={{ id: collabUser.email, nome: collabUser.name, cargo: collabUser.position ?? '' }} variant="compact" />
+                                                                        <CollaboratorCard collaborator={{ id: 3, nome: collabUser.name, cargo: collabUser.position ?? '' }} variant="compact" />
                                                                         <span className={`px-2 py-0.5 rounded text-xs mt-3 ${collab.endDate ? 'bg-gray-200 text-gray-600' : 'bg-primary-100 text-primary-700'}`}>{getBadgeText(collab.startDate, collab.endDate)}</span>
                                                                     </div>
                                                                 ) : null;

@@ -10,13 +10,13 @@ interface ManagerPillarRatingDisplayProps {
     criteria: Criterion[];
     validFields: Array<{
         id: string;
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         index: number;
     }>;
     // Dados do colaborador para calcular média
     collaboratorData?: Array<{
-        criterionId: string;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;

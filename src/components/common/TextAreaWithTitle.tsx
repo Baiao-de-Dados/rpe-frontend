@@ -6,11 +6,13 @@ interface TextAreaWithTitleProps {
     placeholder: string;
     value: string;
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
     error?: string;
     maxLength?: number;
     readOnly?: boolean;
     className?: string;
     minHeight?: string;
+    rightLabel?: React.ReactNode;
 }
 
 const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
@@ -18,11 +20,13 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
     placeholder,
     value,
     onChange,
+    onBlur,
     error,
     maxLength,
     readOnly,
     className = '',
     minHeight = 'h-21',
+    rightLabel,
 }) => {
     const currentLength = value?.length || 0;
 
@@ -51,6 +55,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
                     {title}
                 </label>
                 <div className="flex items-center gap-2">
+                    {rightLabel}
                     {shouldShowCounter && (
                         <p className={`text-xs ${getCharCountColor()}`}>
                             {currentLength}/{maxLength}
@@ -65,6 +70,7 @@ const TextAreaWithTitle: React.FC<TextAreaWithTitleProps> = ({
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange}
+                onBlur={onBlur}
                 maxLength={maxLength}
                 readOnly={readOnly}
             />

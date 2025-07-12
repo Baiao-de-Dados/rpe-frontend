@@ -12,7 +12,7 @@ import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
 
 interface ManagerEvaluationFormProps {
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
@@ -21,8 +21,8 @@ interface ManagerEvaluationFormProps {
     cycleName: string;
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{
-        pilarId: string;
-        criterionId: string;
+        pilarId: number;
+        criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
