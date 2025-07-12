@@ -175,7 +175,7 @@ export function Colaboradores() {
                                         evalData.statusVariant || 'default',
                                 }}
                                 evaluationFields={evaluationFields}
-                                onClick={() => navigate(getNavigationRoute(colab.id))}
+                                onClick={() => navigate(getNavigationRoute(String(colab.id)))}
                                 className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                             />
                         );

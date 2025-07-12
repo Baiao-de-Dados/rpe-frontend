@@ -11,12 +11,14 @@ export function AvaliacaoIndividual() {
 
     // Manager - Formulário de avaliação de gestor
     if (hasRole(UserRoleEnum.MANAGER)) {
-        return <ManagerAvaliacao collaboratorId={collaboratorId || ''} />;
+        return <ManagerAvaliacao collaboratorId={Number(collaboratorId)} />;
+
     }
 
     // Leader - Formulário de avaliação de líder
     if (hasRole(UserRoleEnum.LEADER)) {
-        return <LeaderAvaliacao collaboratorId={collaboratorId || ''} />;
+        return <LeaderAvaliacao collaboratorId={Number(collaboratorId)} />;
+
     }
 
     // Committee/RH - Visualização e equalização

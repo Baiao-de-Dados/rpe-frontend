@@ -62,8 +62,8 @@ export const ReferencesSection = memo(() => {
         }
     }, [validFields.length, validFields]);
 
-    const selectedCollaborators = useCallback((searchCollaboratorIds: string[]) => {
-            return searchCollaborators('').filter(c => searchCollaboratorIds.includes(c.id))
+    const selectedCollaborators = useCallback((searchCollaboratorIds: number[]) => {
+            return searchCollaborators('').filter(c => searchCollaboratorIds.includes(c.id));
         },
         []
     );
@@ -83,7 +83,7 @@ export const ReferencesSection = memo(() => {
         [append, fields]
     );
 
-    const removeCollaborator = useCallback(async (collaboratorId: string) => {
+    const removeCollaborator = useCallback(async (collaboratorId: number) => {
             const currentReferences = getValues('references') || [];
             const newReferences = currentReferences.filter(ref => ref.collaboratorId !== collaboratorId);
             setValue('references', newReferences);
@@ -113,7 +113,7 @@ export const ReferencesSection = memo(() => {
                     onItemSelect={addCollaborator}
                     renderItem={renderItem} 
                     excludeItems={excludeItems} 
-                    getItemKey={collaborator => collaborator.id}
+                    getItemKey={collaborator => String(collaborator.id)}
                     noResultsMessage="Nenhum colaborador encontrado"
                 />
             </div>

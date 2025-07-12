@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCycle } from './useCycle';
 import { useToast } from './useToast';
 
-import { evaluationAI } from '../services/evaluationAI';
+import { notesEndpoints } from './../services/api/notes';
 
 import type { GeminiEvaluationResponse } from '../types/evaluationAI';
 
@@ -14,16 +14,61 @@ export interface NavigationState {
     geminiResponse: GeminiEvaluationResponse;
 }
 
-export function useNotes() {
+import type { IAEvaluationServiceResponse, GeminiResponse } from '../types/evaluationAI';
+import { AxiosError } from 'axios';
+
+async function evaluationAI(userId: number, cycledId: number): Promise<IAEvaluationServiceResponse> {
+
+    const response = await notesEndpoints.generateAIEvaluation({ userId, cycledId });
+    const geminiResponse: GeminiResponse = response.data;
+
+    let error = '';
+    let noInsight = false;
+    let noIdentification = false;
+    let written = '';
+    let applicable: string[] = [];
+
+    console.log(geminiResponse)
+
+    if (geminiResponse) {
+        switch (geminiResponse.code) {                
+            case 'SUCCESS':
+                break;
+            case 'ERROR':
+                console.error('Erro na resposta da IA:', geminiResponse.error);
+                error = geminiResponse.error;
+                break;
+            case 'NO_INSIGHT':
+                noInsight = true;
+                break;
+            case 'NO_IDENTIFICATION':
+                noIdentification = true;
+                written = geminiResponse.written;
+                applicable = geminiResponse.applicable;
+                break;
+            default:
+                error = `Código de resposta desconhecido`;
+                console.error(error);
+        }
+    }
+
+    return { geminiResponse, noInsight, error, noIdentification, written, applicable  };
+}
+
+export function useNotesAI() {
 
     const navigate = useNavigate();
+
     const { showToast } = useToast();
+
     const { currentCycle: { isActive } } = useCycle();
 
     const [error, setError] = useState('');
+    const [written, setWritten] = useState('');
     const [modalStep, setModalStep] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEvaluating, setIsEvaluating] = useState(false);
+    const [applicable, setApplicable] = useState<string[]>([]);
     const [stepErrors, setStepErrors] = useState([false, false, false]);
     const [evaluationSections, setEvaluationSections] = useState<EvaluationSection[]>([]);
     const [generatedEvaluation, setGeneratedEvaluation] = useState<GeminiEvaluationResponse | null>(null);
@@ -39,7 +84,8 @@ export function useNotes() {
         abortControllerRef.current = null;
     }
 
-    async function handleEvaluateWithAI(data: { text: string }) {
+    async function handleEvaluateWithAI(userId: number, cycledId: number) {
+
         resetState(); 
         setIsModalOpen(true);
 
@@ -63,10 +109,7 @@ export function useNotes() {
 
             if (abortControllerRef.current.signal.aborted) return;
 
-            const { geminiResponse, noInsight, error } = await evaluationAI(
-                data.text,
-                abortControllerRef.current.signal,
-            );
+            const { geminiResponse, noInsight, error, noIdentification, written, applicable } = await evaluationAI(userId, cycledId);
 
             if (abortControllerRef.current.signal.aborted) return;
 
@@ -84,6 +127,12 @@ export function useNotes() {
 
             if (noInsight) {
                 throw new Error('No insight');
+            }
+
+            if (noIdentification) {
+                setWritten(written ?? '');
+                setApplicable(applicable ?? []);
+                throw new Error('No identification');
             }
 
             setModalStep(2);
@@ -128,8 +177,11 @@ export function useNotes() {
                 default:
                     setStepErrors([true, false, false]);
             }
-            console.log(e);
             setGeneratedEvaluation(null);
+            setError(e instanceof AxiosError 
+                ? e.response?.data.error 
+                : 'Ocorreu um erro inesperado ao tentar se conectar com a IA. Tente novamente mais tarde.'
+            );
         } finally {
             setIsEvaluating(false);
             abortControllerRef.current = null;
@@ -191,6 +243,8 @@ export function useNotes() {
         handleModalCancel,
         steps,
         error,
+        written,
+        applicable,
         evaluationSectionsToShow,
         canContinue
     };

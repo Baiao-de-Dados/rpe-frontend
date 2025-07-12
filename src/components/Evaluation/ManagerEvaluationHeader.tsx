@@ -14,7 +14,7 @@ interface ManagerEvaluationHeaderProps {
     onSectionChange: (section: ManagerSectionType) => void;
     sections: ManagerSectionType[];
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;

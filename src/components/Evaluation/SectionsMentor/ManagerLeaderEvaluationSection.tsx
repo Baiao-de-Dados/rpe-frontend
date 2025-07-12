@@ -11,7 +11,7 @@ import { mockLeaderEvaluations } from '../../../data/mockLeaderEvaluations';
 import type { LeaderEvaluation } from '../../../data/mockLeaderEvaluations';
 
 interface ManagerLeaderEvaluationSectionProps {
-    collaboratorId: string;
+    collaboratorId: number;
     collaboratorName: string;
 }
 

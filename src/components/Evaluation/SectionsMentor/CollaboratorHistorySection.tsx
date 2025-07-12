@@ -3,7 +3,7 @@ import { PerfomanceEvolution } from '../../Evolution/PerfomanceEvolution';
 import { CyclesEvolution } from '../../Evolution/CyclesEvolution';
 
 interface CollaboratorHistorySectionProps {
-    collaboratorId: string;
+    collaboratorId: number;
     collaboratorName: string;
 }
 

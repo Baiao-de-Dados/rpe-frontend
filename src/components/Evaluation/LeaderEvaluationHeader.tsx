@@ -14,7 +14,7 @@ interface LeaderEvaluationHeaderProps {
     onSectionChange: (section: LeaderSectionType) => void;
     sections: LeaderSectionType[];
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;

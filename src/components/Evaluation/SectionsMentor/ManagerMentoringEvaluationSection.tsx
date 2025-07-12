@@ -8,7 +8,7 @@ import { mockMentoringEvaluations } from '../../../data/mockMentoringEvaluations
 import type { MentoringEvaluation } from '../../../data/mockMentoringEvaluations';
 
 interface ManagerMentoringEvaluationSectionProps {
-    collaboratorId: string;
+    collaboratorId: number;
     collaboratorName: string;
 }
 

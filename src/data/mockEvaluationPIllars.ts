@@ -1,5 +1,5 @@
 export interface Criterion {
-    id: string;
+    id: number;
     nome: string;
     descricao: string;
     rating?: number;
@@ -7,7 +7,7 @@ export interface Criterion {
 }
 
 export interface Pillar {
-    id: string;
+    id: number;
     titulo: string;
     criterios: Criterion[];
 }
@@ -20,90 +20,80 @@ export interface EvaluationPillars {
 
 export const mockEvaluationPillars: EvaluationPillars = {
     comportamento: {
-        id: '10',
+        id: 1,
         titulo: 'Comportamento',
         criterios: [
             {
-                id: 'sentimento-dono',
+                id: 1,
                 nome: 'Sentimento de Dono',
-                descricao:
-                    'Demonstra responsabilidade e ownership sobre suas tarefas e resultados',
+                descricao: 'Demonstra responsabilidade e ownership sobre suas tarefas e resultados',
             },
             {
-                id: 'resiliencia',
+                id: 2,
                 nome: 'Resiliência nas adversidades',
-                descricao:
-                    'Mantém foco e determinação diante de desafios e obstáculos',
+                descricao: 'Mantém foco e determinação diante de desafios e obstáculos',
             },
             {
-                id: 'organizacao',
+                id: 3,
                 nome: 'Organização no Trabalho',
-                descricao:
-                    'Estrutura suas atividades de forma eficiente e sistemática',
+                descricao: 'Estrutura suas atividades de forma eficiente e sistemática',
             },
             {
-                id: 'aprendizado',
+                id: 4,
                 nome: 'Capacidade de aprender',
-                descricao:
-                    'Busca continuamente novos conhecimentos e desenvolve suas habilidades',
+                descricao: 'Busca continuamente novos conhecimentos e desenvolve suas habilidades',
             },
             {
-                id: 'team-player',
+                id: 5,
                 nome: 'Ser "team player"',
-                descricao:
-                    'Colabora efetivamente e contribui para o sucesso da equipe',
+                descricao: 'Colabora efetivamente e contribui para o sucesso da equipe',
             },
         ],
     },
     execucao: {
-        id: '11',
+        id: 2,
         titulo: 'Execução',
         criterios: [
             {
-                id: 'qualidade',
+                id: 6,
                 nome: 'Entregar com qualidade',
-                descricao:
-                    'Produz trabalho que atende ou supera os padrões de qualidade esperados',
+                descricao: 'Produz trabalho que atende ou supera os padrões de qualidade esperados',
             },
             {
-                id: 'prazos',
+                id: 7,
                 nome: 'Atender aos prazos',
-                descricao:
-                    'Cumpre consistentemente os cronogramas estabelecidos',
+                descricao: 'Cumpre consistentemente os cronogramas estabelecidos',
             },
             {
-                id: 'eficiencia',
+                id: 8,
                 nome: 'Fazer mais com menos',
                 descricao: 'Otimiza recursos e encontra soluções eficientes',
             },
             {
-                id: 'inovacao',
+                id: 9,
                 nome: 'Pensar fora da caixa',
                 descricao: 'Propõe soluções criativas e abordagens inovadoras',
             },
         ],
     },
     gestaoLideranca: {
-        id: '12',
+        id: 3,
         titulo: 'Gestão e Liderança',
         criterios: [
             {
-                id: 'gente',
+                id: 10,
                 nome: 'Gente',
-                descricao:
-                    'Desenvolve, motiva e orienta pessoas para alcançar seu potencial',
+                descricao: 'Desenvolve, motiva e orienta pessoas para alcançar seu potencial',
             },
             {
-                id: 'resultados',
+                id: 11,
                 nome: 'Resultados',
-                descricao:
-                    'Entrega resultados consistentes e impacta positivamente os objetivos',
+                descricao: 'Entrega resultados consistentes e impacta positivamente os objetivos',
             },
             {
-                id: 'evolucao-rocket',
+                id: 12,
                 nome: 'Evolução da Rocket Corp',
-                descricao:
-                    'Contribui estrategicamente para o crescimento e evolução da empresa',
+                descricao: 'Contribui estrategicamente para o crescimento e evolução da empresa',
             },
         ],
     },
@@ -123,6 +113,6 @@ export const getCriteriaByPillar = (
     return mockEvaluationPillars[pillar].criterios;
 };
 
-export const getCriterionById = (id: string): Criterion | undefined => {
+export const getCriterionById = (id: number): Criterion | undefined => {
     return getAllCriteria().find(criterion => criterion.id === id);
 };

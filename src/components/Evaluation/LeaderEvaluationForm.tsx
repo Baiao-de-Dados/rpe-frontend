@@ -11,7 +11,7 @@ import type { FullLeaderEvaluationFormData } from '../../schemas/leaderEvaluatio
 
 interface LeaderEvaluationFormProps {
     collaborator: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;

@@ -2,10 +2,10 @@ import { z } from 'zod';
 
 // Schema para a avaliação do manager sobre um critério específico
 export const managerCriterionAssessmentSchema = z.object({
-    pilarId: z.string({
+    pilarId: z.number({
         required_error: 'O ID do pilar é obrigatório',
     }),
-    criterionId: z.string({
+    criterionId: z.number({
         required_error: 'O ID do critério é obrigatório',
     }),
     rating: z
@@ -33,10 +33,10 @@ export const managerCriterionAssessmentSchema = z.object({
 
 // Schema completo para avaliação do manager (apenas autoavaliação - sem avaliação geral)
 export const fullManagerEvaluationSchema = z.object({
-    collaboratorId: z.string({
+    collaboratorId: z.number({
         required_error: 'O ID do colaborador é obrigatório',
     }),
-    cycleId: z.string({
+    cycleId: z.number({
         required_error: 'O ID do ciclo é obrigatório',
     }),
     managerAssessment: z

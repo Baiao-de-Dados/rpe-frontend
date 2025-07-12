@@ -19,6 +19,8 @@ interface AnotacoesStepsModalProps {
     open: boolean;
     steps: Step[];
     error?: string;
+    written?: string;
+    applicable?: string[];
     onCancel: () => void;
     onClose?: () => void;
     onContinue: () => void;
@@ -27,10 +29,12 @@ interface AnotacoesStepsModalProps {
     wasAborted?: boolean;
 }
 
-function AnotacoesStepsModal({ open, steps, error, onCancel, onClose, onContinue, canContinue, avaliacaoSections = [], wasAborted = false }: AnotacoesStepsModalProps) {
+function AnotacoesStepsModal({ open, steps, error, written, applicable, onCancel, onClose, onContinue, canContinue, avaliacaoSections = [], wasAborted = false }: AnotacoesStepsModalProps) {
 
     const hasInsightError = open && steps[1]?.error;
     const hasConnectionError = open && steps[0]?.error && !wasAborted;
+    const hasNoIdentificationError = open && written && applicable && steps[1]?.error;
+
 
     const { variants } = useOptimizedAnimation();
 
@@ -78,33 +82,65 @@ function AnotacoesStepsModal({ open, steps, error, onCancel, onClose, onContinue
                     </div>
                     <div className="mb-4 sm:mb-6 mt-4 sm:mt-6 min-h-[50px] sm:min-h-[70px] flex flex-col justify-center items-center">
                         <div className="w-full max-w-120 h-32 sm:h-40 flex items-start justify-center px-4 sm:px-0">
-                            {hasConnectionError && (
-                                <div className="w-full flex flex-col items-center justify-center">
-                                    <Typography variant="h2" className="text-base font-bolder text-red-600 mb-1 text-center">
-                                        Erro ao se conectar com a IA
-                                    </Typography>
-                                    <Typography variant="body" className="text-2 text-gray-700 text-center">
-                                        {error}
-                                    </Typography>
-                                </div>
-                            )}
-                            {!hasConnectionError && hasInsightError && (
-                                <div className="w-full flex flex-col items-center justify-center">
-                                    <Typography variant="h2" className="text-base font-bolder text-red-600 mb-1 text-center">
-                                        Não há informações suficientes para
-                                        gerar uma avaliação
-                                    </Typography>
-                                    <Typography variant="body" className="text-2 text-gray-700 text-center">
-                                        Escreva mais detalhes para que a IA
-                                        possa gerar uma avaliação personalizada.
-                                    </Typography>
-                                </div>
-                            )}
-                            {!hasConnectionError && !hasInsightError && !error && avaliacaoSections.length === 0 && (
-                                <div className="flex items-center justify-center">
-                                    <Loader2 className="h-10 w-10 animate-spin text-primary-500" />
-                                </div>
-                            )}
+                            {(() => {
+                                if (hasNoIdentificationError) {
+                                    return (
+                                        <div className="w-full -mt-6 min-w-200 flex flex-col items-center justify-center">
+                                            <Typography variant="h2" className="text-base font-bolder text-red-600 mb-1 text-center">
+                                                Não foi possível identificar o colaborador
+                                            </Typography>
+                                            <Typography variant="body" className="text-2 text-gray-700 text-left mb-2">
+                                                Você escreveu: <span className="font-bold text-primary-500">{written}</span>
+                                            </Typography>
+                                            <Typography variant="body" className="text-2 text-gray-700 text-left mb-2">
+                                                Foram encontrados colaboradores com nomes semelhantes:
+                                            </Typography>
+                                            <span className="block font-semibold text-primary-500 mt-1 truncate max-w-160 text-left ml-0">
+                                                {applicable.join(', ')}
+                                            </span>
+                                            <Typography variant="body" className="text-2 text-gray-700 text-left mt-2">
+                                                Por favor, seja mais específico nas anotações para identificar corretamente o colaborador.
+                                            </Typography>
+                                        </div>
+                                    );
+                                }
+                                if (hasConnectionError) {
+                                    return (
+                                        <div className="w-full flex flex-col items-center justify-center">
+                                            <Typography variant="h2" className="text-base font-bolder text-red-600 mb-1 text-center">
+                                                Erro ao se conectar com a IA
+                                            </Typography>
+                                            <Typography variant="body" className="text-2 text-gray-700 text-center">
+                                                {error && error.length > 0
+                                                    ? error
+                                                    : "Ocorreu um erro ao tentar se conectar com a IA. Tente novamente mais tarde."}
+                                            </Typography>
+                                        </div>
+                                    );
+                                }
+                                if (hasInsightError) {
+                                    return (
+                                        <div className="w-full flex flex-col items-center justify-center">
+                                            <Typography variant="h2" className="text-base font-bolder text-red-600 mb-1 text-center">
+                                                Não há informações suficientes para
+                                                gerar uma avaliação
+                                            </Typography>
+                                            <Typography variant="body" className="text-2 text-gray-700 text-center">
+                                                Escreva mais detalhes para que a IA
+                                                possa gerar uma avaliação personalizada.
+                                            </Typography>
+                                        </div>
+                                    );
+                                }
+                                if (!error && avaliacaoSections.length === 0) {
+                                    return (
+                                        <div className="flex items-center justify-center">
+                                            <Loader2 className="h-10 w-10 animate-spin text-primary-500" />
+                                        </div>
+                                    );
+                                }
+                                return null;
+                            })()}
                         </div>
                         <div className="w-full -mt-32 sm:-mt-40 min-h-[30px] flex flex-col justify-center">
                             {avaliacaoSections.length > 0 && (

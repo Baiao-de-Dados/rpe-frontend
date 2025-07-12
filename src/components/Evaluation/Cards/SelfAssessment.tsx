@@ -47,6 +47,7 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
             }
             setIsMinimized(!isMinimized);
         };
+
         return (
             <motion.div layout transition={optimizedTransition}>
                 <div className={`bg-white overflow-hidden ${!isLast ? 'border-b-2 border-b-gray-300' : ''}`}>

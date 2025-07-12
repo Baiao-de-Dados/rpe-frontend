@@ -35,10 +35,10 @@ export const leaderGeneralAssessmentSchema = z.object({
 
 // Schema completo para avaliação do líder (apenas avaliação geral)
 export const fullLeaderEvaluationSchema = z.object({
-    collaboratorId: z.string({
+    collaboratorId: z.number({
         required_error: 'O ID do colaborador é obrigatório',
     }),
-    cycleId: z.string({
+    cycleId: z.number({
         required_error: 'O ID do ciclo é obrigatório',
     }),
     ...leaderGeneralAssessmentSchema.shape,

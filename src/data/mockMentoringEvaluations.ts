@@ -1,11 +1,11 @@
 export interface MentoringEvaluation {
-    id: string;
-    mentorId: string;
+    id: number;
+    mentorId: number;
     mentorName: string;
-    menteeId: string;
+    menteeId: number;
     menteeName: string;
     menteeCargo?: string; // <- Novo campo para o cargo do mentee
-    cycleId?: string;
+    cycleId?: number;
     cycleName: string;
     rating: number;
     justification: string;
@@ -15,13 +15,13 @@ export interface MentoringEvaluation {
 
 export const mockMentoringEvaluations: MentoringEvaluation[] = [
     {
-        id: 'mentoring-eval-1',
-        mentorId: 'colab-001',
+        id: 1,
+        mentorId: 1,
         mentorName: 'Colaborador 1',
-        menteeId: 'colab-005',
+        menteeId: 5,
         menteeName: 'Ana Silva',
         menteeCargo: 'Product Manager', // <- Novo campo
-        cycleId: 'cycle-2024-1',
+        cycleId: 20241,
         cycleName: '2024.1',
         rating: 4.5,
         justification: 'Excelente mentor, sempre disponível para ajudar e compartilhar conhecimento. Suas orientações foram fundamentais para meu desenvolvimento.',
@@ -29,13 +29,13 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         isSubmitted: true,
     },
     {
-        id: 'mentoring-eval-2',
-        mentorId: 'colab-001',
+        id: 2,
+        mentorId: 1,
         mentorName: 'Colaborador 1',
-        menteeId: 'colab-006',
+        menteeId: 6,
         menteeName: 'João Costa',
         menteeCargo: 'UX Designer', // <- Novo campo
-        cycleId: 'cycle-2024-1',
+        cycleId: 20241,
         cycleName: '2024.1',
         rating: 4.8,
         justification: 'Mentor excepcional! Tem uma didática incrível e sempre me motivou a buscar soluções criativas. Aprendi muito com ele.',
@@ -43,13 +43,13 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         isSubmitted: true,
     },
     {
-        id: 'mentoring-eval-3',
-        mentorId: 'colab-003',
+        id: 3,
+        mentorId: 3,
         mentorName: 'Colaborador 3',
-        menteeId: 'colab-007',
+        menteeId: 7,
         menteeName: 'Lucas Oliveira',
         menteeCargo: 'Frontend Developer', // <- Novo campo
-        cycleId: 'cycle-2024-1',
+        cycleId: 20241,
         cycleName: '2024.1',
         rating: 4.2,
         justification: 'Ótimo mentor, me ajudou muito no desenvolvimento técnico e pessoal. Sempre paciente e disposto a explicar os conceitos.',
@@ -57,13 +57,13 @@ export const mockMentoringEvaluations: MentoringEvaluation[] = [
         isSubmitted: true,
     },
     {
-        id: 'mentoring-eval-4',
-        mentorId: 'colab-002',
+        id: 4,
+        mentorId: 2,
         mentorName: 'Colaborador 2',
-        menteeId: 'colab-008',
+        menteeId: 8,
         menteeName: 'Fernanda Lima',
         menteeCargo: 'Data Analyst', // <- Novo campo
-        cycleId: 'cycle-2024-1',
+        cycleId: 20241,
         cycleName: '2024.1',
         rating: 4.0,
         justification: 'Bom mentor, me orientou bem nas questões técnicas. Poderia ser mais proativo em acompanhar o progresso.',

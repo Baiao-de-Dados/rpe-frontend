@@ -1,76 +1,68 @@
 import type { EvaluationFormData } from '../../../schemas/evaluation';
 
 export interface CriterioOutput {
-    criterioId: string;
+    criterioId: number;
     nota: number;
     justificativa: string;
 }
 
 export interface PilarOutput {
-    pilarId: string;
+    pilarId: number;
     criterios: CriterioOutput[];
 }
 
 export interface TransformedEvaluationData {
     ciclo: string;
-    colaboradorId: string;
+    colaboradorId: number;
     autoavaliacao: {
         pilares: PilarOutput[];
     };
     avaliacao360: Array<{
-        avaliadoId: string;
+        avaliadoId: number;
         pontosFortes: string;
         pontosMelhoria: string;
     }>;
     mentoring: Array<{
-        mentorId: string;
+        mentorId: number;
         justificativa: string;
     }>;
     referencias: Array<{
-        colaboradorId: string;
+        colaboradorId: number;
         justificativa: string;
     }>;
 }
 
-export const transformFormData = (data: EvaluationFormData, ciclo: string, colaboradorId: string = '1'): TransformedEvaluationData => {
-
-    const pilaresMap = new Map<string, CriterioOutput[]>();
-
+export const transformFormData = (data: EvaluationFormData, ciclo: string, colaboradorId: number = 1): TransformedEvaluationData => {
+    const pilaresMap = new Map<number, CriterioOutput[]>();
     data.selfAssessment?.forEach(assessment => {
         const criterio: CriterioOutput = {
             criterioId: assessment.criterionId,
             nota: assessment.rating || 0,
             justificativa: assessment.justification,
         };
-
         const pilarId = assessment.pilarId;
         if (!pilaresMap.has(pilarId)) {
             pilaresMap.set(pilarId, []);
         }
         pilaresMap.get(pilarId)!.push(criterio);
     });
-
     const pilaresData: PilarOutput[] = Array.from(pilaresMap.entries()).map(([pilarId, criterios]) => ({
         pilarId,
         criterios,
     }));
-
     const avaliacao360 = data.evaluation360?.map(evaluation => ({
-            avaliadoId: evaluation.collaboratorId,
-            pontosFortes: evaluation.strengths,
-            pontosMelhoria: evaluation.improvements,
-        })) || [];
-
+        avaliadoId: evaluation.collaboratorId,
+        pontosFortes: evaluation.strengths,
+        pontosMelhoria: evaluation.improvements,
+    })) || [];
     const mentoring = data.mentoringRating && data.mentoringJustification && data.mentorId ? [{
-                        mentorId: data.mentorId,
-                        justificativa: data.mentoringJustification,
-                    }] : [];
-
+        mentorId: data.mentorId,
+        justificativa: data.mentoringJustification,
+    }] : [];
     const referencias = data.references?.map(reference => ({
-            colaboradorId: reference.collaboratorId,
-            justificativa: reference.justification,
-        })) || [];
-
+        colaboradorId: reference.collaboratorId,
+        justificativa: reference.justification,
+    })) || [];
     return {
         ciclo,
         colaboradorId,

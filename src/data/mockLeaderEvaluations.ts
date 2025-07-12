@@ -1,7 +1,7 @@
 export interface LeaderEvaluation {
-    id: string;
-    collaboratorId: string;
-    leaderId: string;
+    id: number;
+    collaboratorId: number;
+    leaderId: number;
     leaderName: string;
     leaderImage?: string;
     leaderAvatar?: string;
@@ -17,9 +17,9 @@ export interface LeaderEvaluation {
 
 export const mockLeaderEvaluations: LeaderEvaluation[] = [
     {
-        id: 'leader-eval-1',
-        collaboratorId: 'colab-001', // <- Corrigido para colab-001
-        leaderId: 'leader-1',
+        id: 1,
+        collaboratorId: 1,
+        leaderId: 1,
         leaderName: 'Ana Silva',
         leaderImage: '/avatars/ana-silva.jpg',
         cycleId: 'cycle-2024-1',
@@ -32,9 +32,9 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         isSubmitted: true,
     },
     {
-        id: 'leader-eval-2',
-        collaboratorId: 'colab-002', // <- Corrigido para colab-002
-        leaderId: 'leader-1',
+        id: 2,
+        collaboratorId: 2,
+        leaderId: 1,
         leaderName: 'Ana Silva',
         leaderImage: '/avatars/ana-silva.jpg',
         cycleId: 'cycle-2024-1',
@@ -47,9 +47,9 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         isSubmitted: true,
     },
     {
-        id: 'leader-eval-3',
-        collaboratorId: 'colab-003', // <- Corrigido para colab-003
-        leaderId: 'leader-2',
+        id: 3,
+        collaboratorId: 3,
+        leaderId: 2,
         leaderName: 'Carlos Mendes',
         leaderImage: '/avatars/carlos-mendes.jpg',
         cycleId: 'cycle-2024-1',
@@ -62,9 +62,9 @@ export const mockLeaderEvaluations: LeaderEvaluation[] = [
         isSubmitted: true,
     },
     {
-        id: 'leader-eval-4',
-        collaboratorId: 'colab-004', // <- Corrigido para colab-004
-        leaderId: 'leader-2',
+        id: 4,
+        collaboratorId: 4,
+        leaderId: 2,
         leaderName: 'Carlos Mendes',
         leaderImage: '/avatars/carlos-mendes.jpg',
         cycleId: 'cycle-2024-1',

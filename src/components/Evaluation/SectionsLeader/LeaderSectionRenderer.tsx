@@ -24,7 +24,7 @@ interface LeaderSectionRendererProps {
     activeSection: LeaderSectionType;
     // Dados do colaborador para a seção de histórico
     collaborator?: {
-        id: string;
+        id: number;
         nome: string;
         cargo: string;
         image?: string;
@@ -46,7 +46,7 @@ export function LeaderSectionRenderer({
             case 'Histórico':
                 return (
                     <CollaboratorHistorySection 
-                        collaboratorId={collaborator?.id || ''}
+                        collaboratorId={collaborator!.id}
                         collaboratorName={collaborator?.nome || 'Colaborador'}
                     />
                 );

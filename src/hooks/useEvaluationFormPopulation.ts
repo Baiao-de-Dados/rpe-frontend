@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { UseFormReturn } from 'react-hook-form';
 
-import type { NavigationState } from './useNotes';
+import type { NavigationState } from './useNotesAI';
 import type { EvaluationFormData } from '../schemas/evaluation';
 
 export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFormData>) {
@@ -19,17 +19,17 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
 
             if (selfAssessment && selfAssessment.length > 0) {
                 methods.setValue('selfAssessment', selfAssessment.map(selfAssess => ({
-                    pilarId: selfAssess.pillarId,
-                    criterionId: selfAssess.criteriaId,
+                    pilarId: Number(selfAssess.pillarId),
+                    criterionId: Number(selfAssess.criteriaId),
                     rating: selfAssess.rating,
                     justification: selfAssess.justification,
-                    selfAssessmentIAValid: false
+                    selfAssessmentIAValid: (selfAssess.rating === 0 && selfAssess.justification === '') ? true : false
                 })));
             }
 
             if (evaluation360 && evaluation360.length > 0) {
                 methods.setValue('evaluation360', evaluation360.map(eval360 => ({
-                    collaboratorId: eval360.collaboratorId,
+                    collaboratorId: Number(eval360.collaboratorId),
                     rating: eval360.rating,
                     strengths: eval360.strengths,
                     improvements: eval360.improvements,
@@ -45,7 +45,7 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
 
             if (references && references.length > 0) {
                 methods.setValue('references', references.map(ref => ({
-                    collaboratorId: ref.collaboratorId,
+                    collaboratorId: Number(ref.collaboratorId),
                     justification: ref.justification,
                     referencesIAValid: false
                 })));

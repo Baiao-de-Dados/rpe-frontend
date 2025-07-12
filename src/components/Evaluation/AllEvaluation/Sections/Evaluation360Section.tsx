@@ -30,7 +30,7 @@ export const Evaluation360Section = memo(({ selectedCycle }: Evaluation360Sectio
                         <AnimatedCard key={`eval360-${eval360.collaratorName}-${idx}`} index={idx}>
                             <Evaluation360Card
                                 collaborator={{ 
-                                    id: String(idx), 
+                                    id: idx, 
                                     nome: eval360.collaratorName, 
                                     cargo: eval360.collaboratorPosition 
                                 }}
