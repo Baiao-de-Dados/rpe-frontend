@@ -1,25 +1,22 @@
 import { memo } from 'react';
 
 import Typography from '../common/Typography';
-import CollaboratorCard from '../common/CollaboratorCard';
 import PageHeader from '../common/PageHeader';
+import CollaboratorCard from '../common/CollaboratorCard';
+
+import type { Collaborator } from '../../types/collaborator';
+
+import type { PageHeaderSection } from '../common/PageHeader';
 
 import LeaderEvaluationSubmitButton from './LeaderEvaluationSubmitButton';
 
 import type { LeaderSectionType } from './SectionsLeader/LeaderEvaluationSections';
-import type { PageHeaderSection } from '../common/PageHeader';
 
 interface LeaderEvaluationHeaderProps {
     activeSection: LeaderSectionType;
     onSectionChange: (section: LeaderSectionType) => void;
     sections: LeaderSectionType[];
-    collaborator: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator: Collaborator;
     cycleName: string;
     incompleteAssessmentCount?: number;
 }
@@ -46,7 +43,6 @@ const LeaderEvaluationHeader = memo(({
         },
     );
 
-    // Conteúdo customizado para o título
     const titleContent = (
         <div className="flex items-center gap-2 lg:gap-4">
             <CollaboratorCard 
@@ -54,7 +50,6 @@ const LeaderEvaluationHeader = memo(({
                 variant="detailed" 
                 className="flex-shrink-0"
             />
-            {/* Separador e ciclo - apenas em desktop */}
             <div className="hidden lg:flex items-center">
                 <div className="h-8 w-px bg-gray-300 mx-4"></div>
                 <Typography

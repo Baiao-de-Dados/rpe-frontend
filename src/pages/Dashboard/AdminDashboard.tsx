@@ -1,9 +1,9 @@
+import { mockERP } from '../../data/mockAdmin';
+
 import Button from '../../components/common/Button';
 import PageHeader from '../../components/common/PageHeader';
-
-import { AdminMetrics } from '../../components/Dashboard/AdminMetrics';
 import { ERPViewer } from '../../components/Dashboard/ERPViewer';
-import { mockERP } from '../../data/mockAdmin';
+import { AdminMetrics } from '../../components/Dashboard/AdminMetrics';
 
 export function AdminDashboard() {
 

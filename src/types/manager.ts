@@ -1,3 +1,5 @@
+import type { Leader } from "./leadership";
+
 export interface AssignLeaderEvaluationPayload {
     collaboratorId: number;
     cycleId: number;
@@ -9,13 +11,7 @@ export interface Project {
     projectName: string;
 }
 
-export interface Leader {
-    id: number;
-    name: string;
-    project: Project;
-}
-
-export interface Collaborator {
+export interface ManagerCollaborator {
     id: number;
     name: string;
     position: string;
@@ -26,5 +22,5 @@ export interface Collaborator {
 
 export interface LeadersAndCollaborators {
     leaders: Leader[];
-    collaborators: Collaborator[];
+    collaborators: ManagerCollaborator[];
 }

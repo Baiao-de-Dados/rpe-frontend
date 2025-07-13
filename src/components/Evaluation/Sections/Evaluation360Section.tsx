@@ -10,12 +10,12 @@ import Typography from '../../common/Typography';
 import AnimatedCard from '../../common/AnimatedCard';
 import CollaboratorCard from '../../common/CollaboratorCard';
 
-import type { Collaborator } from '../../../data/mockCollaborators';
 import { searchCollaborators } from '../../../data/mockCollaborators';
 
 import type { EvaluationFormData } from '../../../schemas/evaluation';
 
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
+import type { Collaborator } from '../../../types/collaborator';
 
 export const Evaluation360Section = memo(() => {
 

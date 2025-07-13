@@ -1,8 +1,8 @@
 import Typography from '../../../common/Typography';
+import StarRating from '../../../common/StarRating';
 import RatingDisplay from '../../../common/RatingDisplay';
 import CardContainer from '../../../common/CardContainer';
 import CollaboratorCard from '../../../common/CollaboratorCard';
-import StarRating from '../../../common/StarRating';
 import TextAreaWithTitle from '../../../common/TextAreaWithTitle';
 
 interface MenteeEvaluationCardProps {
@@ -12,17 +12,12 @@ interface MenteeEvaluationCardProps {
     justification: string;
 }
 
-const MenteeEvaluationCard = ({ 
-    menteeName, 
-    menteeCargo, 
-    rating, 
-    justification 
-}: MenteeEvaluationCardProps) => {
+const MenteeEvaluationCard = ({ menteeName, menteeCargo, rating, justification }: MenteeEvaluationCardProps) => {
 
     const mentee = {
         id: 1,
-        nome: menteeName,
-        cargo: menteeCargo,
+        name: menteeName,
+        position: menteeCargo,
     };
 
     return (

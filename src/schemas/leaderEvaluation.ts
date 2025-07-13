@@ -10,7 +10,6 @@ export const leaderGeneralAssessmentSchema = z.object({
         .int('A nota deve ser um número inteiro')
         .min(1, 'A nota deve ser entre 1 e 5')
         .max(5, 'A nota deve ser entre 1 e 5')
-        .nullable()
         .refine(value => value !== null && value !== 0, 'A nota geral é obrigatória'),
     generalJustification: z
         .string({
@@ -40,6 +39,9 @@ export const fullLeaderEvaluationSchema = z.object({
     }),
     cycleId: z.number({
         required_error: 'O ID do ciclo é obrigatório',
+    }),
+    leaderId: z.number({
+        required_error: 'O ID do líder é obrigatório',
     }),
     ...leaderGeneralAssessmentSchema.shape,
 });

@@ -3,34 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { fullLeaderEvaluationSchema, type FullLeaderEvaluationFormData } from '../../schemas/leaderEvaluation';
-
-import { LeaderEvaluationForm } from '../../components/Evaluation/LeaderEvaluationForm';
-import CycleLoading from '../../components/common/CycleLoading';
-import Typography from '../../components/common/Typography';
-import CycleClosedEvaluationMessage from '../../components/CycleMessages/CycleClosedEvaluationMessage';
-
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
+import { useLeaderCollaboratorsEvaluation } from '../../hooks/api/useLeaderQuery';
+import { useAuth } from '../../hooks/useAuth';
 
-import { mockCollaborators } from '../../data/mockCollaborators';
+import type { Collaborator } from '../../types/collaborator';
+
+import CycleLoading from '../../components/common/CycleLoading';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
+import { LeaderEvaluationForm } from '../../components/Evaluation/LeaderEvaluationForm';
+import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
+import CycleClosedEvaluationMessage from '../../components/CycleMessages/CycleClosedEvaluationMessage';
+
+import { fullLeaderEvaluationSchema, type FullLeaderEvaluationFormData } from '../../schemas/leaderEvaluation';
 
 interface LeaderAvaliacaoProps {
     collaboratorId: number;
 }
 
 export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
+
+    const { user } = useAuth();
+
     const navigate = useNavigate();
-    const { currentCycle, isLoading } = useCycle();
+
     const { showToast } = useToast();
+
+    const { currentCycle, isLoading } = useCycle();
+
+    const { data: collaboratorsData = [], leaderEvaluation, getLeaderEvaluation } = useLeaderCollaboratorsEvaluation();
     
-    const [collaborator, setCollaborator] = useState<{
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    } | null>(null);
+    const [collaborator, setCollaborator] = useState<Collaborator| null>(null);
 
     const methods = useForm<FullLeaderEvaluationFormData>({
         resolver: zodResolver(fullLeaderEvaluationSchema),
@@ -38,6 +42,7 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
         defaultValues: {
             collaboratorId: collaboratorId,
             cycleId: currentCycle?.id,
+            leaderId: user?.id,
             generalRating: 0,
             generalJustification: '',
             strengths: '',
@@ -47,12 +52,9 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
 
     useEffect(() => {
         if (collaboratorId) {
-            // Buscar dados do colaborador
-            const foundCollaborator = mockCollaborators.find(c => c.id === collaboratorId);
+            const foundCollaborator = collaboratorsData.find(c => c.collaborator.id === collaboratorId)?.collaborator;
             if (foundCollaborator) {
                 setCollaborator(foundCollaborator);
-                
-                // Atualizar form values
                 methods.setValue('collaboratorId', foundCollaborator.id);
                 if (currentCycle?.id) {
                     methods.setValue('cycleId', currentCycle.id);
@@ -66,29 +68,20 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
                 navigate('/colaboradores');
             }
         }
-    }, [collaboratorId, currentCycle, methods, navigate, showToast]);
+    }, [collaboratorId, collaboratorsData, currentCycle, methods, navigate, showToast]);
 
     const handleSubmit = async (data: FullLeaderEvaluationFormData) => {
         try {
-            console.log('Dados da avaliação do líder:', data);
-            
-            // Simular envio para API
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
+            await leaderEvaluation(data); 
             showToast(
-                `Avaliação de ${collaborator?.nome} enviada com sucesso!`,
+                `Avaliação de ${collaborator?.name} enviada com sucesso!`,
                 'success',
                 {
                     title: 'Avaliação Enviada',
                     duration: 5000,
                 }
             );
-            
-            // Redirecionar de volta para lista de colaboradores
-            setTimeout(() => {
-                navigate('/colaboradores');
-            }, 1500);
-            
+            navigate('/colaboradores');
         } catch (error) {
             console.error('Erro ao enviar avaliação:', error);
             showToast(
@@ -107,29 +100,11 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
     }
 
     if (!currentCycle) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4">Ciclo não encontrado</Typography>
-                    <Typography variant="body" color="muted">
-                        Não foi possível carregar as informações do ciclo atual.
-                    </Typography>
-                </div>
-            </div>
-        );
+        return <CycleLoadErrorMessage />;
     }
 
     if (!collaborator) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4">Colaborador não encontrado</Typography>
-                    <Typography variant="body" color="muted">
-                        Não foi possível encontrar as informações do colaborador.
-                    </Typography>
-                </div>
-            </div>
-        );
+        return <CollaboratorNotFoundMessage />;
     }
 
     if (!currentCycle.isActive) {

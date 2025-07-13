@@ -11,18 +11,18 @@ import { ProtectedRoute, RoleRoute } from './ProtectedRoute';
 
 import LoadingSpinner from '../components/RouterLoadingSpinner';
 
-import { Auditoria } from '../pages/Auditoria';
-import { Dashboard } from '../pages/Dashboard/index';
-import { Lideranca } from '../pages/Lideranca';
-import Colaboradores from '../pages/Colaboradores';
-import { AvaliacaoIndividual } from '../pages/Colaboradores/AvaliacaoIndividual';
+import { LoginPage } from '../pages/Login';
 import { Evolucao } from '../pages/Evolucao';
-import { Configuracoes } from '../pages/Configuracoes';
+import { Auditoria } from '../pages/Auditoria';
+import { Lideranca } from '../pages/Lideranca';
 import { Avaliacao } from '../pages/Avaliacao';
+import { Dashboard } from '../pages/Dashboard/index';
+import { Configuracoes } from '../pages/Configuracoes';
+import { Colaboradores } from '../pages/Colaboradores';
+import { BrutalFactsPage }  from '../pages/BrutalFacts';
+import { Anotacoes } from '../pages/Anotacoes/Anotacoes';
 import { ImportarHistoricos } from '../pages/ImportarHistorico';
-import Anotacoes  from '../pages/Colaborador/Anotacoes';
-import BrutalFactsPage  from '../pages/BrutalFacts';
-import LoginPage from '../pages/Login';
+import { AvaliacaoIndividual } from '../pages/Colaboradores/AvaliacaoIndividual';
 
 export function Router() {
 
@@ -168,7 +168,8 @@ export function Router() {
                             </MultiRoleRoute>
                         }
                     />
-                     <Route path="anotacoes" 
+
+                    <Route path="anotacoes" 
                         element={
                             <RoleRoute requiredRoles={[
                                     UserRoleEnum.MENTOR,
@@ -180,6 +181,7 @@ export function Router() {
                             </RoleRoute>
                     } 
                     />
+
                     <Route path="brutalfacts"
                         element={
                             <MultiRoleRoute redirectTo="/dashboard" allowedRoles={[

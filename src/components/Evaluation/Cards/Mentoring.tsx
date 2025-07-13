@@ -14,8 +14,8 @@ import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 const mentor = {
     id: 1,
-    nome: 'Miguel Alencar',
-    cargo: 'Mentor',
+    name: 'Miguel Alencar',
+    position: 'Mentor',
 };
 
 const Mentoring = () => {

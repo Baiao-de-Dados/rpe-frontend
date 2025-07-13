@@ -7,6 +7,7 @@ import { leaderEvaluationSections, type LeaderSectionType } from './LeaderEvalua
 import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
 
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
+import type { Collaborator } from '../../../types/collaborator';
 
 const LeaderGeneralAssessmentSection = lazy(() =>
     import('./LeaderGeneralAssessmentSection').then(module => ({
@@ -22,14 +23,7 @@ const CollaboratorHistorySection = lazy(() =>
 
 interface LeaderSectionRendererProps {
     activeSection: LeaderSectionType;
-    // Dados do colaborador para a seção de histórico
-    collaborator?: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator?: Collaborator;
 }
 
 export function LeaderSectionRenderer({ 
@@ -47,7 +41,7 @@ export function LeaderSectionRenderer({
                 return (
                     <CollaboratorHistorySection 
                         collaboratorId={collaborator!.id}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             default:

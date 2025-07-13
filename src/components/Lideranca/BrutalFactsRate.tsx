@@ -2,6 +2,7 @@ import React from 'react';
 import { Star } from 'lucide-react';
 import CardContainer from '../common/CardContainer';
 import Typography from '../common/Typography';
+import { CHART_COLORS, getScoreLabel } from '../../utils/colorUtils';
 
 interface BrutalFactsRateProps {
   score: number;
@@ -10,32 +11,46 @@ interface BrutalFactsRateProps {
   cicle?: string;
 }
 
-const getScoreLabel = (score: number) => {
-  if (score >= 4.5) return 'Great';
-  if (score >= 3.5) return 'Good';
-  if (score >= 2.5) return 'Regular';
-  return 'Needs improvement';
-};
-
 const BrutalFactsRate: React.FC<BrutalFactsRateProps> = ({ score, cycleLabel, description }) => {
   return (
-    <CardContainer className="flex flex-col lg:flex-row items-center gap-4 sm:gap-8 bg-neutral-50 px-4 sm:px-8 py-6 rounded-2xl shadow-none border border-neutral-200 min-h-[180px] w-full h-full">
-      <div className="flex-1 min-w-0 w-full">
-        <Typography variant="h2" className="text-black font-bold text-lg mb-2 sm:mb-3">Nota média geral</Typography>
-        <div className="text-neutral-500 text-sm border-l-4 border-green-600 pl-4 leading-tight break-words h-auto min-h-[2.5rem] flex items-center">
-          {description || <span>Em comparação ao ciclo {cycleLabel}.</span>}
+    <div className="grid grid-cols-1 md:grid-cols-1 gap-4 sm:gap-6 mb-6">
+      <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4 w-full min-h-[180px]">
+        <div className="flex flex-col flex-1 min-w-0">
+          <Typography variant="h2" className="text-lg font-bold mb-5 text-black">
+            Nota média geral
+          </Typography>
+          <div className="flex items-center border-l-4 pl-4 min-h-[3rem]" style={{ borderLeftColor: CHART_COLORS.EXCELLENT }}>
+            <Typography
+              variant="caption"
+              className="text-gray-500 max-w-[20rem] leading-5"
+            >
+              {description ? (
+                <span>{description}</span>
+              ) : (
+                <span>Em comparação ao ciclo {cycleLabel}.</span>
+              )}
+            </Typography>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center min-w-[90px] gap-2 sm:gap-4 mt-4 sm:mt-0 w-full sm:w-auto justify-center">
-        <div className="flex items-center justify-center">
-          <Star className="w-10 h-10" fill="#16A34A" color="#16A34A" />
+        <div className="flex items-center space-x-3 mt-4 sm:mt-0">
+          <Star className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: CHART_COLORS.EXCELLENT }} fill={CHART_COLORS.EXCELLENT} />
+          <div className="flex flex-col items-center">
+            <span
+              className="text-4xl sm:text-5xl font-bold"
+              style={{ color: CHART_COLORS.EXCELLENT }}
+            >
+              {score.toFixed(2)}
+            </span>
+            <span
+              className="font-bold text-sm sm:text-base"
+              style={{ color: CHART_COLORS.EXCELLENT }}
+            >
+              {getScoreLabel(score)}
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col items-center justify-center">
-          <span className="text-3xl sm:text-4xl font-bold text-green-600 leading-none">{score.toFixed(2)}</span>
-          <span className="text-green-600 font-semibold text-base mt-1">{getScoreLabel(score)}</span>
-        </div>
-      </div>
-    </CardContainer>
+      </CardContainer>
+    </div>
   );
 };
 

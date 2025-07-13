@@ -1,16 +1,14 @@
-import CardContainer from '../../../common/CardContainer';
-import CollaboratorCard from '../../../common/CollaboratorCard';
+import type { Collaborator } from '../../../../types/collaborator';
+
+import Typography from '../../../common/Typography';
 import StarRating from '../../../common/StarRating';
 import RatingDisplay from '../../../common/RatingDisplay';
+import CardContainer from '../../../common/CardContainer';
+import CollaboratorCard from '../../../common/CollaboratorCard';
 import TextAreaWithTitle from '../../../common/TextAreaWithTitle';
-import Typography from '../../../common/Typography';
 
 interface Evaluation360CardProps {
-    collaborator: { 
-        id: number; 
-        nome: string; 
-        cargo: string 
-    };
+    collaborator: Partial<Pick<Collaborator, 'name' | 'position'>>;
     rating: number;
     strengths: string;
     improvements: string;

@@ -15,7 +15,7 @@ interface LoginFormErrors {
 
 }
 
-export default function LoginPage() {
+export function LoginPage() {
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 

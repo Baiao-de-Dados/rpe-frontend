@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-import type { Leader, Collaborator } from '../../types/leadership';
+import type { Leader, LeaderCollaborator } from '../../types/leadership';
 
 import LeaderAssignmentCard from './LeaderAssignmentCard';
 
@@ -11,12 +11,12 @@ import AlertMessage from '../common/AlertMessage';
 import { useToast } from '../../hooks/useToast';
 import { useCycle } from '../../hooks/useCycle';
 import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
-import { useAssignLeaderEvaluation } from '../../hooks/useManagerQuery';
+import { useAssignLeaderEvaluation } from '../../hooks/api/useManagerQuery';
 
 interface LeadershipManagementProps {
     leaders: Leader[];
-    collaborators: Collaborator[];
-    onCollaboratorAssignmentChange?: (collaborators: Collaborator[]) => void;
+    collaborators: LeaderCollaborator[];
+    onCollaboratorAssignmentChange?: (collaborators: LeaderCollaborator[]) => void;
 }
 
 const LeadershipManagement = ({ leaders, collaborators }: LeadershipManagementProps) => {

@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useCycle } from './useCycle';
-import { useToast } from './useToast';
+import { useCycle } from '../useCycle';
+import { useToast } from '../useToast';
 
-import { notesEndpoints } from './../services/api/notes';
+import { notesEndpoints } from '../../services/api/notes';
 
-import type { GeminiEvaluationResponse } from '../types/evaluationAI';
+import type { GeminiEvaluationResponse } from '../../types/evaluationAI';
 
 export type EvaluationSection = 'Mentoring' | 'Avaliação 360' | 'Autoavaliação' | 'Referências';
 
@@ -14,7 +14,7 @@ export interface NavigationState {
     geminiResponse: GeminiEvaluationResponse;
 }
 
-import type { IAEvaluationServiceResponse, GeminiResponse } from '../types/evaluationAI';
+import type { IAEvaluationServiceResponse, GeminiResponse } from '../../types/evaluationAI';
 import { AxiosError } from 'axios';
 
 async function evaluationAI(userId: number, cycledId: number): Promise<IAEvaluationServiceResponse> {

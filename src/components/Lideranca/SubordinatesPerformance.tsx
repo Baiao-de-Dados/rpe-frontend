@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import CardContainer from '../common/CardContainer';
 import Typography from '../common/Typography';
+import { CHART_COLORS } from '../../utils/colorUtils';
 
 interface SubordinatesPerformanceProps {
   growth: number;
@@ -10,30 +11,59 @@ interface SubordinatesPerformanceProps {
 }
 
 const SubordinatesPerformance: React.FC<SubordinatesPerformanceProps> = ({ growth, cycleLabel, description }) => {
+  const isPositive = growth > 0;
+  const isNegative = growth < 0;
+  const color = CHART_COLORS.EXCELLENT;
+
   return (
-    <CardContainer className="flex flex-col lg:flex-row items-center gap-4 sm:gap-8 bg-neutral-50 px-4 sm:px-8 py-6 rounded-2xl shadow-none border border-neutral-200 min-h-[180px] w-full h-full">
-      <div className="flex-1 min-w-0 w-full">
-        <Typography variant="h2" className="text-black font-bold text-lg mb-2 sm:mb-3">Desempenho de liderados</Typography>
-        <div className="text-neutral-500 text-sm border-l-4 border-yellow-500 pl-4 leading-tight break-words h-auto min-h-[2.5rem] flex items-center">
-          {description || <span>Crescimento de <span className="font-bold text-yellow-600">{growth > 0 ? `+${growth}` : `${growth}`}</span><br/>comparação ao ciclo {cycleLabel}</span>}
+    <div className="grid grid-cols-1 md:grid-cols-1 gap-4 sm:gap-6 mb-6">
+      <CardContainer className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 gap-4 w-full min-h-[180px]">
+        <div className="flex flex-col flex-1 min-w-0">
+          <Typography variant="h2" className="text-lg font-bold mb-5 text-black">
+            Desempenho de liderados
+          </Typography>
+          <div className="flex items-center border-l-4 pl-4 min-h-[3rem]" style={{ borderLeftColor: color }}>
+            <Typography
+              variant="caption"
+              className="text-gray-500 max-w-[20rem] leading-5"
+            >
+              {description ? (
+                <span>{description}</span>
+              ) : (
+                <span>
+                  Crescimento de{' '}
+                  <span className="font-bold" style={{ color }}>
+                    {isPositive ? `+${growth}` : growth}
+                  </span>{' '}
+                  comparação ao ciclo {cycleLabel}
+                </span>
+              )}
+            </Typography>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center min-w-[90px] gap-2 sm:gap-4 mt-4 sm:mt-0 w-full sm:w-auto justify-center">
-        { growth > 0 ? 
-        (<>
-            <ArrowUp className="w-8 h-8 text-yellow-500" strokeWidth={2.5} />
-            <span className="text-3xl sm:text-4xl font-bold text-yellow-600 leading-none">+{growth}</span>
-        </>)
-        : growth < 0 ?
-        (<>
-            <ArrowDown className="w-8 h-8 text-yellow-500" strokeWidth={2.5} />
-            <span className="text-3xl sm:text-4xl font-bold text-yellow-600 leading-none">{growth}</span>
-        </>)
-        : 
-        (<span className="text-3xl sm:text-4xl font-bold text-yellow-600 leading-none">{growth}</span>)
-        }
-      </div>
-    </CardContainer>
+        <div className="flex items-center space-x-3 mt-4 sm:mt-0">
+          {isPositive && (
+            <ArrowUp className="w-8 h-8 sm:w-10 sm:h-10" style={{ color }} strokeWidth={2.5} />
+          )}
+          {isNegative && (
+            <ArrowDown className="w-8 h-8 sm:w-10 sm:h-10" style={{ color }} strokeWidth={2.5} />
+          )}
+          <div className="flex flex-col items-center">
+            <span
+              className="text-4xl sm:text-5xl font-bold"
+              style={{ color }}
+            >
+              {isPositive ? `+${growth}` : growth}
+            </span>
+            <span
+              className="font-bold text-sm sm:text-base"
+              style={{ color }}
+            >
+            </span>
+          </div>
+        </div>
+      </CardContainer>
+    </div>
   );
 };
 

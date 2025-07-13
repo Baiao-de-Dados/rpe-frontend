@@ -1,29 +1,23 @@
 import { useMemo, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import type { Collaborator } from '../../types/collaborator';
+
 import LeaderEvaluationHeader from './LeaderEvaluationHeader';
-import { LeaderSectionRenderer } from './SectionsLeader/LeaderSectionRenderer';
-import { leaderEvaluationSections, type LeaderSectionType } from './SectionsLeader/LeaderEvaluationSections';
 
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 
 import type { FullLeaderEvaluationFormData } from '../../schemas/leaderEvaluation';
 
+import { LeaderSectionRenderer } from './SectionsLeader/LeaderSectionRenderer';
+import { leaderEvaluationSections, type LeaderSectionType } from './SectionsLeader/LeaderEvaluationSections';
+
 interface LeaderEvaluationFormProps {
-    collaborator: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator: Collaborator
     cycleName: string;
 }
 
-export const LeaderEvaluationForm = memo(({
-    collaborator,
-    cycleName
-}: LeaderEvaluationFormProps) => {
+export const LeaderEvaluationForm = memo(({ collaborator, cycleName }: LeaderEvaluationFormProps) => {
 
     const { activeSection, navigateToSection, sections } =
         useSectionNavigation<LeaderSectionType>([...leaderEvaluationSections]);
@@ -44,12 +38,10 @@ export const LeaderEvaluationForm = memo(({
     const incompleteAssessmentCount = useMemo(() => {
         let incompleteCount = 0;
 
-        // Verificar se a nota geral está preenchida
         if (!watchedGeneralRating || watchedGeneralRating <= 0) {
             incompleteCount++;
         }
 
-        // Verificar se a justificativa geral está preenchida
         if (!watchedGeneralJustification || watchedGeneralJustification.trim().length === 0) {
             incompleteCount++;
         }

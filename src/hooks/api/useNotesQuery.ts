@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { notesEndpoints } from '../services/api/notes';
-import type { Note, UpsertNotePayload } from '../types/notes';
-import { useToast } from './useToast';
+
+import { useToast } from '../useToast';
+
+import { notesEndpoints } from '../../services/api/notes';
+
+import type { Note, UpsertNotePayload } from '../../types/notes';
 
 export const NOTE_QUERY_KEY = ['note'];
 

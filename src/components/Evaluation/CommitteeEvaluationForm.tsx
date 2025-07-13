@@ -1,20 +1,18 @@
 import { useMemo, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import type { Collaborator } from '../../types/collaborator';
+
 import CommitteeEvaluationHeader from './CommitteeEvaluationHeader';
-import { CommitteeSectionRenderer } from './SectionsCommittee/CommitteeSectionRenderer';
-import { committeeEvaluationSections, type CommitteeSectionType } from './SectionsCommittee/CommitteeEvaluationSections';
 
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 
+import { CommitteeSectionRenderer } from './SectionsCommittee/CommitteeSectionRenderer';
+import { committeeEvaluationSections, type CommitteeSectionType } from './SectionsCommittee/CommitteeEvaluationSections';
+
+
 interface CommitteeEvaluationFormProps {
-    collaborator: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator: Collaborator;
     cycleName: string;
     collaboratorSelfAssessment?: Array<{
         pilarId: number;

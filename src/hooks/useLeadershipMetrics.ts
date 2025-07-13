@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Collaborator, Leader } from "../types/leadership";
+import type { Leader, LeaderCollaborator } from "../types/leadership";
 
 interface LeadershipMetrics {
     totalLeaders: number;
@@ -8,7 +8,7 @@ interface LeadershipMetrics {
     completionPercentage: number;
 }
 
-export function useLeadershipMetrics(originalCollaborators: Collaborator[], leaders: Leader[]): LeadershipMetrics {
+export function useLeadershipMetrics(originalCollaborators: LeaderCollaborator[], leaders: Leader[]): LeadershipMetrics {
 
     const metrics = useMemo(() => {
 

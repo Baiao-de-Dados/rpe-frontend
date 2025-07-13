@@ -15,8 +15,8 @@ const MentoringCard = ({ mentorName, mentoringRating, mentoringJustification }: 
 
     const mentor = {
         id: 1,
-        nome: mentorName,
-        cargo: 'Mentor',
+        name: mentorName,
+        position: 'Mentor',
     };
 
     return (

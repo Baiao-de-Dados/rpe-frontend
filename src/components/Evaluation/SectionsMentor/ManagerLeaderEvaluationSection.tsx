@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import CardContainer from '../../common/CardContainer';
 import Typography from '../../common/Typography';
 import StarRating from '../../common/StarRating';
-import TextAreaWithTitle from '../../common/TextAreaWithTitle';
-import CollaboratorCard from '../../common/CollaboratorCard';
 import RatingDisplay from '../../common/RatingDisplay';
+import CardContainer from '../../common/CardContainer';
+import CollaboratorCard from '../../common/CollaboratorCard';
+import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 
 import { mockLeaderEvaluations } from '../../../data/mockLeaderEvaluations';
 import type { LeaderEvaluation } from '../../../data/mockLeaderEvaluations';
@@ -15,12 +15,8 @@ interface ManagerLeaderEvaluationSectionProps {
     collaboratorName: string;
 }
 
-export function ManagerLeaderEvaluationSection({
-    collaboratorId,
-    collaboratorName
-}: ManagerLeaderEvaluationSectionProps) {
+export function ManagerLeaderEvaluationSection({ collaboratorId, collaboratorName }: ManagerLeaderEvaluationSectionProps) {
 
-    // Buscar a avaliação do líder para este colaborador neste ciclo
     const leaderEvaluation = useMemo(() => {
         if (!collaboratorId) return null;
         
@@ -50,10 +46,8 @@ export function ManagerLeaderEvaluationSection({
 
     const leader = {
         id: leaderEvaluation.leaderId,
-        nome: leaderEvaluation.leaderName,
-        cargo: 'Líder',
-        image: leaderEvaluation.leaderImage,
-        avatar: leaderEvaluation.leaderAvatar,
+        name: leaderEvaluation.leaderName,
+        position: 'Líder',
     };
 
     return (
@@ -71,7 +65,6 @@ export function ManagerLeaderEvaluationSection({
                 </Typography>
 
                 <div className="space-y-6">
-                    {/* Avaliação Geral */}
                     <div>
                         <Typography variant="body" className="text-sm text-gray-600 mb-3">
                             Avaliação geral (1 a 5)
@@ -82,7 +75,6 @@ export function ManagerLeaderEvaluationSection({
                         />
                     </div>
 
-                    {/* Justificativa */}
                     <TextAreaWithTitle
                         title="Justificativa da avaliação"
                         value={leaderEvaluation.generalJustification || ''}
@@ -91,7 +83,6 @@ export function ManagerLeaderEvaluationSection({
                         maxLength={1000}
                     />
 
-                    {/* Pontos Fortes */}
                     <TextAreaWithTitle
                         title="Pontos fortes identificados"
                         value={leaderEvaluation.strengths || ''}
@@ -100,7 +91,6 @@ export function ManagerLeaderEvaluationSection({
                         maxLength={1000}
                     />
 
-                    {/* Pontos de Melhoria */}
                     <TextAreaWithTitle
                         title="Pontos de melhoria sugeridos"
                         value={leaderEvaluation.improvements || ''}

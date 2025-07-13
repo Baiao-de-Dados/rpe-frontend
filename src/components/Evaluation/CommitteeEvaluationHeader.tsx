@@ -1,23 +1,20 @@
 import { memo } from 'react';
 import { BadgeCheck } from 'lucide-react';
-import { type CommitteeSectionType } from './SectionsCommittee/CommitteeEvaluationSections';
+
+import type { Collaborator } from '../../types/collaborator';
 
 import Typography from '../common/Typography';
-import CollaboratorCard from '../common/CollaboratorCard';
 import PageHeader from '../common/PageHeader';
+import CollaboratorCard from '../common/CollaboratorCard';
 import type { PageHeaderSection } from '../common/PageHeader';
+
+import { type CommitteeSectionType } from './SectionsCommittee/CommitteeEvaluationSections';
 
 interface CommitteeEvaluationHeaderProps {
     activeSection: CommitteeSectionType;
     onSectionChange: (section: CommitteeSectionType) => void;
     sections: CommitteeSectionType[];
-    collaborator: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator: Collaborator;
     cycleName: string;
     isEqualizationComplete?: boolean;
     isSubmitting?: boolean;
@@ -34,10 +31,10 @@ const CommitteeEvaluationHeader = memo(({
     isSubmitting,
     onSaveEqualization,
 }: CommitteeEvaluationHeaderProps) => {
-    // Seções para o PageHeader
+
     const pageHeaderSections: PageHeaderSection<CommitteeSectionType>[] = sections.map(section => ({ name: section }));
 
-    // Conteúdo customizado para o título (igual ao Manager)
+
     const titleContent = (
         <div className="flex items-center gap-2 lg:gap-4">
             <CollaboratorCard 
@@ -45,7 +42,7 @@ const CommitteeEvaluationHeader = memo(({
                 variant="detailed" 
                 className="flex-shrink-0"
             />
-            {/* Separador e ciclo - apenas em desktop */}
+
             <div className="hidden lg:flex items-center">
                 <div className="h-8 w-px bg-gray-300 mx-4"></div>
                 <Typography
@@ -59,7 +56,6 @@ const CommitteeEvaluationHeader = memo(({
         </div>
     );
 
-    // Botão de submissão só na seção equalização
     const button = activeSection === 'Equalização' ? (
         <button
             className="bg-[#167174] hover:bg-[#125c5e] text-white px-4 py-2 rounded-lg flex items-center gap-2"

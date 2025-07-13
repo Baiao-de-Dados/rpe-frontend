@@ -1,5 +1,8 @@
 // src/data/mockManagerData.ts
 
+import type { CollaboratorsEvaluationsSummary } from "../types/collaborator";
+import { mockCollaboratorsSummary } from "./mockCollaborators";
+
 type BadgeVariant = 'default' | 'success' | 'warning';
 
 export const mockManagerEvaluations: Record<
@@ -49,21 +52,9 @@ export const mockManagerEvaluations: Record<
     },
 };
 
-interface ManagedCollaborator {
-    id: number;
-    name: string;
-    position: string;
-    selfEvaluation?: number;
-    leaderEvaluation?: number; // Nota do líder
-    managerEvaluation?: number; // Nota do gestor
-    finalScore?: number;
-    evaluationStatus: 'Não iniciado' | 'Em andamento' | 'Aguardando revisão' | 'Finalizado';
-    avatar?: string;
-}
-
 export interface ManagerData {
     // Dados para ambos os status
-    managedCollaborators: ManagedCollaborator[];
+    managedCollaborators: CollaboratorsEvaluationsSummary;
     totalLeaders: number;
     totalCollaborators: number;
     completionPercentage: number;
@@ -85,75 +76,7 @@ export interface ManagerData {
 
 export const mockManagerData: ManagerData = {
     // Colaboradores geridos
-    managedCollaborators: [
-        {
-            id: 1,
-            name: 'Ana Silva',
-            position: 'Desenvolvedora Frontend',
-            selfEvaluation: 4.2,
-            leaderEvaluation: 4.1, // Nota do líder
-            managerEvaluation: 4.0, // Gestor já avaliou
-            finalScore: 4.1,
-            evaluationStatus: 'Finalizado',
-            avatar: undefined,
-        },
-        {
-            id: 2,
-            name: 'Carlos Oliveira',
-            position: 'Desenvolvedor Backend',
-            selfEvaluation: 3.8,
-            leaderEvaluation: 3.9, // Nota do líder
-            managerEvaluation: undefined, // Gestor ainda não avaliou
-            finalScore: undefined,
-            evaluationStatus: 'Aguardando revisão',
-            avatar: undefined,
-        },
-        {
-            id: 3,
-            name: 'Maria Santos',
-            position: 'UX Designer',
-            selfEvaluation: 4.5,
-            leaderEvaluation: 4.4, // Nota do líder
-            managerEvaluation: 4.3, // Gestor já avaliou
-            finalScore: 4.4,
-            evaluationStatus: 'Finalizado',
-            avatar: undefined,
-        },
-        {
-            id: 4,
-            name: 'João Pereira',
-            position: 'Analista de Dados',
-            selfEvaluation: 3.5,
-            leaderEvaluation: 3.6, // Nota do líder
-            managerEvaluation: undefined, // Gestor ainda não avaliou
-            finalScore: undefined,
-            evaluationStatus: 'Em andamento',
-            avatar: undefined,
-        },
-        {
-            id: 5,
-            name: 'Fernanda Costa',
-            position: 'Product Owner',
-            selfEvaluation: 4.0,
-            leaderEvaluation: 3.9, // Nota do líder
-            managerEvaluation: undefined, // Gestor ainda não avaliou
-            finalScore: undefined,
-            evaluationStatus: 'Aguardando revisão',
-            avatar: undefined,
-        },
-        {
-            id: 6,
-            name: 'Rafael Lima',
-            position: 'DevOps Engineer',
-            selfEvaluation: 3.2,
-            leaderEvaluation: 3.3, // Nota do líder
-            managerEvaluation: 3.4, // Gestor já avaliou
-            finalScore: 3.3,
-            evaluationStatus: 'Finalizado',
-            avatar: undefined,
-        },
-    ],
-    
+    managedCollaborators: mockCollaboratorsSummary,
     // Dados para ambos os status
     totalLeaders: 3, // Gestor tem 3 líderes sob sua gestão
     totalCollaborators: 6,

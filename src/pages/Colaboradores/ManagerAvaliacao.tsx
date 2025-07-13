@@ -3,18 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { fullManagerEvaluationSchema, type FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
-
-import { ManagerEvaluationForm } from '../../components/Evaluation/ManagerEvaluationForm';
-import CycleLoading from '../../components/common/CycleLoading';
-import Typography from '../../components/common/Typography';
-
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
 
+import type { Collaborator } from '../../types/collaborator';
+
 import { mockCollaborators } from '../../data/mockCollaborators';
-import { getCollaboratorSelfAssessment } from '../../data/mockCollaboratorSelfAssessment';
+
 import { getCollaborator360Evaluations } from '../../data/mockCollaborator360Data';
+import { getCollaboratorSelfAssessment } from '../../data/mockCollaboratorSelfAssessment';
+
+import CycleLoading from '../../components/common/CycleLoading';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
+import { ManagerEvaluationForm } from '../../components/Evaluation/ManagerEvaluationForm';
+import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
+import StatusMessageCard from '../../components/common/StatusMessageCard';
+
+import { fullManagerEvaluationSchema, type FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
 interface ManagerAvaliacaoProps {
     collaboratorId: number;
@@ -25,13 +30,7 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
     const { currentCycle, isLoading } = useCycle();
     const { showToast } = useToast();
     
-    const [collaborator, setCollaborator] = useState<{
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    } | null>(null);
+    const [collaborator, setCollaborator] = useState<Collaborator | null>(null);
     const [collaboratorSelfAssessment, setCollaboratorSelfAssessment] = useState<Array<{
         pilarId: number;
         criterionId: number;
@@ -101,7 +100,7 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
             await new Promise(resolve => setTimeout(resolve, 2000));
             
             showToast(
-                `Avaliação de ${collaborator?.nome} enviada com sucesso!`,
+                `Avaliação de ${collaborator?.name} enviada com sucesso!`,
                 'success',
                 {
                     title: 'Avaliação Enviada',
@@ -132,41 +131,22 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
     }
 
     if (!currentCycle) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4">Ciclo não encontrado</Typography>
-                    <Typography variant="body" color="muted">
-                        Não foi possível carregar as informações do ciclo atual.
-                    </Typography>
-                </div>
-            </div>
-        );
+        return <CycleLoadErrorMessage />;
     }
 
     if (!collaborator) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4">Colaborador não encontrado</Typography>
-                    <Typography variant="body" color="muted">
-                        Não foi possível encontrar as informações do colaborador.
-                    </Typography>
-                </div>
-            </div>
-        );
+        return <CollaboratorNotFoundMessage />;
     }
 
     if (currentCycle.isActive) {
         return (
-            <div className="flex items-center justify-center min-h-[60vh] p-4">
-                <div className="text-center">
-                    <Typography variant="h2" className="mb-4">Ciclo em andamento</Typography>
-                    <Typography variant="body" color="muted">
-                        O ciclo de avaliação ainda está em andamento. A visualização das avaliações estará disponível quando o ciclo for fechado.
-                    </Typography>
-                </div>
-            </div>
+            <StatusMessageCard
+                icon={<span className="material-icons text-primary-500 text-4xl">hourglass_top</span>}
+                title="Ciclo em andamento"
+                message={
+                    <>O ciclo de avaliação ainda está em andamento. A visualização das avaliações estará disponível quando o ciclo for fechado.</>
+                }
+            />
         );
     }
 

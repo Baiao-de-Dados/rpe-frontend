@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Loader2 } from "lucide-react";
 
 import { useCycle } from "../../hooks/useCycle";
-import { useLeadersAndCollaborators, getLeadersCount, getCollaboratorsCount, getLeadersEvaluationCompletion, getUnassignedCollaboratorsCount } from "../../hooks/useManagerQuery";
+import { useLeadersAndCollaborators, getLeadersCount, getCollaboratorsCount, getLeadersEvaluationCompletion, getUnassignedCollaboratorsCount } from "../../hooks/api/useManagerQuery";
 
 import PageHeader from "../../components/common/PageHeader";
 import { LeadershipMetrics } from "../../components/Dashboard/LeadershipMetrics";

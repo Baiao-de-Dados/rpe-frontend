@@ -10,8 +10,10 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     // Mock do colaborador selecionado
     const collaborator = mockCollaborators.find(c => c.id === collaboratorId) || {
         id: 0,
-        nome: 'Colaborador não encontrado',
-        cargo: '',
+        name: 'Colaborador não encontrado',
+        position: '',
+        email: '',
+        track: { id: 0, name: '' },
     };
 
     // Mock da autoavaliação do colaborador

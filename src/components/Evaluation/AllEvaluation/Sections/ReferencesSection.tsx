@@ -1,7 +1,11 @@
 import { memo, useMemo } from 'react';
-import AnimatedCard from '../../../common/AnimatedCard';
-import NoEvaluationMessage from '../NoEvaluationMessage';
+
 import ReferenceCard from '../Cards/ReferenceCard';
+
+import AnimatedCard from '../../../common/AnimatedCard';
+
+import NoEvaluationMessage from '../NoEvaluationMessage';
+
 import mockEvaluations, { type Cycle } from '../../../../data/mockEvaluations';
 
 interface ReferencesSectionProps {
@@ -9,6 +13,7 @@ interface ReferencesSectionProps {
 }
 
 export const ReferencesSection = memo(({ selectedCycle }: ReferencesSectionProps) => {
+
     const cycle = useMemo(
         () => mockEvaluations.cycles.find((c: Cycle) => c.cycleName === selectedCycle),
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,7 +28,10 @@ export const ReferencesSection = memo(({ selectedCycle }: ReferencesSectionProps
                     {references.map((ref, idx) => (
                         <AnimatedCard key={`ref-${ref.collaratorName}-${idx}`} index={idx}>
                             <ReferenceCard
-                                collaborator={{ id: idx, nome: ref.collaratorName, cargo: ref.collaboratorPosition }}
+                                collaborator={{ 
+                                    name: ref.collaratorName, 
+                                    position: ref.collaboratorPosition 
+                                }}
                                 justification={ref.justification}
                             />
                         </AnimatedCard>

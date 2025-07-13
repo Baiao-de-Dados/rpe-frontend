@@ -8,14 +8,14 @@ import Typography from '../common/Typography';
 import CollaboratorCard from '../common/CollaboratorCard';
 import EvaluationScoreDisplay from '../common/EvaluationScoreDisplay';
 
-import type { Leader, Collaborator } from '../../types/leadership';
+import type { Leader, LeaderCollaborator } from '../../types/leadership';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
 
 interface LeaderAssignmentCardProps {
     leader: Leader;
-    collaborators: Collaborator[];
+    collaborators: LeaderCollaborator[];
     onAssignCollaborator: (collaboratorId: number, leaderId: number) => void;
     onUnassignCollaborator: (collaboratorId: number) => void;
     isLast?: boolean;
@@ -90,9 +90,8 @@ const LeaderAssignmentCard = ({ leader, collaborators, onAssignCollaborator, onU
                                         <motion.div key={collaborator.id} variants={variants.pillarMotion} initial="initial" animate="animate" exit="exit" transition={{ ...optimizedTransition, delay: index * 0.05}} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg transition-colors duration-200">
                                             <CollaboratorCard
                                                 collaborator={{
-                                                    id: collaborator.id,
-                                                    nome: collaborator.name,
-                                                    cargo: collaborator.position
+                                                    name: collaborator.name,
+                                                    position: collaborator.position
                                                 }}
                                                 variant="compact"
                                             />
@@ -128,9 +127,8 @@ const LeaderAssignmentCard = ({ leader, collaborators, onAssignCollaborator, onU
                                         <motion.div key={collaborator.id} variants={variants.pillarMotion} initial="initial" animate="animate" exit="exit" transition={{ ...optimizedTransition, delay: index * 0.05}} className="flex items-center justify-between p-3 bg-primary-50 rounded-lg transition-colors duration-200">
                                             <CollaboratorCard
                                                 collaborator={{
-                                                    id: collaborator.id,
-                                                    nome: collaborator.name,
-                                                    cargo: collaborator.position
+                                                    name: collaborator.name,
+                                                    position: collaborator.position
                                                 }}
                                                 variant="compact"
                                             />

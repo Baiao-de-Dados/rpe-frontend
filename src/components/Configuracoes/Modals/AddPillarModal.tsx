@@ -12,7 +12,7 @@ import InputWithTitle from '../../common/InputWithTitle';
 
 import { pillarEndpoints } from '../../../services/api/pillar';
 
-import { PILLARS_QUERY_KEY } from '../../../hooks/usePillarsQuery';
+import { PILLARS_QUERY_KEY } from '../../../hooks/api/usePillarsQuery';
 
 import { addPillarSchema, type AddPillarFormValues } from '../../../schemas/addPillarSchema';
 

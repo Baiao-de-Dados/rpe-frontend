@@ -1,23 +1,21 @@
 import { useMemo, memo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import type { Collaborator } from '../../types/collaborator';
+
 import ManagerEvaluationHeader from './ManagerEvaluationHeader';
-import { ManagerSectionRenderer } from './SectionsMentor/ManagerSectionRenderer';
-import { managerEvaluationSections, type ManagerSectionType } from './SectionsMentor/ManagerEvaluationSections';
 
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 
-import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
 
+import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
+
+import { ManagerSectionRenderer } from './SectionsMentor/ManagerSectionRenderer';
+import { managerEvaluationSections, type ManagerSectionType } from './SectionsMentor/ManagerEvaluationSections';
+
 interface ManagerEvaluationFormProps {
-    collaborator: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator: Collaborator;
     cycleName: string;
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{

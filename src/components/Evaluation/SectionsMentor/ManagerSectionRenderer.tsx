@@ -1,6 +1,8 @@
 import { Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import type { Collaborator } from '../../../types/collaborator';
+
 import { SectionPreloader } from '../Sections/SectionPreloader';
 import { managerEvaluationSections, type ManagerSectionType } from './ManagerEvaluationSections';
 
@@ -47,13 +49,7 @@ const ManagerMentoringEvaluationSection = lazy(() =>
 interface ManagerSectionRendererProps {
     activeSection: ManagerSectionType;
     // Dados do colaborador
-    collaborator?: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator?: Collaborator;
     // Dados da autoavaliação do colaborador (read-only)
     collaboratorSelfAssessment?: Array<{
         pilarId: number;
@@ -108,14 +104,14 @@ export function ManagerSectionRenderer({
                 return (
                     <ManagerLeaderEvaluationSection 
                         collaboratorId={collaborator!.id}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             case 'Mentoring':
                 return (
                     <ManagerMentoringEvaluationSection 
                         collaboratorId={collaborator!.id}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             case 'Referências':
@@ -129,7 +125,7 @@ export function ManagerSectionRenderer({
                 return (
                     <CollaboratorHistorySection 
                         collaboratorId={collaborator!.id}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             default:

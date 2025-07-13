@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { AssignLeaderEvaluationPayload, LeadersAndCollaborators } from '../types/manager';
-import { managerEndpoints } from '../services/api/manager';
+import type { AssignLeaderEvaluationPayload, LeadersAndCollaborators } from '../../types/manager';
+import { managerEndpoints } from '../../services/api/manager';
 
 
 export function useLeadersAndCollaborators() {

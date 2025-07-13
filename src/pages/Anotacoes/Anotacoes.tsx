@@ -14,14 +14,14 @@ import AnotacoesStepsModal from '../../components/Notes/AnotacoesStepsModal';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
-import { useNotesAI } from '../../hooks/useNotesAI';
+import { useNotesAI } from '../../hooks/api/useNotesAI';
 import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
-import { useNoteQuery, useUpsertNoteMutation } from '../../hooks/useNotesQuery';
+import { useNoteQuery, useUpsertNoteMutation } from '../../hooks/api/useNotesQuery';
 
 
 import { anotacoesSchema, type AnotacoesFormData } from '../../schemas/anotacoesSchema';
 
-export default function Anotacoes() {
+export function Anotacoes() {
 
     const notes = useNotesAI();
     const { user } = useAuth();

@@ -38,9 +38,8 @@ export const Manager360ReceivedSection = memo(({
                         <Evaluation360Card
                             key={index}
                             collaborator={{
-                                id: index,
-                                nome: evaluation.collaratorName,
-                                cargo: evaluation.collaboratorPosition
+                                name: evaluation.collaratorName,
+                                position: evaluation.collaboratorPosition
                             }}
                             rating={evaluation.rating}
                             strengths={evaluation.strengths}

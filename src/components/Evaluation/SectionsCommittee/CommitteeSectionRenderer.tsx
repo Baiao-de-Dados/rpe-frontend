@@ -10,6 +10,7 @@ import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 // Importando o componente de equalização
 import Equalizacao from '../../../pages/Colaboradores/Equalizacao';
+import type { Collaborator } from '../../../types/collaborator';
 
 // Reutilizando componentes do gestor em modo readonly
 const ReadOnlyManagerSelfAssessmentSection = lazy(() =>
@@ -51,13 +52,7 @@ const EqualizationSection = () => (
 
 interface CommitteeSectionRendererProps {
     activeSection: CommitteeSectionType;
-    collaborator: {
-        id: number;
-        nome: string;
-        cargo: string;
-        image?: string;
-        avatar?: string;
-    };
+    collaborator: Collaborator;
     collaboratorSelfAssessment?: Array<{
         pilarId: number;
         criterionId: number;
@@ -108,21 +103,21 @@ export function CommitteeSectionRenderer({
                 return (
                     <ManagerMentoringEvaluationSection 
                         collaboratorId={collaborator?.id || 0}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             case 'Líderes':
                 return (
                     <ManagerLeaderEvaluationSection 
                         collaboratorId={collaborator?.id || 0}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             case 'Histórico':
                 return (
                     <CollaboratorHistorySection 
                         collaboratorId={collaborator?.id || 0}
-                        collaboratorName={collaborator?.nome || 'Colaborador'}
+                        collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
             case 'Equalização':

@@ -1,8 +1,7 @@
-import { trackEndpoints } from '../services/api/track';
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { GetTracksCriteriaResponse, SetTracksPayload, Track } from '../types/track';
+import { trackEndpoints } from '../../services/api/track';
+import type { GetTracksCriteriaResponse, SetTracksPayload, Track } from '../../types/track';
 
 export const TRACKS_CRITERIA_QUERY_KEY = ['tracks', 'criteria'];
 export const TRACKS_QUERY_KEY = ['tracks'];

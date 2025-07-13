@@ -1,13 +1,12 @@
+import type { Project } from "./manager";
+
 export interface Leader {
     id: number;
     name: string;
-    project: {
-        projectId: number;
-        projectName: string;
-    };
+    project: Project
 }
 
-export interface Collaborator {
+export interface LeaderCollaborator {
     id: number;
     name: string;
     position: string;
@@ -21,5 +20,5 @@ export interface Collaborator {
 
 export interface LeadershipData {
     leaders: Leader[];
-    collaborators: Collaborator[];
+    collaborators: LeaderCollaborator[];
 }

@@ -14,7 +14,7 @@ import Button from '../../common/Button';
 import InputWithTitle from '../../common/InputWithTitle';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 
-import { useUpdateCriteriasMutation, useCreateCriteriaMutation } from '../../../hooks/usePillarsQuery';
+import { useUpdateCriteriasMutation, useCreateCriteriaMutation } from '../../../hooks/api/usePillarsQuery';
 
 import { pillarCriteriaFormSchema, type PillarCriteriaFormValues } from '../../../schemas/pillarCriteriaFormSchema';
 

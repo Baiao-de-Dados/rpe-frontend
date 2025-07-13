@@ -2,10 +2,10 @@ import CardContainer from '../../../common/CardContainer';
 import CollaboratorCard from '../../../common/CollaboratorCard';
 import TextAreaWithTitle from '../../../common/TextAreaWithTitle';
 
-import type { Collaborator } from '../../../../data/mockCollaborators';
+import type { Collaborator } from '../../../../types/collaborator';
 
 interface ReferenceCardProps {
-    collaborator: Collaborator;
+    collaborator: Partial<Pick<Collaborator, 'name' | 'position'>>;
     justification: string;
 }
 

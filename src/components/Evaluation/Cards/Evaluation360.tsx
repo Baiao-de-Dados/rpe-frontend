@@ -1,6 +1,8 @@
 import { Trash } from 'lucide-react';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { motion } from 'framer-motion';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
+
+import type { Collaborator } from '../../../types/collaborator';
 
 import StarRating from '../../common/StarRating';
 import CardContainer from '../../common/CardContainer';
@@ -10,8 +12,6 @@ import CollaboratorCard from '../../common/CollaboratorCard';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import IAValidateActions from '../../common/IAValidateActions';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
-
-import type { Collaborator } from '../../../data/mockCollaborators';
 
 interface Evaluation360Props {
     collaborator: Collaborator;

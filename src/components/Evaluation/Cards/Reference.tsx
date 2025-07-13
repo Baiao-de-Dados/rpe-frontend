@@ -7,7 +7,7 @@ import CollaboratorCard from '../../common/CollaboratorCard';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import IAValidateActions from '../../common/IAValidateActions';
 
-import type { Collaborator } from '../../../data/mockCollaborators';
+import type { Collaborator } from '../../../types/collaborator';
 
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 

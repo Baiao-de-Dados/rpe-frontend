@@ -16,9 +16,9 @@ import { createTrackDefaultValues, processTracksForAPI } from './utils/trackUtil
 
 import { useCycle } from '../../../hooks/useCycle';
 import { useToast } from '../../../hooks/useToast';
-import { usePillarsQuery } from '../../../hooks/usePillarsQuery';
+import { usePillarsQuery } from '../../../hooks/api/usePillarsQuery';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
-import { useTracksCriteriaQuery, useSetTracksMutation, useTracksQuery } from '../../../hooks/useTracksCriteriaQuery';
+import { useTracksCriteriaQuery, useSetTracksMutation, useTracksQuery } from '../../../hooks/api/useTracksCriteriaQuery';
 
 export function TrackSection() {
 

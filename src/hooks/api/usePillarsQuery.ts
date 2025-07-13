@@ -1,8 +1,8 @@
-import type { Pillar } from '../types/pillar';
-
-import { pillarEndpoints } from '../services/api/pillar';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import type { Pillar } from '../../types/pillar';
+import { pillarEndpoints } from '../../services/api/pillar';
 
 export const PILLARS_QUERY_KEY = ['pillars'];
 

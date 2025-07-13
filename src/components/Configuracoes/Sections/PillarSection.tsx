@@ -10,7 +10,7 @@ import { AddPillarButton } from '../Buttons/AddPillarButton';
 import { PillarCriteriaCard } from '../Cards/PillarCriteriaCard';
 
 import { useToast } from '../../../hooks/useToast';
-import { usePillarsQuery } from '../../../hooks/usePillarsQuery';
+import { usePillarsQuery } from '../../../hooks/api/usePillarsQuery';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 import { PillarCardSkeleton } from '../Skeletons/PillarCardSkeleton';

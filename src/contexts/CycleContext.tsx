@@ -7,7 +7,7 @@ import { formatDate } from '../utils/globalUtils';
 import { getCurrentCycleName } from '../utils/cycleUtils';
 
 import { useToast } from '../hooks/useToast';
-import { useTracksCriteriaQuery } from '../hooks/useTracksCriteriaQuery';
+import { useTracksCriteriaQuery } from '../hooks/api/useTracksCriteriaQuery';
 
 import { CycleContext, type CycleContextType  } from './CycleContextDefinition';
 

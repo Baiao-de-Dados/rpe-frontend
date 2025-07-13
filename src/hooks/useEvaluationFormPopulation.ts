@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import type { UseFormReturn } from 'react-hook-form';
 
-import type { NavigationState } from './useNotesAI';
+import type { NavigationState } from './api/useNotesAI';
 import type { EvaluationFormData } from '../schemas/evaluation';
 
 export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFormData>) {

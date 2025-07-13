@@ -10,10 +10,7 @@ interface ManagerReferencesReceivedSectionProps {
     cycleName: string;
 }
 
-export const ManagerReferencesReceivedSection = memo(({ 
-    referencesReceived, 
-    cycleName 
-}: ManagerReferencesReceivedSectionProps) => {
+export const ManagerReferencesReceivedSection = memo(({ referencesReceived, cycleName }: ManagerReferencesReceivedSectionProps) => {
 
     return (
         <section>
@@ -38,11 +35,8 @@ export const ManagerReferencesReceivedSection = memo(({
                         <ReferenceCard
                             key={index}
                             collaborator={{
-                                id: index,
-                                nome: reference.collaratorName,
-                                cargo: reference.collaboratorPosition,
-                                image: undefined,
-                                avatar: undefined
+                                name: reference.collaratorName,
+                                position: reference.collaboratorPosition,
                             }}
                             justification={reference.justification}
                         />
