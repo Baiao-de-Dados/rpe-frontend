@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 import type { Leader, Collaborator } from '../../types/leadership';
@@ -12,6 +11,7 @@ import AlertMessage from '../common/AlertMessage';
 import { useToast } from '../../hooks/useToast';
 import { useCycle } from '../../hooks/useCycle';
 import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
+import { useAssignLeaderEvaluation } from '../../hooks/useManagerQuery';
 
 interface LeadershipManagementProps {
     leaders: Leader[];
@@ -19,50 +19,38 @@ interface LeadershipManagementProps {
     onCollaboratorAssignmentChange?: (collaborators: Collaborator[]) => void;
 }
 
-const LeadershipManagement = ({ leaders, collaborators: initialCollaborators, onCollaboratorAssignmentChange }: LeadershipManagementProps) => {
+const LeadershipManagement = ({ leaders, collaborators }: LeadershipManagementProps) => {
 
     const { showToast } = useToast();
-
     const { currentCycle } = useCycle();
-
     const { variants, optimizedTransition } = useOptimizedAnimation();
-
-    const [collaborators, setCollaborators] = useState<Collaborator[]>(initialCollaborators);
+    const assignLeaderEvaluationMutation = useAssignLeaderEvaluation();
 
     const handleAssignCollaborator = (collaboratorId: number, leaderId: number) => {
         if (!currentCycle.isActive) {
             showToast(
                 'Não é possível atribuir colaboradores. O ciclo está fechado.',
                 'warning',
-                { 
-                    title: 'Ciclo Fechado',
-                    duration: 4000 
-                }
+                { title: 'Ciclo Fechado', duration: 4000 }
             );
             return;
         }
-        console.log({
-            collaboratorId,
-            cycleId: currentCycle.id,
-            leaderId
-        });
-        
-        const collaborator = collaborators.find(c => c.id === collaboratorId);
-        const leader = leaders.find(l => l.id === leaderId);
-        
-        const updatedCollaborators = collaborators.map(collaborator =>
-            collaborator.id === collaboratorId
-                ? { ...collaborator, leaderId, leaderRating: null }
-                : collaborator
-        );
-        setCollaborators(updatedCollaborators);
-        onCollaboratorAssignmentChange?.(updatedCollaborators);
-        
-        showToast(`${collaborator?.name} foi atribuído(a) ao líder ${leader?.name}`, 'success', { 
-                title: 'Colaborador Atribuído',
-                duration: 3000 
-            }
-        );
+        if (typeof leaderId === 'number' && typeof currentCycle.id === 'number') {
+            assignLeaderEvaluationMutation.mutate({ collaboratorId, leaderId, cycleId: currentCycle.id }, {
+                onSuccess: () => {
+                    showToast('Colaborador atribuído com sucesso!', 'success', {
+                        title: 'Atribuição',
+                        duration: 5000
+                    });
+                },
+                onError: () => {
+                    showToast('Tente novamente mais tarde.', 'error', {
+                        title: 'Erro ao atribuir colaborador',
+                        duration: 100000
+                    });
+                }
+            });
+        }
     };
 
     const handleUnassignCollaborator = (collaboratorId: number) => {
@@ -70,46 +58,26 @@ const LeadershipManagement = ({ leaders, collaborators: initialCollaborators, on
             showToast(
                 'Não é possível remover colaboradores. O ciclo está fechado.',
                 'warning',
-                { 
-                    title: 'Ciclo Fechado',
-                    duration: 4000 
-                }
+                { title: 'Ciclo Fechado', duration: 4000 }
             );
             return;
         }
-        
-        const collaborator = collaborators.find(c => c.id === collaboratorId);
-        
-        if (collaborator?.leaderRating !== null) {
-            showToast(`${collaborator?.name} já foi avaliado(a) e não pode ser removido(a)`, 'warning', { 
-                    title: 'Ação Bloqueada',
-                    duration: 4000 
+        if (typeof currentCycle.id === 'number') {
+            assignLeaderEvaluationMutation.mutate({ collaboratorId, leaderId: 0, cycleId: currentCycle.id }, {
+                onSuccess: () => {
+                    showToast('Colaborador removido com sucesso!', 'success', {
+                        title: 'Remoção bem sucedida',
+                        duration: 5000
+                    });
+                },
+                onError: () => {
+                    showToast('Tente novamente mais tarde.', 'error', {
+                        title: 'Erro ao remover colaborador',
+                        duration: 10000
+                    });
                 }
-            );
-            return;
+            });
         }
-        console.log({
-            collaboratorId,
-            cycleId: currentCycle.id,
-            leaderId: null
-        });
-        
-        const leader = leaders.find(l => l.id === collaborator?.leaderId);
-        
-        const updatedCollaborators = collaborators.map(collaborator =>
-            collaborator.id === collaboratorId
-                ? { ...collaborator, leaderId: null, leaderRating: null }
-                : collaborator
-        );
-
-        setCollaborators(updatedCollaborators);
-        onCollaboratorAssignmentChange?.(updatedCollaborators);
-        
-        showToast(`${collaborator?.name} foi removido(a) do líder ${leader?.name}`, 'success', { 
-                title: 'Colaborador Removido',
-                duration: 3000 
-            }
-        );
     };
 
     return (
@@ -120,7 +88,6 @@ const LeadershipManagement = ({ leaders, collaborators: initialCollaborators, on
                         Atribuição de Colaboradores {currentCycle?.name ? `- ${currentCycle.name}` : ''}
                     </Typography>
                 </div>
-                
                 {!currentCycle.isActive && (
                     <AlertMessage 
                         message="O ciclo está fechado. Não é possível atribuir ou remover colaboradores."
@@ -128,20 +95,25 @@ const LeadershipManagement = ({ leaders, collaborators: initialCollaborators, on
                         className="mb-6"
                     />
                 )}
-                
-                <div className="space-y-0">
-                    {leaders.map((leader, index) => (
-                        <motion.div key={leader.id} variants={variants.pillarMotion} initial="initial" animate="animate" exit="exit" transition={{...optimizedTransition, delay: index * 0.1 }}>
-                            <LeaderAssignmentCard
-                                leader={leader}
-                                collaborators={collaborators}
-                                onAssignCollaborator={handleAssignCollaborator}
-                                onUnassignCollaborator={handleUnassignCollaborator}
-                                isLast={index === leaders.length - 1}
-                            />
-                        </motion.div>
-                    ))}
-                </div>
+                {leaders.length === 0 ? (
+                    <div className="flex items-center justify-center min-h-[120px]">
+                        <Typography variant="body" className="text-gray-500 text-lg font-semibold">Nenhum líder encontrado</Typography>
+                    </div>
+                ) : (
+                    <div className="space-y-0">
+                        {leaders.map((leader, index) => (
+                            <motion.div key={leader.id} variants={variants.pillarMotion} initial="initial" animate="animate" exit="exit" transition={{...optimizedTransition, delay: index * 0.1 }}>
+                                <LeaderAssignmentCard
+                                    leader={leader}
+                                    collaborators={collaborators}
+                                    onAssignCollaborator={handleAssignCollaborator}
+                                    onUnassignCollaborator={handleUnassignCollaborator}
+                                    isLast={index === leaders.length - 1}
+                                />
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
             </CardContainer>
         </motion.div>
     );

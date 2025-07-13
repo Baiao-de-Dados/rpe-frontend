@@ -51,7 +51,7 @@ export function LeadershipMetrics({totalLeaders, completionPercentage, collabora
                             <span className="font-semibold" style={{ color: CHART_COLORS.GOOD }}>
                                 {completionPercentage}%
                             </span>{' '}
-                            dos líderes já fecharam suas avaliações
+                            das avaliações dos líderes foram preenchidas
                         </Typography>
                     </div>
                 </div>

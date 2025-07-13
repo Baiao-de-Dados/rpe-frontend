@@ -43,17 +43,19 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
 
     const currentCycle: CurrentCycle = useMemo(() => {
         const currentCycleName = getCurrentCycleName();
+        if (isLoading) {
+            return undefined as unknown as CurrentCycle;
+        }
         const foundCurrentCycle = cycles.find(cycle => cycle.name === currentCycleName);
-        
         if (foundCurrentCycle) {
             return foundCurrentCycle;
         }
-        
         return {
             name: currentCycleName,
-            isActive: true
+            isActive: false,
+            done: false
         };
-    }, [cycles]);
+    }, [cycles, isLoading]);
 
     const [evaluationStatus, setEvaluationStatus] = useState<EvaluationStatus | null>(null);
 

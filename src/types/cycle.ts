@@ -21,6 +21,7 @@ export interface Cycle {
     startDate: string;
     endDate: string;
     isActive: boolean;
+    done: boolean
     createdAt: string;
     updatedAt: string;
     criteriaPillars: CycleTrack[];
@@ -36,7 +37,7 @@ export interface ExtendCyclePayload {
     endDate: string;
 }
 
-export type CurrentCycle = Partial<Cycle> & { name: string; isActive: boolean };
+export type CurrentCycle = Partial<Cycle> & { name: string; isActive: boolean; done: boolean };
 
 export interface EvaluationStatus {
     cycleId: number;

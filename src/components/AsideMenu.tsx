@@ -179,6 +179,7 @@ export default function AsideMenu() {
                                 UserRoleEnum.RH,
                                 UserRoleEnum.ADMIN,
                                 UserRoleEnum.DEVELOPER,
+                                UserRoleEnum.MANAGER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/lideranca" onClick={closeMenu} title="Liderança" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 ${isActive ? 'text-primary-500' : 'text-secondary-400'}`}>

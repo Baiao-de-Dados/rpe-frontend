@@ -4,7 +4,7 @@ import type { Cycles, StartCyclePayload, ExtendCyclePayload } from '../../types/
 
 export const cycleEndpoints = {
     getCycles: () => 
-        api.get<Cycles>('/cycle-config'),
+        api.get<Cycles>('/rh/cycle'),
     startCycle: (payload: StartCyclePayload) => 
         api.post('/criteria/track-cycle-config', payload),
     extendCycle: (id: number, payload: ExtendCyclePayload) => 
