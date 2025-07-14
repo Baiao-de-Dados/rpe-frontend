@@ -17,4 +17,9 @@ export interface CollaboratorEvaluations {
     status: "pendente" | "finalizado";
 }
 
+export interface Network {
+    sameProjectUsers: Collaborator[],
+    mentor: Collaborator
+}
+
 export type CollaboratorsEvaluationsSummary = CollaboratorEvaluations[];

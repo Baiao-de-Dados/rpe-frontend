@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import Button from '../common/Button';
 
 import { useCycle } from '../../hooks/useCycle';
+import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { useEvaluationSubmit } from '../../hooks/useEvaluationSubmit';
 
@@ -18,13 +19,16 @@ const EvaluationSubmitButton = memo(() => {
     const { showToast } = useToast();
 
     const { currentCycle } = useCycle();
+    const { user } = useAuth();
 
     const { submitEvaluation, isSubmitting } = useEvaluationSubmit();
 
     const onSubmit = () => {
         handleSubmit(async data => {
             try {
-                const transformedData = transformFormData(data, currentCycle.name, 1);
+                const cicloId = currentCycle?.id ? String(currentCycle.id) : '';
+                const colaboradorId = user?.id ?? 0;
+                const transformedData = transformFormData(data, cicloId, colaboradorId);
 
                 const validation = validateTransformedData(transformedData);
                 if (validation !== true) {
@@ -37,9 +41,7 @@ const EvaluationSubmitButton = memo(() => {
                     return;
                 }
 
-                console.log('Dados formatados para API:', JSON.stringify(transformedData, null, 2));
-
-                await submitEvaluation();
+                await submitEvaluation(transformedData);
 
             } catch (error) {
                 console.error('Erro ao processar dados do formulário:', error);

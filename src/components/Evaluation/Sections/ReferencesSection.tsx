@@ -9,9 +9,8 @@ import Typography from '../../common/Typography';
 import AnimatedCard from '../../common/AnimatedCard';
 import CollaboratorCard from '../../common/CollaboratorCard';
 
-import type { Collaborator } from '../../../types/collaborator';
-
-import { searchCollaborators } from '../../../data/mockCollaborators';
+import { useCycleNetworkQuery } from '../../../hooks/api/useCollaboratorQuery';
+import { Loader2 } from 'lucide-react';
 
 import type { EvaluationFormData } from '../../../schemas/evaluation';
 
@@ -63,59 +62,75 @@ export const ReferencesSection = memo(() => {
         }
     }, [validFields.length, validFields]);
 
-    const selectedCollaborators = useCallback((searchCollaboratorIds: number[]) => {
-            return searchCollaborators('').filter(c => searchCollaboratorIds.includes(c.id));
-        },
-        []
+
+    const { data: networkData, isLoading: isNetworkLoading } = useCycleNetworkQuery();
+    const collaborators = useMemo(() => networkData?.sameProjectUsers ?? [], [networkData]);
+
+    const searchFunction = useCallback((query: string) => {
+        if (!query.trim()) return collaborators;
+        const lowerQuery = query.toLowerCase();
+        return collaborators.filter(
+            collaborator =>
+                collaborator.name.toLowerCase().includes(lowerQuery) ||
+                collaborator.position.toLowerCase().includes(lowerQuery)
+        );
+    }, [collaborators]);
+
+    const selectedCollaborators = useCallback(
+        (searchCollaboratorIds: number[]) =>
+            collaborators.filter(c => searchCollaboratorIds.includes(c.id)),
+        [collaborators]
     );
 
-    const addCollaborator = useCallback((collaborator: Collaborator) => { 
-            const alreadyExists = fields.some(field => field.collaboratorId === collaborator.id);
-            if (alreadyExists) {
-                return;
-            }
-            
-            append({
-                collaboratorId: collaborator.id, 
-                justification: '', 
-                referencesIAValid: true
-            });
-        },
-        [append, fields]
-    );
+    const addCollaborator = useCallback((collaborator: typeof collaborators[0]) => {
+        const alreadyExists = fields.some(field => field.collaboratorId === collaborator.id);
+        if (alreadyExists) {
+            return;
+        }
+        append({
+            collaboratorId: collaborator.id,
+            justification: '',
+            referencesIAValid: true
+        });
+    }, [append, fields]);
 
     const removeCollaborator = useCallback(async (collaboratorId: number) => {
-            const currentReferences = getValues('references') || [];
-            const newReferences = currentReferences.filter(ref => ref.collaboratorId !== collaboratorId);
-            setValue('references', newReferences);
-        },
-        [getValues, setValue],
-    );
+        const currentReferences = getValues('references') || [];
+        const newReferences = currentReferences.filter(ref => ref.collaboratorId !== collaboratorId);
+        setValue('references', newReferences);
+    }, [getValues, setValue]);
 
-    const renderItem = useCallback((collaborator: Collaborator) => 
-        <CollaboratorCard collaborator={collaborator} variant="compact" />,
-        [],
-    );
+    const renderItem = useCallback((collaborator: typeof collaborators[0]) => (
+        <CollaboratorCard collaborator={collaborator} variant="compact" />
+    ), []);
 
     const excludeItems = useMemo(() => 
         selectedCollaborators(selectedCollaboratorIds),
         [selectedCollaborators, selectedCollaboratorIds],
     );
 
+    if (isNetworkLoading) {
+        return (
+            <div className="flex justify-center items-center py-8">
+                <Loader2 className="animate-spin h-8 w-8 text-primary-500" />
+            </div>
+        );
+    }
+
     return (
         <section>
             <div className="mb-8">
-                <SearchBar<Collaborator> 
+                <SearchBar 
                     value={searchQuery} 
                     onChange={setSearchQuery} 
                     placeholder="Buscar por colaboradores" 
                     className="w-full" 
-                    searchFunction={searchCollaborators} 
+                    searchFunction={searchFunction} 
                     onItemSelect={addCollaborator}
                     renderItem={renderItem} 
                     excludeItems={excludeItems} 
                     getItemKey={collaborator => String(collaborator.id)}
-                    noResultsMessage="Nenhum colaborador encontrado"
+                    noResultsMessage={isNetworkLoading ? 'Carregando colaboradores...' : 'Nenhum colaborador encontrado'}
                 />
             </div>
 
@@ -123,8 +138,7 @@ export const ReferencesSection = memo(() => {
                 <div className="space-y-6 relative -z-1">
                     <AnimatePresence>
                         {validFields.map((field, validIndex) => {
-                            const collaborator = searchCollaborators('').find(c => c.id === field.collaboratorId);
-                            
+                            const collaborator = collaborators.find(c => c.id === field.collaboratorId);
                             if (!collaborator) {
                                 return null;
                             }

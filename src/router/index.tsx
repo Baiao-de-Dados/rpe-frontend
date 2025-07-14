@@ -60,6 +60,7 @@ export function Router() {
                                     UserRoleEnum.DEVELOPER,
                                     UserRoleEnum.LEADER,
                                     UserRoleEnum.MANAGER,
+                                    UserRoleEnum.EMPLOYER,
                             ]}>
                                 <Avaliacao />
                             </RoleRoute>
@@ -73,6 +74,7 @@ export function Router() {
                                     UserRoleEnum.COMMITTEE,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
+                                    UserRoleEnum.EMPLOYER,
                             ]}>
                                 <Evolucao />
                             </RoleRoute>
@@ -181,6 +183,7 @@ export function Router() {
                                     UserRoleEnum.RH,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
+                                    UserRoleEnum.EMPLOYER,
                             ]}>
                                 <Anotacoes />
                             </RoleRoute>

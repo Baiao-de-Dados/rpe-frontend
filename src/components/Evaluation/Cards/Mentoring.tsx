@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import { useFormContext, Controller, useWatch } from 'react-hook-form';
 
 import StarRating from '../../common/StarRating';
@@ -10,15 +11,14 @@ import { ErrorMessage } from '../../common/ErrorMessage';
 import CollaboratorCard from '../../common/CollaboratorCard';
 import IAValidateActions from '../../common/IAValidateActions';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
+
+import { useCycleNetworkQuery } from '../../../hooks/api/useCollaboratorQuery';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
-const mentor = {
-    id: 1,
-    name: 'Miguel Alencar',
-    position: 'Mentor',
-};
-
 const Mentoring = () => {
+
+    const { data: networkData, isLoading: isNetworkLoading } = useCycleNetworkQuery();
+    const mentor = networkData?.mentor;
 
     const { control, setValue } = useFormContext();
     const { optimizedTransition } = useOptimizedAnimation();
@@ -28,12 +28,14 @@ const Mentoring = () => {
         name: 'mentoringIAValid'
     });
 
+
     useEffect(() => {
+        if (!mentor) return;
         setValue('mentorId', mentor.id);
         if (watchedMentoringIAValid === undefined) {
             setValue('mentoringIAValid', true, { shouldValidate: true });
         }
-    }, [setValue, watchedMentoringIAValid]);
+    }, [setValue, watchedMentoringIAValid, mentor]);
 
     const handleCheck = () => {
         setValue('mentoringIAValid', true, { shouldValidate: true });
@@ -44,6 +46,23 @@ const Mentoring = () => {
         setValue('mentoringRating', null);
         setValue('mentoringJustification', '');
     };
+
+    if (isNetworkLoading) {
+        return (
+            <div className="flex justify-center items-center py-8">
+                <Loader2 className="animate-spin h-8 w-8 text-primary-500" />
+            </div>
+        );
+    }
+    if (!mentor) {
+        return (
+            <div className="text-center py-12">
+                <Typography variant="body" className="text-gray-500">
+                    Mentor não encontrado
+                </Typography>
+            </div>
+        );
+    }
 
     return (
         <motion.div layout transition={optimizedTransition}>

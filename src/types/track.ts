@@ -13,6 +13,7 @@ export interface TrackCriterion {
     id: number;
     name: string;
     weight: number;
+    description?: string;
 }
 
 export interface TrackPillar {

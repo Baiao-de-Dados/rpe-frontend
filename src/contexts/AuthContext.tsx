@@ -81,6 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                             email: userData.email,
                             name: userData.name || 'Usuário',
                             roles: userData.roles || [],
+                            trackId: userData.trackId,
                             isActive: true,
                             createdAt: userData.createdAt,
                             updatedAt: userData.updatedAt,
@@ -120,6 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 name: userData.name || 'Usuário',
                 roles: userData.roles || [],
                 isActive: true,
+                trackId: userData.trackId,
                 createdAt: userData.createdAt,
                 updatedAt: userData.updatedAt,
             };
@@ -158,6 +160,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         name: userData.name || 'Usuário',
                         roles: userData.roles || [],
                         isActive: true,
+                        trackId: userData.trackId,
                         createdAt: userData.createdAt,
                         updatedAt: userData.updatedAt,
                     };

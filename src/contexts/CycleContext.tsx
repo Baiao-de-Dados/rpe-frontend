@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { cycleEndpoints } from '../services/api/cycle';
@@ -11,7 +11,7 @@ import { useTracksCriteriaQuery } from '../hooks/api/useTracksCriteriaQuery';
 
 import { CycleContext, type CycleContextType  } from './CycleContextDefinition';
 
-import type { StartCyclePayload, ExtendCyclePayload, CurrentCycle, EvaluationStatus } from '../types/cycle';
+import type { StartCyclePayload, ExtendCyclePayload, CurrentCycle } from '../types/cycle';
 
 export const CycleProvider = ({ children }: { children: ReactNode }) => {
 
@@ -56,29 +56,6 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
             done: false
         };
     }, [cycles, isLoading]);
-
-    const [evaluationStatus, setEvaluationStatus] = useState<EvaluationStatus | null>(null);
-
-    const getEvaluationStatus = useMemo(() => (): EvaluationStatus | null => {
-        if (!currentCycle?.id) return null;
-        
-        const stored = localStorage.getItem(`evaluation_${currentCycle.id}`);
-        if (!stored) return null;
-        
-        try {
-            return JSON.parse(stored);
-        } catch {
-            return null;
-        }
-    }, [currentCycle?.id]);
-
-    useEffect(() => {
-        setEvaluationStatus(getEvaluationStatus());
-    }, [getEvaluationStatus]);
-
-    const refetchEvaluationStatus = () => {
-        setEvaluationStatus(getEvaluationStatus());
-    };
 
     const startCycleMutation = useMutation({
         mutationFn: (payload: StartCyclePayload) => cycleEndpoints.startCycle(payload),
@@ -134,9 +111,7 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         currentCycle,
         allTracksSet,
         isLoading,
-        evaluationStatus,
         refetchCycleData,
-        refetchEvaluationStatus,
         startCycle: (payload: StartCyclePayload) => startCycleMutation.mutate(payload),
         extendCycle: (id: number, payload: ExtendCyclePayload) => extendCycleMutation.mutate({ id, payload }),
         cancelCycle: (id: number) => cancelCycleMutation.mutate(id),

@@ -3,12 +3,12 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import RatingDisplay from '../common/RatingDisplay';
 
-import type { Criterion } from '../../data/mockEvaluationPIllars';
+import type { TrackCriterion } from '../../types/track';
 
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
 interface PillarRatingDisplayProps {
-    criteria: Criterion[];
+    criteria: TrackCriterion[];
     validFields: Array<{
         id: number;
         pilarId: number;

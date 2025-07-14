@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCycleEvaluateMutation, useCollaboratorEvaluationQuery } from './api/useCollaboratorQuery';
 import { useToast } from './useToast';
 import { useCycle } from './useCycle';
+import type { CollaboratorEvaluatePayload } from '../types/evaluations';
 
 export interface EvaluationSubmissionResult {
     success: boolean;
@@ -8,12 +11,16 @@ export interface EvaluationSubmissionResult {
 }
 
 export const useEvaluationSubmit = () => {
-
+    
     const { showToast } = useToast();
-    const { currentCycle, evaluationStatus, refetchEvaluationStatus } = useCycle();
+    const { currentCycle } = useCycle();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const submitEvaluation = async (): Promise<boolean> => {
+    
+    const cycleEvaluateMutation = useCycleEvaluateMutation();
+    const evaluationQuery = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
+    const queryClient = useQueryClient();
+    
+    const submitEvaluation = async (payload: CollaboratorEvaluatePayload): Promise<boolean> => {
         if (!currentCycle) {
             showToast(
                 'Nenhum ciclo ativo encontrado. Não é possível enviar a avaliação.',
@@ -26,7 +33,7 @@ export const useEvaluationSubmit = () => {
             return false;
         }
 
-        if (evaluationStatus?.isSubmitted) {
+        if (evaluationQuery.data) {
             showToast(
                 'Esta avaliação já foi enviada anteriormente.',
                 'warning',
@@ -38,47 +45,32 @@ export const useEvaluationSubmit = () => {
             return false;
         }
 
+        if (!payload) {
+            showToast(
+                'Dados da avaliação não encontrados. Tente novamente.',
+                'error',
+                {
+                    title: 'Erro de Dados',
+                    duration: 5000,
+                }
+            );
+            return false;
+        }
+
         setIsSubmitting(true);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            const success = Math.random() > 0.1; 
-
-            if (success) {
-                const newStatus = {
-                    cycleId: currentCycle.id!,
-                    isSubmitted: true,
-                    submittedAt: new Date().toISOString(),
-                };
-
-                localStorage.setItem(
-                    `evaluation_${currentCycle.id}`,
-                    JSON.stringify(newStatus),
-                );
-
-                refetchEvaluationStatus();
-
-                showToast(
-                    'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.',
-                    'success',
-                    {
-                        title: 'Avaliação Enviada! 🎉',
-                        duration: 10000,
-                    },
-                );
-                return true;
-            } else {
-                showToast(
-                    'Não foi possível enviar sua avaliação no momento. Verifique sua conexão com a internet e tente novamente.',
-                    'error',
-                    {
-                        title: 'Falha no Envio',
-                        duration: 8000,
-                    },
-                );
-                return false;
-            }
+            await cycleEvaluateMutation.mutateAsync(payload);
+            queryClient.invalidateQueries({ queryKey: ['collaborator', 'evaluation', currentCycle.id!] });
+            showToast(
+                'Sua avaliação foi enviada com sucesso! Você será notificado em breve quando o processo estiver concluído.',
+                'success',
+                {
+                    title: 'Avaliação Enviada! 🎉',
+                    duration: 10000,
+                },
+            );
+            return true;
         } catch (error) {
             console.error('Erro no envio:', error);
             showToast(
