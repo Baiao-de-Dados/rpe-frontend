@@ -3,11 +3,14 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import RatingDisplay from '../common/RatingDisplay';
 
-import type { Criterion } from '../../data/mockEvaluationPIllars';
 import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
 interface ManagerPillarRatingDisplayProps {
-    criteria: Criterion[];
+    criteria: Array<{
+        id: number;
+        nome: string;
+        weight?: number; // Peso do critério
+    }>;
     validFields: Array<{
         id: number;
         pilarId: number;
@@ -46,29 +49,50 @@ export const ManagerPillarRatingDisplay = memo(({
         ),
     });
 
-    // Calcular média do colaborador para este pilar
+    // Calcular média ponderada do colaborador para este pilar
     const collaboratorAverage = useMemo(() => {
         const criteriaInPillar = criteria.map(c => c.id);
-        const collaboratorRatings = collaboratorData
+        const collaboratorRatingsWithWeights = collaboratorData
             .filter(data => criteriaInPillar.includes(data.criterionId))
-            .map(data => data.rating)
-            .filter((rating): rating is number => typeof rating === 'number' && rating > 0);
+            .map(data => {
+                const criterion = criteria.find(c => c.id === data.criterionId);
+                return {
+                    rating: data.rating,
+                    weight: criterion?.weight || 1
+                };
+            })
+            .filter(item => typeof item.rating === 'number' && item.rating > 0 && typeof item.weight === 'number' && item.weight > 0);
 
-        return collaboratorRatings.length > 0 
-            ? Math.round((collaboratorRatings.reduce((sum, rating) => sum + rating, 0) / collaboratorRatings.length) * 10) / 10 
-            : null;
-    }, [criteria, collaboratorData]);    // Calcular média do manager para este pilar
+        if (collaboratorRatingsWithWeights.length === 0) return null;
+
+        const totalWeight = collaboratorRatingsWithWeights.reduce((sum, item) => sum + item.weight, 0);
+        if (totalWeight === 0) return null;
+
+        const weightedSum = collaboratorRatingsWithWeights.reduce((sum, item) => sum + (item.rating as number) * item.weight, 0);
+        return Math.round((weightedSum / totalWeight) * 10) / 10;
+    }, [criteria, collaboratorData, fieldIndices]);
+
+    // Calcular média ponderada do manager para este pilar
     const managerAverage = useMemo(() => {
         if (!watchedManagerRatings || fieldIndices.length === 0) return null;
 
-        const validRatings = watchedManagerRatings.filter((rating): rating is number => 
-            typeof rating === 'number' && rating > 0
-        );
+        const managerRatingsWithWeights = fieldIndices.map((fieldIndex, index) => {
+            const criterion = criteria[index];
+            const rating = watchedManagerRatings[index];
+            return {
+                rating,
+                weight: criterion?.weight || 1
+            };
+        }).filter(item => typeof item.rating === 'number' && item.rating > 0 && typeof item.weight === 'number' && item.weight > 0);
 
-        return validRatings.length > 0
-            ? Math.round((validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length) * 10) / 10
-            : null;
-    }, [watchedManagerRatings, fieldIndices.length]);
+        if (managerRatingsWithWeights.length === 0) return null;
+
+        const totalWeight = managerRatingsWithWeights.reduce((sum, item) => sum + item.weight, 0);
+        if (totalWeight === 0) return null;
+
+        const weightedSum = managerRatingsWithWeights.reduce((sum, item) => sum + (item.rating as number) * item.weight, 0);
+        return Math.round((weightedSum / totalWeight) * 10) / 10;
+    }, [watchedManagerRatings, criteria, fieldIndices]);
 
     return (
         <div className="flex items-center gap-2">

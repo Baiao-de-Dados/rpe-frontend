@@ -14,7 +14,7 @@ export interface CollaboratorEvaluations {
     evaluation360Score: number | null,
     managerEvaluationScore: number | null,
     finalEvaluationScore: number | null,
-    status: "pendente" | "finalizado";
+    status: "pendente" | "finalizado" | "sem-ciclo";
 }
 
 export type CollaboratorsEvaluationsSummary = CollaboratorEvaluations[];

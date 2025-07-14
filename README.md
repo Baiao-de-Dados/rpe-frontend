@@ -1,168 +1,221 @@
 # RPE Frontend
 
-Projeto frontend usando React + TypeScript + Vite + Tailwind CSS v4.
+Sistema de avaliação de performance da Rocket Corp.
 
-## 🚀 Início Rápido
+## Integrações de API Implementadas
 
-### Pré-requisitos
+### Manager API
 
-- Node.js 18+
-- pnpm (package manager)
+#### Endpoints Implementados:
 
-```bash
-# Instalar pnpm globalmente (se não tiver)
-npm install -g pnpm
+- `GET /manager/leaders-and-collaborators` - Lista líderes e colaboradores
+- `POST /manager/assign-leader-evaluation` - Atribui líder para avaliar colaborador
+- `GET /manager/dashboard/total-leaders` - Total de líderes
+- `GET /manager/dashboard/evaluation-percentage` - Percentual de avaliações
+- `GET /manager/dashboard/missing-evaluations` - Avaliações faltantes
+- `GET /manager/dashboard/leaders/evaluation-percentage` - Percentual de avaliações de líderes
+- `GET /manager/dashboard/collaborators/without-leader` - Colaboradores sem líder
+- `GET /manager/collaborators/evaluations-summary` - Resumo de avaliações dos colaboradores
+- `GET /manager/collaborators-evaluations-details` - Detalhes das avaliações
+- `GET /manager/auto-evaluation/:userId` - Autoavaliação do usuário
+- `POST /manager/evaluate` - Avaliação do manager (formato corrigido)
+
+#### Endpoints de Avaliações dos Colaboradores (rotas existentes do employer):
+
+- `GET /employer/evaluation-result` - Avaliação completa do colaborador (autoavaliação, 360°, mentoring, referências)
+- `GET /employer/all-evaluations` - Histórico de todas as avaliações do colaborador
+
+#### Hooks Implementados:
+
+- `useLeadersAndCollaborators()` - Busca líderes e colaboradores
+- `useAssignLeaderEvaluation()` - Atribui líder para avaliação
+- `useTotalLeaders()` - Total de líderes
+- `useEvaluationPercentage()` - Percentual de avaliações
+- `useMissingEvaluations()` - Avaliações faltantes
+- `useLeaderEvaluationPercentage()` - Percentual de avaliações de líderes
+- `useCollaboratorsWithoutLeader()` - Colaboradores sem líder
+- `useCollaboratorsEvaluationsSummary()` - Resumo de avaliações
+- `useCollaboratorsEvaluationsDetails()` - Detalhes das avaliações
+- `useUserAutoEvaluation(userId)` - Autoavaliação do usuário
+- `useManagerEvaluation()` - Mutation para avaliação do manager
+- `useTrackCriteria()` - Critérios da trilha
+- `useCollaboratorEvaluationResult(cycleId, collaboratorId)` - Avaliação completa do colaborador
+- `useCollaboratorAllEvaluations(collaboratorId)` - Histórico de avaliações do colaborador
+
+#### Componentes Atualizados:
+
+- `ManagerDashboard` - Usa dados reais da API e permite navegação para avaliação
+- `ManagerAvaliacao` - Integração completa com API de avaliação do colaborador
+- `ManagerEvaluationForm` - Usa critérios reais da trilha
+- `ManagerSelfAssessmentSection` - Usa critérios dinâmicos
+- `CollaboratorHistorySection` - Exibe histórico real de avaliações
+
+## Funcionalidades Implementadas
+
+### ✅ **Dashboard do Manager**
+
+- Métricas reais de líderes, colaboradores e avaliações
+- Navegação direta para avaliação do colaborador
+- Cards clicáveis com dados reais da API
+
+### ✅ **Avaliação de Colaboradores**
+
+- Formulário completo com critérios da trilha do colaborador
+- Visualização das autoavaliações do colaborador (read-only)
+- Visualização das avaliações 360° recebidas
+- Visualização das referências recebidas
+- Visualização do mentoring
+- Histórico completo de avaliações do colaborador
+
+### ✅ **Integração com Rotas Existentes**
+
+- Usa as rotas `/employer/evaluation-result` e `/employer/all-evaluations`
+- Converte dados da API para o formato esperado pelo frontend
+- Mantém compatibilidade com a estrutura existente
+
+### ✅ **Formato Correto do Payload**
+
+- Corrigido para usar o formato real do backend
+- Inclui `trackId` obrigatório
+- Remove `justification` do payload (mantida apenas para UX)
+- Usa `criteria` em vez de `criterias`
+
+## Próximos Passos
+
+### Backend (NestJS)
+
+1. **Verificar compatibilidade dos DTOs**:
+
+    - `ManagerEvaluationDto` deve corresponder ao schema do frontend
+    - Adicionar campos para track/criteria se necessário
+
+2. **Novos endpoints necessários**:
+
+    ```typescript
+    GET /manager/collaborator/:id          // Dados completos do colaborador
+    GET /manager/collaborator/:id/track    // Trilha do colaborador
+    GET /manager/collaborator/:id/360      // Avaliações 360°
+    GET /manager/collaborator/:id/references // Referências
+    ```
+
+3. **Melhorias no Service**:
+    - Implementar busca de dados do colaborador (nome, email, posição)
+    - Adicionar validações de permissão
+    - Implementar cache para otimização
+
+### Frontend
+
+1. **Melhorias na integração**:
+
+    - Implementar busca de dados completos do colaborador
+    - Adicionar loading states adequados
+    - Implementar error handling robusto
+
+2. **Novos componentes**:
+
+    - `CollaboratorDetailsCard` - Exibir dados completos
+    - `TrackCriteriaSelector` - Seleção de critérios
+    - `EvaluationProgressTracker` - Acompanhar progresso
+
+3. **Otimizações**:
+    - Implementar cache local para dados estáticos
+    - Adicionar paginação para listas grandes
+    - Implementar busca e filtros avançados
+
+## Como Testar
+
+1. **Backend**:
+
+    ```bash
+    # Verificar se os endpoints estão funcionando
+    curl -H "Authorization: Bearer <token>" http://localhost:3002/manager/leaders-and-collaborators
+    curl -H "Authorization: Bearer <token>" http://localhost:3002/employer/evaluation-result?cycleConfigId=1&userId=3
+    ```
+
+2. **Frontend**:
+
+    ```bash
+    # Iniciar em modo desenvolvimento
+    npm run dev
+    ```
+
+3. **Testes de Integração**:
+    - Login como manager
+    - Acessar dashboard do manager
+    - Clicar em um colaborador para ver sua avaliação
+    - Verificar se os dados são carregados da API
+    - Testar avaliação de colaborador
+
+## Estrutura de Dados
+
+### Manager Evaluation Payload (Formato Correto)
+
+```typescript
+{
+    managerId: number;
+    collaboratorId: number;
+    cycleId: number;
+    trackId: number;
+    criteria: Array<{
+        criterionId: number;
+        score: number;
+    }>;
+}
 ```
 
-### Configuração do Projeto
+### Collaborator Evaluation Result
 
-```bash
-# 1. Clonar o repositório
-git clone <url-do-repo>
-cd rpe-frontend
-
-# 2. Instalar dependências
-pnpm install
-
-# 3. Rodar em desenvolvimento pra ver se tá tudo ok
-pnpm dev
+```typescript
+{
+    id: number;
+    cycleConfigId: number;
+    userId: number;
+    user: {
+        id: number;
+        name: string;
+        track: string;
+    }
+    autoEvaluation: {
+        pilares: Array<{
+            pilarId: number;
+            criterios: Array<{
+                criterioId: number;
+                nota: number;
+                justificativa: string;
+            }>;
+        }>;
+    }
+    evaluation360: Array<{
+        avaliadoId: number;
+        pontosFortes: string;
+        pontosMelhoria: string;
+        score: number;
+    }>;
+    mentoring: {
+        mentorId: number;
+        justificativa: string;
+        score: number;
+    }
+    reference: Array<{
+        colaboradorId: number;
+        justificativa: string;
+    }>;
+}
 ```
 
-## 📦 Scripts do Dia a Dia
+### Collaborator All Evaluations
 
-### Desenvolvimento
-
-```bash
-pnpm dev           # Rodar projeto (localhost:5173)
-pnpm build         # Build de produção
-pnpm preview       # Preview do build
+```typescript
+Array<{
+    cycle: {
+        id: number;
+        name: string;
+        startDate: string;
+        endDate: string;
+    };
+    autoEvaluation: number;
+    evaluation360: number;
+    manager: number | null;
+    committee: number | null;
+}>;
 ```
-
-### Qualidade de Código
-
-```bash
-pnpm lint          # 🔍 Verificar problemas no código
-pnpm lint:fix      # 🔧 Corrigir problemas automaticamente
-pnpm format        # 🎨 Formatar código (raramente necessário)
-pnpm type-check    # ✅ Verificar tipos TypeScript
-```
-
-## 🛡️ Git Hooks (Husky) - Funcionamento Automático
-
-O projeto tem **verificações automáticas** que rodam quando você faz commit:
-
-### ⚡ Pre-commit (roda automaticamente)
-
-```bash
-git commit -m "feat: nova funcionalidade"
-
-# 🤖 Automaticamente executa:
-# 1. Verificação de tipos TypeScript
-# 2. ESLint nos arquivos modificados
-# 3. Prettier formata código automaticamente
-```
-
-### 📝 Validação de Mensagem de Commit
-
-```bash
-# ✅ FORMATO CORRETO:
-git commit -m "feat: adiciona botão de login"
-git commit -m "fix: corrige bug na navegação"
-git commit -m "docs: atualiza README"
-git commit -m "chore: configura husky"
-
-# ❌ FORMATO INCORRETO (vai dar erro):
-git commit -m "adiciona botão"           # sem tipo
-git commit -m "ADD: novo botão"          # tipo inválido
-git commit -m "feat adiciona botão"      # sem ":"
-```
-
-### 🎯 Tipos de Commit Válidos
-
-| Tipo       | Descrição            | Exemplo                                   |
-| ---------- | -------------------- | ----------------------------------------- |
-| `feat`     | Nova funcionalidade  | `feat: adiciona dark mode`                |
-| `fix`      | Correção de bug      | `fix: corrige contador que não resetava`  |
-| `docs`     | Documentação         | `docs: atualiza instruções de instalação` |
-| `style`    | Formatação de código | `style: corrige indentação`               |
-| `refactor` | Refatoração          | `refactor: melhora estrutura do Header`   |
-| `test`     | Testes               | `test: adiciona testes para Counter`      |
-| `chore`    | Manutenção/config    | `chore: atualiza dependências`            |
-| `perf`     | Performance          | `perf: otimiza carregamento de imagens`   |
-| `ci`       | CI/CD                | `ci: configura GitHub Actions`            |
-
-## 🚨 Resolvendo Problemas Comuns
-
-### Commit foi rejeitado - Erro de tipo:
-
-```bash
-# ❌ Erro: "type may not be empty"
-git commit -m "feat: adiciona nova funcionalidade"  # ✅ Correto
-```
-
-### Commit foi rejeitado - Erro de lint:
-
-```bash
-# 1. Ver os problemas:
-pnpm lint
-
-# 2. Corrigir automaticamente:
-pnpm lint:fix
-
-# 3. Adicionar correções e tentar novamente:
-git add .
-git commit -m "feat: adiciona nova funcionalidade"
-```
-
-### Commit foi rejeitado - Erro de tipos:
-
-```bash
-# 1. Ver os erros de tipo:
-pnpm type-check
-
-# 2. Corrigir os tipos no código
-# 3. Tentar commit novamente
-```
-
-### Código não está formatado:
-
-```bash
-# O Prettier roda automaticamente no commit, mas se quiser formatar manualmente:
-pnpm format
-```
-
-## 💡 Dicas Para a Equipe
-
-### ✅ Boas Práticas
-
-- Use `pnpm dev` para desenvolvimento
-- Faça commits pequenos e frequentes
-- Use os tipos de commit corretos
-- Não se preocupe com formatação - é automática!
-
-### ⚠️ O que NÃO fazer
-
-- Não commite com `--no-verify` (pula as verificações)
-- Não edite os arquivos `.husky/*` sem avisar
-- Não rode `npm install` - use `pnpm install`
-
-### 🔧 Se algo der errado
-
-1. **Sempre rode:** `pnpm lint:fix` antes de commitar
-2. **Verificação manual:** `pnpm type-check` para ver erros de tipo
-3. **Reset das configurações:** delete `node_modules` e rode `pnpm install`
-
-## 📱 Comandos de Emergência
-
-```bash
-# Se o Husky não estiver funcionando:
-pnpm exec husky install
-
-# Se quiser commitar sem verificações (use com cuidado!):
-git commit -m "fix: emergência" --no-verify
-
-# Se quiser formatar todo o projeto:
-pnpm format
-```
-
----

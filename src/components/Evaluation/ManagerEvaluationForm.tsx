@@ -6,8 +6,7 @@ import type { Collaborator } from '../../types/collaborator';
 import ManagerEvaluationHeader from './ManagerEvaluationHeader';
 
 import { useSectionNavigation } from '../../hooks/useSectionNavigation';
-
-import { mockEvaluationPillars } from '../../data/mockEvaluationPIllars';
+import { useTrackCriteria } from '../../hooks/api/useManagerQuery';
 
 import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
@@ -53,13 +52,31 @@ export const ManagerEvaluationForm = memo(({
 
     const { control } = useFormContext<FullManagerEvaluationFormData>();
 
+    // Buscar critérios da trilha do colaborador
+    const { data: trackCriteria } = useTrackCriteria();
+
     const allCriteria = useMemo(() => {
-        return [
-            ...mockEvaluationPillars.comportamento.criterios,
-            ...mockEvaluationPillars.execucao.criterios,
-            ...mockEvaluationPillars.gestaoLideranca.criterios,
-        ];
-    }, []);
+        if (!trackCriteria || !collaborator.track) {
+            return [];
+        }
+
+        // Encontrar a trilha do colaborador
+        const collaboratorTrack = trackCriteria.find(track => track.id === collaborator.track.id);
+        if (!collaboratorTrack?.pillars) {
+            return [];
+        }
+
+        // Extrair todos os critérios dos pilares da trilha
+        return collaboratorTrack.pillars.flatMap(pillar => 
+            pillar.criteria.map(criterion => ({
+                id: criterion.id,
+                nome: criterion.name,
+                pilarId: pillar.id,
+                pilarNome: pillar.name,
+                weight: criterion.weight, // Incluir peso do critério
+            }))
+        );
+    }, [trackCriteria, collaborator.track]);
 
     const watchedManagerAssessment = useWatch({
         control,
@@ -78,10 +95,10 @@ export const ManagerEvaluationForm = memo(({
 
             const hasRating = assessment?.rating && typeof assessment.rating === 'number' && assessment.rating > 0;
 
-            const hasJustification = assessment?.justification && typeof assessment.justification === 'string' && 
-            assessment.justification.trim().length > 0;
+            // const hasJustification = assessment?.justification && typeof assessment.justification === 'string' && 
+            // assessment.justification.trim().length > 0; // Removido
 
-            if (!hasRating || !hasJustification) {
+            if (!hasRating) { // Removida exigência de justificativa
                 incompleteCount++;
             }
         }
@@ -108,6 +125,7 @@ export const ManagerEvaluationForm = memo(({
                     evaluations360={evaluations360}
                     referencesReceived={referencesReceived}
                     cycleName={cycleName}
+                    allCriteria={allCriteria}
                 />
             </main>
         </>

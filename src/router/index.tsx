@@ -54,6 +54,7 @@ export function Router() {
                     <Route path="avaliacao" 
                         element={
                             <RoleRoute requiredRoles={[
+                                    UserRoleEnum.EMPLOYER,
                                     UserRoleEnum.RH,
                                     UserRoleEnum.COMMITTEE,
                                     UserRoleEnum.ADMIN,

@@ -19,16 +19,11 @@ export const managerCriterionAssessmentSchema = z.object({
         .nullable()
         .refine(value => value !== null && value !== 0, 'A nota é obrigatória'),
     justification: z
-        .string({
-            required_error: 'A justificativa é obrigatória',
-        })
+        .string()
         .min(1, 'A justificativa não pode estar vazia')
         .max(1000, 'A justificativa deve ter no máximo 1000 caracteres')
         .trim()
-        .refine(
-            value => value.length > 0,
-            'A justificativa não pode conter apenas espaços em branco',
-        ),
+        .optional(), // Opcional já que não é enviada para o backend
 });
 
 // Schema completo para avaliação do manager (apenas autoavaliação - sem avaliação geral)

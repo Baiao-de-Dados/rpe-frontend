@@ -41,8 +41,14 @@ function CollaboratorEvaluationCard({ summary, onClick, className = '' }: Collab
             </div>
             <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end w-full sm:max-w-[60%]">
                 <Badge
-                    label={summary.status === 'finalizado' ? 'Finalizado' : 'Pendente'}
-                    variant={summary.status === 'finalizado' ? 'success' : 'warning'}
+                    label={
+                        summary.status === 'finalizado' ? 'Finalizado' : 
+                        summary.status === 'sem-ciclo' ? 'Sem ciclo' : 'Pendente'
+                    }
+                    variant={
+                        summary.status === 'finalizado' ? 'success' : 
+                        summary.status === 'sem-ciclo' ? 'default' : 'warning'
+                    }
                     size="sm"
                     className="ml-1 sm:ml-2"
                 />

@@ -9,11 +9,16 @@ import ManagerAssessment from './CardsManager/ManagerAssessment';
 import ManagerPillarRatingDisplay from './ManagerPillarDisplay';
 
 import type { Criterion } from '../../data/mockEvaluationPIllars';
+
+// Tipo para critérios com peso
+interface CriterionWithWeight extends Criterion {
+    weight?: number;
+}
 import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
 interface ManagerPillarSectionProps {
     pillarTitle: string;
-    criteria: Criterion[];
+    criteria: CriterionWithWeight[];
     validFields: Array<{
         id: number;
         pilarId: number;
@@ -73,15 +78,15 @@ export const ManagerPillarSection = memo(({
 
         for (let i = 0; i < fieldIndices.length; i++) {
             const ratingIndex = i * 2;
-            const justificationIndex = i * 2 + 1;
+            // const justificationIndex = i * 2 + 1; // Removido
 
             const rating = watchedData[ratingIndex];
-            const justification = watchedData[justificationIndex];
+            // const justification = watchedData[justificationIndex]; // Removido
 
             const hasRating = typeof rating === 'number' && rating > 0;
-            const hasJustification = typeof justification === 'string' && justification.trim().length > 0;
+            // const hasJustification = typeof justification === 'string' && justification.trim().length > 0; // Removido
 
-            if (!hasRating || !hasJustification) {
+            if (!hasRating) { // Removida exigência de justificativa
                 incompleteCount++;
             }
         }
@@ -120,11 +125,11 @@ export const ManagerPillarSection = memo(({
             }
             headerRight={
                 <div className="flex items-center gap-2 whitespace-nowrap">
-                    <ManagerPillarRatingDisplay 
-                        criteria={criteria} 
-                        validFields={validFields}
-                        collaboratorData={collaboratorData}
-                    />
+                                            <ManagerPillarRatingDisplay 
+                            criteria={criteria} 
+                            validFields={validFields}
+                            collaboratorData={collaboratorData}
+                        />
                     <div className="flex items-center bg-primary-50 px-2 py-1 rounded-lg">
                         <Typography variant="caption" color="muted" className="text-xs">
                             {criteria.length - incompleteCriteriaCount}/{criteria.length} avaliados

@@ -72,6 +72,13 @@ interface ManagerSectionRendererProps {
         justification: string;
     }>;
     cycleName?: string;
+    // Critérios da trilha do colaborador
+    allCriteria?: Array<{
+        id: number;
+        nome: string;
+        pilarId: number;
+        pilarNome: string;
+    }>;
 }
 
 export function ManagerSectionRenderer({ 
@@ -80,7 +87,8 @@ export function ManagerSectionRenderer({
     collaboratorSelfAssessment,
     evaluations360,
     referencesReceived,
-    cycleName
+    cycleName,
+    allCriteria
 }: ManagerSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -91,6 +99,7 @@ export function ManagerSectionRenderer({
                 return (
                     <ManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
+                        allCriteria={allCriteria || []}
                     />
                 );
             case 'Avaliações 360°':
@@ -132,6 +141,7 @@ export function ManagerSectionRenderer({
                 return (
                     <ManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
+                        allCriteria={allCriteria || []}
                     />
                 );
         }

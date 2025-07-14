@@ -5,13 +5,15 @@ import { useForm, FormProvider } from 'react-hook-form';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
+import { useAuth } from '../../hooks/useAuth';
+import { 
+    useUserAutoEvaluation, 
+    useManagerEvaluation,
+    useCollaboratorEvaluationDetails,
+    useCollaboratorAllEvaluations
+} from '../../hooks/api/useManagerQuery';
 
 import type { Collaborator } from '../../types/collaborator';
-
-import { mockCollaborators } from '../../data/mockCollaborators';
-
-import { getCollaborator360Evaluations } from '../../data/mockCollaborator360Data';
-import { getCollaboratorSelfAssessment } from '../../data/mockCollaboratorSelfAssessment';
 
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
@@ -27,10 +29,20 @@ interface ManagerAvaliacaoProps {
 
 export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
     const navigate = useNavigate();
-    const { currentCycle, isLoading } = useCycle();
+    const { currentCycle, isLoading: cycleLoading } = useCycle();
     const { showToast } = useToast();
+    const { user } = useAuth();
     
-    const [collaborator, setCollaborator] = useState<Collaborator | null>(null);
+    const [collaborator, setCollaborator] = useState<Collaborator | null>({
+        id: collaboratorId,
+        name: `Colaborador ${collaboratorId}`,
+        email: 'carregando@example.com',
+        position: 'Carregando...',
+        track: { 
+            id: 1, 
+            name: 'Default Track'
+        },
+    });
     const [collaboratorSelfAssessment, setCollaboratorSelfAssessment] = useState<Array<{
         pilarId: number;
         criterionId: number;
@@ -50,6 +62,15 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
         justification: string;
     }>>([]);
 
+    // API queries
+    const { data: userAutoEvaluation, isLoading: autoEvaluationLoading } = useUserAutoEvaluation(collaboratorId);
+    const { data: collaboratorEvaluationDetails, isLoading: evaluationDetailsLoading } = useCollaboratorEvaluationDetails(
+        collaboratorId,
+        currentCycle?.id || 0
+    );
+    const { data: collaboratorAllEvaluations, isLoading: allEvaluationsLoading } = useCollaboratorAllEvaluations(collaboratorId);
+    const managerEvaluationMutation = useManagerEvaluation();
+
     const methods = useForm<FullManagerEvaluationFormData>({
         resolver: zodResolver(fullManagerEvaluationSchema),
         mode: 'onSubmit',
@@ -61,45 +82,94 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
     });
 
     useEffect(() => {
-        if (collaboratorId) {
-            // Buscar dados do colaborador
-            const foundCollaborator = mockCollaborators.find(c => c.id === collaboratorId);
-            if (foundCollaborator) {
-                setCollaborator(foundCollaborator);
+        console.log('ManagerAvaliacao useEffect:', {
+            collaboratorId,
+            collaboratorEvaluationDetails,
+            currentCycle: currentCycle?.id
+        });
+
+        if (collaboratorId && collaboratorEvaluationDetails?.collaborator) {
+            // Criar objeto collaborator baseado nos dados da API
+            const collaboratorData: Collaborator = {
+                id: collaboratorEvaluationDetails.collaborator.id,
+                name: collaboratorEvaluationDetails.collaborator.name,
+                email: 'colaborador@example.com', // TODO: Adicionar email na API
+                position: collaboratorEvaluationDetails.collaborator.position,
+                track: { 
+                    id: 1, 
+                    name: 'Default Track' // TODO: Adicionar track na API
+                },
+            };
+            
+            console.log('Setting collaborator:', collaboratorData);
+            setCollaborator(collaboratorData);
+            
+            // Só processar dados de avaliação se houver ciclo ativo
+            if (collaboratorEvaluationDetails.cycle) {
+                // Converter autoavaliação da API para o formato esperado
+                if (collaboratorEvaluationDetails.autoEvaluation) {
+                    const selfAssessment = collaboratorEvaluationDetails.autoEvaluation.pilares.flatMap((pilar) =>
+                        pilar.criterios.map((criterio) => ({
+                            pilarId: pilar.pilarId,
+                            criterionId: criterio.criterioId,
+                            rating: criterio.nota,
+                            justification: criterio.justificativa,
+                        }))
+                    );
+                    setCollaboratorSelfAssessment(selfAssessment);
+                }
                 
-                // Buscar autoavaliação do colaborador
-                const selfAssessment = getCollaboratorSelfAssessment(collaboratorId);
-                setCollaboratorSelfAssessment(selfAssessment);
+                // Converter avaliações 360° da API para o formato esperado
+                if (collaboratorEvaluationDetails.evaluation360) {
+                    const evaluations360Data = collaboratorEvaluationDetails.evaluation360.map((eval360) => ({
+                        collaratorName: `Colaborador ${eval360.avaliadoId}`, // TODO: Obter nome real
+                        collaboratorPosition: 'Desenvolvedor', // TODO: Obter posição real
+                        rating: eval360.score,
+                        improvements: eval360.pontosMelhoria,
+                        strengths: eval360.pontosFortes,
+                    }));
+                    setEvaluations360(evaluations360Data);
+                }
                 
-                // Buscar avaliações 360° recebidas pelo colaborador
-                const { evaluations360, referencesReceived } = getCollaborator360Evaluations(collaboratorId);
-                setEvaluations360(evaluations360);
-                setReferencesReceived(referencesReceived);
+                // Converter referências da API para o formato esperado
+                if (collaboratorEvaluationDetails.references) {
+                    const referencesData = collaboratorEvaluationDetails.references.map((ref) => ({
+                        collaratorName: `Colaborador ${ref.colaboradorId}`, // TODO: Obter nome real
+                        collaboratorPosition: 'Desenvolvedor', // TODO: Obter posição real
+                        justification: ref.justificativa,
+                    }));
+                    setReferencesReceived(referencesData);
+                }
                 
                 // Atualizar form values
                 methods.setValue('collaboratorId', collaboratorId);
                 if (currentCycle?.id) {
                     methods.setValue('cycleId', currentCycle.id);
                 }
-            } else {
-                if (mockCollaborators.length > 0) {
-                    showToast(
-                        'Colaborador não encontrado',
-                        'error',
-                        { title: 'Erro', duration: 5000 }
-                    );
-                }
-                navigate('/colaboradores');
             }
         }
-    }, [collaboratorId, currentCycle, methods, navigate, showToast]);
+    }, [collaboratorId, collaboratorEvaluationDetails, currentCycle, methods]);
 
     const handleSubmit = async (data: FullManagerEvaluationFormData) => {
         try {
-            console.log('Dados da avaliação do manager:', data);
-            
-            // Simular envio para API
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            if (!user?.id || !currentCycle?.id || !collaborator) {
+                throw new Error('Dados de usuário, ciclo ou colaborador não encontrados');
+            }
+
+            // Converter dados do form para o formato da API
+            const payload = {
+                managerId: user.id,
+                collaboratorId: collaboratorId,
+                cycleId: currentCycle.id,
+                trackId: collaborator.track.id,
+                criteria: data.managerAssessment.map(assessment => ({
+                    criterionId: assessment.criterionId,
+                    score: assessment.rating || 0,
+                    // justification: assessment.justification, // Removido se backend não suportar
+                })),
+            };
+
+            await managerEvaluationMutation.mutateAsync(payload);
             
             showToast(
                 `Avaliação de ${collaborator?.name} enviada com sucesso!`,
@@ -128,6 +198,22 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
         }
     };
 
+    const isLoading = cycleLoading || autoEvaluationLoading || evaluationDetailsLoading || allEvaluationsLoading;
+
+    console.log('ManagerAvaliacao render:', {
+        isLoading,
+        cycleLoading,
+        autoEvaluationLoading,
+        evaluationDetailsLoading,
+        allEvaluationsLoading,
+        currentCycle: currentCycle?.id,
+        collaborator,
+        collaboratorId,
+        collaboratorEvaluationDetails,
+        userAutoEvaluation,
+        collaboratorAllEvaluations
+    });
+
     if (isLoading) {
         return <CycleLoading />;
     }
@@ -137,16 +223,29 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
     }
 
     if (!collaborator) {
+        console.log('Collaborator not found, showing CollaboratorNotFoundMessage');
+        console.log('Debug info:', {
+            collaboratorId,
+            currentCycle: currentCycle?.id,
+            collaboratorEvaluationDetails,
+            evaluationDetailsLoading,
+            cycleLoading
+        });
         return <CollaboratorNotFoundMessage />;
     }
 
-    if (currentCycle.isActive) {
+    // Verificar se há dados de avaliação disponíveis
+    const hasEvaluationData = collaboratorEvaluationDetails?.cycle !== null;
+    
+    // Remover bloqueio para ciclo ativo - gestor deve poder ver sempre
+    
+    if (!hasEvaluationData) {
         return (
             <StatusMessageCard
-                icon={<span className="material-icons text-primary-500 text-4xl">hourglass_top</span>}
-                title="Ciclo em andamento"
+                icon={<span className="material-icons text-primary-500 text-4xl">info</span>}
+                title="Nenhum ciclo ativo"
                 message={
-                    <>O ciclo de avaliação ainda está em andamento. A visualização das avaliações estará disponível quando o ciclo for fechado.</>
+                    <>Nenhum ciclo de avaliação ativo no momento. As avaliações estarão disponíveis quando um novo ciclo for iniciado.</>
                 }
             />
         );

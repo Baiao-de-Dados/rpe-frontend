@@ -45,8 +45,8 @@ const ManagerAssessment = memo(({
                         <Controller name={`${name}.rating`} control={control}
                             render={({ field: ratingField }) => (
                                 <Controller name={`${name}.justification`} control={control}
-                                    render={({ field: justificationField }) => {
-                                        const isCompleted = ratingField.value && justificationField.value?.trim();
+                                    render={() => {
+                                        const isCompleted = ratingField.value; // Removida exigência de justificativa
                                         return (
                                             <div className={`w-6 h-6 min-w-[24px] min-h-[24px] rounded-full border-1 text-gray-600 flex items-center justify-center text-sm font-medium ${ 
                                                 !isCompleted ? 'border-gray-600' : 'bg-check-color border-check-color' 
