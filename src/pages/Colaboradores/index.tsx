@@ -94,7 +94,7 @@ export function Colaboradores() {
                         onApply={setFilters}
                     />
                 </div>
-                <div className="flex flex-col gap-3 sm:gap-4 -z-1">
+                <div className="flex flex-col gap-3 sm:gap-4">
                     {filteredCollaborators.length === 0 ? (
                         <div className="text-center py-12">
                             <span className="text-gray-500 text-base sm:text-lg">Nenhum colaborador encontrado</span>

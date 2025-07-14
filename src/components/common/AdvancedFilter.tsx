@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Filter, X, ArrowDownWideNarrow } from 'lucide-react';
 import Slider from '@mui/material/Slider';
+import { createPortal } from 'react-dom';
 
 interface Filters {
     pending: boolean;
@@ -83,8 +84,8 @@ export default function AdvancedFilter({ className, positions = [], tracks = [],
             >
                 <Filter className="text-white w-4 h-4" />
             </button>
-            {open && (
-                <div onClick={handleOverlayClick} className="absolute right-0 top-15 z-50">
+            {open && createPortal(
+                <div onClick={handleOverlayClick} className="fixed right-8 top-[250px] z-[9999]">
                     <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-6 w-[310px] max-w-sm relative">
                         <div className="flex justify-between items-center mb-4">
                             <span className="font-semibold text-lg text-gray-700">Filtros Avançados</span>
@@ -194,7 +195,8 @@ export default function AdvancedFilter({ className, positions = [], tracks = [],
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                typeof window !== 'undefined' && typeof document !== 'undefined' && document.body ? document.body : document.createElement('div')
             )}
         </div>
     );
