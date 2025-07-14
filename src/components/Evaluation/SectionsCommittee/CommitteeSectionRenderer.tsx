@@ -8,8 +8,9 @@ import { SectionLoadingSpinner } from '../../common/SectionLoadingSpinner';
 
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
-// Importando o componente de equalização
-import Equalizacao from '../../../pages/Colaboradores/Equalizacao';
+// Remover imports não usados
+import EqualizacaoCard from '../../common/EqualizacaoCard';
+import { useForm, Controller } from 'react-hook-form';
 import type { Collaborator } from '../../../types/collaborator';
 
 // Reutilizando componentes do gestor em modo readonly
@@ -31,11 +32,6 @@ const CollaboratorHistorySection = lazy(() =>
     })),
 );
 
-const ManagerLeaderEvaluationSection = lazy(() =>
-    import('../SectionsMentor/ManagerLeaderEvaluationSection').then(module => ({
-        default: module.ManagerLeaderEvaluationSection,
-    })),
-);
 
 const ManagerMentoringEvaluationSection = lazy(() =>
     import('../SectionsMentor/ManagerMentoringEvaluationSection').then(module => ({
@@ -44,11 +40,63 @@ const ManagerMentoringEvaluationSection = lazy(() =>
 );
 
 // Seção de equalização
-const EqualizationSection = () => (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-        <Equalizacao />
-    </div>
-);
+const EqualizationSection = ({ collaborator }: { collaborator: Collaborator }) => {
+    // Mock de dados de avaliação (substitua pelos dados reais do colaborador)
+    const scores: {
+        selfEvalScore: number;
+        managerEvalScore: number;
+        postureScore: number;
+        finalScore: number | null;
+        status: 'Finalizado' | 'Em andamento';
+        summary: string;
+    } = {
+        selfEvalScore: 4.0,
+        managerEvalScore: 4.2,
+        postureScore: 5.0,
+        finalScore: null,
+        status: 'Em andamento',
+        summary: 'Você se saiu muito bem por conta disso e isso.'
+    };
+    const { control, setValue, watch, formState: { errors } } = useForm({
+        defaultValues: {
+            rating: 0,
+            justification: '',
+        },
+    });
+    // rating removido, não é mais necessário
+    const justification = watch('justification');
+    const onSubmit = () => {
+        // TODO: Integrar com API
+        // alert('Equalização salva!');
+    };
+    return (
+        <Controller
+            name="rating"
+            control={control}
+            rules={{ required: 'A nota é obrigatória', min: 1, max: 5 }}
+            render={({ field }) => (
+                <EqualizacaoCard
+                    collaboratorName={collaborator.name}
+                    position={collaborator.position}
+                    status={scores.status}
+                    finalScore={scores.finalScore ?? 0}
+                    selfEvalScore={scores.selfEvalScore}
+                    managerEvalScore={scores.managerEvalScore}
+                    postureScore={scores.postureScore}
+                    summary={scores.summary}
+                    rating={field.value}
+                    onChangeRating={field.onChange}
+                    ratingError={errors.rating?.message as string}
+                    justification={justification}
+                    onChangeJustification={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue('justification', e.target.value)}
+                    justificationError={errors.justification?.message as string}
+                    editable={true}
+                    onSubmit={onSubmit}
+                />
+            )}
+        />
+    );
+};
 
 interface CommitteeSectionRendererProps {
     activeSection: CommitteeSectionType;
@@ -106,13 +154,6 @@ export function CommitteeSectionRenderer({
                         collaboratorName={collaborator?.name || 'Colaborador'}
                     />
                 );
-            case 'Líderes':
-                return (
-                    <ManagerLeaderEvaluationSection 
-                        collaboratorId={collaborator?.id || 0}
-                        collaboratorName={collaborator?.name || 'Colaborador'}
-                    />
-                );
             case 'Histórico':
                 return (
                     <CollaboratorHistorySection 
@@ -121,7 +162,7 @@ export function CommitteeSectionRenderer({
                     />
                 );
             case 'Equalização':
-                return <EqualizationSection />;
+                return <EqualizationSection collaborator={collaborator} />;
             default:
                 return (
                     <ReadOnlyManagerSelfAssessmentSection 

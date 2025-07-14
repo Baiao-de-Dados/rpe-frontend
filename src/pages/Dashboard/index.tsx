@@ -3,7 +3,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { UserRoleEnum } from '../../types/auth';
 import { CollaboratorDashboard } from './CollaboratorDashboard';
 import { LeaderDashboard } from './LeaderDashboard';
-import { RHDashboard } from './RHDashboard';
 import { AdminDashboard } from './AdminDashboard';
 import { ManagerDashboard } from './ManagerDashboard';
 import { CommitteeDashboard } from './CommitteeDashboard';
@@ -18,9 +17,9 @@ export function Dashboard() {
         return <LeaderDashboard />;
     }
 
-    // RH Dashboard
+    // RH Dashboard (prioridade alta)
     if (hasRole(UserRoleEnum.RH)) {
-        return <RHDashboard />;
+        return <CommitteeDashboard />; // RH vê dashboard de comitê
     }
 
     // Committee Dashboard

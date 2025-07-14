@@ -9,6 +9,16 @@ export function AvaliacaoIndividual() {
     const { hasRole } = useAuth();
     const { collaboratorId } = useParams<{ collaboratorId: string }>();
 
+    // RH - Visualização e equalização (prioridade alta)
+    if (hasRole(UserRoleEnum.RH)) {
+        return <CommitteeAvaliacao collaboratorId={Number(collaboratorId)} />;
+    }
+
+    // Committee - Visualização e equalização
+    if (hasRole(UserRoleEnum.COMMITTEE)) {
+        return <CommitteeAvaliacao collaboratorId={Number(collaboratorId)} />;
+    }
+
     // Manager - Formulário de avaliação de gestor
     if (hasRole(UserRoleEnum.MANAGER)) {
         return <ManagerAvaliacao collaboratorId={Number(collaboratorId)} />;
@@ -19,11 +29,6 @@ export function AvaliacaoIndividual() {
     if (hasRole(UserRoleEnum.LEADER)) {
         return <LeaderAvaliacao collaboratorId={Number(collaboratorId)} />;
 
-    }
-
-    // Committee/RH - Visualização e equalização
-    if (hasRole(UserRoleEnum.COMMITTEE) || hasRole(UserRoleEnum.RH)) {
-        return <CommitteeAvaliacao collaboratorId={Number(collaboratorId)} />;
     }
 
     // Default - não deveria chegar aqui
