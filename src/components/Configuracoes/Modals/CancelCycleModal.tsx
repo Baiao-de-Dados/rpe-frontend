@@ -9,10 +9,11 @@ interface CancelCycleModalProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    safe?: boolean;
     cycleName: string;
 }
 
-function CancelCycleModal({ open, onClose, onConfirm, cycleName }: CancelCycleModalProps) {
+function CancelCycleModal({ open, safe, onClose, onConfirm, cycleName }: CancelCycleModalProps) {
 
     const [input, setInput] = useState('');
     const isMatch = input.trim() === cycleName.trim();
@@ -34,25 +35,34 @@ function CancelCycleModal({ open, onClose, onConfirm, cycleName }: CancelCycleMo
                     <Typography variant="h2" className="font-bold text-red-600 text-center">
                         Cancelar ciclo
                     </Typography>
-                    <Typography variant="body" className="text-gray-700 font-medium text-center">
-                        Tem certeza que deseja cancelar o ciclo?
-                        <br />
-                        <span className="font-semibold text-red-600">Isso apagará todas as avaliações respondidas até agora!</span>
-                    </Typography>
+                    {!safe && (
+                        <Typography variant="body" className="text-gray-700 font-medium text-center">
+                            Tem certeza que deseja cancelar o ciclo?
+                            <br />
+                            <span className="font-semibold text-red-600">Isso apagará todas as avaliações respondidas até agora!</span>
+                        </Typography>
+                    )}
+                    {safe && (
+                        <Typography variant="body" className="text-green-700 font-medium text-center">
+                            Este cancelamento é seguro porque está sendo feito antes do ciclo iniciar. Nenhuma avaliação será perdida.
+                        </Typography>
+                    )}
                 </header>
 
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="confirm-cycle" className="text-sm text-gray-600">
-                        Digite <span className="font-bold">{cycleName}</span> para confirmar:
-                    </label>
-                    <Input id="confirm-cycle" type="text" value={input} onChange={e => setInput(e.target.value)} />
-                </div>
+                {!safe && (
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="confirm-cycle" className="text-sm text-gray-600">
+                            Digite <span className="font-bold">{cycleName}</span> para confirmar:
+                        </label>
+                        <Input id="confirm-cycle" type="text" value={input} onChange={e => setInput(e.target.value)} />
+                    </div>
+                )}
 
-                <div className="flex flex-col-reverse md:flex-row justify-end gap-2 mt-2">
+                <div className={`flex flex-col-reverse md:flex-row ${!safe ? 'justify-end' : 'justify-center' } gap-2 mt-2`}>
                     <Button variant="secondary" onClick={handleClose} className="w-full md:w-auto">
                         Voltar
                     </Button>
-                    <Button variant="danger" onClick={handleConfirm} disabled={!isMatch} className="w-full md:w-auto">
+                    <Button variant="danger" onClick={handleConfirm} disabled={!safe && !isMatch} className="w-full md:w-auto">
                         Confirmar cancelamento
                     </Button>
                 </div>

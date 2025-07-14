@@ -84,12 +84,12 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         mutationFn: (payload: StartCyclePayload) => cycleEndpoints.startCycle(payload),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['cycles'] });
-            showToast(`O ciclo foi iniciado com sucesso! Data de término: ${formatDate(variables.endDate)}`, 'success', { 
-                title: 'Ciclo iniciado', duration: 5000 
+            showToast(`O ciclo foi configurado com sucesso! Inicia: ${formatDate(variables.startDate)} - Termina: ${formatDate(variables.endDate)}`, 'success', { 
+                title: 'Ciclo configurado', duration: 5000 
             });
         },
         onError: () => {
-            showToast('Erro ao iniciar o ciclo. Tente novamente mais tarde!', 'error', {
+            showToast('Erro ao configurar o ciclo. Tente novamente mais tarde!', 'error', {
                 title: 'Erro',
                 duration: 10000
             });

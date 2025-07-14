@@ -1,3 +1,5 @@
+import { format } from 'date-fns-tz';
+
 export const getDateOnly = (dateString: string): string => {
     if (dateString.includes('T')) {
         return dateString.split('T')[0];
@@ -36,4 +38,10 @@ export const formatDateTime = (dateString: string) => {
 
 export function getBadgeText(start: string, end?: string | null) {
     return `${formatDate(start)} - ${end ? formatDate(end) : 'hoje'}`;
+}
+
+// Retorna a data atual no horário de Brasília (GMT-3) no formato yyyy-mm-dd
+export function getBrazilDateString() {
+    // America/Sao_Paulo é o timezone oficial de Brasília
+    return format(new Date(), 'yyyy-MM-dd', { timeZone: 'America/Sao_Paulo' });
 }

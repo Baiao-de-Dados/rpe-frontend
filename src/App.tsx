@@ -1,13 +1,15 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-/* import { ReactQueryDevtools } from '@tanstack/react-query-devtools'; */
-import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
-import { BrowserRouter } from 'react-router-dom';
 import { Suspense } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import { Router } from './router';
+
 import { AuthProvider } from './contexts/AuthContext';
-import { CycleProvider } from './contexts/CycleContext';
 import { ToastProvider } from './contexts/ToastContext';
+
 import GlobalToast from './components/GlobalToast';
+import LoadingSpinner from './components/RouterLoadingSpinner';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -25,31 +27,19 @@ const queryClient = new QueryClient({
     },
 });
 
-const LoadingFallback = () => (
-    <div className="flex h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
-        <span className="sr-only">Carregando...</span>
-    </div>
-);
-
 export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <NuqsAdapter>
                 <BrowserRouter>
-                    <Suspense fallback={<LoadingFallback />}>
+                    <Suspense fallback={<LoadingSpinner />}>
                         <AuthProvider>
                             <ToastProvider>
-                                <CycleProvider>
                                     <Router />
                                     <GlobalToast />
-                                </CycleProvider>
                             </ToastProvider>
                         </AuthProvider>
                     </Suspense>
-                    {/* {import.meta.env.DEV && (
-                        <ReactQueryDevtools initialIsOpen={false} />
-                    )} */}
                 </BrowserRouter>
             </NuqsAdapter>
         </QueryClientProvider>

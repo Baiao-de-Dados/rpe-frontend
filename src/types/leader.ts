@@ -14,8 +14,8 @@ export interface GetLeaderEvaluationPayload {
 }
 
 export interface LeaderEvaluation {
-    generalRating: number;
-    generalJustification: string;
+    score: number;
+    justification: string;
     strengths?: string;
     improvements?: string;
 }

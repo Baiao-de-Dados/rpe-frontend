@@ -8,6 +8,7 @@ import Button from '../../common/Button';
 import Typography from '../../common/Typography';
 import { ErrorMessage } from '../../common/ErrorMessage';
 
+import { getBrazilDateString } from '../../../utils/globalUtils';
 import { getSemesterEndDate, getSemesterStartDate } from '../../../utils/cycleUtils';
 
 import { getStartCycleSchema, type StartCycleSchema } from '../../../schemas/startCycleSchema';
@@ -15,7 +16,7 @@ import { getStartCycleSchema, type StartCycleSchema } from '../../../schemas/sta
 interface StartCycleModalProps {
     open: boolean;
     onClose: () => void;
-    onStart: (endDate: string) => void;
+    onStart: (startDate: string, endDate: string ) => void;
     semester: 1 | 2;
     year: number;
 }
@@ -29,12 +30,12 @@ function StartCycleModal({ open, onClose, onStart, semester, year }: StartCycleM
 
     const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, reset } = useForm<StartCycleSchema>({
         resolver: zodResolver(schema),
-        defaultValues: { endDate: '' },
+        defaultValues: { startDate: getBrazilDateString(), endDate: '' },
         mode: 'onChange',
     });
 
-    const onSubmit = (data: { endDate: string }) => {
-        onStart(data.endDate);
+    const onSubmit = (data: { startDate: string; endDate: string }) => {
+        onStart(data.startDate, data.endDate);
         reset();
     };
 
@@ -48,6 +49,15 @@ function StartCycleModal({ open, onClose, onStart, semester, year }: StartCycleM
                 <Typography variant="h2" className="mb-2">
                     Iniciar Ciclo {`${year}.${semester}`}
                 </Typography>
+                <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-gray-700" htmlFor="start-date-input">
+                            Data de início
+                        </label>
+                        <ErrorMessage error={errors.startDate?.message} />
+                    </div>
+                    <Input id="start-date-input" type="date" min={minDate} max={maxDate} {...register('startDate')} />
+                </div>
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                         <label className="text-sm font-medium text-gray-700" htmlFor="end-date-input">

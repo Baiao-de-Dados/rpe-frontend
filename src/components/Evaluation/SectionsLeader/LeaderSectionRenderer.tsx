@@ -28,7 +28,7 @@ interface LeaderSectionRendererProps {
 
 export function LeaderSectionRenderer({ 
     activeSection,
-    collaborator
+    collaborator,
 }: LeaderSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();

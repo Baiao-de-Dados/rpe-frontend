@@ -82,11 +82,13 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
                     methods.setValue('cycleId', currentCycle.id);
                 }
             } else {
-                showToast(
-                    'Colaborador não encontrado',
-                    'error',
-                    { title: 'Erro', duration: 5000 }
-                );
+                if (mockCollaborators.length > 0) {
+                    showToast(
+                        'Colaborador não encontrado',
+                        'error',
+                        { title: 'Erro', duration: 5000 }
+                    );
+                }
                 navigate('/colaboradores');
             }
         }

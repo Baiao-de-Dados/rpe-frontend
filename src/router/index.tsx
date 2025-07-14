@@ -1,4 +1,5 @@
 import { useAuth } from '../hooks/useAuth';
+import { CycleProvider } from '../contexts/CycleContext';
 
 import { UserRoleEnum } from '../types/auth';
 
@@ -36,7 +37,11 @@ export function Router() {
         <Routes>
             <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
             <Route element={<ProtectedRoute />}>
-                <Route element={<DefaultLayout />}>
+                <Route element={
+                    <CycleProvider>
+                        <DefaultLayout />
+                    </CycleProvider>
+                }>
 
                     <Route index element={<Navigate to="dashboard" replace />} />
 

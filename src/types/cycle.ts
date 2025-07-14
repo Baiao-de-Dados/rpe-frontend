@@ -31,6 +31,7 @@ export type Cycles = Cycle[];
 
 export interface StartCyclePayload {
     endDate: string;
+    startDate: string;
 }
 
 export interface ExtendCyclePayload {

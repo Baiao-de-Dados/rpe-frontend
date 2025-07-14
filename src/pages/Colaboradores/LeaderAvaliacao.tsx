@@ -7,6 +7,7 @@ import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
 import { useLeaderCollaboratorsEvaluation } from '../../hooks/api/useLeaderQuery';
 import { useAuth } from '../../hooks/useAuth';
+import { LeaderEvaluationReadonlyContext } from '../../contexts/LeaderEvaluationReadonlyContext';
 
 import type { Collaborator } from '../../types/collaborator';
 
@@ -33,8 +34,9 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
     const { currentCycle, isLoading } = useCycle();
 
     const { data: collaboratorsData = [], leaderEvaluation, getLeaderEvaluation } = useLeaderCollaboratorsEvaluation();
-    
     const [collaborator, setCollaborator] = useState<Collaborator| null>(null);
+    const [isReadonly, setIsReadonly] = useState(false);
+    const [evaluationData, setEvaluationData] = useState<Partial<FullLeaderEvaluationFormData>>();
 
     const methods = useForm<FullLeaderEvaluationFormData>({
         resolver: zodResolver(fullLeaderEvaluationSchema),
@@ -59,18 +61,49 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
                 if (currentCycle?.id) {
                     methods.setValue('cycleId', currentCycle.id);
                 }
+                // Fetch leader evaluation and set as default values if exists
+                if (currentCycle?.id && user?.id) {
+                    getLeaderEvaluation({ cycleId: currentCycle.id, collaboratorId: foundCollaborator.id })
+                        .then(evaluation => {
+                            if (evaluation && evaluation.score !== undefined) {
+                                const evalData = {
+                                    collaboratorId: foundCollaborator.id,
+                                    cycleId: currentCycle.id,
+                                    leaderId: user.id,
+                                    generalRating: evaluation.score,
+                                    generalJustification: evaluation.justification,
+                                    strengths: evaluation.strengths || '',
+                                    improvements: evaluation.improvements || '',
+                                };
+                                methods.reset(evalData);
+                                setIsReadonly(true);
+                                setEvaluationData(evalData);
+                            } else {
+                                setIsReadonly(false);
+                                setEvaluationData(undefined);
+                            }
+                        })
+                        .catch(() => {
+                            setIsReadonly(false);
+                            setEvaluationData(undefined);
+                        });
+                }
             } else {
-                showToast(
-                    'Colaborador não encontrado',
-                    'error',
-                    { title: 'Erro', duration: 5000 }
-                );
+                if (collaboratorsData.length > 0) {
+                    showToast(
+                        'Colaborador não encontrado',
+                        'error',
+                        { title: 'Erro', duration: 5000 }
+                    );
+                }
                 navigate('/colaboradores');
             }
         }
-    }, [collaboratorId, collaboratorsData, currentCycle, methods, navigate, showToast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [collaboratorId, collaboratorsData, currentCycle, navigate, showToast, user]);
 
     const handleSubmit = async (data: FullLeaderEvaluationFormData) => {
+        if (isReadonly) return; 
         try {
             await leaderEvaluation(data); 
             showToast(
@@ -107,18 +140,22 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
         return <CollaboratorNotFoundMessage />;
     }
 
+    console.log('Current Cycle:', currentCycle);
+
     if (!currentCycle.isActive) {
         return <CycleClosedEvaluationMessage cycleName={currentCycle?.name} className="mb-6" />;
     }
-
+    console.log(evaluationData)
     return (
-        <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(handleSubmit)}>
-                <LeaderEvaluationForm 
-                    collaborator={collaborator}
-                    cycleName={currentCycle.name}
-                />
-            </form>
-        </FormProvider>
+        <LeaderEvaluationReadonlyContext.Provider value={{ readonly: isReadonly, setReadonly: setIsReadonly, evaluationData }}>
+            <FormProvider {...methods}>
+                <form onSubmit={methods.handleSubmit(handleSubmit)}>
+                    <LeaderEvaluationForm 
+                        collaborator={collaborator}
+                        cycleName={currentCycle.name}
+                    />
+                </form>
+            </FormProvider>
+        </LeaderEvaluationReadonlyContext.Provider>
     );
 }

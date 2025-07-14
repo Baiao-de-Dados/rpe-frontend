@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { useLeaderEvaluationReadonly } from '../../../contexts/LeaderEvaluationReadonlyContext';
 
 import StarRating from '../../common/StarRating';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
@@ -11,6 +12,7 @@ import type { FullLeaderEvaluationFormData } from '../../../schemas/leaderEvalua
 export const LeaderGeneralAssessmentSection = memo(() => {
 
     const { control } = useFormContext<FullLeaderEvaluationFormData>();
+    const { readonly } = useLeaderEvaluationReadonly();
 
     return (
         <section className="space-y-6">
@@ -20,7 +22,6 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                 </Typography>
 
                 <div className="space-y-6">
-                    {/* Nota Geral */}
                     <Controller 
                         name="generalRating"
                         control={control}
@@ -35,6 +36,7 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                                 <StarRating 
                                     value={field.value} 
                                     onChange={field.onChange}
+                                    readOnly={readonly}
                                 />
                                 {fieldState.error?.message && (
                                     <Typography variant="caption" color="error" className="mt-2 block">
@@ -45,7 +47,6 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                         )}
                     />
 
-                    {/* Justificativa Geral */}
                     <Controller 
                         name="generalJustification"
                         control={control}
@@ -57,11 +58,11 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                                 onChange={field.onChange}
                                 maxLength={2000}
                                 error={fieldState.error?.message}
+                                readOnly={readonly}
                             />
                         )}
                     />
 
-                    {/* Pontos Fortes */}
                     <Controller 
                         name="strengths"
                         control={control}
@@ -73,11 +74,11 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                                 onChange={field.onChange}
                                 maxLength={1000}
                                 error={fieldState.error?.message}
+                                readOnly={readonly}
                             />
                         )}
                     />
 
-                    {/* Pontos de Melhoria */}
                     <Controller 
                         name="improvements"
                         control={control}
@@ -89,6 +90,7 @@ export const LeaderGeneralAssessmentSection = memo(() => {
                                 onChange={field.onChange}
                                 maxLength={1000}
                                 error={fieldState.error?.message}
+                                readOnly={readonly}
                             />
                         )}
                     />

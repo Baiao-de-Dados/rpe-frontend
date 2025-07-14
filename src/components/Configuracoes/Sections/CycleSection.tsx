@@ -8,6 +8,7 @@ import { useCycle } from '../../../hooks/useCycle';
 import AlertMessage from '../../common/AlertMessage';
 
 import { parseCycleString } from '../../../utils/cycleUtils';
+import { getBrazilDateString } from '../../../utils/globalUtils';
 
 import StartCycleModal from '../Modals/StartCycleModal';
 import CancelCycleModal from '../Modals/CancelCycleModal';
@@ -24,8 +25,8 @@ export function CycleSection() {
     const cycleLabel = `Ciclo ${currentCycle.name}`;
     const { year, semester } = parseCycleString(cycleLabel);
 
-    const handleStartCycle = async (endDate: string) => {
-        startCycle({ endDate });
+    const handleStartCycle = async (startDate: string, endDate: string) => {
+        startCycle({ startDate, endDate });
         setStartModalOpen(false);
     };
 
@@ -60,7 +61,8 @@ export function CycleSection() {
                     label={cycleLabel} 
                     showButton={!!currentCycle && !currentCycle.isActive} 
                     canStart={canStartCycle} 
-                    status={currentCycle.isActive ? 'aberto' : undefined} 
+                    cycle={currentCycle}
+                    status={currentCycle.isActive ? 'aberto' : 'fechado'} 
                     onStartClick={() => setStartModalOpen(true)} 
                     onCancelClick={() => setCancelModalOpen(true)} 
                     onExtendClick={() => setExtendModalOpen(true)}
@@ -78,8 +80,8 @@ export function CycleSection() {
                             <CycleCard 
                                 key={cycle.name} 
                                 label={`Ciclo ${cycle.name}`} 
-                                status="finalizado" 
-                                endDate={cycle.endDate}
+                                status="fechado" 
+                                cycle={cycle}
                             />
                         ))}
                 </div>
@@ -97,6 +99,7 @@ export function CycleSection() {
             />
             <CancelCycleModal cycleName={cycleLabel}
                 open={cancelModalOpen} 
+                safe={!!(!currentCycle.done && currentCycle.startDate && (new Date(currentCycle.startDate) > new Date(getBrazilDateString())))}
                 onClose={() => setCancelModalOpen(false)} 
                 onConfirm={handleCancelCycle}  
             />
