@@ -71,6 +71,7 @@ export default function PageHeader<T extends string = string>({
                         <div className="flex w-full justify-start gap-x-4">
                             {sections.map(section => {
                                 const isActive = section.name === activeSection;
+                                const isEqualizacao = section.name === 'Equalização';
                                 return (
                                     <div
                                         key={section.name}
@@ -79,13 +80,13 @@ export default function PageHeader<T extends string = string>({
                                         <Typography
                                             variant="body"
                                             className={`cursor-pointer pb-4 px-4 transition-all duration-200 relative w-full truncate ${
-                                                isActive
+                                                isEqualizacao && isActive
+                                                    ? 'bg-primary-500 text-white rounded-t-lg font-semibold border-b-2 border-primary-500 py-2 min-h-[48px]'
+                                                    : isActive
                                                     ? 'text-primary-600 font-semibold border-b-2 border-primary-600'
                                                     : 'text-gray-600 font-normal hover:text-primary-500'
                                             }`}
-                                            onClick={() =>
-                                                onSectionChange(section.name)
-                                            }
+                                            onClick={() => onSectionChange(section.name)}
                                         >
                                             <span className="invisible font-semibold absolute inset-0">
                                                 {section.name}

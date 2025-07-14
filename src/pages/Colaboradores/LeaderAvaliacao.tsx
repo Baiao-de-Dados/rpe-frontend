@@ -32,7 +32,7 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
 
     const { currentCycle, isLoading } = useCycle();
 
-    const { data: collaboratorsData = [], leaderEvaluation, getLeaderEvaluation } = useLeaderCollaboratorsEvaluation();
+    const { data: collaboratorsData = [], leaderEvaluation } = useLeaderCollaboratorsEvaluation();
     
     const [collaborator, setCollaborator] = useState<Collaborator| null>(null);
 

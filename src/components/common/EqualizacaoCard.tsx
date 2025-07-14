@@ -2,8 +2,16 @@ import React from 'react';
 import Typography from './Typography';
 import CardContainer from './CardContainer';
 import SummaryBox from './SummaryBox';
+import StarRating from './StarRating';
+import TextAreaWithTitle from './TextAreaWithTitle';
+import Button from './Button';
+import RatingDisplay from './RatingDisplay';
+import { getScoreColor } from '../../utils/colorUtils';
+import CollaboratorCard from './CollaboratorCard';
 import Badge from './Badge';
-import { getScoreBgStyles, getScoreStyles } from '../../utils/colorUtils';
+import { useToast } from '../../hooks/useToast';
+import { useState } from 'react';
+import { FileDown } from 'lucide-react';
 
 interface EqualizacaoCardProps {
     collaboratorName: string;
@@ -14,10 +22,19 @@ interface EqualizacaoCardProps {
     managerEvalScore?: number;
     postureScore?: number;
     summary?: string;
+    rating?: number;
+    onChangeRating?: (value: number | null) => void;
+    ratingError?: string;
+    justification?: string;
+    onChangeJustification?: ((e: React.ChangeEvent<HTMLTextAreaElement>) => void) | ((value: string) => void);
+    justificationError?: string;
+    editable?: boolean;
     onClick?: () => void;
+    onSubmit?: () => void;
 }
 
 const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
+
     collaboratorName,
     position,
     status,
@@ -26,63 +43,78 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
     managerEvalScore = 0,
     postureScore = 0,
     summary = '',
+    rating,
+    onChangeRating,
+    ratingError,
+    justification,
+    onChangeJustification,
+    justificationError,
     onClick,
+    onSubmit,
 }) => {
+    const { showToast } = useToast();
+    const [isEditing, setIsEditing] = useState(true);
+
+    const handleConcluir = () => {
+        if (onSubmit) onSubmit();
+        showToast('Equalização salva com sucesso', 'success');
+        setIsEditing(false);
+    };
+
+    const handleEditar = () => {
+        setIsEditing(true);
+    };
+
+    const handleExportar = () => {
+        // Simula exportação de relatório
+        showToast('Relatório exportado!', 'success');
+    };
+
     return (
         <CardContainer className="hover:shadow-md transition-shadow border border-gray-200">
             <div className={onClick ? 'cursor-pointer' : ''} onClick={onClick}>
-                {/* Colaborador Info */}
-                <div className="mb-4">
-                    <div className="flex items-center space-x-3 mb-3">
-                        <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
-                            <Typography variant="body" className="text-white font-bold">
-                                {collaboratorName.charAt(0).toUpperCase()}
-                            </Typography>
-                        </div>
-                        <div>
-                            <Typography variant="h3" className="font-bold">
-                                {collaboratorName}
-                            </Typography>
-                            <Typography variant="caption" className="text-gray-500">
-                                {position}
-                            </Typography>
-                        </div>
+                {/* Header: Colaborador + Status + Scores */}
+                <div className="flex items-center justify-between gap-4 mb-2">
+                    <div className="flex items-center gap-3">
+                        <CollaboratorCard 
+                            collaborator={{ name: collaboratorName, position }}
+                            variant="detailed"
+                        />
+                        <Badge
+                            label={status}
+                            size="sm"
+                            variant={
+                                status === 'Finalizado'
+                                    ? 'success'
+                                    : status === 'Em andamento'
+                                      ? 'warning'
+                                      : 'info'
+                            }
+                        />
                     </div>
-
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div className="flex items-center flex-wrap gap-2">
-                            <Badge
-                                label={status}
-                                size="sm"
-                                variant={
-                                    status === 'Finalizado'
-                                        ? 'success'
-                                        : status === 'Em andamento'
-                                          ? 'warning'
-                                          : 'info'
-                                }
-                            />
+                    {/* Linha de scores */}
+                    <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-center min-w-[70px]">
+                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Autoavaliação</Typography>
+                            <RatingDisplay rating={selfEvalScore} />
                         </div>
-
-                        <div className="flex items-center space-x-2">
-                            <Typography
-                                variant="caption"
-                                className="text-gray-500"
-                            >
-                                Nota final
-                            </Typography>
-                            <span
-                                className="px-3 py-1 text-sm font-bold rounded text-white"
-                                style={getScoreBgStyles(finalScore)}
-                            >
-                                {finalScore > 0 ? finalScore.toFixed(1) : '-'}
-                            </span>
+                        <div className="flex flex-col items-center min-w-[70px]">
+                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Avaliação 360</Typography>
+                            <RatingDisplay rating={postureScore} />
+                        </div>
+                        <div className="flex flex-col items-center min-w-[70px]">
+                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Nota gestor</Typography>
+                            <RatingDisplay rating={managerEvalScore} />
+                        </div>
+                        <div className="flex flex-col items-center min-w-[70px]">
+                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Nota final</Typography>
+                            <RatingDisplay rating={finalScore ?? null} final />
                         </div>
                     </div>
                 </div>
 
-                {/* Avaliações */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Barras de progresso das avaliações */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <Typography
@@ -93,7 +125,6 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             </Typography>
                             <span
                                 className="font-bold text-sm"
-                                style={getScoreStyles(selfEvalScore)}
                             >
                                 {selfEvalScore.toFixed(1)}
                             </span>
@@ -101,10 +132,7 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
-                                style={{
-                                    width: `${selfEvalScore * 20}%`,
-                                    ...getScoreBgStyles(selfEvalScore)
-                                }}
+                                style={{ width: `${selfEvalScore * 20}%`, backgroundColor: getScoreColor(selfEvalScore) }}
                             ></div>
                         </div>
                     </div>
@@ -119,7 +147,6 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             </Typography>
                             <span
                                 className="font-bold text-sm"
-                                style={getScoreStyles(managerEvalScore)}
                             >
                                 {managerEvalScore.toFixed(1)}
                             </span>
@@ -127,10 +154,7 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
-                                style={{
-                                    width: `${managerEvalScore * 20}%`,
-                                    ...getScoreBgStyles(managerEvalScore)
-                                }}
+                                style={{ width: `${managerEvalScore * 20}%`, backgroundColor: getScoreColor(managerEvalScore) }}
                             ></div>
                         </div>
                     </div>
@@ -145,7 +169,6 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             </Typography>
                             <span
                                 className="font-bold text-sm"
-                                style={getScoreStyles(postureScore)}
                             >
                                 {postureScore.toFixed(1)}
                             </span>
@@ -153,17 +176,14 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
-                                style={{
-                                    width: `${postureScore * 20}%`,
-                                    ...getScoreBgStyles(postureScore)
-                                }}
+                                style={{ width: `${postureScore * 20}%`, backgroundColor: getScoreColor(postureScore) }}
                             ></div>
                         </div>
                     </div>
                 </div>
 
-                {/* Resumo e Ações */}
-                <div className="mt-4">
+                {/* Resumo */}
+                <div className="mt-2 mb-4">
                     <SummaryBox
                         summary={
                             status === 'Finalizado'
@@ -175,41 +195,65 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                 </div>
 
                 {/* Avaliação e Justificativa */}
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                    <Typography variant="caption" className="text-gray-500 mb-2 block">
-                        Dê uma avaliação de 1 a 5
-                    </Typography>
-                    <div className="flex items-center space-x-1 mb-3">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <svg
-                                key={star}
-                                className="w-5 h-5 text-gray-300 cursor-pointer hover:text-yellow-500"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                            </svg>
-                        ))}
-                    </div>
-                    
-                    <Typography variant="caption" className="text-gray-500 mb-2 block">
-                        Justifique sua nota
-                    </Typography>
-                    <textarea
-                        className="w-full h-20 p-3 border border-gray-300 rounded-md text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                        placeholder="Justifique sua nota"
-                        readOnly
-                    />
-                </div>
-
-                {/* Botões */}
-                <div className="mt-4 flex justify-end space-x-2">
-                    <button className="px-4 py-2 text-sm text-teal-600 border border-teal-600 rounded-md hover:bg-teal-50">
-                        Cancelar
-                    </button>
-                    <button className="px-4 py-2 text-sm bg-teal-600 text-white rounded-md hover:bg-teal-700">
-                        Editar resultado
-                    </button>
+                <div className="mt-6 pt-2 border-t border-gray-200">
+                    {isEditing ? (
+                        <>
+                            <Typography variant="caption" className="text-gray-500 mb-2 block">
+                                Dê uma avaliação de 1 a 5
+                            </Typography>
+                            <StarRating value={rating ?? 0} onChange={onChangeRating} />
+                            {ratingError && <span className="text-red-600 text-sm">{ratingError}</span>}
+                            <div className="mt-4" />
+                            <TextAreaWithTitle
+                                title="Justifique sua nota"
+                                placeholder="Justifique sua nota"
+                                value={justification ?? ''}
+                                onChange={(e) => {
+                                    if (typeof onChangeJustification === 'function') {
+                                        if (onChangeJustification.length === 1 && typeof e === 'object' && 'target' in e) {
+                                            (onChangeJustification as (e: React.ChangeEvent<HTMLTextAreaElement>) => void)(e);
+                                        } else {
+                                            (onChangeJustification as (value: string) => void)(e.target.value);
+                                        }
+                                    }
+                                }}
+                                error={justificationError}
+                                minHeight="h-32"
+                            />
+                            {/* Botão dentro do card */}
+                            {onSubmit && (
+                                <div className="flex justify-end mt-6">
+                                    <Button type="button" variant="primary" onClick={handleConcluir}>
+                                        Concluir
+                                    </Button>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <div className="flex flex-col gap-4">
+                                <Typography variant="caption" className="text-gray-500 mb-2 block">
+                                    Nota atribuída
+                                </Typography>
+                                <StarRating value={rating ?? 0} readOnly />
+                                <TextAreaWithTitle
+                                    title="Justificativa"
+                                    placeholder="Justificativa"
+                                    value={justification ?? ''}
+                                    readOnly
+                                    minHeight="h-32"
+                                />
+                            </div>
+                            <div className="flex gap-3 justify-end mt-6">
+                                <Button variant="outline" onClick={handleExportar}>
+                                    <FileDown className="w-5 h-5" />
+                                </Button>
+                                <Button variant="outline" onClick={handleEditar}>
+                                    Editar resultado
+                                </Button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </CardContainer>

@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { BadgeCheck } from 'lucide-react';
 
 import type { Collaborator } from '../../types/collaborator';
 
@@ -16,9 +15,6 @@ interface CommitteeEvaluationHeaderProps {
     sections: CommitteeSectionType[];
     collaborator: Collaborator;
     cycleName: string;
-    isEqualizationComplete?: boolean;
-    isSubmitting?: boolean;
-    onSaveEqualization?: () => void;
 }
 
 const CommitteeEvaluationHeader = memo(({
@@ -27,9 +23,6 @@ const CommitteeEvaluationHeader = memo(({
     sections,
     collaborator,
     cycleName,
-    isEqualizationComplete,
-    isSubmitting,
-    onSaveEqualization,
 }: CommitteeEvaluationHeaderProps) => {
 
     const pageHeaderSections: PageHeaderSection<CommitteeSectionType>[] = sections.map(section => ({ name: section }));
@@ -56,16 +49,8 @@ const CommitteeEvaluationHeader = memo(({
         </div>
     );
 
-    const button = activeSection === 'Equalização' ? (
-        <button
-            className="bg-[#167174] hover:bg-[#125c5e] text-white px-4 py-2 rounded-lg flex items-center gap-2"
-            onClick={onSaveEqualization}
-            disabled={isSubmitting || !isEqualizationComplete}
-        >
-            <BadgeCheck className="w-5 h-5" />
-            {isSubmitting ? 'Salvando...' : 'Salvar Equalização'}
-        </button>
-    ) : undefined;
+    // Remover o botão global de salvar equalização
+    const button = undefined;
 
     return (
         <PageHeader
