@@ -3,22 +3,18 @@ import { LuNotebookPen } from 'react-icons/lu';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import CardContainer from '../common/CardContainer';
+import { getCycleStatus } from '../../utils/cycleUtils';
 
 interface CycleBannerProps {
-    status: string;
+    cycleStatus: { isActive: boolean; done: boolean };
     cycleName: string;
-    remainingDays?: number;
+    remainingDays?: { daysToStart: number; daysToEnd: number };
     linkTo?: string;
 }
 
-export function CycleBanner({
-    status,
-    cycleName,
-    remainingDays,
-    linkTo = '/avaliacao',
-}: CycleBannerProps) {
+export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/avaliacao' }: CycleBannerProps) {
+
     const navigate = useNavigate();
-    const daysLeft = remainingDays ?? 0;
 
     const handleNavigate = () => {
         if (linkTo) {
@@ -26,22 +22,22 @@ export function CycleBanner({
         }
     };
 
+    const status = getCycleStatus({ ...cycleStatus, ...remainingDays });
+
     const getBannerContent = () => {
         switch (status) {
             case 'open':
                 return (
                     <>
-                        <Typography
-                            variant="h3"
-                            color="white"
-                            className="font-bold"
-                        >
+                        <Typography variant="h3" color="white" className="font-bold">
                             {cycleName} de avaliação está aberto
                         </Typography>
                         <Typography variant="caption" color="white">
-                            {daysLeft > 0
-                                ? `${daysLeft} dias restantes`
-                                : 'Ciclo encerrado'}
+                            {remainingDays && remainingDays.daysToEnd > 0 ? (
+                                <>
+                                    <span className="font-bold">{remainingDays.daysToEnd} dias</span> restantes
+                                </>
+                            ) : 'Ciclo encerrado'}
                         </Typography>
                     </>
                 );
@@ -53,36 +49,62 @@ export function CycleBanner({
                             color="muted"
                             className="font-bold"
                         >
-                            {cycleName} de avaliação foi finalizado
+                            {cycleName} de avaliação finalizado
                         </Typography>
                         <Typography variant="caption" color="muted">
-                            Aguarde o próximo ciclo
+                            <>
+                                Resultados disponíveis{" "}
+                                <span className="font-bold">em breve</span>
+                            </>
                         </Typography>
                     </>
                 );
             case 'upcoming':
                 return (
                     <>
-                        <Typography
-                            variant="h3"
-                            color="primary"
-                            className="font-bold"
-                        >
-                            {cycleName} de avaliação está finalizando
+                        <Typography variant="h3" color="primary" className="font-bold">
+                            {remainingDays && remainingDays.daysToStart > 0
+                                ? `${cycleName} de avaliação está prestes a começar`
+                                : `${cycleName} de avaliação já iniciou`}
                         </Typography>
                         <Typography variant="caption" color="primary">
-                            {daysLeft > 0
-                                ? `${daysLeft} dias para começar`
-                                : 'Ciclo iniciado'}
+                            {remainingDays && remainingDays.daysToStart > 0
+                                ? `${remainingDays.daysToStart} dias para começar`
+                                : 'Ciclo já iniciou'}
+                        </Typography>
+                    </>
+                );
+            case 'done':
+                return (
+                    <>
+                        <Typography variant="h3" color="primary500" className="font-bold">
+                            {cycleName} de avaliação finalizado
+                        </Typography>
+                        <Typography variant="caption" color="primary500">
+                            <>
+                                Resultados{" "}
+                                <span className="font-bold">disponíveis</span>
+                            </>
                         </Typography>
                     </>
                 );
             default:
-                return null;
+                return (
+                    <>
+                        <Typography variant="h3" color="muted" className="font-bold">
+                            Nenhum ciclo de avaliação em andamento
+                        </Typography>
+                        <Typography variant="caption" color="muted">
+                            <>
+                                Aguarde o início de um novo processo, você será notificado{" "}
+                                <span className="font-bold">em breve</span>
+                            </>
+                        </Typography>
+                    </>
+                );
         }
     };
 
-    // Determinando classes específicas baseadas no status
     const getBannerClass = () => {
         switch (status) {
             case 'open':
@@ -91,6 +113,8 @@ export function CycleBanner({
                 return 'bg-white hover:bg-gray-100';
             case 'upcoming':
                 return 'bg-neutral-100 hover:bg-neutral-200';
+            case 'done':
+                return 'bg-white hover:bg-gray-100';
             default:
                 return 'bg-neutral-100 hover:bg-neutral-200';
         }
@@ -101,9 +125,11 @@ export function CycleBanner({
             case 'open':
                 return 'text-white';
             case 'closed':
-                return 'text-primary-400';
+                return 'text-neutral-500';
             case 'upcoming':
                 return 'text-primary-700';
+            case 'done':
+                return 'text-primary-500';
             default:
                 return 'text-neutral-500';
         }

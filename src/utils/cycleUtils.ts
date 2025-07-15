@@ -1,3 +1,29 @@
+export type CycleStatus = 'open' | 'closed' | 'done' | 'upcoming' | 'undefined';
+
+export function getCycleStatus({ isActive, done, daysToStart, daysToEnd }: {
+    isActive: boolean;
+    done: boolean;
+    daysToStart?: number;
+    daysToEnd?: number;
+}): CycleStatus {
+    if (typeof daysToStart !== 'number' || typeof daysToEnd !== 'number') {
+        return 'undefined';
+    }
+    if (isActive && !done && daysToEnd > 0) {
+        return 'open';
+    }
+    if (!isActive && !done && daysToEnd === 0 && daysToStart === 0) {
+        return 'closed';
+    }
+    if (!isActive && done && daysToEnd === 0) {
+        return 'done';
+    }
+    if (!isActive && !done && daysToStart > 0) {
+        return 'upcoming';
+    }
+    return 'undefined';
+}
+
 export const getCurrentCycleName = (): string => {
     const now = new Date();
     const year = now.getFullYear();

@@ -1,4 +1,6 @@
 import { format } from 'date-fns-tz';
+import { isBefore, parseISO } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns';
 
 export const getDateOnly = (dateString: string): string => {
     if (dateString.includes('T')) {
@@ -40,8 +42,28 @@ export function getBadgeText(start: string, end?: string | null) {
     return `${formatDate(start)} - ${end ? formatDate(end) : 'hoje'}`;
 }
 
-// Retorna a data atual no horário de Brasília (GMT-3) no formato yyyy-mm-dd
 export function getBrazilDateString() {
-    // America/Sao_Paulo é o timezone oficial de Brasília
     return format(new Date(), 'yyyy-MM-dd', { timeZone: 'America/Sao_Paulo' });
+}
+
+export function getRemainingDays({ startDate, endDate }: { startDate?: string; endDate?: string }) {
+    const today = parseISO(getBrazilDateString());
+    let daysToStart = 0;
+    let daysToEnd = 0;
+
+    if (startDate) {
+        const start = parseISO(getDateOnly(startDate));
+        daysToStart = isBefore(today, start)
+            ? differenceInCalendarDays(start, today)
+            : 0;
+    }
+
+    if (endDate) {
+        const end = parseISO(getDateOnly(endDate));
+        daysToEnd = isBefore(today, end)
+            ? differenceInCalendarDays(end, today)
+            : 0;
+    }
+
+    return { daysToStart, daysToEnd };
 }
