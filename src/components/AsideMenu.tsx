@@ -71,10 +71,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.EMPLOYER, 
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.MANAGER,
-                                UserRoleEnum.LEADER,
-                                UserRoleEnum.COMMITTEE,
                                 UserRoleEnum.RH,
                                 UserRoleEnum.DEVELOPER,
                             ]}>
@@ -89,9 +85,7 @@ export default function AsideMenu() {
                         </RoleGuard>
 
                         <RoleGuard anyRole={[
-                                UserRoleEnum.MANAGER,
-                                UserRoleEnum.COMMITTEE,
-                                UserRoleEnum.ADMIN,
+                                UserRoleEnum.EMPLOYER,
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
@@ -108,6 +102,7 @@ export default function AsideMenu() {
                                 UserRoleEnum.LEADER,
                                 UserRoleEnum.RH,
                                 UserRoleEnum.MENTOR,
+                                UserRoleEnum.COMMITTEE,
                                 UserRoleEnum.MANAGER,
                                 UserRoleEnum.ADMIN,
                                 UserRoleEnum.DEVELOPER,
@@ -124,7 +119,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.RH,
-                                UserRoleEnum.ADMIN,
                                 UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">

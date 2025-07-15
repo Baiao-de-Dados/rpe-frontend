@@ -86,6 +86,7 @@ export function useEvaluationCompletion() {
                 incompleteCount++;
             }
         }
+
         return incompleteCount;
     }, [watchedSelfAssessment, allCriteria.length]);
 

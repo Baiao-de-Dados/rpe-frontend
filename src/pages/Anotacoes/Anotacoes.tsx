@@ -20,13 +20,15 @@ import { useNoteQuery, useUpsertNoteMutation } from '../../hooks/api/useNotesQue
 
 
 import { anotacoesSchema, type AnotacoesFormData } from '../../schemas/anotacoesSchema';
+import CycleLoading from '../../components/common/CycleLoading';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 
 export function Anotacoes() {
 
     const notes = useNotesAI();
     const { user } = useAuth();
     const { variants } = useOptimizedAnimation();
-    const { currentCycle: {isActive, id: cycleId} } = useCycle();
+    const { currentCycle, isLoading } = useCycle();
 
     const { data: noteData } = useNoteQuery(user!.id);
     const upsertMutation = useUpsertNoteMutation(user!.id);
@@ -58,8 +60,16 @@ export function Anotacoes() {
             setOriginalText(textValue);
         }
     };
+    
+    if (isLoading) {
+        return <CycleLoading />;
+    }
+    
+    if (!currentCycle) {
+        return <CycleLoadErrorMessage />;
+    }
 
-    const isButtonDisabled = !isValid || textValue.trim().length === 0 || notes.isEvaluating || notes.isModalOpen || !isActive;
+    const isButtonDisabled = !isValid || textValue.trim().length === 0 || notes.isEvaluating || notes.isModalOpen || !currentCycle.isActive;
 
     return (
         <>
@@ -83,8 +93,8 @@ export function Anotacoes() {
                             size="md" 
                             className="flex items-center gap-2"  
                             disabled={isButtonDisabled}
-                            onClick={handleSubmit(() => notes.handleEvaluateWithAI(user!.id, cycleId!))}
-                            title={!isActive ? 'Não há ciclo de avaliação aberto' : ''}
+                            onClick={handleSubmit(() => notes.handleEvaluateWithAI(user!.id, currentCycle.id!))}
+                            title={!currentCycle.isActive ? 'Não há ciclo de avaliação aberto' : ''}
                         >
                             {notes.isEvaluating ? 'Avaliando...' : 'Avaliar com IA'}
                             <Sparkles size={18} />
@@ -94,7 +104,7 @@ export function Anotacoes() {
                 <div className="px-4 md:px-8">
                     <motion.div variants={variants.animatedCard} initial="hidden" animate="visible">
                         <CardContainer className="mt-6 w-full md:p-8" shadow={false}>
-                            <form onSubmit={handleSubmit(() => notes.handleEvaluateWithAI(user!.id, cycleId!))}>
+                            <form onSubmit={handleSubmit(() => notes.handleEvaluateWithAI(user!.id, currentCycle.id!))}>
                                 <div className="relative">
                                     <Controller 
                                         name="text" 
