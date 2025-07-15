@@ -88,6 +88,7 @@ export function Router() {
                                     UserRoleEnum.RH,
                                     UserRoleEnum.LEADER,
                                     UserRoleEnum.MANAGER,
+                                    UserRoleEnum.COMMITTEE,
                                     UserRoleEnum.ADMIN,
                                     UserRoleEnum.DEVELOPER,
                             ]}>

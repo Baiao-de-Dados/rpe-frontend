@@ -102,7 +102,6 @@ export default function AsideMenu() {
                                 UserRoleEnum.LEADER,
                                 UserRoleEnum.RH,
                                 UserRoleEnum.MENTOR,
-                                UserRoleEnum.COMMITTEE,
                                 UserRoleEnum.MANAGER,
                                 UserRoleEnum.ADMIN,
                                 UserRoleEnum.DEVELOPER,
@@ -112,6 +111,18 @@ export default function AsideMenu() {
                                     <Icons.Users size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
                                     <span className="opacity-100 visible whitespace-nowrap transition-all duration-200 ease-in-out max-lg:opacity-100 max-lg:visible">
                                         Colaboradores
+                                    </span>
+                                </NavLink>
+                            </li>
+                        </RoleGuard>
+                        <RoleGuard anyRole={[
+                                UserRoleEnum.COMMITTEE,
+                            ]}>
+                            <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
+                                <NavLink to="/colaboradores" onClick={closeMenu} title="Colaboradores" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}`}>
+                                    <Icons.Users size={32} className="flex-shrink-0 ml-3.5 max-lg:w-12 max-lg:h-12 max-lg:ml-0 self-center" />
+                                    <span className="opacity-100 visible whitespace-nowrap transition-all duration-200 ease-in-out max-lg:opacity-100 max-lg:visible">
+                                        Equalização
                                     </span>
                                 </NavLink>
                             </li>
