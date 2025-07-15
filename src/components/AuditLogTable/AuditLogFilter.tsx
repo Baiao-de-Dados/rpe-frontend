@@ -1,7 +1,7 @@
+import type { AuditLogEntry } from '../../types/admin';
 import { GROUP_OPTIONS } from '../../utils/auditLogTableUtils';
 import type { GroupByType } from '../../utils/auditLogTableUtils';
 import { FormControl, InputLabel, Select, MenuItem, TextField, Box } from "@mui/material";
-import type { AuditLogEntry } from '../../data/mockAdmin';
 
 interface AuditLogFilterProps {
     groupBy: GroupByType;
@@ -92,9 +92,9 @@ export default function AuditLogFilter({ groupBy, setGroupBy, dateTime, setDateT
                     >Filtrar por Ação</InputLabel>
                     <Select
                         labelId="action-filter-label"
-                        value={actionFilter}
+                        value={actions.includes(actionFilter as AuditLogEntry['action']) ? actionFilter as AuditLogEntry['action'] : ''}
                         label="Filtrar por Ação"
-                        onChange={e => setActionFilter(e.target.value)}
+                        onChange={e => setActionFilter(e.target.value as AuditLogEntry['action'])}
                         displayEmpty
                         sx={{
                             width: { xs: '100%', md: 260 },
