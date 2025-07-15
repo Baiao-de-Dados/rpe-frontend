@@ -70,7 +70,7 @@ export const ManagerPillarRatingDisplay = memo(({
 
         const weightedSum = collaboratorRatingsWithWeights.reduce((sum, item) => sum + (item.rating as number) * item.weight, 0);
         return Math.round((weightedSum / totalWeight) * 10) / 10;
-    }, [criteria, collaboratorData, fieldIndices]);
+    }, [criteria, collaboratorData]);
 
     // Calcular média ponderada do manager para este pilar
     const managerAverage = useMemo(() => {

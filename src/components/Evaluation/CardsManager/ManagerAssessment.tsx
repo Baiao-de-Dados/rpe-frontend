@@ -15,8 +15,18 @@ interface ManagerAssessmentProps {
     // Dados do colaborador (read-only)
     collaboratorRating?: number | null;
     collaboratorJustification?: string;
+    // Dados do gestor (read-only)
+    managerRating?: number | null;
+    managerJustification?: string;
     // Modo somente leitura
     isReadOnly?: boolean;
+    // Dados da avaliação do manager (para modo read-only)
+    managerEvaluationData?: Array<{
+        pilarId: number;
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
+    }>;
 }
 
 const ManagerAssessment = memo(({ 
@@ -26,11 +36,49 @@ const ManagerAssessment = memo(({
     isLast = false,
     collaboratorRating,
     collaboratorJustification,
-    isReadOnly = false
+    managerRating,
+    managerJustification,
+    isReadOnly = false,
+    managerEvaluationData = []
 }: ManagerAssessmentProps) => {
+
+    console.log('ManagerAssessment debug:', {
+        criterionName,
+        name,
+        topicNumber,
+        isLast,
+        collaboratorRating,
+        collaboratorJustification,
+        isReadOnly,
+        managerEvaluationData
+    });
 
     const { control } = useFormContext();
     const [isMinimized, setIsMinimized] = useState(false);
+
+    // Encontrar dados da avaliação do manager para este critério
+    // Extrair o criterionId do form data em vez do field index
+    const { getValues } = useFormContext();
+    const fieldIndex = parseInt(name.split('.').pop() || '0');
+    const formData = getValues(`managerAssessment.${fieldIndex}`);
+    const actualCriterionId = formData?.criterionId;
+    
+    const managerCriterionData = managerEvaluationData.find(data => 
+        data.criterionId === actualCriterionId
+    );
+
+    console.log('ManagerAssessment criterion mapping:', {
+        name,
+        fieldIndex,
+        actualCriterionId,
+        formData,
+        managerCriterionData,
+        managerEvaluationData: managerEvaluationData.map(d => ({ criterionId: d.criterionId, rating: d.rating }))
+    });
+
+    // Usar dados diretos do gestor se disponíveis, senão usar dados do managerEvaluationData
+    const finalManagerRating = managerRating ?? managerCriterionData?.rating ?? null;
+    const finalManagerJustification = managerJustification ?? managerCriterionData?.justification ?? '';
 
     const toggleMinimized = () => {
         setIsMinimized(!isMinimized);
@@ -144,7 +192,7 @@ const ManagerAssessment = memo(({
                                         {isReadOnly ? (
                                             <div className="pointer-events-none opacity-70">
                                                 <StarRating 
-                                                    value={field.value ?? null} 
+                                                    value={finalManagerRating} 
                                                     onChange={() => {}} 
                                                 />
                                             </div>
@@ -167,7 +215,7 @@ const ManagerAssessment = memo(({
                                         {isReadOnly ? (
                                             <div className="bg-gray-100 rounded-lg p-2 sm:p-3 border border-gray-200 h-24 sm:h-32 overflow-y-auto">
                                                 <Typography variant="body" color="muted" className="text-xs sm:text-sm">
-                                                    {field.value || 'Nenhuma justificativa fornecida'}
+                                                    {finalManagerJustification || field.value || 'Nenhuma justificativa fornecida'}
                                                 </Typography>
                                             </div>
                                         ) : (

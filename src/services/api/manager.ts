@@ -4,7 +4,7 @@ import type {
     AssignLeaderEvaluationPayload, 
     LeadersAndCollaborators,
     CollaboratorEvaluationSummary,
-    CollaboratorEvaluationDetails
+    CollaboratorEvaluationResult
 } from '../../types/manager';
 
 export const managerEndpoints = {
@@ -23,22 +23,33 @@ export const managerEndpoints = {
     // Collaborators evaluations
     getCollaboratorsEvaluationsSummary: () => api.get<CollaboratorEvaluationSummary[]>('/manager/all-collaborators-evaluations'),
     getCollaboratorEvaluationDetails: (collaboratorId: number, cycleConfigId: number) => 
-        api.get<CollaboratorEvaluationDetails>(`/manager/collaborator-evaluation-result?collaboratorId=${collaboratorId}&cycleConfigId=${cycleConfigId}`),
+        api.get<CollaboratorEvaluationResult>(`/manager/collaborator-evaluation-result?collaboratorId=${collaboratorId}&cycleConfigId=${cycleConfigId}`),
     
     // Auto evaluation
     getUserAutoEvaluation: (userId: number) => api.get(`/manager/auto-evaluation/${userId}`),
     
     // Manager evaluation
     evaluateCollaborator: (payload: {
+        cycleConfigId: number;
         managerId: number;
-        collaboratorId: number;
-        cycleId: number;
-        trackId: number;
-        criteria: Array<{
-            criterionId: number;
-            score: number;
-        }>;
+        colaboradorId: number;
+        autoavaliacao: {
+            pilares: {
+                pilarId: number;
+                criterios: {
+                    criterioId: number;
+                    nota: number;
+                    justificativa: string;
+                }[];
+            }[];
+        };
     }) => api.post('/manager/evaluate', payload),
+    
+    // Get manager evaluation for a specific collaborator
+    getManagerEvaluation: (collaboratorId: number, cycleConfigId: number) => {
+        console.log('Calling getManagerEvaluation endpoint:', { collaboratorId, cycleConfigId });
+        return api.get(`/manager/evaluation/${collaboratorId}?cycleConfigId=${cycleConfigId}`);
+    },
     
     // Collaborator evaluations (rotas existentes do employer)
     getCollaboratorEvaluationResult: (cycleId: number, collaboratorId: number) => 

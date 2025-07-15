@@ -8,31 +8,36 @@ import Typography from '../common/Typography';
 import ManagerAssessment from './CardsManager/ManagerAssessment';
 import ManagerPillarRatingDisplay from './ManagerPillarDisplay';
 
-import type { Criterion } from '../../data/mockEvaluationPIllars';
-
-// Tipo para critérios com peso
-interface CriterionWithWeight extends Criterion {
-    weight?: number;
-}
+// Tipo para critérios com peso - removido pois não está sendo usado
 import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
 
 interface ManagerPillarSectionProps {
     pillarTitle: string;
-    criteria: CriterionWithWeight[];
+    criteria: Array<{
+        id: number;
+        nome: string;
+        descricao: string;
+        weight?: number;
+    }>;
     validFields: Array<{
         id: number;
         pilarId: number;
         criterionId: number;
         index: number;
     }>;
-    // Dados do colaborador (read-only)
     collaboratorData?: Array<{
+        pilarId: number;
         criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
-    // Modo somente leitura
     isReadOnly?: boolean;
+    managerEvaluationData?: Array<{
+        pilarId: number;
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
+    }>;
 }
 
 export const ManagerPillarSection = memo(({ 
@@ -41,7 +46,16 @@ export const ManagerPillarSection = memo(({
     validFields,
     collaboratorData = [],
     isReadOnly = false,
+    managerEvaluationData = []
 }: ManagerPillarSectionProps) => {
+
+    console.log('ManagerPillarSection debug:', {
+        pillarTitle,
+        criteria,
+        validFields,
+        collaboratorData,
+        isReadOnly
+    });
 
     const [pillarOpenList, setPillarOpenList] = useQueryState('manager_pillar_open', {
         defaultValue: '',
@@ -55,11 +69,19 @@ export const ManagerPillarSection = memo(({
     const { control } = useFormContext<FullManagerEvaluationFormData>();
 
     const fieldIndices = useMemo(() => {
-        return criteria
+        const indices = criteria
             .map(criterion =>
                 validFields.findIndex(f => f.criterionId === criterion.id),
             )
             .filter(index => index !== -1);
+        
+        console.log('ManagerPillarSection fieldIndices:', {
+            criteria: criteria.map(c => ({ id: c.id, nome: c.nome })),
+            validFields: validFields.map(f => ({ criterionId: f.criterionId, index: f.index })),
+            fieldIndices: indices
+        });
+        
+        return indices;
     }, [criteria, validFields]);
 
     const watchedData = useWatch({
@@ -148,6 +170,14 @@ export const ManagerPillarSection = memo(({
 
                     const collaboratorCriterionData = getCollaboratorDataForCriterion(criterion.id);
 
+                    console.log('ManagerPillarSection criterion mapping:', {
+                        criterionId: criterion.id,
+                        criterionName: criterion.nome,
+                        fieldIndex,
+                        name: `managerAssessment.${fieldIndex}`,
+                        index
+                    });
+
                     return (
                         <ManagerAssessment
                             key={criterion.id}
@@ -158,6 +188,7 @@ export const ManagerPillarSection = memo(({
                             collaboratorRating={collaboratorCriterionData?.rating}
                             collaboratorJustification={collaboratorCriterionData?.justification}
                             isReadOnly={isReadOnly}
+                            managerEvaluationData={managerEvaluationData}
                         />
                     );
                 })}

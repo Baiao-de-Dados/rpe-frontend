@@ -53,14 +53,33 @@ export interface CollaboratorEvaluationSummary {
 }
 
 export interface ManagerEvaluationPayload {
+    cycleConfigId: number;
     managerId: number;
-    collaboratorId: number;
-    cycleId: number;
-    trackId: number;
-    criteria: Array<{
-        criterionId: number;
-        score: number;
-    }>;
+    colaboradorId: number;
+    autoavaliacao: {
+        pilares: {
+            pilarId: number;
+            criterios: {
+                criterioId: number;
+                nota: number;
+                justificativa: string;
+            }[];
+        }[];
+    };
+}
+
+export interface ManagerEvaluationResponse {
+    autoavaliacao: {
+        pilares: {
+            pilarId: number;
+            criterios: {
+                criterioId: number;
+                nota: number;
+                justificativa: string;
+            }[];
+        }[];
+    };
+    average: number;
 }
 
 export interface AutoEvaluationAssignment {
@@ -138,6 +157,19 @@ export interface CollaboratorEvaluationResult {
     evaluation360: Avaliacao360[];
     mentoring: Mentoring;
     reference: Referencia[];
+    managerEvaluation?: {
+        autoavaliacao: {
+            pilares: {
+                pilarId: number;
+                criterios: {
+                    criterioId: number;
+                    nota: number;
+                    justificativa: string;
+                }[];
+            }[];
+        };
+        average: number;
+    } | null;
 }
 
 export interface CollaboratorAllEvaluations {
@@ -170,11 +202,16 @@ export interface CollaboratorEvaluationDetails {
     mentoring: Mentoring | null;
     references: Referencia[] | null;
     managerEvaluation: {
-        criteria: Array<{
-            criterionId: number;
-            score: number;
-            justification?: string;
-        }>;
+        autoavaliacao: {
+            pilares: {
+                pilarId: number;
+                criterios: {
+                    criterioId: number;
+                    nota: number;
+                    justificativa: string;
+                }[];
+            }[];
+        };
         average: number;
     } | null;
     equalization: {

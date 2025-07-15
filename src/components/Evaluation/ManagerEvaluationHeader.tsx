@@ -18,6 +18,7 @@ interface ManagerEvaluationHeaderProps {
     collaborator: Collaborator;
     cycleName: string;
     incompleteSelfAssessmentCount?: number;
+    isReadOnly?: boolean;
 }
 
 const ManagerEvaluationHeader = memo(({
@@ -27,6 +28,7 @@ const ManagerEvaluationHeader = memo(({
     collaborator,
     cycleName,
     incompleteSelfAssessmentCount = 0,
+    isReadOnly = false,
 }: ManagerEvaluationHeaderProps) => {
 
     const pageHeaderSections: PageHeaderSection<ManagerSectionType>[] = sections.map(
@@ -65,7 +67,7 @@ const ManagerEvaluationHeader = memo(({
     return (
         <PageHeader
             titleContent={titleContent}
-            button={<ManagerEvaluationSubmitButton />}
+            button={!isReadOnly ? <ManagerEvaluationSubmitButton /> : null}
             sections={pageHeaderSections}
             activeSection={activeSection}
             onSectionChange={onSectionChange}

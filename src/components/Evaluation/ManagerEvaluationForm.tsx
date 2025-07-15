@@ -37,6 +37,17 @@ interface ManagerEvaluationFormProps {
         collaboratorPosition: string;
         justification: string;
     }>;
+    // Modo somente leitura (quando avaliação já foi enviada)
+    isReadOnly?: boolean;
+    // Dados da avaliação do manager (para modo read-only)
+    managerEvaluationData?: Array<{
+        pilarId: number;
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
+    }>;
+    // Nova prop para callback
+    onCriteriaExtracted?: (criteria: Array<{ id: number; nome: string; pilarId: number; pilarNome: string; weight?: number }>) => void;
 }
 
 export const ManagerEvaluationForm = memo(({
@@ -44,7 +55,10 @@ export const ManagerEvaluationForm = memo(({
     cycleName,
     collaboratorSelfAssessment,
     evaluations360,
-    referencesReceived
+    referencesReceived,
+    isReadOnly = false,
+    managerEvaluationData = [],
+    onCriteriaExtracted
 }: ManagerEvaluationFormProps) => {
 
     const { activeSection, navigateToSection, sections } =
@@ -55,19 +69,33 @@ export const ManagerEvaluationForm = memo(({
     // Buscar critérios da trilha do colaborador
     const { data: trackCriteria } = useTrackCriteria();
 
+    console.log('ManagerEvaluationForm debug:', {
+        trackCriteria,
+        collaborator,
+        collaboratorSelfAssessment,
+        evaluations360,
+        referencesReceived
+    });
+
     const allCriteria = useMemo(() => {
         if (!trackCriteria || !collaborator.track) {
+            console.log('No trackCriteria or collaborator.track:', { trackCriteria, collaboratorTrack: collaborator.track });
+            if (onCriteriaExtracted) onCriteriaExtracted([]);
             return [];
         }
 
         // Encontrar a trilha do colaborador
         const collaboratorTrack = trackCriteria.find(track => track.id === collaborator.track.id);
+        console.log('Found collaborator track:', collaboratorTrack);
+        
         if (!collaboratorTrack?.pillars) {
+            console.log('No pillars in collaborator track');
+            if (onCriteriaExtracted) onCriteriaExtracted([]);
             return [];
         }
 
         // Extrair todos os critérios dos pilares da trilha
-        return collaboratorTrack.pillars.flatMap(pillar => 
+        const criteria = collaboratorTrack.pillars.flatMap(pillar => 
             pillar.criteria.map(criterion => ({
                 id: criterion.id,
                 nome: criterion.name,
@@ -76,7 +104,11 @@ export const ManagerEvaluationForm = memo(({
                 weight: criterion.weight, // Incluir peso do critério
             }))
         );
-    }, [trackCriteria, collaborator.track]);
+        
+        if (onCriteriaExtracted) onCriteriaExtracted(criteria);
+        console.log('Extracted criteria:', criteria);
+        return criteria;
+    }, [trackCriteria, collaborator.track, onCriteriaExtracted]);
 
     const watchedManagerAssessment = useWatch({
         control,
@@ -115,6 +147,7 @@ export const ManagerEvaluationForm = memo(({
                 collaborator={collaborator}
                 cycleName={cycleName}
                 incompleteSelfAssessmentCount={incompleteSelfAssessmentCount}
+                isReadOnly={isReadOnly}
             />
             
             <main className="p-8 pt-6">
@@ -126,6 +159,8 @@ export const ManagerEvaluationForm = memo(({
                     referencesReceived={referencesReceived}
                     cycleName={cycleName}
                     allCriteria={allCriteria}
+                    isReadOnly={isReadOnly}
+                    managerEvaluationData={managerEvaluationData}
                 />
             </main>
         </>

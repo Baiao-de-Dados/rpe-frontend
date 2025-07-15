@@ -48,16 +48,13 @@ const ManagerMentoringEvaluationSection = lazy(() =>
 
 interface ManagerSectionRendererProps {
     activeSection: ManagerSectionType;
-    // Dados do colaborador
-    collaborator?: Collaborator;
-    // Dados da autoavaliação do colaborador (read-only)
+    collaborator: Collaborator;
     collaboratorSelfAssessment?: Array<{
         pilarId: number;
         criterionId: number;
         rating?: number | null;
         justification?: string;
     }>;
-    // Dados das avaliações 360° recebidas
     evaluations360?: Array<{
         collaratorName: string;
         collaboratorPosition: string;
@@ -65,19 +62,25 @@ interface ManagerSectionRendererProps {
         improvements: string;
         strengths: string;
     }>;
-    // Dados das referências recebidas
     referencesReceived?: Array<{
         collaratorName: string;
         collaboratorPosition: string;
         justification: string;
     }>;
-    cycleName?: string;
-    // Critérios da trilha do colaborador
+    cycleName: string;
     allCriteria?: Array<{
         id: number;
         nome: string;
         pilarId: number;
         pilarNome: string;
+        weight?: number;
+    }>;
+    isReadOnly?: boolean;
+    managerEvaluationData?: Array<{
+        pilarId: number;
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
     }>;
 }
 
@@ -88,7 +91,9 @@ export function ManagerSectionRenderer({
     evaluations360,
     referencesReceived,
     cycleName,
-    allCriteria
+    allCriteria,
+    isReadOnly = false,
+    managerEvaluationData = []
 }: ManagerSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -100,6 +105,8 @@ export function ManagerSectionRenderer({
                     <ManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
                         allCriteria={allCriteria || []}
+                        isReadOnly={isReadOnly}
+                        managerEvaluationData={managerEvaluationData}
                     />
                 );
             case 'Avaliações 360°':
@@ -142,6 +149,8 @@ export function ManagerSectionRenderer({
                     <ManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
                         allCriteria={allCriteria || []}
+                        isReadOnly={isReadOnly}
+                        managerEvaluationData={managerEvaluationData}
                     />
                 );
         }

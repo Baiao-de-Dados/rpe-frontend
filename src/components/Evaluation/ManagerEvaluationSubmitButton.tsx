@@ -7,22 +7,16 @@ import type { FullManagerEvaluationFormData } from '../../schemas/managerEvaluat
 
 const ManagerEvaluationSubmitButton = memo(() => {
 
-    const { handleSubmit, formState: { isValid, isSubmitting } } = useFormContext<FullManagerEvaluationFormData>();
+    const { formState: { isValid, isSubmitting } } = useFormContext<FullManagerEvaluationFormData>();
 
-    const onSubmit = () => {
-        handleSubmit(async (data) => {
-            // O submit real será feito no componente pai (página)
-            // Este botão apenas ativa o handleSubmit do form
-            console.log('Trigger submit for manager evaluation:', data);
-        })();
-    };
+    // Removido onSubmit não utilizado - o submit é controlado pelo componente pai
 
     return (
         <Button 
+            type="submit"
             variant="primary" 
             size="md" // Tamanho menor para mobile
             disabled={!isValid || isSubmitting} 
-            onClick={onSubmit} 
             className={`transition-all duration-200
             ${!isValid || isSubmitting 
                 ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200' 

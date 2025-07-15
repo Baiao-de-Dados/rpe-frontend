@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { 
-    useCollaboratorsEvaluationsSummary,
+    useCollaboratorsOnly,
     useTotalLeaders,
     useMissingEvaluations,
-    useLeaderEvaluationPercentage
+    useLeaderEvaluationPercentage,
+    useCollaboratorsEvaluationsSummary
 } from '../../hooks/api/useManagerQuery';
 
 import Button from '../../components/common/Button';
@@ -21,73 +23,156 @@ import CollaboratorEvaluationCard from '../../components/common/CollaboratorEval
 
 export function ManagerDashboard() {
 
-    const { user } = useAuth();
+    const { user, isAuthenticated, loading: authLoading } = useAuth();
     const navigate = useNavigate();
     const { currentCycle, isLoading: cycleLoading } = useCycle();
 
     // API queries
-    const { data: collaboratorsSummary, isLoading: collaboratorsLoading } = useCollaboratorsEvaluationsSummary();
+    const { data: collaboratorsOnly, isLoading: collaboratorsLoading, totalCollaborators } = useCollaboratorsOnly();
     const { data: totalLeadersData } = useTotalLeaders();
     const { data: missingEvaluations } = useMissingEvaluations();
     const { data: leaderEvaluationPercentage } = useLeaderEvaluationPercentage();
+    const { data: collaboratorsEvaluationsSummary } = useCollaboratorsEvaluationsSummary();
 
-    const isLoading = cycleLoading || collaboratorsLoading;
+    // Combinar dados de colaboradores com dados de avaliação
+    const collaboratorsWithCalculatedScores = useMemo(() => {
+        if (!collaboratorsOnly || !collaboratorsEvaluationsSummary) return [];
+
+        return collaboratorsOnly.map(collaborator => {
+            // Buscar dados de avaliação para este colaborador
+            const evaluationData = collaboratorsEvaluationsSummary.find(
+                evalData => evalData.collaborator.id === collaborator.id
+            );
+
+            return {
+                collaborator: {
+                    id: collaborator.id,
+                    name: collaborator.name,
+                    position: collaborator.position,
+                    email: 'colaborador@example.com', // TODO: Adicionar email na API
+                    track: { id: 1, name: 'Default Track' } // TODO: Adicionar track na API
+                },
+                autoEvaluationScore: evaluationData?.autoEvaluation || null,
+                evaluation360Score: evaluationData?.evaluation360 || null,
+                managerEvaluationScore: evaluationData?.managerEvaluation || collaborator.leaderRating,
+                finalEvaluationScore: evaluationData?.equalization || null,
+                status: evaluationData?.cycle ? 'pendente' as const : 'sem-ciclo' as const,
+            };
+        });
+    }, [collaboratorsOnly, collaboratorsEvaluationsSummary]);
+
+    const isLoading = authLoading || cycleLoading || collaboratorsLoading;
 
     const handleCollaboratorClick = (collaboratorId: number) => {
         navigate(`/colaboradores/${collaboratorId}/avaliacao`);
     };
 
+    console.log('ManagerDashboard auth debug:', {
+        user,
+        isAuthenticated,
+        authLoading,
+        userRoles: user?.roles
+    });
+
+    console.log('ManagerDashboard auth and cycle:', {
+        user,
+        currentCycle,
+        cycleLoading,
+        userRoles: user?.roles
+    });
+
+    console.log('ManagerDashboard API queries:', {
+        collaboratorsOnly,
+        collaboratorsLoading,
+        totalCollaborators,
+        totalLeadersData,
+        missingEvaluations,
+        leaderEvaluationPercentage,
+        collaboratorsEvaluationsSummary
+    });
+
+    console.log('ManagerDashboard loading states:', {
+        authLoading,
+        cycleLoading,
+        collaboratorsLoading,
+        isLoading
+    });
+
+    console.log('ManagerDashboard render conditions:', {
+        isLoading,
+        hasCurrentCycle: !!currentCycle,
+        isAuthenticated,
+        authLoading,
+        cycleLoading,
+        collaboratorsLoading
+    });
+
     if (isLoading) {
+        console.log('Rendering CycleLoading...');
         return <CycleLoading />;
     }
 
+    if (!isAuthenticated) {
+        console.log('User not authenticated, redirecting to login...');
+        navigate('/login');
+        return null;
+    }
+
     if (!currentCycle) {
+        console.log('Rendering CycleLoadErrorMessage...', { currentCycle });
         return <CycleLoadErrorMessage />;
     }
 
-    // Calcular métricas baseadas nos dados da API
-    const totalCollaborators = collaboratorsSummary?.length || 0;
+    // Calcular métricas baseadas nos dados da API (apenas colaboradores)
     const totalLeaders = totalLeadersData?.totalLeaders || 0;
     
     // Debug: Log dos dados
-    console.log('Collaborators Summary Data:', collaboratorsSummary);
+    console.log('Collaborators Only Data:', collaboratorsOnly);
+    console.log('Collaborators Evaluations Summary:', collaboratorsEvaluationsSummary);
     console.log('Total Collaborators:', totalCollaborators);
     console.log('Total Leaders:', totalLeaders);
     console.log('Current User:', user);
     console.log('Current Cycle:', currentCycle);
     
-    // Verificar se há ciclo ativo
-    const hasActiveCycle = collaboratorsSummary?.some(summary => summary.cycle !== null);
+    // Verificar se há ciclo ativo (para colaboradores, sempre mostrar)
+    const hasActiveCycle = true; // Colaboradores sempre podem ser avaliados
     
     // Debug: Verificar se Maria Frontend está na lista
-    const mariaFrontend = collaboratorsSummary?.find(summary => 
-        summary.collaborator.name.includes('Maria') || 
-        summary.collaborator.id === 4
+    const mariaFrontend = collaboratorsOnly.find(collaborator => 
+        collaborator.name.includes('Maria') || 
+        collaborator.id === 4
     );
     console.log('Maria Frontend in list:', mariaFrontend);
     
-    // Buscar notas calculadas da autoavaliação para cada colaborador
-    const collaboratorsWithCalculatedScores = collaboratorsSummary?.map(summary => {
-        // Se já tem nota calculada, usar ela
-        if (summary.autoEvaluation !== null) {
-            return summary;
-        }
-        
-        // Se não tem nota calculada, retornar como está (será calculada pelo backend)
-        return summary;
-    });
-    console.log('Maria Frontend autoEvaluation:', mariaFrontend?.autoEvaluation);
-    console.log('Maria Frontend evaluation360:', mariaFrontend?.evaluation360);
-    console.log('Maria Frontend managerEvaluation:', mariaFrontend?.managerEvaluation);
-    console.log('Maria Frontend equalization:', mariaFrontend?.equalization);
+    console.log('Maria Frontend leaderRating:', mariaFrontend?.leaderRating);
     
     // Para ciclo aberto
-    const collaboratorsNotFinished = totalCollaborators; // TODO: Calcular baseado em avaliações
+    // const collaboratorsNotFinished = totalCollaborators; // TODO: Calcular baseado em avaliações
     
     // Para ciclo fechado
     const leadersCompleted = leaderEvaluationPercentage?.totalFilled || 0;
-    const collaboratorsNotCompleted = missingEvaluations?.missing || 0;
-    const pendingReviews = totalCollaborators; // TODO: Calcular baseado em avaliações
+    // const collaboratorsNotCompleted = missingEvaluations?.missing || 0; // TODO: Calcular baseado em avaliações
+    // const pendingReviews = totalCollaborators; // TODO: Calcular baseado em avaliações
+
+    // Calcular métricas baseadas nos dados reais dos colaboradores
+    const collaboratorsWithEvaluations = collaboratorsWithCalculatedScores.filter(summary => 
+        summary.managerEvaluationScore !== null && summary.managerEvaluationScore !== undefined
+    ) || [];
+    
+    const collaboratorsWithoutEvaluations = totalCollaborators - collaboratorsWithEvaluations.length;
+    
+    console.log('ManagerDashboard metrics debug:', {
+        totalCollaborators,
+        collaboratorsWithEvaluations: collaboratorsWithEvaluations.length,
+        collaboratorsWithoutEvaluations,
+        missingEvaluations,
+        collaboratorsOnly: collaboratorsOnly.map(c => ({
+            id: c.id,
+            name: c.name,
+            position: c.position,
+            leaderRating: c.leaderRating
+        }))
+    });
 
     return (
         <>
@@ -95,7 +180,7 @@ export function ManagerDashboard() {
             <main className="p-8 pt-6 space-y-6">
                 {currentCycle && (
                     <CycleBanner
-                        cycleName={currentCycle.name}
+                        cycleName={currentCycle.name || 'Ciclo Atual'}
                         status={currentCycle.isActive ? 'open' : 'closed'}
                         remainingDays={15} // TODO: Calcular dias restantes baseado no ciclo
                         linkTo="/avaliacao"
@@ -107,11 +192,11 @@ export function ManagerDashboard() {
                         cycleStatus={currentCycle.isActive ? 'open' : 'closed'}
                         totalLeaders={totalLeaders}
                         totalCollaborators={totalCollaborators}
-                        completionPercentage={0} // TODO: Calcular baseado em avaliações
-                        collaboratorsNotFinished={collaboratorsNotFinished}
+                        completionPercentage={totalCollaborators > 0 ? Math.round(((totalCollaborators - collaboratorsWithoutEvaluations) / totalCollaborators) * 100) : 0}
+                        collaboratorsNotFinished={collaboratorsWithoutEvaluations}
                         leadersCompleted={leadersCompleted}
-                        collaboratorsNotCompleted={collaboratorsNotCompleted}
-                        pendingReviews={pendingReviews}
+                        collaboratorsNotCompleted={collaboratorsWithoutEvaluations}
+                        pendingReviews={collaboratorsWithoutEvaluations}
                     />
                 </div>
 
@@ -148,18 +233,7 @@ export function ManagerDashboard() {
                             {collaboratorsWithCalculatedScores?.map((summary) => (
                                 <CollaboratorEvaluationCard
                                     key={summary.collaborator.id}
-                                    summary={{
-                                        collaborator: {
-                                            ...summary.collaborator,
-                                            email: 'colaborador@example.com', // TODO: Adicionar email na API
-                                            track: { id: 1, name: 'Default Track' } // TODO: Adicionar track na API
-                                        },
-                                        autoEvaluationScore: summary.autoEvaluation,
-                                        evaluation360Score: summary.evaluation360,
-                                        managerEvaluationScore: summary.managerEvaluation,
-                                        finalEvaluationScore: summary.equalization,
-                                        status: summary.cycle ? 'pendente' : 'sem-ciclo', // Status baseado na existência do ciclo
-                                    }}
+                                    summary={summary}
                                     onClick={() => handleCollaboratorClick(summary.collaborator.id)}
                                     className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                                 />

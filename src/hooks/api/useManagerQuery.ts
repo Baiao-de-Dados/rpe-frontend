@@ -4,20 +4,23 @@ import type {
     LeadersAndCollaborators,
     DashboardMetrics,
     CollaboratorEvaluationSummary,
-    CollaboratorEvaluationDetails,
     ManagerEvaluationPayload,
+    ManagerEvaluationResponse,
     UserAutoEvaluation,
     CollaboratorEvaluationResult,
     CollaboratorAllEvaluations
 } from '../../types/manager';
 import { managerEndpoints } from '../../services/api/manager';
 import { trackEndpoints } from '../../services/api/track';
+import { useMemo } from 'react';
 
 export function useLeadersAndCollaborators() {
     return useQuery<LeadersAndCollaborators>({
         queryKey: ['leaders-and-collaborators'],
         queryFn: async () => {
+            console.log('Fetching leaders and collaborators...');
             const res = await managerEndpoints.getLeadersAndCollaborators();
+            console.log('Leaders and collaborators response:', res.data);
             return res.data;
         },
         staleTime: 30 * 1000,
@@ -106,10 +109,12 @@ export function useCollaboratorsEvaluationsSummary() {
 }
 
 export function useCollaboratorEvaluationDetails(collaboratorId: number, cycleConfigId: number) {
-    return useQuery<CollaboratorEvaluationDetails>({
+    return useQuery<CollaboratorEvaluationResult>({
         queryKey: ['manager-collaborator-evaluation-details', collaboratorId, cycleConfigId],
         queryFn: async () => {
+            console.log('Fetching collaborator evaluation details:', { collaboratorId, cycleConfigId });
             const res = await managerEndpoints.getCollaboratorEvaluationDetails(collaboratorId, cycleConfigId);
+            console.log('Collaborator evaluation details response:', res.data);
             return res.data;
         },
         staleTime: 30 * 1000,
@@ -167,6 +172,23 @@ export function useTrackCriteria() {
     });
 }
 
+// Manager evaluation query
+export function useManagerEvaluationQuery(collaboratorId: number, cycleConfigId: number) {
+    return useQuery<ManagerEvaluationResponse>({
+        queryKey: ['manager-evaluation', collaboratorId, cycleConfigId],
+        queryFn: async () => {
+            console.log('Fetching manager evaluation:', { collaboratorId, cycleConfigId });
+            const res = await managerEndpoints.getManagerEvaluation(collaboratorId, cycleConfigId);
+            console.log('Manager evaluation response:', res.data);
+            return res.data;
+        },
+        staleTime: 30 * 1000,
+        enabled: !!collaboratorId && !!cycleConfigId,
+        retry: 1, // Tentar apenas uma vez se falhar
+        retryDelay: 1000, // Esperar 1 segundo antes de tentar novamente
+    });
+}
+
 // Manager evaluation mutation
 export function useManagerEvaluation() {
     const queryClient = useQueryClient();
@@ -177,6 +199,14 @@ export function useManagerEvaluation() {
             // Invalidate related queries
             queryClient.invalidateQueries({ queryKey: ['manager-collaborators-evaluations-summary'] });
             queryClient.invalidateQueries({ queryKey: ['manager-collaborators-evaluations-details'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-collaborator-evaluation-details'] });
+            queryClient.invalidateQueries({ queryKey: ['collaborator-evaluation-result'] });
+            queryClient.invalidateQueries({ queryKey: ['collaborator-all-evaluations'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-missing-evaluations'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-evaluation-percentage'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-evaluation'] });
+            
+            console.log('Manager evaluation mutation success - cache invalidated');
         },
     });
 }
@@ -202,4 +232,22 @@ export function getLeadersEvaluationCompletion(data?: LeadersAndCollaborators): 
 
 export function getUnassignedCollaboratorsCount(data?: LeadersAndCollaborators): number {
     return data?.collaborators?.filter(c => !c.leaderId).length ?? 0;
+}
+
+// Hook para buscar apenas colaboradores (usando dados já separados da API)
+export function useCollaboratorsOnly() {
+    const { data: leadersAndCollaborators, isLoading, error } = useLeadersAndCollaborators();
+    
+    const collaboratorsOnly = useMemo(() => 
+        leadersAndCollaborators?.collaborators || [], 
+        [leadersAndCollaborators]
+    );
+    
+    return {
+        data: collaboratorsOnly,
+        isLoading,
+        error,
+        totalCollaborators: collaboratorsOnly.length,
+        totalLeaders: leadersAndCollaborators?.leaders?.length || 0
+    };
 }

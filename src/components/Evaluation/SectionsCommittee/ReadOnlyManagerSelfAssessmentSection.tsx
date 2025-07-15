@@ -15,10 +15,27 @@ interface ReadOnlyManagerSelfAssessmentSectionProps {
         rating?: number | null;
         justification?: string;
     }>;
+    // Dados da avaliação do gestor (read-only)
+    managerEvaluationData?: Array<{
+        pilarId: number;
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
+    }>;
+    // Critérios reais da trilha (opcional)
+    allCriteria?: Array<{
+        id: number;
+        nome: string;
+        descricao: string;
+        pilarId: number;
+        pilarNome: string;
+    }>;
 }
 
 export const ReadOnlyManagerSelfAssessmentSection = memo(({ 
-    collaboratorSelfAssessment = []
+    collaboratorSelfAssessment = [],
+    managerEvaluationData = [],
+    allCriteria
 }: ReadOnlyManagerSelfAssessmentSectionProps) => {
 
     const { control } = useFormContext<FullManagerEvaluationFormData>();
@@ -29,54 +46,88 @@ export const ReadOnlyManagerSelfAssessmentSection = memo(({
         name: 'managerAssessment',
     });
 
+    // Usar critérios reais se disponíveis, senão usar mock
+    const criteriaToUse = allCriteria || Object.values(mockEvaluationPillars).flatMap(pillar =>
+        pillar.criterios.map((criterion: Criterion) => ({
+            id: criterion.id,
+            nome: criterion.nome,
+            descricao: criterion.descricao,
+            pilarId: pillar.id,
+            pilarNome: pillar.titulo,
+        }))
+    );
+
     useEffect(() => {
-        const allCriteria = Object.values(mockEvaluationPillars).flatMap(pillar =>
-                pillar.criterios.map((criterion: Criterion) => ({
-                    pilarId: pillar.id,
-                    criterionId: criterion.id,
-                    rating: null,
-                    justification: '',
-                })),
-        );
-        if ((!fields || fields.length !== allCriteria.length) && !isInitialized.current) {
-            replace(allCriteria);
+        const allCriteriaForForm = criteriaToUse.map(criterion => ({
+            pilarId: criterion.pilarId,
+            criterionId: criterion.id,
+            rating: null,
+            justification: '',
+        }));
+        
+        if ((!fields || fields.length !== allCriteriaForForm.length) && !isInitialized.current) {
+            replace(allCriteriaForForm);
             isInitialized.current = true;
         }
-    }, [fields, replace]);
+    }, [fields, replace, criteriaToUse]);
 
     const validFields = useMemo(() => {
-        const allCriteria = Object.values(mockEvaluationPillars).flatMap(pillar =>
-            pillar.criterios.map((criterion: Criterion) => ({
-                pilarId: pillar.id,
-                criterionId: criterion.id,
-            }))
-        );
-        
         return fields.map((_, index) => ({
             id: index,
-            pilarId: allCriteria[index]?.pilarId || 0,
-            criterionId: allCriteria[index]?.criterionId || 0,
+            pilarId: criteriaToUse[index]?.pilarId || 0,
+            criterionId: criteriaToUse[index]?.id || 0,
             index: index,
         }));
-    }, [fields]);
+    }, [fields, criteriaToUse]);
 
     // Função para obter dados do colaborador por pilar
     const getCollaboratorDataByPillar = (pillarId: number) => {
         return collaboratorSelfAssessment.filter((data: { pilarId: number }) => data.pilarId === pillarId);
     };
 
+    // Função para obter dados do gestor por pilar
+    const getManagerDataByPillar = (pillarId: number) => {
+        return managerEvaluationData.filter((data: { pilarId: number }) => data.pilarId === pillarId);
+    };
+
+    // Agrupar critérios por pilar
+    const criteriaByPillar = useMemo(() => {
+        const grouped: Record<string, Array<{
+            id: number;
+            nome: string;
+            descricao: string;
+            pilarId: number;
+            pilarNome: string;
+        }>> = {};
+        
+        criteriaToUse.forEach(criterion => {
+            const pillarKey = `${criterion.pilarId}-${criterion.pilarNome}`;
+            if (!grouped[pillarKey]) {
+                grouped[pillarKey] = [];
+            }
+            grouped[pillarKey].push(criterion);
+        });
+        
+        return grouped;
+    }, [criteriaToUse]);
+
     return (
         <section>
             <div className="space-y-8">
-                {Object.values(mockEvaluationPillars).map(pillar => (
-                    <ReadOnlyManagerPillarSection
-                        key={pillar.titulo}
-                        pillarTitle={pillar.titulo}
-                        criteria={pillar.criterios}
-                        validFields={validFields}
-                        collaboratorData={getCollaboratorDataByPillar(pillar.id)}
-                    />
-                ))}
+                {Object.entries(criteriaByPillar).map(([pillarKey, criteria]) => {
+                    const [pillarId, pillarName] = pillarKey.split('-');
+                    
+                    return (
+                        <ReadOnlyManagerPillarSection
+                            key={pillarKey}
+                            pillarTitle={pillarName}
+                            criteria={criteria}
+                            validFields={validFields}
+                            collaboratorData={getCollaboratorDataByPillar(Number(pillarId))}
+                            managerData={getManagerDataByPillar(Number(pillarId))}
+                        />
+                    );
+                })}
             </div>
         </section>
     );

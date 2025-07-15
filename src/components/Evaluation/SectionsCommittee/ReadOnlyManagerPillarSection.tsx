@@ -23,6 +23,12 @@ interface ReadOnlyManagerPillarSectionProps {
         rating?: number | null;
         justification?: string;
     }>;
+    // Dados do gestor (read-only)
+    managerData?: Array<{
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
+    }>;
 }
 
 export const ReadOnlyManagerPillarSection = memo(({ 
@@ -30,6 +36,7 @@ export const ReadOnlyManagerPillarSection = memo(({
     criteria, 
     validFields,
     collaboratorData = [],
+    managerData = []
 }: ReadOnlyManagerPillarSectionProps) => {
 
     const [pillarOpenList, setPillarOpenList] = useQueryState('committee_pillar_open', {
@@ -54,6 +61,11 @@ export const ReadOnlyManagerPillarSection = memo(({
     // Função para buscar os dados do colaborador para um critério específico
     const getCollaboratorDataForCriterion = (criterionId: number) => {
         return collaboratorData.find(data => data.criterionId === criterionId);
+    };
+
+    // Função para buscar os dados do gestor para um critério específico
+    const getManagerDataForCriterion = (criterionId: number) => {
+        return managerData.find(data => data.criterionId === criterionId);
     };
 
     return (
@@ -85,6 +97,7 @@ export const ReadOnlyManagerPillarSection = memo(({
                     if (fieldIndex === -1) return null;
 
                     const collaboratorCriterionData = getCollaboratorDataForCriterion(criterion.id);
+                    const managerCriterionData = getManagerDataForCriterion(criterion.id);
 
                     return (
                         <ManagerAssessment
@@ -95,6 +108,8 @@ export const ReadOnlyManagerPillarSection = memo(({
                             isLast={index === criteria.length - 1}
                             collaboratorRating={collaboratorCriterionData?.rating}
                             collaboratorJustification={collaboratorCriterionData?.justification}
+                            managerRating={managerCriterionData?.rating}
+                            managerJustification={managerCriterionData?.justification}
                             isReadOnly={true}
                         />
                     );

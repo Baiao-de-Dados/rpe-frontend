@@ -1,6 +1,8 @@
 import type { EvaluationFormData } from '../../../schemas/evaluation';
+import type { FullManagerEvaluationFormData } from '../../../schemas/managerEvaluation';
 
 import type { CollaboratorEvaluatePayload } from '../../../types/evaluations';
+import type { ManagerEvaluationPayload } from '../../../types/manager';
 
 export const transformFormData = (data: EvaluationFormData, ciclo: string, colaboradorId: number = 1): CollaboratorEvaluatePayload => {
     const pilaresMap = new Map<number, { criterioId: number; nota: number; justificativa: string }[]>();
@@ -48,6 +50,43 @@ export const transformFormData = (data: EvaluationFormData, ciclo: string, colab
         avaliacao360,
         mentoring,
         referencias,
+    };
+};
+
+export const transformManagerEvaluationData = (data: FullManagerEvaluationFormData, managerId: number, cycleConfigId: number, collaboratorId: number): ManagerEvaluationPayload => {
+    // Agrupar critérios por pilar
+    const pilaresMap = new Map<number, Array<{
+        criterioId: number;
+        nota: number;
+        justificativa: string;
+    }>>();
+
+    data.managerAssessment.forEach(assessment => {
+        const pilarId = assessment.pilarId;
+        if (!pilaresMap.has(pilarId)) {
+            pilaresMap.set(pilarId, []);
+        }
+        
+        pilaresMap.get(pilarId)!.push({
+            criterioId: assessment.criterionId,
+            nota: assessment.rating || 0,
+            justificativa: assessment.justification || '',
+        });
+    });
+
+    // Converter para o formato esperado pela API
+    const pilaresData = Array.from(pilaresMap.entries()).map(([pilarId, criterios]) => ({
+        pilarId,
+        criterios,
+    }));
+
+    return {
+        cycleConfigId,
+        managerId,
+        colaboradorId: collaboratorId,
+        autoavaliacao: {
+            pilares: pilaresData,
+        },
     };
 };
 
