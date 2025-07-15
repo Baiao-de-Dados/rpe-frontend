@@ -56,7 +56,7 @@ export function Colaboradores() {
 
     const [showFinalizeModal, setShowFinalizeModal] = useState(false);
     const [finalizeInput, setFinalizeInput] = useState('');
-    const isCommittee = hasRole(UserRoleEnum.RH);
+    const isCommittee = hasRole(UserRoleEnum.COMMITTEE);
     const isFinalizeMatch = finalizeInput.trim().toUpperCase() === 'FINALIZAR';
 
     const handleFinalize = () => {
@@ -69,7 +69,7 @@ export function Colaboradores() {
     return (
         <>
             <PageHeader 
-                title="Colaboradores" 
+                title={ isCommittee ? 'Painel de Equalização' : 'Colaboradores' }
                 button={
                     isCommittee && (
                         <Button variant="primary" onClick={() => setShowFinalizeModal(true)}>
