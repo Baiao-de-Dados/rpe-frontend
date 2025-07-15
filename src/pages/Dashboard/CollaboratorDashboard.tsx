@@ -53,7 +53,7 @@ export function CollaboratorDashboard() {
                                 <Typography variant="h2" color="primary" className="font-bold text-lg sm:text-xl">
                                     Suas avaliações
                                 </Typography>
-                                    <Button variant="link" size="sm" onClick={() => navigate('/evolucao')}>
+                                    <Button variant="link" size="sm" onClick={() => navigate('/avaliacao')}>
                                         Ver mais
                                     </Button>
                             </div>

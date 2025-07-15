@@ -1,5 +1,6 @@
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
+import { useNavigate } from 'react-router-dom';
 
 import { mockCommitteeData } from '../../data/mockCommitteeData';
 
@@ -15,6 +16,7 @@ import CollaboratorEvaluationCard from '../../components/common/CollaboratorEval
 export function CommitteeDashboard() {
 
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     const { currentCycle, isLoading } = useCycle();
 
@@ -53,7 +55,7 @@ export function CommitteeDashboard() {
                             variant="link"
                             size="sm"
                             onClick={() => {
-                                // TODO: Navegar para página completa
+                                navigate('/colaboradores');
                             }}
                         >
                             Ver mais
