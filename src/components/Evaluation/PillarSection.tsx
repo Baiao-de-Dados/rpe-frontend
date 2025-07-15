@@ -1,10 +1,10 @@
 import { useQueryState } from 'nuqs';
 import { memo, useMemo, useEffect } from 'react';
 
+import type { TrackCriterion } from '../../types/track';
+
 import SelfAssessment from './Cards/SelfAssessment';
 import { PillarRatingDisplay } from './PillarRatingDisplay';
-
-import type { Criterion } from '../../data/mockEvaluationPIllars';
 
 import NotificationBadge from '../common/NotificationBadge';
 import CollapsibleCardSection from '../common/CollapsibleCardSection';
@@ -13,7 +13,7 @@ import { useEvaluationCompletion } from '../../hooks/useEvaluationCompletion';
 
 interface PillarSectionProps {
     pillarTitle: string;
-    criteria: Criterion[];
+    criteria: TrackCriterion[];
     validFields: Array<{
         id: number;
         pilarId: number;
@@ -90,7 +90,7 @@ export const PillarSection = memo(({ pillarTitle, criteria, validFields }: Pilla
                 onHeaderClick={toggleMinimized}
             >
                 <div className="space-y-4">
-                    {criteria.map((criterion: Criterion, index: number) => {
+                    {criteria.map((criterion: TrackCriterion, index: number) => {
                         const fieldData = validFields.find(f => f.criterionId === criterion.id);
                         if (!fieldData) return null;
 
@@ -100,7 +100,7 @@ export const PillarSection = memo(({ pillarTitle, criteria, validFields }: Pilla
                         return (
                             <SelfAssessment
                                 key={criterion.id}
-                                criterionName={criterion.nome}
+                                criterionName={criterion.name}
                                 name={fieldName}
                                 topicNumber={index + 1}
                                 isLast={isLast}

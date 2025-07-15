@@ -1,16 +1,17 @@
 import { CheckCircle, Calendar, Clock } from 'lucide-react';
 
-import StatusMessageCard from '../common/StatusMessageCard';
+import type { Cycle } from '../../types/cycle';
 
 import { formatDateTime } from '../../utils/globalUtils';
-import type { CurrentCycle, EvaluationStatus } from '../../types/cycle';
+
+import StatusMessageCard from '../common/StatusMessageCard';
 
 interface EvaluationSubmittedMessageProps {
-    cycle: CurrentCycle;
-    evaluationStatus: EvaluationStatus;
+    cycle: Cycle;
+    submittedAt: string;
 }
 
-const EvaluationSubmittedMessage = ({ cycle, evaluationStatus }: EvaluationSubmittedMessageProps) => {
+const EvaluationSubmittedMessage = ({ cycle, submittedAt }: EvaluationSubmittedMessageProps) => {
     return (
         <StatusMessageCard
             icon={<CheckCircle className="w-8 h-8 text-check-color" />}
@@ -28,11 +29,19 @@ const EvaluationSubmittedMessage = ({ cycle, evaluationStatus }: EvaluationSubmi
                         <Calendar className="w-4 h-4 text-primary-400" />
                         <span className="text-muted-foreground text-xs">Ciclo: {cycle.name}</span>
                     </div>
-                    {evaluationStatus.submittedAt && (
+                    {submittedAt && (
                         <div className="flex items-center justify-center gap-2 p-2 bg-primary-50 rounded-lg">
                             <Clock className="w-4 h-4 text-primary-400" />
                             <span className="text-muted-foreground text-xs">
-                                Enviado em: {formatDateTime(evaluationStatus.submittedAt)}
+                                Enviado em: {formatDateTime(submittedAt)}
+                            </span>
+                        </div>
+                    )}
+                    {cycle.endDate && (
+                        <div className="flex items-center justify-center gap-2 p-2 bg-primary-50 rounded-lg">
+                            <Calendar className="w-4 h-4 text-primary-400" />
+                            <span className="text-muted-foreground text-xs">
+                                Fim do período de avaliações: {formatDateTime(cycle.endDate)}
                             </span>
                         </div>
                     )}
@@ -45,7 +54,7 @@ const EvaluationSubmittedMessage = ({ cycle, evaluationStatus }: EvaluationSubmi
             }
             nextSteps={
                 <span className="leading-relaxed text-primary">
-                    <span className="font-semibold">Próximos passos:</span> Aguarde o feedback do seu mentor. Você receberá uma notificação quando estiver disponível.
+                    <span className="font-semibold">Próximos passos:</span> Aguarde o término do período de avaliações.
                 </span>
             }
         />

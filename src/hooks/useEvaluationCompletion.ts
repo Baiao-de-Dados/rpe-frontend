@@ -3,16 +3,21 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import type { EvaluationFormData } from '../schemas/evaluation';
 
-import type { Criterion } from '../data/mockEvaluationPIllars';
-import { mockEvaluationPillars } from '../data/mockEvaluationPIllars';
+import type { TrackCriterion, TrackPillar } from '../types/track';
+import { useCycleCriteriaQuery } from './api/useCollaboratorQuery';
+import { useAuth } from './useAuth';
+
 
 export function useEvaluationCompletion() {
-
     const { control } = useFormContext<EvaluationFormData>();
+    const { user } = useAuth();
+    const trackId = user?.trackId ?? 0;
+    const { data: trackData } = useCycleCriteriaQuery(trackId);
 
     const allCriteria = useMemo(() => {
-        return Object.values(mockEvaluationPillars).flatMap(pillar => pillar.criterios);
-    }, []);
+        if (!trackData || !trackData.pillars) return [];
+        return trackData.pillars.flatMap((pillar: TrackPillar) => pillar.criteria);
+    }, [trackData]);
 
     const watchedSelfAssessment = useWatch({
         control,
@@ -35,7 +40,7 @@ export function useEvaluationCompletion() {
     });
 
     const getIncompleteCriteriaCountForPillar = (
-        criteria: Criterion[],
+        criteria: TrackCriterion[],
         validFields: Array<{
             id: number;
             pilarId: number;
@@ -154,7 +159,7 @@ export function useEvaluationCompletion() {
     }, [watchedReferences]);
 
     const getHasPendingIAForPillar = (
-        criteria: Criterion[],
+        criteria: TrackCriterion[],
         validFields: Array<{
             id: number;
             pilarId: number;

@@ -28,7 +28,7 @@ export interface User {
     name: string;
     email: string;
     roles: UserRoleEnum[]; // Múltiplas roles, não role única
-    department?: string;
+    trackId?: number;
     position?: string;
     avatar?: string;
     isActive?: boolean;

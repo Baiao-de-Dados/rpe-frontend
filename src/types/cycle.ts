@@ -39,9 +39,3 @@ export interface ExtendCyclePayload {
 }
 
 export type CurrentCycle = Partial<Cycle> & { name: string; isActive: boolean; done: boolean };
-
-export interface EvaluationStatus {
-    cycleId: number;
-    isSubmitted: boolean;
-    submittedAt: string;
-}
