@@ -19,18 +19,7 @@ export interface ProjectType {
     collaborators: ProjectPerson[];
 }
 
-export type AuditLogAction = 'LOGIN' | 'EXPORT_EVALUATIONS' | 'UNAUTHORIZED_ACCESS';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AuditLogMetadata = Record<string, any>;
-
-export interface AuditLogEntry {
-    id: number;
-    userId: number;
-    action: AuditLogAction;
-    metadata: AuditLogMetadata;
-    createdAt: string;
-}
 
 export const mockERP = {
     users: [

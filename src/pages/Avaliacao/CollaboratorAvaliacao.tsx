@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 
 import { useCycle } from '../../hooks/useCycle';
-import { useCollaboratorEvaluationQuery } from '../../hooks/api/useCollaboratorQuery';
+import { useCollaboratorDraftQuery, useCollaboratorEvaluationQuery } from '../../hooks/api/useCollaboratorQuery';
 import { useEvaluationFormPopulation } from '../../hooks/useEvaluationFormPopulation';
 
 import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
@@ -13,17 +13,34 @@ import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
 import type { Cycle } from '../../types/cycle';
+import { useEffect } from 'react';
 
 export function CollaboratorAvaliacao() {
     const { currentCycle, isLoading } = useCycle();
     const evaluationQuery = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
+    const { data: draftData } = useCollaboratorDraftQuery(currentCycle?.id);
 
     const methods = useForm<EvaluationFormData>({
         resolver: zodResolver(fullEvaluationSchema),
         mode: 'onSubmit',
     });
 
+    useEffect(() => {
+        console.log('isValid:', methods.formState.isValid);
+        console.log('errors:', methods.formState.errors);
+    }, [methods.formState]);
+
+
     useEvaluationFormPopulation(methods);
+
+    useEffect(() => {
+        if (draftData) {
+            const timeout = setTimeout(() => {
+            methods.trigger();
+            }, 100);
+            return () => clearTimeout(timeout);
+        }
+    }, [draftData, methods]);
 
     if (isLoading) {
         return <CycleLoading />;
@@ -53,4 +70,5 @@ export function CollaboratorAvaliacao() {
             </form>
         </FormProvider>
     );
+
 }

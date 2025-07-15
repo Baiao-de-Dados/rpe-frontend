@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
+import { motion } from 'framer-motion';
 import { ChevronDown, Check } from 'lucide-react';
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import { motion } from 'framer-motion';
 
 import StarRating from '../../common/StarRating';
 import RatingDisplay from '../../common/RatingDisplay';
@@ -111,7 +111,7 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                                                 </p>
                                                 <ErrorMessage error={fieldState.error?.message} />
                                             </div>
-                                            <StarRating value={field.value} onChange={field.onChange} />
+                                            <StarRating value={field.value} onChange={value => { field.onChange(value); }} />
                                         </div>
                                     )}
                                 />

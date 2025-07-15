@@ -4,7 +4,7 @@ import type { Track } from '../../types/track';
 
 import type { Network } from '../../types/collaborator';
 
-import type { CollaboratorEvaluatePayload, CollaboratorEvaluation } from '../../types/evaluations';
+import type { CollaboratorEvaluateDraft, CollaboratorEvaluatePayload, CollaboratorEvaluation } from '../../types/evaluations';
 
 export const collaboratorsEndpoints = {
     getCriteria: (trackId: number) => 
@@ -15,4 +15,8 @@ export const collaboratorsEndpoints = {
         api.post('/evaluations', payload),
     getEvaluation: (cycleConfigId: number) =>
         api.get<CollaboratorEvaluation>('/employer/evaluation-result/', { params: { cycleConfigId } }),
+    saveDraft: (payload: CollaboratorEvaluateDraft) =>
+        api.post('/evaluations/draft', payload),
+    getDraft: (cycleId: number) =>
+        api.get<CollaboratorEvaluateDraft>('/evaluations/draft', { params: { cycleId } }),
 };

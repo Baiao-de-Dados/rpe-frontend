@@ -1,6 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { TableRow, TableCell } from "@mui/material";
+import { columnWidths, cellStyles } from "../components/AuditLogTable/auditLogTableStyles";
+import { formatDateTime } from "./globalUtils";
+import { renderDetails, renderIP } from "./auditLogUtils";
+
+export function renderAuditLogRow(
+    entry: AuditLogEntry,
+    idx: number,
+    handleOpenMetadata: (metadata: any) => void
+): JSX.Element {
+    return (
+        <TableRow key={`${entry.id}-${idx}`} sx={{ background: idx % 2 === 0 ? 'white' : 'var(--color-neutral-100)' }}>
+            <TableCell sx={{ ...cellStyles.body, width: columnWidths.date }}>{formatDateTime(entry.createdAt)}</TableCell>
+            <TableCell sx={{ ...cellStyles.body, width: columnWidths.user }}>{entry.userId}</TableCell>
+            <TableCell sx={{ ...cellStyles.action, width: columnWidths.action }}>{entry.action}</TableCell>
+            <TableCell sx={{ ...cellStyles.body, width: columnWidths.details }}>{renderDetails(entry)}</TableCell>
+            <TableCell sx={{ ...cellStyles.body, width: columnWidths.ip }}>{renderIP(entry)}</TableCell>
+            <TableCell sx={{ ...cellStyles.body, width: 120 }}>
+                <button className="bg-primary-100 text-primary-700 border-none rounded-md px-3 py-1 cursor-pointer font-medium text-sm transition-colors duration-200 hover:bg-primary-200"
+                    onClick={() => handleOpenMetadata(entry.metadata)}
+                >
+                    Ver metadata
+                </button>
+            </TableCell>
+        </TableRow>
+    );
+}
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { JSX } from 'react';
-import type { AuditLogEntry, AuditLogMetadata } from '../data/mockAdmin';
+import type { AuditLogEntry, AuditLogMetadata } from '../types/admin';
+
 
 export type GroupByType = 'none' | 'user' | 'action' | 'ip' | 'user_action_ip';
 

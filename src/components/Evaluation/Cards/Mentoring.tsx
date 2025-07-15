@@ -21,13 +21,13 @@ const Mentoring = () => {
     const mentor = networkData?.mentor;
 
     const { control, setValue } = useFormContext();
+
     const { optimizedTransition } = useOptimizedAnimation();
 
     const watchedMentoringIAValid = useWatch({
         control,
         name: 'mentoringIAValid'
     });
-
 
     useEffect(() => {
         if (!mentor) return;
@@ -100,7 +100,7 @@ const Mentoring = () => {
                             <ErrorMessage error={fieldState.error?.message} />
                         </div>
                         <div className="mb-4">
-                            <StarRating value={field.value || null} onChange={field.onChange}/>
+                            <StarRating value={field.value || null} onChange={value => { field.onChange(value); }}/>
                         </div>
                     </>
                 )}

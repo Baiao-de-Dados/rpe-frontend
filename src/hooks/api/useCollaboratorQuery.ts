@@ -1,3 +1,16 @@
+import type { SelfAssessmentDraft, Evaluation360Draft, MentoringDraft, ReferencesDraft, SelfAssessmentFormItem, Evaluation360FormItem, ReferencesFormItem } from '../../types/evaluations';
+
+export type FormValues = {
+    selfAssessment?: SelfAssessmentFormItem[];
+    evaluation360?: Evaluation360FormItem[];
+    mentoringJustification?: string;
+    mentoringRating?: number;
+    mentorId?: number;
+    references?: ReferencesFormItem[];
+};
+
+import type { CollaboratorEvaluateDraft } from '../../types/evaluations';
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { collaboratorsEndpoints } from '../../services/api/collaborators';
@@ -63,4 +76,71 @@ export function useCollaboratorEvaluationQuery(cycleConfigId?: number, options?:
         enabled: options?.enabled ?? isValid,
         staleTime: 30 * 1000,
     });
+}
+
+export function useCollaboratorDraftQuery(cycleId?: number, options?: { enabled?: boolean }) {
+    const isValid = typeof cycleId === 'number' && cycleId > 0;
+    return useQuery<CollaboratorEvaluateDraft>({
+        queryKey: ['collaborator', 'draft', cycleId ?? 'none'],
+        queryFn: async () => {
+            if (!isValid) return undefined as unknown as CollaboratorEvaluateDraft;
+            const res = await collaboratorsEndpoints.getDraft(cycleId!);
+            return res.data;
+        },
+        enabled: options?.enabled ?? isValid,
+        staleTime: 30 * 1000,
+    });
+}
+
+export function useSaveCollaboratorDraftMutation(cycleId?: number) {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: CollaboratorEvaluateDraft) => {
+            const res = await collaboratorsEndpoints.saveDraft(payload);
+            return res.data;
+        },
+        onSuccess: () => {
+            if (cycleId) {
+                queryClient.invalidateQueries({ queryKey: ['collaborator', 'draft', cycleId] });
+            }
+        },
+    });
+}
+
+export function buildCollaboratorDraftPayload(values: FormValues, cycleId: number): CollaboratorEvaluateDraft {
+
+    const selfAssessmentGrouped: SelfAssessmentDraft[] = (values.selfAssessment || []).map((item: SelfAssessmentFormItem) => ({
+        pillarId: Number(item.pilarId),
+        criteriaId: Number(item.criterionId),
+        rating: item.rating,
+        justification: item.justification,
+    }));
+
+    const evaluation360: Evaluation360Draft[] = (values.evaluation360 || []).map((item: Evaluation360FormItem) => ({
+        evaluateeId: Number(item.collaboratorId),
+        strengths: item.strengths,
+        improvements: item.improvements,
+        rating: item.rating,
+    }));
+
+    const mentoring: MentoringDraft = {
+        justification: values.mentoringJustification || '',
+        rating: values.mentoringRating || 0,
+        mentorId: values.mentorId || 0, // Ensure mentorId is included
+    };
+
+    const references: ReferencesDraft[] = (values.references || []).map((item: ReferencesFormItem) => ({
+        collaboratorId: Number(item.collaboratorId),
+        justification: item.justification,
+    }));
+
+    return {
+        cycleId,
+        draft: {
+            selfAssessment: selfAssessmentGrouped,
+            evaluation360,
+            mentoring,
+            references,
+        },
+    };
 }

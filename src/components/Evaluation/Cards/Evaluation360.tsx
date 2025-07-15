@@ -23,6 +23,7 @@ interface Evaluation360Props {
 const Evaluation360 = ({ collaborator, onRemove, name, index }: Evaluation360Props) => {
 
     const { control, setValue } = useFormContext();
+
     const { optimizedTransition } = useOptimizedAnimation();
 
     const watchedEvaluation360IAValid = useWatch({
@@ -81,7 +82,7 @@ const Evaluation360 = ({ collaborator, onRemove, name, index }: Evaluation360Pro
                 </div>
                 <Controller name={`${name}.rating`} control={control}
                     render={({ field }) => (
-                        <StarRating value={field.value} onChange={field.onChange}/>
+                        <StarRating value={field.value} onChange={value => { field.onChange(value); }}/>
                     )}
                 />
             </div>

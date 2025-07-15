@@ -11,10 +11,11 @@ import { useEvaluationSubmit } from '../../hooks/useEvaluationSubmit';
 import type { EvaluationFormData } from '../../schemas/evaluation';
 
 import { transformFormData, validateTransformedData } from './utils/evaluationTransform';
+import { buildCollaboratorDraftPayload, useSaveCollaboratorDraftMutation } from '../../hooks/api/useCollaboratorQuery';
 
 const EvaluationSubmitButton = memo(() => {
 
-    const { handleSubmit, formState: { isValid } } = useFormContext<EvaluationFormData>();
+    const { handleSubmit, getValues, formState: { isValid } } = useFormContext<EvaluationFormData>();
 
     const { showToast } = useToast();
 
@@ -22,6 +23,8 @@ const EvaluationSubmitButton = memo(() => {
     const { user } = useAuth();
 
     const { submitEvaluation, isSubmitting } = useEvaluationSubmit();
+
+    const saveDraftMutation = useSaveCollaboratorDraftMutation(currentCycle?.id);
 
     const onSubmit = () => {
         handleSubmit(async data => {
@@ -54,20 +57,62 @@ const EvaluationSubmitButton = memo(() => {
         })();
     };
 
+    const onSaveDraft = () => {
+        if (!currentCycle?.id) return;
+        try {
+            const values = getValues();
+                const safeValues = {
+                ...values,
+                selfAssessment: values.selfAssessment?.map(item => ({
+                    ...item,
+                    rating: item.rating ?? 0,
+                })) ?? [],
+                evaluation360: values.evaluation360?.map(item => ({
+                    ...item,
+                    rating: item.rating ?? 0,
+                })) ?? [],
+                mentoringRating: values.mentoringRating ?? 0,
+                mentorId: values.mentorId ?? 0,
+                };
+            const payload = buildCollaboratorDraftPayload(safeValues, currentCycle.id);
+            saveDraftMutation.mutate(payload);
+            showToast('Rascunho salvo com sucesso!', 'success', {
+                title: 'Sucesso',
+                duration: 4000,
+            });
+        } catch (error) {
+            console.error('Erro ao salvar rascunho:', error);
+            showToast('Erro ao salvar rascunho.', 'error', {
+                title: 'Erro',
+                duration: -1,
+            });
+        }
+    };
+
     return (
-        <Button 
-            variant="primary" 
-            size="md" 
-            disabled={!isValid || isSubmitting} 
-            onClick={onSubmit} 
-            className={`transition-all duration-200 
-            ${!isValid || isSubmitting 
-                ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200' 
-                : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
-            }`
-        }>
-            {isSubmitting ? 'Enviando...' : 'Concluir e enviar'}
-        </Button>
+        <>
+            <Button 
+                variant="secondary" 
+                size="md" 
+                disabled={saveDraftMutation.isPending} 
+                onClick={onSaveDraft} 
+                className={`transition-all duration-200`}>
+                {saveDraftMutation.isPending ? 'Salvando...' : 'Salvar rascunho'}
+            </Button>
+            <Button 
+                variant="primary" 
+                size="md" 
+                disabled={!isValid || isSubmitting} 
+                onClick={onSubmit} 
+                className={`transition-all duration-200 
+                    ${!isValid || isSubmitting 
+                        ? 'bg-primary-200 text-primary-400 cursor-not-allowed hover:bg-primary-200' 
+                        : 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
+                    }`
+                }>
+                {isSubmitting ? 'Enviando...' : 'Concluir e enviar'}
+            </Button>
+        </>
     );
 });
 

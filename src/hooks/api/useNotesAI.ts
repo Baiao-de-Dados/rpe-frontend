@@ -12,6 +12,7 @@ export type EvaluationSection = 'Mentoring' | 'Avaliação 360' | 'Autoavaliaç�
 
 export interface NavigationState {
     geminiResponse: GeminiEvaluationResponse;
+    url: string;
 }
 
 import type { IAEvaluationServiceResponse, GeminiResponse } from '../../types/evaluationAI';
@@ -57,11 +58,11 @@ async function evaluationAI(userId: number, cycledId: number): Promise<IAEvaluat
 
 export function useNotesAI() {
 
+    const { currentCycle, isLoading } = useCycle();
+
     const navigate = useNavigate();
 
     const { showToast } = useToast();
-
-    const { currentCycle: { isActive } } = useCycle();
 
     const [error, setError] = useState('');
     const [written, setWritten] = useState('');
@@ -89,7 +90,7 @@ export function useNotesAI() {
         resetState(); 
         setIsModalOpen(true);
 
-        if (!isActive) {
+        if (!currentCycle.isActive && !isLoading) {
             showToast(
                 'Não há ciclo de avaliação aberto no momento. Aguarde a abertura de um novo ciclo.',
                 'error',
@@ -110,7 +111,7 @@ export function useNotesAI() {
             if (abortControllerRef.current.signal.aborted) return;
 
             const { geminiResponse, noInsight, error, noIdentification, written, applicable } = await evaluationAI(userId, cycledId);
-
+            console.log(geminiResponse)
             if (abortControllerRef.current.signal.aborted) return;
 
             if (error) {
@@ -141,7 +142,7 @@ export function useNotesAI() {
             const sections: EvaluationSection[] = [];
 
             if (geminiResponse.code === 'SUCCESS') {
-                if (geminiResponse.selfAssessment?.length > 0) {
+                if (geminiResponse.selfAssessment?.length > 0 && geminiResponse.selfAssessment.every(sa => sa.rating !== null || 0)) {
                     sections.push('Autoavaliação');
                 }
                 if (geminiResponse.evaluation360?.length > 0) {
@@ -192,12 +193,13 @@ export function useNotesAI() {
         setIsModalOpen(false);
         setModalStep(0);
         if (generatedEvaluation) {
-            const navigationState: NavigationState = {
-                geminiResponse: generatedEvaluation,
-            };
-
             const firstSection = evaluationSections[0];
             const sectionParam = firstSection ? `?section=${encodeURIComponent(firstSection)}` : '';
+
+            const navigationState: NavigationState = {
+                geminiResponse: generatedEvaluation,
+                url: `/avaliacao${sectionParam}`
+            };
 
             navigate(`/avaliacao${sectionParam}`, {
                 state: navigationState,
