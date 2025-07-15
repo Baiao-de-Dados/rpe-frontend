@@ -7,7 +7,6 @@ import Button from '../../components/common/Button';
 import Typography from '../../components/common/Typography';
 import CycleLoading from '../../components/common/CycleLoading';
 import CardContainer from '../../components/common/CardContainer';
-import { CycleBanner } from '../../components/Dashboard/CycleBanner';
 import { LeaderMetrics } from '../../components/Dashboard/LeaderMetrics';
 import { DashboardHeader } from '../../components/Dashboard/DashboardHeader';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
@@ -35,14 +34,6 @@ export function LeaderDashboard() {
         <>
             <DashboardHeader userName={user?.name || 'Líder'} />
             <main className="p-8 pt-6 space-y-6">
-                {currentCycle && (
-                <CycleBanner
-                    cycleName={currentCycle.name}
-                    status={currentCycle.isActive ? 'open' : 'closed'}
-                    remainingDays={managerData.daysToDeadline}
-                    linkTo="/avaliacao"
-                />
-                )}
 
                 <div className="mb-6">
                 <LeaderMetrics

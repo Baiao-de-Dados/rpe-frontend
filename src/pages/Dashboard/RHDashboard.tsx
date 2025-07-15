@@ -12,12 +12,14 @@ import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMes
 
 import { mockRHMetrics, mockTrackData } from '../../data/mockRHData';
 import { mockCollaboratorsSummary } from '../../data/mockCollaborators';
+import { CycleBanner } from '../../components/Dashboard/CycleBanner';
+import { formatDate, getRemainingDays } from '../../utils/globalUtils';
 
 export function RHDashboard() {
 
     const { user } = useAuth();
 
-    const { currentCycle, isLoading } = useCycle();
+    const { currentCycle, isLoading, status } = useCycle();
 
     if (isLoading) {
         return <CycleLoading />;
@@ -32,24 +34,26 @@ export function RHDashboard() {
             <DashboardHeader userName={user?.name || 'Gestor RH'} />
             <main className="p-8 pt-6">
 
-                <div className="mb-6">
-                    <RHMetrics
-                        totalCollaborators={mockRHMetrics.totalCollaborators}
-                        completedEvaluations={
-                            mockRHMetrics.completedEvaluations
-                        }
-                        pendingEvaluations={mockRHMetrics.pendingEvaluations}
-                        completionPercentage={
-                            mockRHMetrics.completionPercentage
-                        }
-                    />
-                </div>
+                {status === 'open' ? (
+                    <div className="mb-6">
+                        <RHMetrics
+                            totalCollaborators={mockRHMetrics.totalCollaborators}
+                            completedEvaluations={mockRHMetrics.completedEvaluations}
+                            pendingEvaluations={mockRHMetrics.pendingEvaluations}
+                            completionPercentage={mockRHMetrics.completionPercentage}
+                            daysUntilClosure={getRemainingDays({ endDate: currentCycle.endDate }).daysToEnd}
+                            closureDate={currentCycle.endDate && formatDate(currentCycle.endDate)}
+                        />
+                    </div>
+                ) : (
+                    <div className="mb-6">
+                        <CycleBanner />
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                     <section className="lg:col-span-5 xl:col-span-4 h-full flex flex-col min-h-[400px] max-h-[600px]">
-                        <RHCollaboratorList
-                            evaluationsSummary={mockCollaboratorsSummary}
-                        />
+                            <RHCollaboratorList evaluationsSummary={mockCollaboratorsSummary} />
                     </section>
 
                     <section className="lg:col-span-7 xl:col-span-8 h-full flex flex-col min-h-[400px] max-h-[600px]">
@@ -63,7 +67,13 @@ export function RHDashboard() {
                                 </Typography>
                             </div>
                             <div className="flex-1 flex items-center min-h-0">
-                                <RHPerformanceChart data={mockTrackData} />
+                                {status !== 'upcoming' && status !== 'undefined' ? (
+                                    <RHPerformanceChart data={mockTrackData} />
+                                ) : (
+                                    <Typography variant="caption" color="muted" className="w-full text-center">
+                                        O ciclo {currentCycle.name} de avaliação ainda não começou
+                                    </Typography>
+                                )}
                             </div>
                         </CardContainer>
                     </section>

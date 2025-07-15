@@ -18,8 +18,8 @@ interface RHMetricsProps {
 export function RHMetrics({
     pendingEvaluations,
     completionPercentage,
-    daysUntilClosure = 30,
-    closureDate = '30/08/2025',
+    daysUntilClosure,
+    closureDate,
 }: RHMetricsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6">

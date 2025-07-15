@@ -11,7 +11,6 @@ import { mockCycles } from '../../data/mockCycles';
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import { useCycle } from '../../hooks/useCycle';
-import { getRemainingDays } from '../../utils/globalUtils';
 
 const chartData = mockCycles
     .filter(cycle => cycle.status === 'Finalizado')
@@ -37,12 +36,7 @@ export function CollaboratorDashboard() {
             <DashboardHeader userName={user?.name || 'Usuário Teste'} />
             <main className='p-8 pt-6'>
                 <div className="mb-4">
-                    <CycleBanner
-                        cycleStatus={{isActive: currentCycle.isActive, done: currentCycle.done}}
-                        cycleName={`Ciclo ${currentCycle.name}`}
-                        remainingDays={getRemainingDays({ startDate: currentCycle.startDate, endDate: currentCycle.endDate })}
-                        linkTo="/avaliacao"
-                    />
+                    <CycleBanner linkTo="/avaliacao" />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -3,26 +3,26 @@ import { LuNotebookPen } from 'react-icons/lu';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import CardContainer from '../common/CardContainer';
-import { getCycleStatus } from '../../utils/cycleUtils';
+import { useCycle } from '../../hooks/useCycle';
+import { getRemainingDays } from '../../utils/globalUtils';
 
 interface CycleBannerProps {
-    cycleStatus: { isActive: boolean; done: boolean };
-    cycleName: string;
-    remainingDays?: { daysToStart: number; daysToEnd: number };
     linkTo?: string;
 }
 
-export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/avaliacao' }: CycleBannerProps) {
+export function CycleBanner({ linkTo }: CycleBannerProps) {
 
     const navigate = useNavigate();
 
+    const { status, currentCycle } = useCycle();
+
     const handleNavigate = () => {
         if (linkTo) {
-            navigate(linkTo);
+            navigate('/avaliacao');
         }
     };
 
-    const status = getCycleStatus({ ...cycleStatus, ...remainingDays });
+    const remainingDays =  getRemainingDays({ startDate: currentCycle.startDate, endDate: currentCycle.endDate })
 
     const getBannerContent = () => {
         switch (status) {
@@ -30,7 +30,7 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                 return (
                     <>
                         <Typography variant="h3" color="white" className="font-bold">
-                            {cycleName} de avaliação está aberto
+                            {currentCycle.name} de avaliação está aberto
                         </Typography>
                         <Typography variant="caption" color="white">
                             {remainingDays && remainingDays.daysToEnd > 0 ? (
@@ -49,7 +49,7 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                             color="muted"
                             className="font-bold"
                         >
-                            {cycleName} de avaliação finalizado
+                            {currentCycle.name} de avaliação finalizado
                         </Typography>
                         <Typography variant="caption" color="muted">
                             <>
@@ -64,8 +64,8 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                     <>
                         <Typography variant="h3" color="primary" className="font-bold">
                             {remainingDays && remainingDays.daysToStart > 0
-                                ? `${cycleName} de avaliação está prestes a começar`
-                                : `${cycleName} de avaliação já iniciou`}
+                                ? `${currentCycle.name} de avaliação está prestes a começar`
+                                : `${currentCycle.name} de avaliação já iniciou`}
                         </Typography>
                         <Typography variant="caption" color="primary">
                             {remainingDays && remainingDays.daysToStart > 0
@@ -78,7 +78,7 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                 return (
                     <>
                         <Typography variant="h3" color="primary500" className="font-bold">
-                            {cycleName} de avaliação finalizado
+                            {currentCycle.name} de avaliação finalizado
                         </Typography>
                         <Typography variant="caption" color="primary500">
                             <>
@@ -88,7 +88,7 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                         </Typography>
                     </>
                 );
-            default:
+            case 'undefined':
                 return (
                     <>
                         <Typography variant="h3" color="muted" className="font-bold">
@@ -102,6 +102,8 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                         </Typography>
                     </>
                 );
+            default:
+                return null
         }
     };
 
@@ -144,7 +146,7 @@ export function CycleBanner({ cycleStatus, cycleName, remainingDays, linkTo = '/
                 className="flex items-center justify-between p-10"
                 onClick={handleNavigate}
                 role="button"
-                aria-label={`Ver detalhes do ${cycleName}`}
+                aria-label={`Ver detalhes do ${currentCycle.name}`}
             >
                 <div className="flex items-center space-x-5">
                     <span className={`text-2xl ${getIconColor()}`}>

@@ -6,6 +6,7 @@ import Typography from '../common/Typography';
 import CardContainer from '../common/CardContainer';
 
 import type { CollaboratorsEvaluationsSummary } from '../../types/collaborator';
+import { useCycle } from '../../hooks/useCycle';
 
 interface RHCollaboratorListProps {
     evaluationsSummary: CollaboratorsEvaluationsSummary;
@@ -14,6 +15,8 @@ interface RHCollaboratorListProps {
 export function RHCollaboratorList({ evaluationsSummary }: RHCollaboratorListProps) {
 
     const navigate = useNavigate();
+
+    const { currentCycle, status } = useCycle();
 
     const getInitials = (name: string) =>
         name
@@ -35,43 +38,49 @@ export function RHCollaboratorList({ evaluationsSummary }: RHCollaboratorListPro
             </div>
 
             <div className="flex-1 flex flex-col max-h-full overflow-y-auto overflow-x-hidden custom-scrollbar space-y-3 pr-2">
-                {evaluationsSummary.map(summary => (
-                    <div key={summary.collaborator.id} className="flex items-center justify-between border border-gray-300 rounded-xl p-3 hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center space-x-3 flex-1 min-w-0">
-                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                                <span className="text-gray-700 font-semibold text-sm">
-                                    {getInitials(summary.collaborator.name)}
-                                </span>
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2 sm:block">
-                                    <Typography variant="body" className="font-semibold text-gray-900 truncate">
-                                        {summary.collaborator.name}
-                                    </Typography>
-                                    <div className="sm:hidden">
-                                        <Badge
-                                            label={summary.status === 'finalizado' ? 'Finalizado' : 'Pendente'}
-                                            variant={summary.status === 'finalizado' ? 'success' : 'warning'}
-                                            size="sm"
-                                        />
-                                    </div>
-                                </div>
-                                
-                                <Typography variant="caption" className="text-gray-600 truncate">
-                                    {summary.collaborator.position}
-                                </Typography>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:block">
-                            <Badge
-                                label={summary.status === 'finalizado' ? 'Finalizado' : 'Pendente'}
-                                variant={summary.status === 'finalizado' ? 'success' : 'warning'}
-                                size="sm"
-                            />
-                        </div>
+                {(status === 'upcoming' || status === 'undefined') ? (
+                    <div className="flex flex-1 items-center justify-center">
+                        <Typography variant="caption" color="muted" className="w-full text-center">
+                            O ciclo {currentCycle.name} de avaliação ainda não começou
+                        </Typography>
                     </div>
-                ))}
+                ) : (
+                    evaluationsSummary.map(summary => (
+                        <div key={summary.collaborator.id} className="flex items-center justify-between border border-gray-300 rounded-xl p-3 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center space-x-3 flex-1 min-w-0">
+                                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <span className="text-gray-700 font-semibold text-sm">
+                                        {getInitials(summary.collaborator.name)}
+                                    </span>
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 sm:block">
+                                        <Typography variant="body" className="font-semibold text-gray-900 truncate">
+                                            {summary.collaborator.name}
+                                        </Typography>
+                                        <div className="sm:hidden">
+                                            <Badge
+                                                label={summary.status === 'finalizado' ? 'Finalizado' : 'Pendente'}
+                                                variant={summary.status === 'finalizado' ? 'success' : 'warning'}
+                                                size="sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Typography variant="caption" className="text-gray-600 truncate">
+                                        {summary.collaborator.position}
+                                    </Typography>
+                                </div>
+                            </div>
+                            <div className="hidden sm:block">
+                                <Badge
+                                    label={summary.status === 'finalizado' ? 'Finalizado' : 'Pendente'}
+                                    variant={summary.status === 'finalizado' ? 'success' : 'warning'}
+                                    size="sm"
+                                />
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </CardContainer>
     );

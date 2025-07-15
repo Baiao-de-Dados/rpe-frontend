@@ -15,7 +15,6 @@ import Button from '../../components/common/Button';
 import Typography from '../../components/common/Typography';
 import CycleLoading from '../../components/common/CycleLoading';
 import CardContainer from '../../components/common/CardContainer';
-import { CycleBanner } from '../../components/Dashboard/CycleBanner';
 import { ManagerMetrics } from '../../components/Dashboard/ManagerMetrics';
 import { DashboardHeader } from '../../components/Dashboard/DashboardHeader';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
@@ -178,15 +177,6 @@ export function ManagerDashboard() {
         <>
             <DashboardHeader userName={user?.name || 'Gestor'} />
             <main className="p-8 pt-6 space-y-6">
-                {currentCycle && (
-                    <CycleBanner
-                        cycleName={currentCycle.name || 'Ciclo Atual'}
-                        status={currentCycle.isActive ? 'open' : 'closed'}
-                        remainingDays={15} // TODO: Calcular dias restantes baseado no ciclo
-                        linkTo="/avaliacao"
-                    />
-                )}
-
                 <div className="mb-6">
                     <ManagerMetrics
                         cycleStatus={currentCycle.isActive ? 'open' : 'closed'}

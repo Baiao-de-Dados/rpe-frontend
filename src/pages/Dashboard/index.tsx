@@ -6,6 +6,7 @@ import { LeaderDashboard } from './LeaderDashboard';
 import { AdminDashboard } from './AdminDashboard';
 import { ManagerDashboard } from './ManagerDashboard';
 import { CommitteeDashboard } from './CommitteeDashboard';
+import { RHDashboard } from './RHDashboard';
 
 export function Dashboard() {
 
@@ -19,7 +20,7 @@ export function Dashboard() {
 
     // RH Dashboard (prioridade alta)
     if (hasRole(UserRoleEnum.RH)) {
-        return <CommitteeDashboard />; // RH vê dashboard de comitê
+        return <RHDashboard />; // RH vê dashboard de comitê
     }
 
     // Committee Dashboard
