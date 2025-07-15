@@ -5,6 +5,7 @@ export type FormValues = {
     evaluation360?: Evaluation360FormItem[];
     mentoringJustification?: string;
     mentoringRating?: number;
+    mentorId?: number;
     references?: ReferencesFormItem[];
 };
 
@@ -125,6 +126,7 @@ export function buildCollaboratorDraftPayload(values: FormValues, cycleId: numbe
     const mentoring: MentoringDraft = {
         justification: values.mentoringJustification || '',
         rating: values.mentoringRating || 0,
+        mentorId: values.mentorId || 0, // Ensure mentorId is included
     };
 
     const references: ReferencesDraft[] = (values.references || []).map((item: ReferencesFormItem) => ({

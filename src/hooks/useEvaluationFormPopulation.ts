@@ -18,6 +18,8 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
     useEffect(() => {
         const navigationState = location.state as NavigationState | null;
 
+        let populated = false;
+
         if (location.state) {
             navigate(location.state.url, { replace: true });
         }
@@ -33,6 +35,7 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
                     justification: selfAssess.justification,
                     selfAssessmentIAValid: (selfAssess.rating === 0 && selfAssess.justification === '') ? true : false
                 })));
+                populated = true;
             }
 
             if (evaluation360 && evaluation360.length > 0) {
@@ -43,12 +46,14 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
                     improvements: eval360.improvements,
                     evaluation360IAValid: false
                 })));
+                populated = true;
             }
 
             if (mentoring) {
                 methods.setValue('mentoringRating', mentoring.rating ?? 0);
                 methods.setValue('mentoringJustification', mentoring.justification ?? '');
                 methods.setValue('mentoringIAValid', false, { shouldValidate: true });
+                populated = true;
             }
 
             if (references && references.length > 0) {
@@ -57,6 +62,7 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
                     justification: ref.justification,
                     referencesIAValid: false
                 })));
+                populated = true;
             }
         }
 
@@ -86,6 +92,7 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
                     });
                 }
                 methods.setValue('selfAssessment', filled);
+                populated = true;
             }
             // Evaluation360
             if (draftData.draft?.evaluation360?.length) {
@@ -111,17 +118,24 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
                     });
                 }
                 methods.setValue('evaluation360', filled);
+                populated = true;
             }
             // Mentoring
             if (draftData.draft?.mentoring) {
                 if (!methods.getValues('mentoringRating')) {
                     methods.setValue('mentoringRating', draftData.draft.mentoring.rating || 0);
+                    populated = true;
                 }
                 if (!methods.getValues('mentoringJustification')) {
                     methods.setValue('mentoringJustification', draftData.draft.mentoring.justification || '');
+                    populated = true;
                 }
                 if (methods.getValues('mentoringIAValid') === undefined) {
                     methods.setValue('mentoringIAValid', true, { shouldValidate: true });
+                    populated = true;
+                }
+                if (methods.getValues('mentorId') === undefined) {
+                    methods.setValue('mentorId', draftData.draft.mentoring.mentorId);
                 }
             }
             // References
@@ -144,7 +158,15 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
                     });
                 }
                 methods.setValue('references', filled);
+
+                populated = true;
             }
+        }
+
+        // Força validação do formulário se algum campo foi populado
+        if (populated) {
+            console.log("salve")
+            methods.trigger();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.state, draftData]);

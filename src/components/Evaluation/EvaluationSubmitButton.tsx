@@ -72,6 +72,7 @@ const EvaluationSubmitButton = memo(() => {
                     rating: item.rating ?? 0,
                 })) ?? [],
                 mentoringRating: values.mentoringRating ?? 0,
+                mentorId: values.mentorId ?? 0,
                 };
             const payload = buildCollaboratorDraftPayload(safeValues, currentCycle.id);
             saveDraftMutation.mutate(payload);

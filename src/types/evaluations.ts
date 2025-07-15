@@ -15,6 +15,7 @@ export type Evaluation360Draft = {
 export type MentoringDraft = {
     justification: string;
     rating: number;
+    mentorId: number
 };
 
 export type ReferencesDraft = {
