@@ -4,9 +4,9 @@ import { LuUsers, LuClipboardCheck } from 'react-icons/lu';
 import { CHART_COLORS, getScoreColor } from '../../utils/colorUtils';
 import ProgressCircle from '../common/ProgressCircle';
 import { FaStar } from 'react-icons/fa';
+import { useCycle } from '../../hooks/useCycle';
 
 interface LeaderMetricsProps {
-    cycleStatus: 'open' | 'closed';
     totalLeadership: number;
     reviewsCompleted: number;
     completionPercentage: number;
@@ -16,7 +16,6 @@ interface LeaderMetricsProps {
 }
 
 export function LeaderMetrics({
-    cycleStatus,
     totalLeadership,
     reviewsCompleted,
     completionPercentage,
@@ -25,6 +24,9 @@ export function LeaderMetrics({
     averageLeaderScore
 
 }: LeaderMetricsProps) {
+
+    const { status: cycleStatus } = useCycle();
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
 
@@ -128,9 +130,9 @@ export function LeaderMetrics({
                             >
                                 Você possui{' '}
                                 <span className="font-semibold" style={{ color: CHART_COLORS.BELOW }}>
-                                    {completionPercentage}
+                                    {pendingReviews}
                                 </span>{' '}
-                                avaliações pendentes
+                                {pendingReviews === 1 ? 'avaliação pendente' : 'avaliações pendentes'}
                             </Typography>
                         </div>
                     </div>
