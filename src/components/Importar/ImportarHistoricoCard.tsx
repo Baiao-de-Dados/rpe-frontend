@@ -4,6 +4,7 @@ import { Trash, FileUp } from 'lucide-react';
 
 import formatSize from './utils/formatSize';
 import { importEvaluations } from '../../services/api/import'; // Importar a função para chamar o backend
+import { useToast } from '../../hooks/useToast'; // Importar o hook useToast
 
 import type { FileItem } from '../../types/file';
 
@@ -13,12 +14,12 @@ import { useOptimizedAnimation } from '../../hooks/useOptimizedAnimation';
 
 const ImportarHistoricoCard = () => {
     const { variants } = useOptimizedAnimation();
+    const { showToast } = useToast(); // Usar o hook useToast para exibir mensagens
 
     const inputRef = useRef<HTMLInputElement>(null);
 
     const [file, setFile] = useState<FileItem | null>(null); // Alterado para aceitar apenas um arquivo
     const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
-    const [message, setMessage] = useState<string | null>(null); // Estado para exibir mensagens de sucesso ou erro
 
     const handleFile = (file: File | null) => {
         if (!file) return;
@@ -53,17 +54,17 @@ const ImportarHistoricoCard = () => {
         if (!file) return;
 
         setLoading(true);
-        setMessage(null);
 
         try {
             await importEvaluations(file.fileData); // Enviar o arquivo para o backend
-            setMessage(`Arquivo "${file.name}" enviado com sucesso.`);
+            showToast('Arquivo enviado com sucesso.', 'success'); // Exibir mensagem de sucesso
             setFile(null); // Limpar o arquivo após o envio
         } catch (error: any) {
             console.error('Erro ao enviar o arquivo:', error);
-            setMessage(
-                error.response?.data?.message || 'Erro ao enviar o arquivo. Tente novamente.'
-            );
+            showToast(
+                error.response?.data?.message || 'Erro ao enviar o arquivo. Tente novamente.',
+                'error'
+            ); // Exibir mensagem de erro
         } finally {
             setLoading(false);
         }
@@ -129,7 +130,6 @@ const ImportarHistoricoCard = () => {
                     >
                         {loading ? 'Enviando...' : 'Enviar Arquivo'}
                     </button>
-                    {message && <p className="mt-4 text-center">{message}</p>}
                 </div>
             </CardContainer>
         </motion.div>
