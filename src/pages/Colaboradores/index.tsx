@@ -8,6 +8,7 @@ import { UserRoleEnum } from '../../types/auth';
 
 import { useLeaderCollaboratorsEvaluation } from '../../hooks/api/useLeaderQuery';
 import { useCollaboratorsOnly, useCollaboratorsEvaluationsSummary } from '../../hooks/api/useManagerQuery';
+import { useCommitteeCollaboratorsSummary } from '../../hooks/api/useCommitteeQuery';
 import { useAdvancedCollaboratorFilter } from '../../hooks/useAdvancedCollaboratorFilter';
 
 import Searchbar from '../../components/common/Searchbar';
@@ -34,6 +35,9 @@ export function Colaboradores() {
 
     // API queries para líder
     const { data: leaderCollaboratorsEvaluations = [] } = useLeaderCollaboratorsEvaluation();
+
+    // ✅ NOVO: API queries para comitê (igual ao dashboard)
+    const { data: committeeCollaboratorsSummary, isLoading: committeeCollaboratorsLoading } = useCommitteeCollaboratorsSummary();
 
     // Combinar dados de colaboradores com dados de avaliação (igual ao dashboard)
     const collaboratorsWithCalculatedScores = useMemo(() => {
@@ -62,10 +66,34 @@ export function Colaboradores() {
         });
     }, [collaboratorsOnly, collaboratorsEvaluationsSummary]);
 
+    // ✅ NOVO: Converter dados do comitê (igual ao dashboard do comitê)
+    const committeeCollaboratorsWithCalculatedScores = useMemo(() => {
+        if (!committeeCollaboratorsSummary) return [];
+
+        return committeeCollaboratorsSummary.map(summary => ({
+            collaborator: {
+                id: summary.collaborator.id,
+                name: summary.collaborator.name,
+                position: summary.collaborator.position,
+                email: 'colaborador@example.com', // TODO: Adicionar email na API
+                track: { id: 1, name: 'Default Track' } // TODO: Adicionar track na API
+            },
+            autoEvaluationScore: summary.autoEvaluation,
+            evaluation360Score: summary.evaluation360,
+            managerEvaluationScore: summary.managerEvaluation,
+            finalEvaluationScore: summary.committeeEqualization, // Nota final é a equalização
+            status: summary.status === 'completed' ? 'finalizado' as const : 'pendente' as const,
+        }));
+    }, [committeeCollaboratorsSummary]);
+
     const getFilteredCollaboratorsSummaryByRole = () => {
-        if (hasRole(UserRoleEnum.RH) || hasRole(UserRoleEnum.COMMITTEE) || hasRole(UserRoleEnum.ADMIN) || hasRole(UserRoleEnum.DEVELOPER)) {
-            // TODO: Implementar dados reais para RH/Committee/Admin/Developer
+        if (hasRole(UserRoleEnum.RH) || hasRole(UserRoleEnum.ADMIN) || hasRole(UserRoleEnum.DEVELOPER)) {
+            // TODO: Implementar dados reais para RH/Admin/Developer
             return [];
+        }
+        if (hasRole(UserRoleEnum.COMMITTEE)) {
+            // ✅ NOVO: Usar os mesmos dados do dashboard do comitê
+            return committeeCollaboratorsWithCalculatedScores;
         }
         if (hasRole(UserRoleEnum.MANAGER)) {
             return collaboratorsWithCalculatedScores;
@@ -80,7 +108,9 @@ export function Colaboradores() {
     const positions = [...new Set(collaboratorsSummaryByRole.map((e) => e.collaborator.position))];
     const tracks: string[] = [];
 
-    const isLoading = cycleLoading || collaboratorsLoading;
+    // ✅ NOVO: Usar o loading correto baseado no role
+    const isLoading = cycleLoading || 
+        (hasRole(UserRoleEnum.COMMITTEE) ? committeeCollaboratorsLoading : collaboratorsLoading);
 
     const { search, setSearch, setFilters, filteredCollaborators } = useAdvancedCollaboratorFilter({
         collaboratorsSummary: collaboratorsSummaryByRole,
@@ -143,7 +173,9 @@ export function Colaboradores() {
                 <div className="flex flex-col gap-3 sm:gap-4">
                     {filteredCollaborators.length === 0 ? (
                         <div className="text-center py-12">
-                            <span className="text-gray-500 text-base sm:text-lg">Nenhum colaborador encontrado</span>
+                            <span className="text-gray-500 text-base sm:text-lg">
+                                {isLoading ? 'Carregando colaboradores...' : 'Nenhum colaborador encontrado'}
+                            </span>
                         </div>
                     ) : (
                         filteredCollaborators.map(summary => (

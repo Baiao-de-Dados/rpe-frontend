@@ -86,7 +86,7 @@ function Equalizacao() {
                 {filteredCollaborators.length === 0 ? (
                     <div className="text-center py-12">
                         <Typography variant="body" className="text-gray-500">
-                            Nenhuma avaliação encontrada com os critérios selecionados.
+                            {collaboratorsLoading ? 'Carregando colaboradores...' : 'Nenhuma avaliação encontrada com os critérios selecionados.'}
                         </Typography>
                     </div>
                 ) : (
