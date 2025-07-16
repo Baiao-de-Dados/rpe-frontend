@@ -80,7 +80,7 @@ export function CycleCard({ score, status, cycleName, summary, onClick }: CycleC
                             size="md"
                         />
                     </div>
-                    <SummaryBox summary={summary} />
+                    <SummaryBox summary={summary} className="w-full break-words whitespace-pre-line" />
                 </div>
 
                 <div className="sm:hidden">

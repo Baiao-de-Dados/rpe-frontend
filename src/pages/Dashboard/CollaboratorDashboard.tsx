@@ -7,23 +7,35 @@ import { DashboardHeader } from '../../components/Dashboard/DashboardHeader';
 import Typography from '../../components/common/Typography';
 import CardContainer from '../../components/common/CardContainer';
 import Button from '../../components/common/Button';
-import { mockCycles } from '../../data/mockCycles';
+import { useCycleGradesQuery } from '../../hooks/api/useCollaboratorQuery';
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import { useCycle } from '../../hooks/useCycle';
 
-const chartData = mockCycles
-    .filter(cycle => cycle.status === 'Finalizado')
-    .map(({ cycleName, score }) => ({ cycleName, score }));
-
 export function CollaboratorDashboard() {
-
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { data: cyclesGrades, isLoading } = useCycleGradesQuery();
+    const { currentCycle, isLoading: isLoadingCycle } = useCycle(); // Mantido para uso futuro
 
-    const { currentCycle, isLoading } = useCycle();
+    // Adapta os dados da API para os componentes
+    const cycles = cyclesGrades?.cycles || [];
+    const cycleCards = cycles.map(cycle => ({
+        cycleName: `Ciclo ${cycle.cycleName}`,
+        score: cycle.finalEvaluation ?? 0,
+        status: cycle.finalEvaluation !== null && cycle.finalEvaluation !== undefined ? 'Finalizado' : 'Em andamento',
+        summary: '',
+    }));
 
-    if (isLoading) {
+    const chartData = cycles
+        .filter(cycle => cycle.finalEvaluation !== null && cycle.finalEvaluation !== undefined)
+        .map(cycle => ({
+            cycleName: cycle.cycleName,
+            finalScore: cycle.finalEvaluation ?? 0,
+            selfEvalScore: cycle.finalEvaluation ?? 0,
+        }));
+
+    if (isLoading || isLoadingCycle) {
         return <CycleLoading />;
     }
 
@@ -46,30 +58,32 @@ export function CollaboratorDashboard() {
                                 <Typography variant="h2" color="primary" className="font-bold text-lg sm:text-xl">
                                     Suas avaliações
                                 </Typography>
-                                    <Button variant="link" size="sm" onClick={() => navigate('/avaliacao')}>
-                                        Ver mais
-                                    </Button>
+                                <Button variant="link" size="sm" onClick={() => navigate('/avaliacao')}>
+                                    Ver mais
+                                </Button>
                             </div>
 
                             <div className="h-[400px] sm:h-[500px] overflow-y-auto pr-2">
-                                <div className="space-y-4">
-                                    {mockCycles.map(cycle => (
-                                        <CycleCard
-                                            key={cycle.cycleName}
-                                            score={cycle.score}
-                                            status={
-                                                cycle.status as
-                                                    | 'Finalizado'
-                                                    | 'Em andamento'
-                                            }
-                                            cycleName={`Ciclo ${cycle.cycleName}`}
-                                            summary={cycle.summary}
-                                            onClick={() =>
-                                                navigate('/avaliacao')
-                                            }
-                                        />
-                                    ))}
-                                </div>
+                                {cycleCards.length === 0 ? (
+                                    <div className="flex items-center justify-center h-full text-neutral-500">
+                                        <Typography variant="body" color="muted">
+                                            Nenhuma avaliação encontrada
+                                        </Typography>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {cycleCards.map(cycle => (
+                                            <CycleCard
+                                                key={cycle.cycleName}
+                                                score={cycle.score}
+                                                status={cycle.status as 'Finalizado' | 'Em andamento'}
+                                                cycleName={cycle.cycleName}
+                                                summary={cycle.summary}
+                                                onClick={() => navigate('/avaliacao')}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </CardContainer>
                     </section>
@@ -88,7 +102,7 @@ export function CollaboratorDashboard() {
                         </CardContainer>
                     </section>
                 </div>
-        </main>
+            </main>
         </>
     );
 }

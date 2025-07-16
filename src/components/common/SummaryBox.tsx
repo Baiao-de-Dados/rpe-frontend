@@ -79,6 +79,7 @@ const SummaryBox: React.FC<SummaryBoxProps> = ({
                         variant="body"
                         color="muted"
                         className="text-sm leading-relaxed"
+                        
                     >
                         {summaryText}
                     </Typography>
