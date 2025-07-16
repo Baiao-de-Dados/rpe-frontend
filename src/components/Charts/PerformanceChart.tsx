@@ -22,7 +22,12 @@ ChartJS.register(
 );
 
 interface PerformanceChartProps {
-    cycles: { cycleName: string; score: number }[];
+    cycles: {
+        cycleName: string; 
+        finalScore: number;
+        selfEvalScore?: number;
+        managerScore?: number;
+    }[];
 }
 
 type FilterOption = 'last3' | 'lastN' | 'all';
@@ -89,9 +94,9 @@ export function PerformanceChart({ cycles }: PerformanceChartProps) {
         datasets: [
             {
                 label: 'Desempenho',
-                data: displayCycles.map(cycle => cycle.score),
+                data: displayCycles.map(cycle => cycle.finalScore),
                 backgroundColor: displayCycles.map(cycle =>
-                    getBarColor(cycle.score),
+                    getBarColor(cycle.finalScore),
                 ),
                 borderWidth: 0,
                 borderRadius: 6,

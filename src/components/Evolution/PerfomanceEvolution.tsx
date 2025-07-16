@@ -12,7 +12,9 @@ import {
 interface Cycle {
     cycleName: string;
     status: 'Finalizado' | 'Em andamento' | 'Pendente' | string;
-    score: number;
+    finalScore: number;
+    selfEvalScore?: number;
+    managerScore?: number;
     summary: string;
 }
 

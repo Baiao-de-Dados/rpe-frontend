@@ -10,8 +10,7 @@ interface CollCycleCardProps {
     status: 'Finalizado' | 'Em andamento';
     finalScore: number;
     selfEvalScore?: number;
-    executionScore?: number;
-    postureScore?: number;
+    managerScore?: number;
     summary?: string;
     onClick?: () => void;
 }
@@ -19,10 +18,9 @@ interface CollCycleCardProps {
 const CollCycleCard: React.FC<CollCycleCardProps> = ({
     cycleName,
     status,
-    finalScore,
     selfEvalScore = 0,
-    executionScore = 0,
-    postureScore = 0,
+    managerScore = 0,
+    finalScore = 0,
     summary = '',
     onClick,
 }) => {
@@ -98,21 +96,21 @@ const CollCycleCard: React.FC<CollCycleCardProps> = ({
                                 variant="caption"
                                 className="text-gray-500 text-xs sm:text-sm"
                             >
-                                Avaliação final - Execução
+                                Avaliação gestor
                             </Typography>
                             <span
                                 className="font-bold text-sm"
-                                style={getScoreStyles(executionScore)}
+                                style={getScoreStyles(managerScore)}
                             >
-                                {executionScore.toFixed(1)}
+                                {managerScore.toFixed(1)}
                             </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
                                 style={{
-                                    width: `${executionScore * 20}%`,
-                                    ...getScoreBgStyles(executionScore)
+                                    width: `${managerScore * 20}%`,
+                                    ...getScoreBgStyles(managerScore)
                                 }}
                             ></div>
                         </div>
@@ -124,21 +122,21 @@ const CollCycleCard: React.FC<CollCycleCardProps> = ({
                                 variant="caption"
                                 className="text-gray-500 text-xs sm:text-sm"
                             >
-                                Avaliação final - Postura
+                                Avaliação final
                             </Typography>
                             <span
                                 className="font-bold text-sm"
-                                style={getScoreStyles(postureScore)}
+                                style={getScoreStyles(finalScore)}
                             >
-                                {postureScore.toFixed(1)}
+                                {finalScore.toFixed(1)}
                             </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
                                 style={{
-                                    width: `${postureScore * 20}%`,
-                                    ...getScoreBgStyles(postureScore)
+                                    width: `${finalScore * 20}%`,
+                                    ...getScoreBgStyles(finalScore)
                                 }}
                             ></div>
                         </div>

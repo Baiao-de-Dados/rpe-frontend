@@ -181,3 +181,4 @@ export function useCycleGradesQuery(options?: { enabled?: boolean }) {
         staleTime: 30 * 1000,
     });
 }
+

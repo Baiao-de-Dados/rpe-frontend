@@ -1,4 +1,4 @@
-import { mockCycles } from '../../data/mockCycles';
+import { useCycleGradesQuery } from '../../hooks/api/useCollaboratorQuery';
 
 import PageHeader from '../common/PageHeader';
 import DropdownButton from '../common/DropdownButton';
@@ -9,11 +9,10 @@ interface EvolutionHeaderProps {
 }
 
 export function EvolutionHeader({ selectedCycle, onSelectCycle }: EvolutionHeaderProps) {
-
-    const sortedCycles = mockCycles
-        .slice()
-        .sort((a, b) => b.cycleName.localeCompare(a.cycleName))
-        .map(cycle => cycle.cycleName);
+    const { data: cyclesGrades } = useCycleGradesQuery();
+    const sortedCycles = cyclesGrades?.cycles
+        ? cyclesGrades.cycles.slice().sort((a, b) => b.cycleName.localeCompare(a.cycleName)).map(cycle => cycle.cycleName)
+        : [];
 
     const cyclesWithAll = ['Todos', ...sortedCycles];
     const selected = selectedCycle === 'all' ? 'Todos' : selectedCycle;

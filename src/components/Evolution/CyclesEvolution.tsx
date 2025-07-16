@@ -5,7 +5,9 @@ import CardContainer from '../common/CardContainer';
 interface Cycle {
     cycleName: string;
     status: 'Finalizado' | 'Em andamento' | string;
-    score: number;
+    selfEvalScore: number;
+    managerScore: number;
+    finalScore: number;
     summary: string;
 }
 
@@ -19,27 +21,29 @@ export function CyclesEvolution({ sortedCycles }: EvolucaoCiclosProps) {
             <Typography variant="h2" className="text-lg font-bold mb-4 ">
                 Ciclos de Avaliação
             </Typography>
-            <div className="space-y-6">
-                {sortedCycles.map(cycle => (
-                    <CollCycleCard
-                        key={cycle.cycleName}
-                        cycleName={cycle.cycleName}
-                        status={
-                            cycle.status as
-                                | 'Finalizado'
-                                | 'Em andamento'
-                        }
-                        finalScore={cycle.score}
-                        selfEvalScore={cycle.score}
-                        executionScore={4.0}
-                        postureScore={4.5}
-                        summary={cycle.summary}
-                        onClick={() => {
-                            /* navigate to cycle details if needed */
-                        }}
-                    />
-                ))}
-            </div>
+            {sortedCycles.length === 0 ? (
+                <Typography variant="body" className="text-gray-500 text-center py-8">
+                    Nenhum ciclo disponível
+                </Typography>
+            ) : (
+                <div className="space-y-6">
+                    {sortedCycles.map(cycle => (
+                        <CollCycleCard
+                            key={cycle.cycleName}
+                            cycleName={cycle.cycleName}
+                            status={
+                                cycle.status as
+                                    | 'Finalizado'
+                                    | 'Em andamento'
+                            }
+                            finalScore={cycle.finalScore}
+                            selfEvalScore={cycle.selfEvalScore}
+                            managerScore={cycle.managerScore}
+                            summary={cycle.summary}
+                        />
+                    ))}
+                </div>
+            )}
         </CardContainer>
     );
 }
