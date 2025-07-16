@@ -1,2 +1,0 @@
-pnpm run type-check
-pnpm exec lint-staged

@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { useCycle } from '../../hooks/useCycle';
 import { useLeaderCollaboratorsEvaluation } from '../../hooks/api/useLeaderQuery';
 import { useAdvancedCollaboratorFilter } from '../../hooks/useAdvancedCollaboratorFilter';
+import { leaderEndpoints } from '../../services/api/leader';
 
 import SearchBar from '../../components/common/Searchbar';
 import SummaryBox from '../../components/common/SummaryBox';
@@ -27,7 +27,6 @@ function getPositionsAndTracks(collaboratorsSummary: any[]) {
 }
 
 export function BrutalFactsPage() {
-
     const navigate = useNavigate();
     const { currentCycle, isLoading, status } = useCycle();
     const {
@@ -67,7 +66,7 @@ export function BrutalFactsPage() {
             const previousCycleData = sortedCycles[currentCycleIndex - 1];
 
             const calculatedGrowth =
-                currentCycleData.averageEqualizationScore -
+                currentCycleData.averageEqualizationScore - 
                 previousCycleData.averageEqualizationScore;
 
             return {
@@ -87,6 +86,31 @@ export function BrutalFactsPage() {
         }));
     }, [allCycleAvg]);
 
+    // Adicionar lógica para buscar o resumo de IA
+    const [aiSummary, setAiSummary] = useState<string | null>(null);
+    const [loadingSummary, setLoadingSummary] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchAiSummary = async () => {
+            if (!currentCycle) return;
+            try {
+                const response = await leaderEndpoints.getLeaderEvaluation({
+                    leaderId: currentCycle.leaderId ?? 0, // Adicionar fallback para 0 caso leaderId não exista
+                    cycleId: currentCycle.id ?? 0,
+                    collaboratorId: collaboratorsSummary[0]?.collaborator?.id || 0, // Use o ID do primeiro colaborador ou padrão para 0
+                });
+                setAiSummary(response.data.aiSummary || 'Nenhum resumo disponível.');
+            } catch (error) {
+                console.error('Erro ao buscar resumo de IA:', error);
+                setAiSummary('Erro ao carregar resumo.');
+            } finally {
+                setLoadingSummary(false);
+            }
+        };
+
+        fetchAiSummary();
+    }, [currentCycle]);
+
     if (isLoading || isLeaderLoading || isLoadingAllCycleAvg) {
         return <CycleLoading />;
     }
@@ -95,7 +119,7 @@ export function BrutalFactsPage() {
         return <CycleLoadErrorMessage />;
     }
 
-    if (status !== 'done') {
+    if (status !== 'closed') {
         return <BrutalFactsNotClosedMessage cycle={currentCycle as Cycle}/>
     }
 
@@ -113,7 +137,10 @@ export function BrutalFactsPage() {
 
                 <CardContainer className="flex flex-col gap-6 mb-6">
                     <Typography variant="h2" className="text-black font-bold text-2xl">Resumo</Typography>
-                    <SummaryBox summary='' title="Insights" />
+                    <SummaryBox 
+                        summary={loadingSummary ? 'Carregando resumo...' : aiSummary || 'Nenhum resumo disponível.'} 
+                        title="Insights" 
+                    />
                 </CardContainer>
 
                 <CardContainer className="flex flex-col gap-6 p-6">

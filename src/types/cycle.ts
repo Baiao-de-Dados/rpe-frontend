@@ -38,4 +38,5 @@ export interface ExtendCyclePayload {
     endDate: string;
 }
 
-export type CurrentCycle = Partial<Cycle> & { name: string; isActive: boolean; done: boolean };
+export type CurrentCycle = Partial<Cycle> & { name: string; isActive: boolean; done: boolean; leaderId?: number; };
+
