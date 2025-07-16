@@ -23,12 +23,19 @@ interface ManagerPillarRatingDisplayProps {
         rating?: number | null;
         justification?: string;
     }>;
+    // Dados do manager para calcular média (usado na view do comitê)
+    managerData?: Array<{
+        criterionId: number;
+        rating?: number | null;
+        justification?: string;
+    }>;
 }
 
 export const ManagerPillarRatingDisplay = memo(({ 
     criteria, 
     validFields, 
-    collaboratorData = [] 
+    collaboratorData = [],
+    managerData = []
 }: ManagerPillarRatingDisplayProps) => {
 
     const { control } = useFormContext<FullManagerEvaluationFormData>();
@@ -41,13 +48,24 @@ export const ManagerPillarRatingDisplay = memo(({
             .filter(index => index !== -1);
     }, [criteria, validFields]);
 
-    // Watch para as notas do manager
+    // Watch para as notas do manager (usado apenas quando há formulário ativo)
     const watchedManagerRatings = useWatch({
         control,
         name: fieldIndices.map(
             index => `managerAssessment.${index}.rating` as const,
         ),
     });
+
+    // ✅ DEBUG: Log dos dados
+    console.log('🎯 ManagerPillarRatingDisplay: Dados recebidos:', {
+        criteria: criteria.length,
+        validFields: validFields.length,
+        collaboratorData: collaboratorData.length,
+        managerData: managerData.length,
+        watchedManagerRatings: watchedManagerRatings?.length
+    });
+    console.log('🎯 ManagerPillarRatingDisplay: Criteria IDs:', criteria.map(c => c.id));
+    console.log('🎯 ManagerPillarRatingDisplay: ManagerData criterionIds:', managerData.map(d => d.criterionId));
 
     // Calcular média ponderada do colaborador para este pilar
     const collaboratorAverage = useMemo(() => {
@@ -74,6 +92,49 @@ export const ManagerPillarRatingDisplay = memo(({
 
     // Calcular média ponderada do manager para este pilar
     const managerAverage = useMemo(() => {
+        // Se temos managerData (view do comitê), usar esses dados
+        if (managerData.length > 0) {
+            const criteriaInPillar = criteria.map(c => c.id);
+            console.log('🎯 ManagerPillarRatingDisplay: Criteria IDs no pilar:', criteriaInPillar);
+            console.log('🎯 ManagerPillarRatingDisplay: ManagerData criterionIds:', managerData.map(d => d.criterionId));
+            
+            const managerRatingsWithWeights = managerData
+                .filter(data => criteriaInPillar.includes(data.criterionId))
+                .map(data => {
+                    const criterion = criteria.find(c => c.id === data.criterionId);
+                    return {
+                        rating: data.rating,
+                        weight: criterion?.weight || 1
+                    };
+                })
+                .filter(item => typeof item.rating === 'number' && item.rating > 0 && typeof item.weight === 'number' && item.weight > 0);
+
+            console.log('🎯 ManagerPillarRatingDisplay: Cálculo da média do manager:', {
+                criteriaInPillar,
+                managerData,
+                managerRatingsWithWeights,
+                filteredCount: managerRatingsWithWeights.length
+            });
+            console.log('🎯 ManagerPillarRatingDisplay: ManagerData filtrado:', managerData.filter(data => criteriaInPillar.includes(data.criterionId)));
+
+            if (managerRatingsWithWeights.length === 0) return null;
+
+            const totalWeight = managerRatingsWithWeights.reduce((sum, item) => sum + item.weight, 0);
+            if (totalWeight === 0) return null;
+
+            const weightedSum = managerRatingsWithWeights.reduce((sum, item) => sum + (item.rating as number) * item.weight, 0);
+            const average = Math.round((weightedSum / totalWeight) * 10) / 10;
+            
+            console.log('🎯 ManagerPillarRatingDisplay: Média calculada:', {
+                totalWeight,
+                weightedSum,
+                average
+            });
+            
+            return average;
+        }
+
+        // Se não temos managerData, usar watchedManagerRatings (formulário ativo)
         if (!watchedManagerRatings || fieldIndices.length === 0) return null;
 
         const managerRatingsWithWeights = fieldIndices.map((fieldIndex, index) => {
@@ -92,7 +153,7 @@ export const ManagerPillarRatingDisplay = memo(({
 
         const weightedSum = managerRatingsWithWeights.reduce((sum, item) => sum + (item.rating as number) * item.weight, 0);
         return Math.round((weightedSum / totalWeight) * 10) / 10;
-    }, [watchedManagerRatings, criteria, fieldIndices]);
+    }, [watchedManagerRatings, criteria, fieldIndices, managerData]);
 
     return (
         <div className="flex items-center gap-2">

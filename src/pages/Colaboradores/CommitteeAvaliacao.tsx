@@ -142,6 +142,14 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     const evaluations360 = collaboratorDetails.evaluation360;
     const managerEvaluation = collaboratorDetails.managerEvaluation;
     
+    // ✅ DEBUG: Log dos dados do manager
+    console.log('🎯 CommitteeAvaliacao: Dados do manager:', {
+        managerEvaluation,
+        hasManagerEvaluation: !!managerEvaluation,
+        managerCriteria: managerEvaluation?.criteria,
+        managerScore: managerEvaluation?.score
+    });
+    
     // ✅ CORREÇÃO: Usar justSaved para determinar se há equalização
     const committeeEqualization = justSaved ? {
         finalScore: methods.getValues('committeeEqualization.finalScore'),
@@ -164,12 +172,30 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
 
     // Converter evaluations360 para o formato esperado
     const formattedEvaluations360 = evaluations360.map(evaluation => ({
-        collaratorName: evaluation.collaboratorName,
+        collaratorName: evaluation.collaratorName,
         collaboratorPosition: evaluation.collaboratorPosition,
         rating: evaluation.rating,
         improvements: evaluation.improvements,
         strengths: evaluation.strengths,
     }));
+    
+    // ✅ DEBUG: Log dos dados para equalização
+    console.log('🎯 CommitteeAvaliacao: Dados para equalização:', {
+        autoEvaluation,
+        managerEvaluation,
+        evaluations360,
+        committeeEqualization,
+        collaboratorSelfAssessment: collaboratorSelfAssessment.length,
+        formattedEvaluations360: formattedEvaluations360.length
+    });
+    
+    // ✅ DEBUG: Log detalhado dos dados do manager
+    console.log('🎯 CommitteeAvaliacao: Dados detalhados do manager:', {
+        managerEvaluation,
+        managerScore: managerEvaluation?.score,
+        managerCriteria: managerEvaluation?.criteria?.length,
+        hasManagerEvaluation: !!managerEvaluation
+    });
 
     return (
         <FormProvider {...methods}>

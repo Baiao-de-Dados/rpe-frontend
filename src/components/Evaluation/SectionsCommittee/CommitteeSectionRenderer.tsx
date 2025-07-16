@@ -47,7 +47,7 @@ const EqualizationSection = ({
     evaluations360, 
     committeeEqualization,
     onSaveEqualization,
-    isReadOnly
+    isReadOnly,
 }: { 
     collaborator: Collaborator;
     autoEvaluation: {
@@ -105,6 +105,15 @@ const EqualizationSection = ({
     // ✅ CORREÇÃO: Resumo deve ficar vazio até ser implementada a geração automática
     const summary = '';
 
+    // ✅ DEBUG: Log dos scores calculados
+    console.log('🎯 EqualizationSection: Scores calculados:', {
+        selfEvalScore,
+        managerEvalScore,
+        postureScore,
+        finalScore,
+        evaluations360Count: evaluations360.length
+    });
+    
     // ✅ CORREÇÃO: Usar os campos do formulário principal
     const watchedFinalScore = watch('committeeEqualization.finalScore');
     const watchedComments = watch('committeeEqualization.comments');
@@ -162,7 +171,7 @@ interface CommitteeSectionRendererProps {
         justification?: string;
     }>;
     evaluations360?: Array<{
-        collaboratorName: string;
+        collaratorName: string;
         collaboratorPosition: string;
         rating: number;
         improvements: string;
@@ -222,7 +231,6 @@ export function CommitteeSectionRenderer({
     committeeEqualization,
     onSaveEqualization,
     isReadOnly,
-    onEnterEditMode
 }: CommitteeSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -230,16 +238,24 @@ export function CommitteeSectionRenderer({
     const renderSection = () => {
         switch (activeSection) {
             case 'Avaliação':
+                console.log('🎯 CommitteeSectionRenderer: Renderizando seção Avaliação', {
+                    collaboratorSelfAssessment,
+                    managerEvaluation,
+                    managerEvaluationData: managerEvaluation?.criteria || []
+                });
+                console.log('🎯 CommitteeSectionRenderer: Dados completos do manager:', managerEvaluation);
+                console.log('🎯 CommitteeSectionRenderer: Score do manager:', managerEvaluation?.score);
                 return (
                     <ReadOnlyManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
+                        managerEvaluationData={managerEvaluation?.criteria || []}
                     />
                 );
             case 'Avaliações 360':
                 return (
                     <Manager360ReceivedSection 
                         evaluations360={evaluations360.map(evaluation => ({
-                            collaratorName: evaluation.collaboratorName,
+                            collaratorName: evaluation.collaratorName,
                             collaboratorPosition: evaluation.collaboratorPosition,
                             rating: evaluation.rating,
                             improvements: evaluation.improvements,
@@ -263,6 +279,12 @@ export function CommitteeSectionRenderer({
                     />
                 );
             case 'Equalização':
+                console.log('🎯 CommitteeSectionRenderer: Renderizando seção Equalização', {
+                    autoEvaluation,
+                    managerEvaluation,
+                    evaluations360,
+                    committeeEqualization
+                });
                 return (
                     <EqualizationSection 
                         collaborator={collaborator}
@@ -272,13 +294,13 @@ export function CommitteeSectionRenderer({
                         committeeEqualization={committeeEqualization || null}
                         onSaveEqualization={onSaveEqualization}
                         isReadOnly={isReadOnly}
-                        onEnterEditMode={onEnterEditMode}
                     />
                 );
             default:
                 return (
                     <ReadOnlyManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
+                        managerEvaluationData={managerEvaluation?.criteria || []}
                     />
                 );
         }

@@ -58,16 +58,6 @@ export const ReadOnlyManagerPillarSection = memo(({
 
     useEffect(() => {}, [pillarOpenList]);
 
-    // Função para buscar os dados do colaborador para um critério específico
-    const getCollaboratorDataForCriterion = (criterionId: number) => {
-        return collaboratorData.find(data => data.criterionId === criterionId);
-    };
-
-    // Função para buscar os dados do gestor para um critério específico
-    const getManagerDataForCriterion = (criterionId: number) => {
-        return managerData.find(data => data.criterionId === criterionId);
-    };
-
     return (
         <CollapsibleCardSection
             title={`Avaliação de ${pillarTitle}`}
@@ -79,6 +69,7 @@ export const ReadOnlyManagerPillarSection = memo(({
                         criteria={criteria} 
                         validFields={validFields}
                         collaboratorData={collaboratorData}
+                        managerData={managerData}
                     />
                     <div className="flex items-center bg-primary-50 px-2 py-1 rounded-lg">
                         <Typography variant="caption" color="muted" className="text-xs">
@@ -96,8 +87,9 @@ export const ReadOnlyManagerPillarSection = memo(({
                     const fieldIndex = validFields.findIndex(f => f.criterionId === criterion.id);
                     if (fieldIndex === -1) return null;
 
-                    const collaboratorCriterionData = getCollaboratorDataForCriterion(criterion.id);
-                    const managerCriterionData = getManagerDataForCriterion(criterion.id);
+                    // Buscar dados do colaborador e do manager para este critério
+                    const collaboratorCriterionData = collaboratorData.find(c => c.criterionId === criterion.id);
+                    const managerCriterionData = managerData.find(m => m.criterionId === criterion.id);
 
                     return (
                         <ManagerAssessment

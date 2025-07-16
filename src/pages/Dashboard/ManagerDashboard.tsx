@@ -53,7 +53,7 @@ export function ManagerDashboard() {
                 },
                 autoEvaluationScore: evaluationData?.autoEvaluation || null,
                 evaluation360Score: evaluationData?.evaluation360 || null,
-                managerEvaluationScore: evaluationData?.managerEvaluation || collaborator.leaderRating,
+                managerEvaluationScore: evaluationData?.managerEvaluation || null,
                 finalEvaluationScore: evaluationData?.equalization || null,
                 status: evaluationData?.cycle ? 'pendente' as const : 'sem-ciclo' as const,
             };

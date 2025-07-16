@@ -48,7 +48,7 @@ export interface CommitteeCollaboratorDetails {
         }>;
     } | null;
     evaluation360: Array<{
-        collaboratorName: string;
+        collaratorName: string;
         collaboratorPosition: string;
         rating: number;
         improvements: string;
