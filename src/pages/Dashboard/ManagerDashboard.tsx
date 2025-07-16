@@ -154,16 +154,28 @@ export function ManagerDashboard() {
     // const pendingReviews = totalCollaborators; // TODO: Calcular baseado em avaliações
 
     // Calcular métricas baseadas nos dados reais dos colaboradores
-    const collaboratorsWithEvaluations = collaboratorsWithCalculatedScores.filter(summary => 
+    // Colaboradores que enviaram suas autoavaliações
+    const collaboratorsWithAutoEvaluations = collaboratorsWithCalculatedScores.filter(summary => 
+        summary.autoEvaluationScore !== null && summary.autoEvaluationScore !== undefined
+    ) || [];
+    
+    // Colaboradores que o gestor ainda não avaliou
+    const collaboratorsWithManagerEvaluations = collaboratorsWithCalculatedScores.filter(summary => 
         summary.managerEvaluationScore !== null && summary.managerEvaluationScore !== undefined
     ) || [];
     
-    const collaboratorsWithoutEvaluations = totalCollaborators - collaboratorsWithEvaluations.length;
+    // Colaboradores que ainda não enviaram suas avaliações (autoavaliação)
+    const collaboratorsWithoutAutoEvaluations = totalCollaborators - collaboratorsWithAutoEvaluations.length;
+    
+    // Colaboradores que o gestor ainda não avaliou
+    const collaboratorsWithoutManagerEvaluations = totalCollaborators - collaboratorsWithManagerEvaluations.length;
     
     console.log('ManagerDashboard metrics debug:', {
         totalCollaborators,
-        collaboratorsWithEvaluations: collaboratorsWithEvaluations.length,
-        collaboratorsWithoutEvaluations,
+        collaboratorsWithAutoEvaluations: collaboratorsWithAutoEvaluations.length,
+        collaboratorsWithoutAutoEvaluations,
+        collaboratorsWithManagerEvaluations: collaboratorsWithManagerEvaluations.length,
+        collaboratorsWithoutManagerEvaluations,
         missingEvaluations,
         collaboratorsOnly: collaboratorsOnly.map(c => ({
             id: c.id,
@@ -182,11 +194,11 @@ export function ManagerDashboard() {
                         cycleStatus={currentCycle.isActive ? 'open' : 'closed'}
                         totalLeaders={totalLeaders}
                         totalCollaborators={totalCollaborators}
-                        completionPercentage={totalCollaborators > 0 ? Math.round(((totalCollaborators - collaboratorsWithoutEvaluations) / totalCollaborators) * 100) : 0}
-                        collaboratorsNotFinished={collaboratorsWithoutEvaluations}
+                        completionPercentage={totalCollaborators > 0 ? Math.round(((totalCollaborators - collaboratorsWithoutAutoEvaluations) / totalCollaborators) * 100) : 0}
+                        collaboratorsNotFinished={collaboratorsWithoutAutoEvaluations}
                         leadersCompleted={leadersCompleted}
-                        collaboratorsNotCompleted={collaboratorsWithoutEvaluations}
-                        pendingReviews={collaboratorsWithoutEvaluations}
+                        collaboratorsNotCompleted={collaboratorsWithoutAutoEvaluations}
+                        pendingReviews={collaboratorsWithoutManagerEvaluations}
                     />
                 </div>
 
