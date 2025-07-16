@@ -6,21 +6,27 @@ import AnimatedCard from '../../../common/AnimatedCard';
 
 import NoEvaluationMessage from '../NoEvaluationMessage';
 
-import mockEvaluations, { type Cycle } from '../../../../data/mockEvaluations';
+import { useAllEvaluationQuery } from '../../../../hooks/api/useCollaboratorQuery';
+import type { EvaluationCycle } from '../../../../types/evaluations';
 
 interface ReferencesSectionProps {
     selectedCycle: string;
 }
 
-export const ReferencesSection = memo(({ selectedCycle }: ReferencesSectionProps) => {
-
-    const cycle = useMemo(
-        () => mockEvaluations.cycles.find((c: Cycle) => c.cycleName === selectedCycle),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selectedCycle, mockEvaluations]
-    );
+export const ReferencesSection = memo(function ReferencesSection({ selectedCycle }: ReferencesSectionProps) {
+    const { data, isLoading, isError } = useAllEvaluationQuery();
+    const cycle = useMemo(() => {
+        if (!data) return undefined;
+        return data.cycles.find((c: EvaluationCycle) => c.cycleName === selectedCycle);
+    }, [data, selectedCycle]);
     const references = cycle?.reference || [];
 
+    if (isLoading) {
+        return <NoEvaluationMessage message="Carregando referências..." />;
+    }
+    if (isError) {
+        return <NoEvaluationMessage message="Erro ao carregar referências." />;
+    }
     return (
         <section>
             {references.length > 0 ? (
@@ -28,9 +34,9 @@ export const ReferencesSection = memo(({ selectedCycle }: ReferencesSectionProps
                     {references.map((ref, idx) => (
                         <AnimatedCard key={`ref-${ref.collaratorName}-${idx}`} index={idx}>
                             <ReferenceCard
-                                collaborator={{ 
-                                    name: ref.collaratorName, 
-                                    position: ref.collaboratorPosition 
+                                collaborator={{
+                                    name: ref.collaratorName,
+                                    position: ref.collaboratorPosition
                                 }}
                                 justification={ref.justification}
                             />
