@@ -9,7 +9,6 @@ import type { EvaluationCyclesHistory } from '../../types/evaluations';
 import type { CollaboratorEvaluateDraft } from '../../types/evaluations';
 import type { CollaboratorEvaluatePayload } from '../../types/evaluations';
 import type { SelfAssessmentDraft, Evaluation360Draft, MentoringDraft, ReferencesDraft, SelfAssessmentFormItem, Evaluation360FormItem, ReferencesFormItem } from '../../types/evaluations';
-import mockEvaluations from '../../data/mockEvaluations';
 
 export type FormValues = {
     selfAssessment?: SelfAssessmentFormItem[];
@@ -30,7 +29,6 @@ export function useAllEvaluationQuery(options?: { enabled?: boolean }) {
         queryKey: CYCLE_ALL_EVALUATION_QUERY_KEY,
         queryFn: async () => {
             const res = await collaboratorsEndpoints.getAllEvaluation();
-            return mockEvaluations;
             return res.data;
         },
         enabled: options?.enabled ?? true,

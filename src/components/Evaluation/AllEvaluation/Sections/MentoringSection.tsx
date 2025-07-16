@@ -4,22 +4,28 @@ import MentoringCard from '../Cards/MentoringCard';
 
 import NoEvaluationMessage from '../NoEvaluationMessage';
 
-import mockEvaluations, { type Cycle } from '../../../../data/mockEvaluations';
+import type { EvaluationCycle } from '../../../../types/evaluations';
+
+import { useAllEvaluationQuery } from '../../../../hooks/api/useCollaboratorQuery';
 
 interface MentoringSectionProps {
     selectedCycle: string;
 }
 
 export function MentoringSection({ selectedCycle }: MentoringSectionProps) {
-    
-    const cycle = useMemo(
-        () => mockEvaluations.cycles.find((c: Cycle) => c.cycleName === selectedCycle),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selectedCycle, mockEvaluations]
-    );
-
+    const { data, isLoading, isError } = useAllEvaluationQuery();
+    const cycle = useMemo(() => {
+        if (!data) return undefined;
+        return data.cycles.find((c: EvaluationCycle) => c.cycleName === selectedCycle);
+    }, [data, selectedCycle]);
     const mentoring = cycle?.mentoring;
 
+    if (isLoading) {
+        return <NoEvaluationMessage message="Carregando mentoria..." />;
+    }
+    if (isError) {
+        return <NoEvaluationMessage message="Erro ao carregar mentoria." />;
+    }
     return (
         <section>
             {mentoring ? (
