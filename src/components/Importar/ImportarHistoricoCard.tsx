@@ -57,14 +57,19 @@ const ImportarHistoricoCard = () => {
 
         try {
             await importEvaluations(file.fileData); // Enviar o arquivo para o backend
-            showToast('Arquivo enviado com sucesso.', 'success'); // Exibir mensagem de sucesso
+            showToast('Arquivo importado com sucesso!', 'success', {
+                title: 'Sucesso',
+                duration: 4000,
+            }); // Exibir mensagem de sucesso
             setFile(null); // Limpar o arquivo após o envio
         } catch (error: any) {
             console.error('Erro ao enviar o arquivo:', error);
-            showToast(
-                error.response?.data?.message || 'Erro ao enviar o arquivo. Tente novamente.',
-                'error'
-            ); // Exibir mensagem de erro
+            const errorMessage =
+                error.response?.data.message || 'Erro ao importar o arquivo. Tente novamente mais tarde!';
+            showToast(errorMessage, 'error', {
+                title: 'Erro ao importar',
+                duration: -1,
+            }); // Exibir mensagem de erro
         } finally {
             setLoading(false);
         }
