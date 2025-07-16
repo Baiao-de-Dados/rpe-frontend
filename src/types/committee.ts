@@ -72,6 +72,13 @@ export interface CommitteeCollaboratorDetails {
             position: string;
         };
         lastUpdated: string;
+        aiSummary?: {
+            code: string;
+            rating?: number;
+            detailedAnalysis?: string;
+            summary?: string;
+            discrepancies?: string;
+        };
     } | null;
 }
 
@@ -82,6 +89,13 @@ export interface CommitteeEqualizationPayload {
         score: number;
         justification: string;
         changeReason?: string; // ✅ NOVO: motivo da mudança
+        aiSummary?: {
+            code: string;
+            rating?: number;
+            detailedAnalysis?: string;
+            summary?: string;
+            discrepancies?: string;
+        }; // ✅ NOVO: resumo da IA
     };
 }
 
@@ -118,6 +132,13 @@ export interface CommitteeEqualization {
     committeeId: number; // ✅ NOVO
     score: number;
     justification: string;
+    aiSummary?: {
+        code: string;
+        rating?: number;
+        detailedAnalysis?: string;
+        summary?: string;
+        discrepancies?: string;
+    };
     createdAt: string;
     updatedAt: string;
     committee: {
@@ -143,4 +164,38 @@ export interface CommitteeEqualizationHistory {
         name: string;
         position: string;
     };
+}
+
+// ✅ NOVO: Interface para resumo da IA
+export interface CommitteeAiSummary {
+    collaborator: {
+        id: number;
+        name: string;
+    };
+    cycle: {
+        id: number;
+        name: string;
+    };
+    aiSummary: {
+        code: string;
+        rating?: number;
+        detailedAnalysis?: string;
+        summary?: string;
+        discrepancies?: string;
+    };
+    committee: {
+        id: number;
+        name: string;
+        position: string;
+    };
+    generatedAt: string;
+}
+
+// ✅ NOVO: Interface para o conteúdo do resumo da IA
+export interface AiSummaryContent {
+    code: string;
+    rating?: number;
+    detailedAnalysis?: string;
+    summary?: string;
+    discrepancies?: string;
 } 

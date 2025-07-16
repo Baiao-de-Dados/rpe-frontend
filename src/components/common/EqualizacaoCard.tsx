@@ -11,17 +11,23 @@ import CollaboratorCard from './CollaboratorCard';
 import Badge from './Badge';
 import { useToast } from '../../hooks/useToast';
 import { useState, useEffect } from 'react';
-import { FileDown } from 'lucide-react';
+import { Sparkles, FileDown } from 'lucide-react';
 
 interface EqualizacaoCardProps {
     collaboratorName: string;
     position: string;
     status: 'Finalizado' | 'Em andamento';
-    finalScore: number;
-    selfEvalScore?: number;
-    managerEvalScore?: number;
-    postureScore?: number;
-    summary?: string;
+    finalScore: number | null;
+    selfEvalScore?: number | null;
+    managerEvalScore?: number | null;
+    postureScore?: number | null;
+    summary?: string | {
+        code: string;
+        rating?: number;
+        detailedAnalysis?: string;
+        summary?: string;
+        discrepancies?: string;
+    };
     rating?: number;
     onChangeRating?: (value: number | null) => void;
     ratingError?: string;
@@ -35,6 +41,11 @@ interface EqualizacaoCardProps {
     isReadOnly?: boolean;
     // ✅ NOVO: Callback para quando entrar em modo de edição
     onEnterEditMode?: () => void;
+    // ✅ NOVO: Props para geração de resumo da IA
+    onGenerateAiSummary?: () => void;
+    hasAiSummary?: boolean;
+    // ✅ NOVO: Props para exportar relatório
+    onExportReport?: () => void;
 }
 
 const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
@@ -43,9 +54,9 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
     position,
     status,
     finalScore,
-    selfEvalScore = 0,
-    managerEvalScore = 0,
-    postureScore = 0,
+    selfEvalScore,
+    managerEvalScore,
+    postureScore,
     summary = '',
     rating,
     onChangeRating,
@@ -57,6 +68,9 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
     onSubmit,
     isReadOnly,
     onEnterEditMode,
+    onGenerateAiSummary,
+    hasAiSummary = false,
+    onExportReport,
 }) => {
     const { showToast } = useToast();
     // ✅ CORREÇÃO: Usar isReadOnly se fornecido, senão usar status
@@ -108,8 +122,11 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
     }, [isEditing, isReadOnly, onEnterEditMode]);
 
     const handleExportar = () => {
-        // Simula exportação de relatório
-        showToast('Relatório exportado!', 'success');
+        if (onExportReport) {
+            onExportReport();
+        } else {
+            showToast('Funcionalidade de exportação não disponível', 'info');
+        }
     };
 
     return (
@@ -136,23 +153,40 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                     </div>
                     {/* Linha de scores */}
                     <div className="flex items-center gap-4">
-                        <div className="flex flex-col items-center min-w-[70px]">
-                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Autoavaliação</Typography>
-                            <RatingDisplay rating={selfEvalScore} />
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Auto:</span>
+                            <RatingDisplay rating={selfEvalScore ?? null} />
                         </div>
-                        <div className="flex flex-col items-center min-w-[70px]">
-                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Avaliação 360</Typography>
-                            <RatingDisplay rating={postureScore} />
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Gestor:</span>
+                            <RatingDisplay rating={managerEvalScore ?? null} />
                         </div>
-                        <div className="flex flex-col items-center min-w-[70px]">
-                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Nota gestor</Typography>
-                            <RatingDisplay rating={managerEvalScore} />
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">360°:</span>
+                            <RatingDisplay rating={postureScore ?? null} />
                         </div>
-                        <div className="flex flex-col items-center min-w-[70px]">
-                            <Typography variant="caption" className="text-gray-500 text-xs mb-1">Nota final</Typography>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Final:</span>
                             <RatingDisplay rating={finalScore ?? null} final />
                         </div>
                     </div>
+                </div>
+                
+                {/* Botões de ação */}
+                <div className="flex items-center gap-2 py-3">
+                    {onGenerateAiSummary && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={onGenerateAiSummary}
+                            disabled={hasAiSummary}
+                            title={hasAiSummary ? 'Resumo já foi gerado' : 'Gerar resumo da IA'}
+                            className="flex items-center gap-1"
+                        >
+                            <Sparkles size={14} />
+                            {hasAiSummary ? 'Resumo gerado' : 'Gerar Resumo'}
+                        </Button>
+                    )}
                 </div>
 
                 {/* Barras de progresso das avaliações */}
@@ -168,13 +202,13 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             <span
                                 className="font-bold text-sm"
                             >
-                                {selfEvalScore.toFixed(1)}
+                                {selfEvalScore?.toFixed(1) || 'N/A'}
                             </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
-                                style={{ width: `${selfEvalScore * 20}%`, backgroundColor: getScoreColor(selfEvalScore) }}
+                                style={{ width: `${selfEvalScore ? selfEvalScore * 20 : 0}%`, backgroundColor: getScoreColor(selfEvalScore || 0) }}
                             ></div>
                         </div>
                     </div>
@@ -190,13 +224,13 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             <span
                                 className="font-bold text-sm"
                             >
-                                {managerEvalScore.toFixed(1)}
+                                {managerEvalScore?.toFixed(1) || 'N/A'}
                             </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
-                                style={{ width: `${managerEvalScore * 20}%`, backgroundColor: getScoreColor(managerEvalScore) }}
+                                style={{ width: `${managerEvalScore ? managerEvalScore * 20 : 0}%`, backgroundColor: getScoreColor(managerEvalScore || 0) }}
                             ></div>
                         </div>
                     </div>
@@ -212,13 +246,13 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             <span
                                 className="font-bold text-sm"
                             >
-                                {postureScore.toFixed(1)}
+                                {postureScore?.toFixed(1) || 'N/A'}
                             </span>
                         </div>
                         <div className="w-full h-3 sm:h-4 bg-gray-200 rounded-full">
                             <div
                                 className="h-3 sm:h-4 rounded-full"
-                                style={{ width: `${postureScore * 20}%`, backgroundColor: getScoreColor(postureScore) }}
+                                style={{ width: `${postureScore ? postureScore * 20 : 0}%`, backgroundColor: getScoreColor(postureScore || 0) }}
                             ></div>
                         </div>
                     </div>
@@ -263,7 +297,18 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             />
                             {/* Botão dentro do card */}
                             {onSubmit && (
-                                <div className="flex justify-end mt-6">
+                                <div className="flex justify-end mt-6 gap-2">
+                                    {onExportReport && (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={handleExportar}
+                                            title="Exportar relatório"
+                                            className="p-2"
+                                        >
+                                            <FileDown size={16} />
+                                        </Button>
+                                    )}
                                     <Button type="button" variant="primary" onClick={handleConcluir}>
                                         Concluir
                                     </Button>
@@ -286,9 +331,16 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                                 />
                             </div>
                             <div className="flex gap-3 justify-end mt-6">
-                                <Button variant="outline" onClick={handleExportar}>
-                                    <FileDown className="w-5 h-5" />
-                                </Button>
+                                {onExportReport && (
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={handleExportar}
+                                        title="Exportar relatório"
+                                        className="p-2"
+                                    >
+                                        <FileDown size={16} />
+                                    </Button>
+                                )}
                                 <Button variant="outline" onClick={handleEditar}>
                                     Editar resultado
                                 </Button>
