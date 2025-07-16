@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { collaboratorsEndpoints } from '../../services/api/collaborators';
@@ -78,16 +79,28 @@ export function useCycleEvaluateMutation() {
 
 export function useCollaboratorEvaluationQuery(cycleConfigId?: number, options?: { enabled?: boolean }) {
     const isValid = typeof cycleConfigId === 'number' && cycleConfigId > 0;
-    return useQuery<CollaboratorEvaluation>({
+    const query = useQuery<CollaboratorEvaluation | null>({
         queryKey: ['collaborator', 'evaluation', cycleConfigId ?? 'none'],
         queryFn: async () => {
-            if (!isValid) return undefined as unknown as CollaboratorEvaluation;
-            const res = await collaboratorsEndpoints.getEvaluation(cycleConfigId!);
-            return res.data;
+            if (!isValid) return null;
+            try {
+                const res = await collaboratorsEndpoints.getEvaluation(cycleConfigId!);
+                return res.data;
+            } catch (err: any) {
+                if (err?.response?.status === 404) {
+                    return null;
+                }
+                throw err;
+            }
         },
         enabled: options?.enabled ?? isValid,
         staleTime: 30 * 1000,
+        retry: (failureCount, error: any) => {
+            if (error?.response?.status === 404) return false;
+            return failureCount < 3;
+        },
     });
+    return { ...query, isLoading: query.isLoading };
 }
 
 export function useCollaboratorDraftQuery(cycleId?: number, options?: { enabled?: boolean }) {

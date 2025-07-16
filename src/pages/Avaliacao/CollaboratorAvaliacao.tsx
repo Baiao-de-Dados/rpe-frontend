@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 
 export function CollaboratorAvaliacao() {
     const { currentCycle, isLoading } = useCycle();
-    const evaluationQuery = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
+    const { data, isLoading: isLoadingEvaluation } = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
     const { data: draftData } = useCollaboratorDraftQuery(currentCycle?.id);
 
     const methods = useForm<EvaluationFormData>({
@@ -36,7 +36,7 @@ export function CollaboratorAvaliacao() {
         }
     }, [draftData, methods]);
 
-    if (isLoading) {
+    if (isLoading || isLoadingEvaluation) {
         return <CycleLoading />;
     }
 
@@ -48,11 +48,11 @@ export function CollaboratorAvaliacao() {
         return <AllEvaluation />;
     }
 
-    if (evaluationQuery.data) {
+    if (data) {
         return (
             <EvaluationSubmittedMessage
                 cycle={currentCycle as Cycle}
-                submittedAt={evaluationQuery.data.sentDate}
+                submittedAt={data.sentDate}
             />
         );
     }

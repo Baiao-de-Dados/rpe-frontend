@@ -21,8 +21,18 @@ ChartJS.register(
     Legend,
 );
 
+export interface GetRHTracks {
+    tracks: {
+        track: string;
+        totalUsers: number;
+        completedUsers: number;
+        pendingUsers: number;
+        completionPercentage: number;
+    }[];
+}
+
 interface RHPerformanceChartProps {
-    data: { track: string; completed: number; total: number }[];
+    data: GetRHTracks;
 }
 
 type FilterOption = 'Todas' | string;
@@ -32,6 +42,12 @@ export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
     const [showFilterMenu, setShowFilterMenu] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const tracksData = data?.tracks?.map(item => ({
+        track: item.track,
+        completed: item.completedUsers,
+        total: item.totalUsers,
+    })) ?? [];
 
     useEffect(() => {
         const checkMobile = () => {
@@ -45,13 +61,13 @@ export function RHPerformanceChart({ data }: RHPerformanceChartProps) {
     }, []);
 
     // Trilhas únicas para o filtro
-    const tracks = ['Todas', ...Array.from(new Set(data.map(item => item.track)))];
+    const tracks = ['Todas', ...Array.from(new Set(tracksData.map(item => item.track)))];
 
     // Filtrar dados pela trilha selecionada
     const filteredData =
         selectedTrack === 'Todas'
-            ? data
-            : data.filter(item => item.track === selectedTrack);
+            ? tracksData
+            : tracksData.filter(item => item.track === selectedTrack);
 
     // Usando a função centralizada de cores baseada em porcentagem
     const getBarColor = (completed: number, total: number) => {

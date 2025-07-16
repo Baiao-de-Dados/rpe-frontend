@@ -11,7 +11,6 @@ export interface LeaderEvaluationPayload {
 export interface GetLeaderEvaluationPayload {
     cycleId: number;
     collaboratorId: number;
-    leaderId: number;
 }
 
 export interface LeaderEvaluation {
@@ -19,7 +18,6 @@ export interface LeaderEvaluation {
     justification: string;
     strengths?: string;
     improvements?: string;
-    aiSummary?: string;
 }
 
 export interface CycleLeaderAvg {

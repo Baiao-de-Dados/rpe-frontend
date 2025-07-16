@@ -1,27 +1,27 @@
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
+import { useRHQueries } from '../../hooks/api/useRHQuery';
+
+
+import { formatDate, getRemainingDays } from '../../utils/globalUtils';
 
 import Typography from '../../components/common/Typography';
 import CycleLoading from '../../components/common/CycleLoading';
 import { RHMetrics } from '../../components/Dashboard/RHMetrics';
 import CardContainer from '../../components/common/CardContainer';
+import { CycleBanner } from '../../components/Dashboard/CycleBanner';
 import { DashboardHeader } from '../../components/Dashboard/DashboardHeader';
 import { RHPerformanceChart } from '../../components/Charts/RHPerformanceChart';
 import { RHCollaboratorList } from '../../components/Dashboard/RHCollaboratorList';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 
-import { mockRHMetrics, mockTrackData } from '../../data/mockRHData';
-import { mockCollaboratorsSummary } from '../../data/mockCollaborators';
-import { CycleBanner } from '../../components/Dashboard/CycleBanner';
-import { formatDate, getRemainingDays } from '../../utils/globalUtils';
-
 export function RHDashboard() {
 
     const { user } = useAuth();
-
     const { currentCycle, isLoading, status } = useCycle();
+    const { dashboard, collaborators, tracks, isLoading: isRHLoading } = useRHQueries();
 
-    if (isLoading) {
+    if (isLoading || isRHLoading) {
         return <CycleLoading />;
     }
 
@@ -37,8 +37,8 @@ export function RHDashboard() {
                 {status === 'open' ? (
                     <div className="mb-6">
                         <RHMetrics
-                            pendingEvaluations={mockRHMetrics.pendingEvaluations}
-                            completionPercentage={mockRHMetrics.completionPercentage}
+                            pendingEvaluations={dashboard?.pendingEvaluations ?? 0}
+                            completionPercentage={dashboard?.completionPercentage ?? 0}
                             daysUntilClosure={getRemainingDays({ endDate: currentCycle.endDate }).daysToEnd}
                             closureDate={currentCycle.endDate && formatDate(currentCycle.endDate)}
                         />
@@ -51,7 +51,7 @@ export function RHDashboard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                     <section className="lg:col-span-5 xl:col-span-4 h-full flex flex-col min-h-[400px] max-h-[600px]">
-                            <RHCollaboratorList evaluationsSummary={mockCollaboratorsSummary} />
+                        <RHCollaboratorList evaluationsSummary={collaborators ?? []} />
                     </section>
 
                     <section className="lg:col-span-7 xl:col-span-8 h-full flex flex-col min-h-[400px] max-h-[600px]">
@@ -66,7 +66,7 @@ export function RHDashboard() {
                             </div>
                             <div className="flex-1 flex items-center min-h-0">
                                 {status !== 'upcoming' && status !== 'undefined' ? (
-                                    <RHPerformanceChart data={mockTrackData} />
+                                    <RHPerformanceChart data={tracks ?? { tracks: [] }} />
                                 ) : (
                                     <Typography variant="caption" color="muted" className="w-full text-center">
                                         O ciclo {currentCycle.name} de avaliação ainda não começou
