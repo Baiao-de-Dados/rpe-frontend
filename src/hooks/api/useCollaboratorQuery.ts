@@ -1,4 +1,15 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { collaboratorsEndpoints } from '../../services/api/collaborators';
+
+import type { Track } from '../../types/track';
+import type { Network } from '../../types/collaborator';
+import type { CollaboratorEvaluation } from '../../types/evaluations';
+import type { EvaluationCyclesHistory } from '../../types/evaluations';
+import type { CollaboratorEvaluateDraft } from '../../types/evaluations';
+import type { CollaboratorEvaluatePayload } from '../../types/evaluations';
 import type { SelfAssessmentDraft, Evaluation360Draft, MentoringDraft, ReferencesDraft, SelfAssessmentFormItem, Evaluation360FormItem, ReferencesFormItem } from '../../types/evaluations';
+import mockEvaluations from '../../data/mockEvaluations';
 
 export type FormValues = {
     selfAssessment?: SelfAssessmentFormItem[];
@@ -9,20 +20,23 @@ export type FormValues = {
     references?: ReferencesFormItem[];
 };
 
-import type { CollaboratorEvaluateDraft } from '../../types/evaluations';
-
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
-import { collaboratorsEndpoints } from '../../services/api/collaborators';
-
-import type { Track } from '../../types/track';
-import type { Network } from '../../types/collaborator';
-import type { CollaboratorEvaluation } from '../../types/evaluations';
-import type { CollaboratorEvaluatePayload } from '../../types/evaluations';
-
-export const CYCLE_CRITERIA_QUERY_KEY = ['cycle', 'criteria'];
 export const CYCLE_NETWORK_QUERY_KEY = ['cycle', 'network'];
+export const CYCLE_CRITERIA_QUERY_KEY = ['cycle', 'criteria'];
 export const CYCLE_EVALUATE_MUTATION_KEY = ['cycle', 'evaluate'];
+export const CYCLE_ALL_EVALUATION_QUERY_KEY = ['cycle', 'all-evaluation'];
+
+export function useAllEvaluationQuery(options?: { enabled?: boolean }) {
+    return useQuery<EvaluationCyclesHistory>({
+        queryKey: CYCLE_ALL_EVALUATION_QUERY_KEY,
+        queryFn: async () => {
+            const res = await collaboratorsEndpoints.getAllEvaluation();
+            return mockEvaluations;
+            return res.data;
+        },
+        enabled: options?.enabled ?? true,
+        staleTime: 30 * 1000,
+    });
+}
 
 export function useCycleCriteriaQuery(trackId?: number, options?: { enabled?: boolean }) {
     const isValid = typeof trackId === 'number' && trackId > 0;

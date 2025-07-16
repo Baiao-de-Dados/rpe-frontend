@@ -1,21 +1,30 @@
 import { memo, useMemo } from 'react';
-
-import NoEvaluationMessage from '../NoEvaluationMessage';
 import { PillarSection } from '../PillarSection';
-import mockEvaluations, { type Cycle } from '../../../../data/mockEvaluations';
+import NoEvaluationMessage from '../NoEvaluationMessage';
+import type { EvaluationCycle } from '../../../../types/evaluations';
+import { useAllEvaluationQuery } from '../../../../hooks/api/useCollaboratorQuery';
 
 interface SelfAssessmentSectionProps {
     selectedCycle: string;
 }
 
-export const SelfAssessmentSection = memo(({ selectedCycle }: SelfAssessmentSectionProps) => {
-    const cycle = useMemo(
-        () => mockEvaluations.cycles.find((c: Cycle) => c.cycleName === selectedCycle),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selectedCycle, mockEvaluations],
-    );
+export const SelfAssessmentSection = memo(function SelfAssessmentSection({ selectedCycle }: SelfAssessmentSectionProps) {
+
+    const { data, isLoading, isError } = useAllEvaluationQuery();
+
+    const cycle = useMemo(() => {
+        if (!data) return undefined;
+        return data.cycles.find((c: EvaluationCycle) => c.cycleName === selectedCycle);
+    }, [data, selectedCycle]);
+
     const pillars = cycle?.selfAssessment?.pillars || [];
 
+    if (isLoading) {
+        return <NoEvaluationMessage message="Carregando autoavaliação..." />;
+    }
+    if (isError) {
+        return <NoEvaluationMessage message="Erro ao carregar autoavaliação." />;
+    }
     return (
         <section>
             {pillars.length > 0 ? (

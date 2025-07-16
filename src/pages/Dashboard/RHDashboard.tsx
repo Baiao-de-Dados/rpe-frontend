@@ -37,8 +37,6 @@ export function RHDashboard() {
                 {status === 'open' ? (
                     <div className="mb-6">
                         <RHMetrics
-                            totalCollaborators={mockRHMetrics.totalCollaborators}
-                            completedEvaluations={mockRHMetrics.completedEvaluations}
                             pendingEvaluations={mockRHMetrics.pendingEvaluations}
                             completionPercentage={mockRHMetrics.completionPercentage}
                             daysUntilClosure={getRemainingDays({ endDate: currentCycle.endDate }).daysToEnd}

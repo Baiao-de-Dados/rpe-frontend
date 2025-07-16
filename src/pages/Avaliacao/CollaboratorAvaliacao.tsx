@@ -25,12 +25,6 @@ export function CollaboratorAvaliacao() {
         mode: 'onSubmit',
     });
 
-    useEffect(() => {
-        console.log('isValid:', methods.formState.isValid);
-        console.log('errors:', methods.formState.errors);
-    }, [methods.formState]);
-
-
     useEvaluationFormPopulation(methods);
 
     useEffect(() => {
@@ -53,7 +47,7 @@ export function CollaboratorAvaliacao() {
     if (!currentCycle.isActive) {
         return <AllEvaluation />;
     }
-    
+
     if (evaluationQuery.data) {
         return (
             <EvaluationSubmittedMessage

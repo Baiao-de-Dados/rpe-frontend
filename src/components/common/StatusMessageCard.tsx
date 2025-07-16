@@ -22,7 +22,7 @@ function StatusMessageCard({
 }: StatusMessageCardProps) {
     return (
         <div className={`flex items-center justify-center min-h-[60vh] p-4 md:p-6 ${className}`}>
-            <CardContainer className="mt-20 sm:mt-0 max-w-210 min-w-[800px] mx-auto text-center border-2 border-neutral-200 w-full md:w-auto">
+            <CardContainer className="mt-20 sm:mt-0 max-w-210 sm:min-w-[800px] mx-auto text-center border-2 border-neutral-200 w-full md:w-auto">
                 <div className="flex justify-center mb-6">
                     <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
                         {icon}
