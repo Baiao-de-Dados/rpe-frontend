@@ -18,8 +18,9 @@ import type { Collaborator } from '../../types/collaborator';
 
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
-import { ManagerEvaluationForm } from '../../components/Evaluation/ManagerEvaluationForm';
 import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
+import CycleInProgressMessage from '../../components/CycleMessages/CycleInProgressMessage';
+import { ManagerEvaluationForm } from '../../components/Evaluation/ManagerEvaluationForm';
 // StatusMessageCard removido pois não está sendo usado
 
 import { fullManagerEvaluationSchema, type FullManagerEvaluationFormData } from '../../schemas/managerEvaluation';
@@ -304,6 +305,11 @@ export function ManagerAvaliacao({ collaboratorId }: ManagerAvaliacaoProps) {
 
     if (!currentCycle) {
         return <CycleLoadErrorMessage />;
+    }
+
+    // ✅ CORREÇÃO: Gestores só podem fazer avaliações quando o ciclo estiver fechado
+    if (currentCycle.isActive) {
+        return <CycleInProgressMessage cycleName={currentCycle?.name} className="mb-6" />;
     }
 
     if (!collaborator) {

@@ -16,18 +16,10 @@ import CollaboratorEvaluationCard from '../../components/common/CollaboratorEval
 
 export function CommitteeDashboard() {
 
-    const { user, hasRole } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const { currentCycle, isLoading: cycleLoading } = useCycle();
-
-    // Debug logs para verificar autenticação
-    console.log('CommitteeDashboard auth debug:', {
-        user,
-        userRoles: user?.roles,
-        isCommittee: hasRole('COMMITTEE'),
-        isAuthenticated: !!user
-    });
 
     // API queries
     const { data: dashboardMetrics, isLoading: metricsLoading } = useCommitteeDashboardMetrics();
@@ -55,19 +47,6 @@ export function CommitteeDashboard() {
         }));
     }, [collaboratorsSummary]);
 
-    // Debug logs
-    console.log('CommitteeDashboard debug:', {
-        currentCycle,
-        cycleLoading,
-        metricsLoading,
-        collaboratorsLoading,
-        isLoading,
-        dashboardMetrics,
-        collaboratorsSummary,
-        collaboratorsSummaryLength: collaboratorsSummary?.length,
-        collaboratorsWithCalculatedScoresLength: collaboratorsWithCalculatedScores.length
-    });
-
     const handleCollaboratorClick = (collaboratorId: number) => {
         navigate(`/colaboradores/${collaboratorId}/avaliacao`);
     };
@@ -79,15 +58,6 @@ export function CommitteeDashboard() {
     if (!currentCycle) {
         return <CycleLoadErrorMessage />;
     }
-
-    // Debug: Verificar se há dados
-    console.log('CommitteeDashboard render debug:', {
-        hasCurrentCycle: !!currentCycle,
-        hasDashboardMetrics: !!dashboardMetrics,
-        hasCollaboratorsSummary: !!collaboratorsSummary,
-        collaboratorsCount: collaboratorsSummary?.length || 0,
-        calculatedScoresCount: collaboratorsWithCalculatedScores.length
-    });
 
     return (
         <>

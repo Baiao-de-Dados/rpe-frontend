@@ -238,13 +238,6 @@ export function CommitteeSectionRenderer({
     const renderSection = () => {
         switch (activeSection) {
             case 'Avaliação':
-                console.log('🎯 CommitteeSectionRenderer: Renderizando seção Avaliação', {
-                    collaboratorSelfAssessment,
-                    managerEvaluation,
-                    managerEvaluationData: managerEvaluation?.criteria || []
-                });
-                console.log('🎯 CommitteeSectionRenderer: Dados completos do manager:', managerEvaluation);
-                console.log('🎯 CommitteeSectionRenderer: Score do manager:', managerEvaluation?.score);
                 return (
                     <ReadOnlyManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
@@ -279,12 +272,6 @@ export function CommitteeSectionRenderer({
                     />
                 );
             case 'Equalização':
-                console.log('🎯 CommitteeSectionRenderer: Renderizando seção Equalização', {
-                    autoEvaluation,
-                    managerEvaluation,
-                    evaluations360,
-                    committeeEqualization
-                });
                 return (
                     <EqualizationSection 
                         collaborator={collaborator}

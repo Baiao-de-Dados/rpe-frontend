@@ -48,6 +48,7 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         }
         const foundCurrentCycle = cycles.find(cycle => cycle.name === currentCycleName);
         if (foundCurrentCycle) {
+            // foundCurrentCycle.isActive = false;
             return foundCurrentCycle;
         }
         return {

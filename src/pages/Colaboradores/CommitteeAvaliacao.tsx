@@ -10,6 +10,7 @@ import { CommitteeEvaluationForm } from '../../components/Evaluation/CommitteeEv
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
+import CycleInProgressMessage from '../../components/CycleMessages/CycleInProgressMessage';
 
 export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,9 +62,6 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     }, [collaboratorDetails?.committeeEqualization]);
 
     const handleSaveEqualization = methods.handleSubmit(async (data) => {
-        console.log('🎯 CommitteeAvaliacao: handleSaveEqualization chamada!');
-        console.log('🎯 CommitteeAvaliacao: Dados do formulário:', data);
-        
         if (!currentCycle) {
             showToast('Ciclo não encontrado', 'error');
             return;
@@ -84,13 +82,7 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
                 },
             };
 
-            console.log('🚀 Enviando payload para equalização:', payload);
-            console.log('📡 URL esperada: POST /committee/equalization');
-            console.log('🔍 Dados do formulário:', data);
-
             const response = await saveEqualizationMutation.mutateAsync(payload);
-            
-            console.log('✅ Resposta da API:', response);
             
             // ✅ CORREÇÃO: Forçar atualização imediata dos dados
             await queryClient.refetchQueries({ 
@@ -109,15 +101,7 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
             } else {
                 showToast('Equalização salva com sucesso!', 'success');
             }
-        } catch (error: unknown) {
-            console.error('❌ Erro ao salvar equalização:', error);
-            console.error('❌ Detalhes do erro:', {
-                message: (error as Error)?.message,
-                status: (error as { response?: { status?: number } })?.response?.status,
-                data: (error as { response?: { data?: unknown } })?.response?.data,
-                url: (error as { config?: { url?: string } })?.config?.url,
-                method: (error as { config?: { method?: string } })?.config?.method
-            });
+        } catch {
             showToast('Erro ao salvar a equalização.', 'error');
         } finally {
             setIsSubmitting(false);
@@ -132,6 +116,11 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
         return <CycleLoadErrorMessage />;
     }
 
+    // ✅ CORREÇÃO: Comitê só pode fazer equalizações quando o ciclo estiver fechado
+    if (currentCycle.isActive) {
+        return <CycleInProgressMessage cycleName={currentCycle?.name} className="mb-6" />;
+    }
+
     if (!collaboratorDetails) {
         return <CollaboratorNotFoundMessage />;
     }
@@ -141,14 +130,6 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     const autoEvaluation = collaboratorDetails.autoEvaluation;
     const evaluations360 = collaboratorDetails.evaluation360;
     const managerEvaluation = collaboratorDetails.managerEvaluation;
-    
-    // ✅ DEBUG: Log dos dados do manager
-    console.log('🎯 CommitteeAvaliacao: Dados do manager:', {
-        managerEvaluation,
-        hasManagerEvaluation: !!managerEvaluation,
-        managerCriteria: managerEvaluation?.criteria,
-        managerScore: managerEvaluation?.score
-    });
     
     // ✅ CORREÇÃO: Usar justSaved para determinar se há equalização
     const committeeEqualization = justSaved ? {
@@ -179,24 +160,6 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
         strengths: evaluation.strengths,
     }));
     
-    // ✅ DEBUG: Log dos dados para equalização
-    console.log('🎯 CommitteeAvaliacao: Dados para equalização:', {
-        autoEvaluation,
-        managerEvaluation,
-        evaluations360,
-        committeeEqualization,
-        collaboratorSelfAssessment: collaboratorSelfAssessment.length,
-        formattedEvaluations360: formattedEvaluations360.length
-    });
-    
-    // ✅ DEBUG: Log detalhado dos dados do manager
-    console.log('🎯 CommitteeAvaliacao: Dados detalhados do manager:', {
-        managerEvaluation,
-        managerScore: managerEvaluation?.score,
-        managerCriteria: managerEvaluation?.criteria?.length,
-        hasManagerEvaluation: !!managerEvaluation
-    });
-
     return (
         <FormProvider {...methods}>
             <div className="min-h-screen bg-[#FAFAFA]">
@@ -213,7 +176,6 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
                     committeeEqualization={committeeEqualization}
                     isReadOnly={justSaved}
                     onEnterEditMode={() => {
-                        console.log('🎯 CommitteeAvaliacao: Usuário entrou em modo de edição');
                         setJustSaved(false); // Resetar justSaved quando entrar em modo de edição
                     }}
                 />

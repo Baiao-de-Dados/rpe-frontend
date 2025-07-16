@@ -8,15 +8,15 @@ import { useEvaluationFormPopulation } from '../../hooks/useEvaluationFormPopula
 import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
 
 import CycleLoading from '../../components/common/CycleLoading';
-import AllEvaluation from '../../components/Evaluation/AllEvaluation';
 import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
+import CycleClosedEvaluationMessage from '../../components/CycleMessages/CycleClosedEvaluationMessage';
 import type { Cycle } from '../../types/cycle';
 import { useEffect } from 'react';
 
 export function CollaboratorAvaliacao() {
-    const { currentCycle, isLoading } = useCycle();
+    const { currentCycle, isLoading, status } = useCycle();
     const evaluationQuery = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
     const { data: draftData } = useCollaboratorDraftQuery(currentCycle?.id);
 
@@ -24,12 +24,6 @@ export function CollaboratorAvaliacao() {
         resolver: zodResolver(fullEvaluationSchema),
         mode: 'onSubmit',
     });
-
-    useEffect(() => {
-        console.log('isValid:', methods.formState.isValid);
-        console.log('errors:', methods.formState.errors);
-    }, [methods.formState]);
-
 
     useEvaluationFormPopulation(methods);
 
@@ -50,8 +44,9 @@ export function CollaboratorAvaliacao() {
         return <CycleLoadErrorMessage />;
     }
 
-    if (!currentCycle.isActive) {
-        return <AllEvaluation />;
+    // ✅ CORREÇÃO: Colaboradores só podem fazer avaliações quando o ciclo estiver aberto
+    if (status !== 'open') {
+        return <CycleClosedEvaluationMessage cycleName={currentCycle?.name} className="mb-6" />;
     }
     
     if (evaluationQuery.data) {
