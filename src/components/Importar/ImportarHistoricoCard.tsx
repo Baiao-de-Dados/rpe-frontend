@@ -16,51 +16,53 @@ const ImportarHistoricoCard = () => {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const [files, setFiles] = useState<FileItem[]>([]);
+    const [file, setFile] = useState<FileItem | null>(null); // Alterado para aceitar apenas um arquivo
     const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
     const [message, setMessage] = useState<string | null>(null); // Estado para exibir mensagens de sucesso ou erro
 
-    const handleFiles = (fileList: FileList | null) => {
-        if (!fileList) return;
-        const newFiles: FileItem[] = Array.from(fileList).map((file: File) => ({
+    const handleFile = (file: File | null) => {
+        if (!file) return;
+        const newFile: FileItem = {
             name: file.name,
             size: file.size,
             fileData: file, // Adicionar o arquivo original para envio
             file: async () => Promise.resolve(file.name), // Implementar o método file
-        }));
-        setFiles(prev => [...prev, ...newFiles]);
+        };
+        setFile(newFile); // Substituir o arquivo anterior
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleFiles(e.target.files);
+        if (e.target.files && e.target.files.length > 0) {
+            handleFile(e.target.files[0]); // Aceitar apenas o primeiro arquivo
+        }
         if (inputRef.current) inputRef.current.value = '';
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-        handleFiles(e.dataTransfer.files);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files[0]); // Aceitar apenas o primeiro arquivo
+        }
     };
 
-    const handleRemove = (index: number) => {
-        setFiles(prev => prev.filter((_, i) => i !== index));
+    const handleRemove = () => {
+        setFile(null); // Remover o arquivo selecionado
     };
 
     const handleUpload = async () => {
-        if (files.length === 0) return;
+        if (!file) return;
 
         setLoading(true);
         setMessage(null);
 
         try {
-            const responses = await Promise.all(
-                files.map((fileItem: FileItem) => importEvaluations(fileItem.fileData)) // Enviar cada arquivo para o backend
-            );
-            setMessage(`${responses.length} arquivo(s) enviado(s) com sucesso.`);
-            setFiles([]); // Limpar os arquivos após o envio
+            await importEvaluations(file.fileData); // Enviar o arquivo para o backend
+            setMessage(`Arquivo "${file.name}" enviado com sucesso.`);
+            setFile(null); // Limpar o arquivo após o envio
         } catch (error: any) {
-            console.error('Erro ao enviar os arquivos:', error);
+            console.error('Erro ao enviar o arquivo:', error);
             setMessage(
-                error.response?.data?.message || 'Erro ao enviar os arquivos. Tente novamente.'
+                error.response?.data?.message || 'Erro ao enviar o arquivo. Tente novamente.'
             );
         } finally {
             setLoading(false);
@@ -72,7 +74,7 @@ const ImportarHistoricoCard = () => {
             <CardContainer className="w-full">
                 <div
                     className={`border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center py-8 px-4 mb-6 cursor-pointer hover:border-primary-500 transition ${
-                        files.length === 0 ? 'h-120' : files.length === 1 ? 'h-82.5' : 'h-60'
+                        !file ? 'h-120' : 'h-82.5'
                     }`}
                     onClick={() => inputRef.current?.click()}
                     onDrop={handleDrop}
@@ -82,7 +84,6 @@ const ImportarHistoricoCard = () => {
                         ref={inputRef}
                         type="file"
                         accept=".xlsx,.xls"
-                        multiple
                         className="hidden"
                         onChange={handleInputChange}
                     />
@@ -94,61 +95,42 @@ const ImportarHistoricoCard = () => {
                         </span>
                     </div>
                 </div>
-                {files.length > 0 && (
+                {file && (
                     <div className="rounded-xl overflow-hidden">
-                        <div className="flex font-semibold text-gray-700 px-4 text-center justify-between bg-white sticky top-0 z-10">
-                            <span className="w-40 text-center">Nome do arquivo</span>
-                            <div className="flex justify-between items-center w-55 px-4">
-                                <span className="w-40 text-center">Tamanho</span>
-                                <span className="w-32 text-center">Apagar</span>
+                        <div className="flex items-center border border-gray-200 rounded-2xl my-3 bg-white justify-between">
+                            <span
+                                title={file.name}
+                                className="w-155 font-semibold text-lg py-6 truncate text-start pl-8 pr-8"
+                            >
+                                {file.name}
+                            </span>
+                            <div className="flex justify-between items-center w-55 pr-7">
+                                <span className="w-40 text-gray-500 text-base text-center">
+                                    {formatSize(file.size)}
+                                </span>
+                                <div className="w-32 flex justify-center items-center">
+                                    <button
+                                        title="Remover"
+                                        className="text-red-500 hover:text-red-700 cursor-pointer"
+                                        onClick={handleRemove}
+                                    >
+                                        <Trash className="w-6 h-6" />
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div className={`${files.length >= 3 ? 'max-h-48 overflow-y-auto' : ''}`}>
-                            {files.map((file, idx) => (
-                                <div
-                                    key={idx}
-                                    className="flex items-center border border-gray-200 rounded-2xl my-3 bg-white justify-between"
-                                >
-                                    <span
-                                        title={file.name}
-                                        className="w-155 font-semibold text-lg py-6 truncate text-start pl-8 pr-8"
-                                    >
-                                        {file.name}
-                                    </span>
-                                    <div className="flex justify-between items-center w-55 pr-7">
-                                        <span className="w-40 text-gray-500 text-base text-center">
-                                            {formatSize(file.size)}
-                                        </span>
-                                        <div className="w-32 flex justify-center items-center">
-                                            <button
-                                                title="Remover"
-                                                className="text-red-500 hover:text-red-700 cursor-pointer"
-                                                onClick={e => {
-                                                    e.stopPropagation();
-                                                    handleRemove(idx);
-                                                }}
-                                            >
-                                                <Trash className="w-6 h-6" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     </div>
                 )}
-                {files.length >= 0 && (
-                    <div className="flex flex-col items-center mt-6">
-                        <button
-                            onClick={handleUpload}
-                            disabled={files.length === 0 || loading}
-                            className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-xl shadow transition disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
-                        >
-                            {loading ? 'Enviando...' : 'Enviar Arquivos'}
-                        </button>
-                        {message && <p className="mt-4 text-center">{message}</p>}
-                    </div>
-                )}
+                <div className="flex flex-col items-center mt-6">
+                    <button
+                        onClick={handleUpload}
+                        disabled={!file || loading}
+                        className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-xl shadow transition disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
+                    >
+                        {loading ? 'Enviando...' : 'Enviar Arquivo'}
+                    </button>
+                    {message && <p className="mt-4 text-center">{message}</p>}
+                </div>
             </CardContainer>
         </motion.div>
     );
