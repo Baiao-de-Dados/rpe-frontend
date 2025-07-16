@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
-import { useCommitteeCollaboratorDetails, useCommitteeEqualization, useCommitteeSaveEqualization } from '../../hooks/api/useCommitteeQuery';
+import { useCommitteeCollaboratorDetails, useCommitteeEqualization, useCommitteeSaveEqualization, useCommitteeGenerateAiSummary, useCommitteeAiSummary } from '../../hooks/api/useCommitteeQuery';
 
-import { CommitteeEvaluationForm } from '../../components/Evaluation/CommitteeEvaluationForm';
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
-import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
 import CycleInProgressMessage from '../../components/CycleMessages/CycleInProgressMessage';
+import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
+import AnotacoesStepsModal from '../../components/Notes/AnotacoesStepsModal';
+
+import { CommitteeEvaluationForm } from '../../components/Evaluation/CommitteeEvaluationForm';
 
 export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,8 +31,17 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
         currentCycle?.id || 0
     );
     const saveEqualizationMutation = useCommitteeSaveEqualization();
+    
+    // ✅ NOVO: Hook para geração de resumo da IA
+    const aiSummaryGeneration = useCommitteeGenerateAiSummary();
+    
+    // ✅ NOVO: Hook para buscar resumo da IA salvo
+    const { data: aiSummary, isLoading: aiSummaryLoading } = useCommitteeAiSummary(
+        collaboratorId,
+        currentCycle?.id || 0
+    );
 
-    const isLoading = cycleLoading || detailsLoading || equalizationLoading;
+    const isLoading = cycleLoading || detailsLoading || equalizationLoading || aiSummaryLoading;
 
     // Formulário para dados do comitê
     const methods = useForm({
@@ -78,7 +89,8 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
                     // ✅ NOVO: Incluir changeReason apenas se for uma atualização e o campo não estiver vazio
                     ...(existingEqualization && data.committeeEqualization.changeReason?.trim() && {
                         changeReason: data.committeeEqualization.changeReason.trim()
-                    })
+                    }),
+                    // ✅ CORREÇÃO: Remover aiSummary do payload - deve ser independente da avaliação
                 },
             };
 
@@ -108,6 +120,15 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
         }
     });
 
+    // ✅ NOVO: Handler para geração de resumo da IA
+    const handleGenerateAiSummary = () => {
+        if (!currentCycle) {
+            showToast('Ciclo não encontrado', 'error');
+            return;
+        }
+        aiSummaryGeneration.generateSummary(collaboratorId, currentCycle.id || 0);
+    };
+
     if (isLoading) {
         return <CycleLoading />;
     }
@@ -132,16 +153,14 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     const managerEvaluation = collaboratorDetails.managerEvaluation;
     
     // ✅ CORREÇÃO: Usar justSaved para determinar se há equalização
-    const committeeEqualization = justSaved ? {
-        finalScore: methods.getValues('committeeEqualization.finalScore'),
-        comments: methods.getValues('committeeEqualization.comments'),
-        committee: {
-            id: 1, // TODO: Pegar do usuário logado
-            name: 'Comitê',
-            position: 'Membro'
-        },
-        lastUpdated: new Date().toISOString()
-    } : collaboratorDetails.committeeEqualization;
+    const committeeEqualization = collaboratorDetails.committeeEqualization;
+    
+    // ✅ DEBUG: Log dos dados do backend
+    console.log('🎯 CommitteeAvaliacao: Dados do backend:', {
+        collaboratorDetails,
+        committeeEqualization,
+        aiSummary: collaboratorDetails?.committeeEqualization?.aiSummary
+    });
 
     // Converter dados para o formato esperado pelo formulário
     const collaboratorSelfAssessment = autoEvaluation?.criteria || [];
@@ -163,6 +182,18 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     return (
         <FormProvider {...methods}>
             <div className="min-h-screen bg-[#FAFAFA]">
+                {/* ✅ NOVO: Modal de geração de resumo da IA */}
+                <AnotacoesStepsModal
+                    open={aiSummaryGeneration.isModalOpen}
+                    steps={aiSummaryGeneration.steps}
+                    error={aiSummaryGeneration.error}
+                    onCancel={aiSummaryGeneration.handleModalCancel}
+                    onContinue={aiSummaryGeneration.handleModalContinue}
+                    canContinue={aiSummaryGeneration.canContinue}
+                    title="Gerando resumo da IA"
+                    isEqualization={true}
+                />
+                
                 <CommitteeEvaluationForm
                     collaborator={collaborator}
                     cycleName={currentCycle.name || 'Ciclo Atual'}
@@ -175,8 +206,13 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
                     managerEvaluation={managerEvaluation}
                     committeeEqualization={committeeEqualization}
                     isReadOnly={justSaved}
-                    onEnterEditMode={() => {
-                        setJustSaved(false); // Resetar justSaved quando entrar em modo de edição
+                    // ✅ NOVO: Props para geração de resumo da IA
+                    onGenerateAiSummary={handleGenerateAiSummary}
+                    hasAiSummary={!!collaboratorDetails?.committeeEqualization?.aiSummary || !!aiSummary?.aiSummary}
+                    aiSummary={aiSummary}
+                    // ✅ NOVO: Props para exportar relatório (feature futura)
+                    onExportReport={() => {
+                        showToast('Funcionalidade de exportação será implementada em breve', 'info');
                     }}
                 />
             </div>
