@@ -1,4 +1,20 @@
+export function getAllCyclesWithCurrent(localCurrentCycle: CurrentCycle, cycles: CurrentCycle[], currentCycleName: string) {
+    const shouldAddCurrentCycle = localCurrentCycle && localCurrentCycle.name === currentCycleName && (!localCurrentCycle.startDate || !localCurrentCycle.endDate);
+    return shouldAddCurrentCycle && !cycles.some(c => c.name === currentCycleName)
+        ? [localCurrentCycle, ...cycles]
+        : cycles;
+}
+import type { CurrentCycle } from "../types/cycle";
+
 export type CycleStatus = 'open' | 'closed' | 'done' | 'upcoming' | 'undefined';
+
+export function getCurrentCycleLocal(currentCycle: CurrentCycle, currentCycleName: string) {
+    const shouldAddCurrentCycle = currentCycle && currentCycle.name !== currentCycleName;
+    if (shouldAddCurrentCycle) {
+        return { name: currentCycleName, isActive: false, done: false };
+    }
+    return currentCycle;
+}
 
 export function getCycleStatus({ isActive, done, daysToStart, daysToEnd }: {
     isActive: boolean;

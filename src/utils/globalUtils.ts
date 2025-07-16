@@ -47,6 +47,9 @@ export function getBrazilDateString() {
 }
 
 export function getRemainingDays({ startDate, endDate }: { startDate?: string; endDate?: string }) {
+    if (!startDate && !endDate) {
+        return { daysToStart: -1, daysToEnd: -1 };
+    }
     const today = parseISO(getBrazilDateString());
     let daysToStart = 0;
     let daysToEnd = 0;

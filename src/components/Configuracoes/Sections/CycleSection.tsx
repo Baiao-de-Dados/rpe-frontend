@@ -4,10 +4,11 @@ import { Clock, History } from 'lucide-react';
 import CycleCard from '../Cards/CycleCard';
 
 import { useCycle } from '../../../hooks/useCycle';
+import { useMemo } from 'react';
 
 import AlertMessage from '../../common/AlertMessage';
 
-import { parseCycleString } from '../../../utils/cycleUtils';
+import { parseCycleString, getCurrentCycleName, getCurrentCycleLocal, getAllCyclesWithCurrent } from '../../../utils/cycleUtils';
 import { getBrazilDateString } from '../../../utils/globalUtils';
 
 import StartCycleModal from '../Modals/StartCycleModal';
@@ -22,7 +23,18 @@ export function CycleSection() {
 
     const { currentCycle, allTracksSet, cycles, startCycle, extendCycle, cancelCycle } = useCycle();
 
-    const cycleLabel = `Ciclo ${currentCycle.name}`;
+    const currentCycleName = getCurrentCycleName();
+
+    const localCurrentCycle = useMemo(
+        () => getCurrentCycleLocal(currentCycle, currentCycleName),
+        [currentCycle, currentCycleName]
+    );
+    const allCycles = useMemo(
+        () => getAllCyclesWithCurrent(localCurrentCycle, cycles, currentCycleName),
+        [localCurrentCycle, cycles, currentCycleName]
+    );
+
+    const cycleLabel = `Ciclo ${localCurrentCycle.name}`;
     const { year, semester } = parseCycleString(cycleLabel);
 
     const handleStartCycle = async (startDate: string, endDate: string) => {
@@ -31,20 +43,20 @@ export function CycleSection() {
     };
 
     const handleCancelCycle = async () => {
-        if (currentCycle.id) {
-            cancelCycle(currentCycle.id);
+        if (localCurrentCycle.id) {
+            cancelCycle(localCurrentCycle.id);
         }
         setCancelModalOpen(false);
     };
 
     const handleExtendCycle = async (newEndDate: string) => {
-        if (currentCycle.id) {
-            extendCycle(currentCycle.id, { endDate: newEndDate });
+        if (localCurrentCycle.id) {
+            extendCycle(localCurrentCycle.id, { endDate: newEndDate });
         }
         setExtendModalOpen(false);
     };
 
-    const canStartCycle = !!currentCycle && !currentCycle.isActive && allTracksSet;
+    const canStartCycle = !!localCurrentCycle && !localCurrentCycle.isActive && allTracksSet;
 
     return (
         <div className="flex flex-col gap-8 sm:gap-6 px-2 sm:px-0">
@@ -59,10 +71,10 @@ export function CycleSection() {
                 </span>
                 <CycleCard 
                     label={cycleLabel} 
-                    showButton={!!currentCycle && !currentCycle.isActive} 
+                    showButton={!!localCurrentCycle && !localCurrentCycle.isActive} 
                     canStart={canStartCycle} 
-                    cycle={currentCycle}
-                    status={currentCycle.isActive ? 'aberto' : 'fechado'} 
+                    cycle={localCurrentCycle}
+                    status={localCurrentCycle.isActive ? 'aberto' : 'fechado'} 
                     onStartClick={() => setStartModalOpen(true)} 
                     onCancelClick={() => setCancelModalOpen(true)} 
                     onExtendClick={() => setExtendModalOpen(true)}
@@ -74,8 +86,8 @@ export function CycleSection() {
                     Ciclos anteriores
                 </span>
                 <div className="max-h-96 md:max-h-96 lg:max-h-96 xl:max-h-96 2xl:max-h-96 sm:max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                    {cycles
-                        .filter(c => c.name !== currentCycle.name)
+                    {allCycles
+                        .filter(c => c.name !== localCurrentCycle.name)
                         .map(cycle => (
                             <CycleCard 
                                 key={cycle.name} 
@@ -95,11 +107,11 @@ export function CycleSection() {
                 open={extendModalOpen} 
                 onClose={() => setExtendModalOpen(false)} 
                 onConfirm={handleExtendCycle} 
-                currentEndDate={currentCycle.endDate || ''}  
+                currentEndDate={localCurrentCycle.endDate || ''}  
             />
             <CancelCycleModal cycleName={cycleLabel}
                 open={cancelModalOpen} 
-                safe={!!(!currentCycle.done && currentCycle.startDate && (new Date(currentCycle.startDate) > new Date(getBrazilDateString())))}
+                safe={!!(!localCurrentCycle.done && localCurrentCycle.startDate && (new Date(localCurrentCycle.startDate) > new Date(getBrazilDateString())))}
                 onClose={() => setCancelModalOpen(false)} 
                 onConfirm={handleCancelCycle}  
             />

@@ -19,12 +19,15 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
 
     const queryClient = useQueryClient();
 
-    const { data: cycles = [], isLoading, refetch: refetchCycleData } = useQuery({
+
+    const { data: allCycles = [], isLoading, refetch: refetchCycleData } = useQuery({
         queryKey: ['cycles'],
         queryFn: () => cycleEndpoints.getCycles().then(response => response.data),
         staleTime: 5 * 60 * 1000, 
         refetchOnWindowFocus: false,
     });
+
+    const cycles = useMemo(() => allCycles.filter(cycle => cycle.startDate && cycle.endDate), [allCycles]);
 
     const { data: tracksCriteria } = useTracksCriteriaQuery();
 
@@ -47,8 +50,20 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
             return undefined as unknown as CurrentCycle;
         }
         const foundCurrentCycle = cycles.find(cycle => cycle.name === currentCycleName);
-        if (foundCurrentCycle) {
+        if (foundCurrentCycle && foundCurrentCycle.startDate && foundCurrentCycle.endDate) {
             return foundCurrentCycle;
+        }
+        let filteredCycles = cycles;
+        if (!foundCurrentCycle) {
+            filteredCycles = cycles.filter(cycle => cycle.name !== currentCycleName);
+        }
+        const sortedCycles = [...filteredCycles].sort((a, b) => {
+            if (!a.startDate || !b.startDate) return 0;
+            return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+        });
+        const previousValidCycle = sortedCycles.find(cycle => cycle.startDate && cycle.endDate);
+        if (previousValidCycle) {
+            return previousValidCycle;
         }
         return {
             name: currentCycleName,
