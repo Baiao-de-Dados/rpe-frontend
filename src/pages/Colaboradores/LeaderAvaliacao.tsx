@@ -61,7 +61,6 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
                 if (currentCycle?.id) {
                     methods.setValue('cycleId', currentCycle.id);
                 }
-                // Fetch leader evaluation and set as default values if exists
                 if (currentCycle?.id && user?.id) {
                     getLeaderEvaluation({ cycleId: currentCycle.id, collaboratorId: foundCollaborator.id })
                         .then(evaluation => {
@@ -96,7 +95,7 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
                         { title: 'Erro', duration: 5000 }
                     );
                 }
-                navigate('/colaboradores');
+                navigate(-1);
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +113,7 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
                     duration: 5000,
                 }
             );
-            navigate('/colaboradores');
+            navigate(-1);
         } catch (error) {
             console.error('Erro ao enviar avaliação:', error);
             showToast(

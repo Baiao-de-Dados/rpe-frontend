@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { leaderEndpoints } from '../../services/api/leader';
 import type { CollaboratorsEvaluationsSummary } from '../../types/collaborator';
 import type { LeaderEvaluationPayload, GetLeaderEvaluationPayload, LeaderEvaluation, CycleLeaderAvg } from '../../types/leader';
 
 export function useLeaderCollaboratorsEvaluation() {
+    const queryClient = useQueryClient();
 
     const query = useQuery<CollaboratorsEvaluationsSummary>({
         queryKey: ['leader-collaborators-evaluations-summary'],
@@ -24,7 +25,10 @@ export function useLeaderCollaboratorsEvaluation() {
     });
 
     const leaderEvaluation = async (payload: LeaderEvaluationPayload) => {
-        return leaderEndpoints.leaderEvaluation(payload);
+        const result = await leaderEndpoints.leaderEvaluation(payload);
+        await queryClient.invalidateQueries({ queryKey: ['leader-all-cycle-avg'] });
+        await queryClient.invalidateQueries({ queryKey: ['leader-collaborators-evaluations-summary'] });
+        return result;
     };
 
     const getLeaderEvaluation = async (payload: GetLeaderEvaluationPayload): Promise<LeaderEvaluation> => {
