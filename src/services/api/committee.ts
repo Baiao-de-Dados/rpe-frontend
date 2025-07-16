@@ -6,7 +6,8 @@ import type {
     CommitteeEqualizationPayload,
     CommitteeEqualizationResponse,
     CommitteeEqualization,
-    CommitteeEqualizationHistory
+    CommitteeEqualizationHistory,
+    CommitteeAiSummary
 } from '../../types/committee';
 
 export const committeeEndpoints = {
@@ -29,4 +30,16 @@ export const committeeEndpoints = {
     // Save equalization (agora com changeReason opcional)
     saveEqualization: (payload: CommitteeEqualizationPayload) => 
         api.post<CommitteeEqualizationResponse>('/committee/equalization', payload),
+    
+    // ✅ NOVO: Gerar resumo da IA
+    generateAiSummary: (collaboratorId: number, cycleConfigId: number) => 
+        api.post<{ code: string; rating?: number; detailedAnalysis?: string; summary?: string; discrepancies?: string; error?: string }>(`/committee/equalization/${collaboratorId}/generate-ai-summary?cycleConfigId=${cycleConfigId}`),
+    
+    // ✅ NOVO: Buscar resumo da IA salvo
+    getAiSummary: (collaboratorId: number, cycleConfigId: number) => 
+        api.get<CommitteeAiSummary>(`/committee/equalization/${collaboratorId}/ai-summary?cycleConfigId=${cycleConfigId}`),
+    
+    // ✅ DEBUG: Endpoint temporário para verificar dados da equalização
+    getEqualizationDebug: (collaboratorId: number, cycleConfigId: number) => 
+        api.get<CommitteeEqualization>(`/committee/equalization/${collaboratorId}?cycleConfigId=${cycleConfigId}`),
 }; 

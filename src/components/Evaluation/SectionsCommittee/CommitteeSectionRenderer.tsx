@@ -12,6 +12,7 @@ import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 import EqualizacaoCard from '../../common/EqualizacaoCard';
 import { Controller, useFormContext } from 'react-hook-form';
 import type { Collaborator } from '../../../types/collaborator';
+import type { CommitteeAiSummary } from '../../../types/committee';
 
 // Reutilizando componentes do gestor em modo readonly
 const ReadOnlyManagerSelfAssessmentSection = lazy(() =>
@@ -48,6 +49,10 @@ const EqualizationSection = ({
     committeeEqualization,
     onSaveEqualization,
     isReadOnly,
+    onGenerateAiSummary,
+    hasAiSummary,
+    aiSummary,
+    onExportReport,
 }: { 
     collaborator: Collaborator;
     autoEvaluation: {
@@ -84,34 +89,62 @@ const EqualizationSection = ({
             position: string;
         };
         lastUpdated: string;
+        aiSummary?: {
+            code: string;
+            rating?: number;
+            detailedAnalysis?: string;
+            summary?: string;
+            discrepancies?: string;
+        };
     } | null;
     onSaveEqualization?: () => void;
     isReadOnly?: boolean;
+    onGenerateAiSummary?: () => void;
+    hasAiSummary?: boolean;
+    aiSummary?: CommitteeAiSummary;
+    onExportReport?: () => void;
 }) => {
     // ✅ CORREÇÃO: Usar o formulário principal em vez de criar um local
     const { control, setValue, watch, formState: { errors } } = useFormContext();
     
     // Calcular scores reais
-    const selfEvalScore = autoEvaluation?.score || 0;
-    const managerEvalScore = managerEvaluation?.score || 0;
+    const selfEvalScore = autoEvaluation?.score || null;
+    const managerEvalScore = managerEvaluation?.score || null;
     
     // Calcular média das avaliações 360
     const postureScore = evaluations360.length > 0 
         ? evaluations360.reduce((sum, evaluation) => sum + evaluation.rating, 0) / evaluations360.length 
-        : 0;
+        : null;
     
     const finalScore = committeeEqualization?.finalScore || null;
     const status = committeeEqualization ? 'Finalizado' as const : 'Em andamento' as const;
-    // ✅ CORREÇÃO: Resumo deve ficar vazio até ser implementada a geração automática
-    const summary = '';
-
-    // ✅ DEBUG: Log dos scores calculados
-    console.log('🎯 EqualizationSection: Scores calculados:', {
-        selfEvalScore,
-        managerEvalScore,
-        postureScore,
-        finalScore,
-        evaluations360Count: evaluations360.length
+    // ✅ CORREÇÃO: Usar o aiSummary do committeeEqualization ou do aiSummary separado
+    const summary = committeeEqualization?.aiSummary || aiSummary?.aiSummary || '';
+    
+    // ✅ DEBUG: Log do resumo da IA
+    console.log('🎯 EqualizationSection: Resumo da IA:', {
+        committeeEqualization,
+        aiSummary,
+        summary,
+        hasAiSummary,
+        status,
+        finalScore
+    });
+    
+    // ✅ DEBUG: Log completo dos dados
+    console.log('🎯 EqualizationSection: Dados completos:', {
+        collaborator,
+        autoEvaluation,
+        managerEvaluation,
+        evaluations360,
+        committeeEqualization
+    });
+    
+    // ✅ DEBUG: Log da estrutura do summary sendo passada
+    console.log('🎯 EqualizationSection: Summary sendo passada para SummaryBox:', {
+        summary,
+        summaryType: typeof summary,
+        isObject: typeof summary === 'object' && summary !== null
     });
     
     // ✅ CORREÇÃO: Usar os campos do formulário principal
@@ -141,7 +174,7 @@ const EqualizationSection = ({
                     collaboratorName={collaborator.name}
                     position={collaborator.position}
                     status={status}
-                    finalScore={finalScore ?? 0}
+                    finalScore={finalScore}
                     selfEvalScore={selfEvalScore}
                     managerEvalScore={managerEvalScore}
                     postureScore={postureScore}
@@ -155,6 +188,9 @@ const EqualizationSection = ({
                     editable={true}
                     onSubmit={onSubmit}
                     isReadOnly={isReadOnly}
+                    onGenerateAiSummary={onGenerateAiSummary}
+                    hasAiSummary={hasAiSummary}
+                    onExportReport={onExportReport}
                 />
             )}
         />
@@ -211,13 +247,25 @@ interface CommitteeSectionRendererProps {
             position: string;
         };
         lastUpdated: string;
+        aiSummary?: {
+            code: string;
+            rating?: number;
+            detailedAnalysis?: string;
+            summary?: string;
+            discrepancies?: string;
+        };
     } | null;
     // ✅ NOVO: Função de submit do formulário principal
     onSaveEqualization?: () => void;
     // ✅ NOVO: Prop para controlar estado de edição
     isReadOnly?: boolean;
-    // ✅ NOVO: Callback para quando entrar em modo de edição
-    onEnterEditMode?: () => void;
+    // ✅ NOVO: Props para geração de resumo da IA
+    onGenerateAiSummary?: () => void;
+    hasAiSummary?: boolean;
+    // ✅ NOVO: Dados do resumo da IA
+    aiSummary?: CommitteeAiSummary;
+    // ✅ NOVO: Props para exportar relatório
+    onExportReport?: () => void;
 }
 
 export function CommitteeSectionRenderer({ 
@@ -231,6 +279,10 @@ export function CommitteeSectionRenderer({
     committeeEqualization,
     onSaveEqualization,
     isReadOnly,
+    onGenerateAiSummary,
+    hasAiSummary,
+    aiSummary,
+    onExportReport
 }: CommitteeSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -281,6 +333,10 @@ export function CommitteeSectionRenderer({
                         committeeEqualization={committeeEqualization || null}
                         onSaveEqualization={onSaveEqualization}
                         isReadOnly={isReadOnly}
+                        onGenerateAiSummary={onGenerateAiSummary}
+                        hasAiSummary={hasAiSummary}
+                        aiSummary={aiSummary}
+                        onExportReport={onExportReport}
                     />
                 );
             default:

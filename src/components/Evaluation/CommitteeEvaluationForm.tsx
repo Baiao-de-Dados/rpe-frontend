@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import type { Collaborator } from '../../types/collaborator';
+import type { CommitteeAiSummary } from '../../types/committee';
 
 import CommitteeEvaluationHeader from './CommitteeEvaluationHeader';
 
@@ -61,11 +62,23 @@ interface CommitteeEvaluationFormProps {
             position: string;
         };
         lastUpdated: string;
+        aiSummary?: {
+            code: string;
+            rating?: number;
+            detailedAnalysis?: string;
+            summary?: string;
+            discrepancies?: string;
+        };
     } | null;
     // ✅ NOVO: Prop para controlar estado de edição
     isReadOnly?: boolean;
-    // ✅ NOVO: Callback para quando entrar em modo de edição
-    onEnterEditMode?: () => void;
+    // ✅ NOVO: Props para geração de resumo da IA
+    onGenerateAiSummary?: () => void;
+    hasAiSummary?: boolean;
+    // ✅ NOVO: Dados do resumo da IA
+    aiSummary?: CommitteeAiSummary;
+    // ✅ NOVO: Props para exportar relatório
+    onExportReport?: () => void;
 }
 
 export const CommitteeEvaluationForm = memo(({
@@ -79,12 +92,13 @@ export const CommitteeEvaluationForm = memo(({
     managerEvaluation,
     committeeEqualization,
     isReadOnly,
-    onEnterEditMode
+    onGenerateAiSummary,
+    hasAiSummary,
+    aiSummary,
+    onExportReport
 }: CommitteeEvaluationFormProps) => {
     const { activeSection, navigateToSection, sections } =
         useSectionNavigation<CommitteeSectionType>([...committeeEvaluationSections]);
-
-
 
     return (
         <>
@@ -108,7 +122,10 @@ export const CommitteeEvaluationForm = memo(({
                     committeeEqualization={committeeEqualization}
                     onSaveEqualization={onSaveEqualization}
                     isReadOnly={isReadOnly}
-                    onEnterEditMode={onEnterEditMode}
+                    onGenerateAiSummary={onGenerateAiSummary}
+                    hasAiSummary={hasAiSummary}
+                    aiSummary={aiSummary}
+                    onExportReport={onExportReport}
                 />
             </main>
         </>
