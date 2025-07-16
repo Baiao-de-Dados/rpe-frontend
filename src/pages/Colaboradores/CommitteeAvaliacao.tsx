@@ -1,46 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
+
+import { useCycle } from '../../hooks/useCycle';
+import { useToast } from '../../hooks/useToast';
+import { useCommitteeCollaboratorDetails, useCommitteeEqualization, useCommitteeSaveEqualization } from '../../hooks/api/useCommitteeQuery';
 
 import { CommitteeEvaluationForm } from '../../components/Evaluation/CommitteeEvaluationForm';
-import { mockCollaborators } from '../../data/mockCollaborators';
+import CycleLoading from '../../components/common/CycleLoading';
+import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
+import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
+import CycleInProgressMessage from '../../components/CycleMessages/CycleInProgressMessage';
 
 export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    
-    // Mock do colaborador selecionado
-    const collaborator = mockCollaborators.find(c => c.id === collaboratorId) || {
-        id: 0,
-        name: 'Colaborador não encontrado',
-        position: '',
-        email: '',
-        track: { id: 0, name: '' },
-    };
+    const [justSaved, setJustSaved] = useState(false);
+    const { showToast } = useToast();
+    const { currentCycle, isLoading: cycleLoading } = useCycle();
+    const queryClient = useQueryClient();
 
-    // Mock da autoavaliação do colaborador
-    const mockSelfAssessment = [
-        { pilarId: 1, criterionId: 1, rating: 4, justification: 'Autoavaliação do colaborador para critério 1.' },
-        { pilarId: 1, criterionId: 2, rating: 3, justification: 'Autoavaliação do colaborador para critério 2.' },
-    ];
+    // API queries
+    const { data: collaboratorDetails, isLoading: detailsLoading } = useCommitteeCollaboratorDetails(
+        collaboratorId,
+        currentCycle?.id || 0
+    );
+    const { data: existingEqualization, isLoading: equalizationLoading } = useCommitteeEqualization(
+        collaboratorId,
+        currentCycle?.id || 0
+    );
+    const saveEqualizationMutation = useCommitteeSaveEqualization();
 
-    // Mock de avaliações 360
-    const evaluations360 = [
-        {
-            collaratorName: 'João Silva',
-            collaboratorPosition: 'Desenvolvedor Senior',
-            rating: 4,
-            improvements: 'Melhorar comunicação com outros times',
-            strengths: 'Excelente conhecimento técnico'
-        }
-    ];
-
-    // Mock de referências
-    const referencesReceived = [
-        {
-            collaratorName: 'Maria Santos',
-            collaboratorPosition: 'Tech Lead',
-            justification: 'Colaborador dedicado e comprometido com resultados'
-        }
-    ];
+    const isLoading = cycleLoading || detailsLoading || equalizationLoading;
 
     // Formulário para dados do comitê
     const methods = useForm({
@@ -48,35 +38,146 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
             committeeEqualization: {
                 finalScore: 0,
                 comments: '',
-                adjustments: [],
+                changeReason: '', // ✅ NOVO: motivo da mudança
             },
         }
     });
 
+    // Preencher formulário com dados existentes
+    useEffect(() => {
+        if (existingEqualization && existingEqualization.score !== undefined) {
+            methods.setValue('committeeEqualization.finalScore', existingEqualization.score as number);
+            methods.setValue('committeeEqualization.comments', existingEqualization.justification);
+            // Não preencher changeReason pois é apenas para novas mudanças
+        }
+    }, [existingEqualization, methods]);
+    
+    // ✅ CORREÇÃO: Inicializar justSaved baseado se já existe equalização
+    useEffect(() => {
+        if (collaboratorDetails?.committeeEqualization) {
+            setJustSaved(true); // Já existe equalização, deve estar em modo readonly
+        } else {
+            setJustSaved(false); // Não existe equalização, deve estar em modo de edição
+        }
+    }, [collaboratorDetails?.committeeEqualization]);
+
     const handleSaveEqualization = methods.handleSubmit(async (data) => {
+        if (!currentCycle) {
+            showToast('Ciclo não encontrado', 'error');
+            return;
+        }
+
         setIsSubmitting(true);
         try {
-            console.log('Salvando equalização:', data.committeeEqualization);
-            alert('Equalização salva com sucesso!');
-        } catch (error) {
-            console.error('Erro ao salvar equalização:', error);
-            alert('Erro ao salvar a equalização.');
+            const payload = {
+                cycleConfigId: currentCycle.id || 0,
+                collaboratorId: collaboratorId,
+                equalization: {
+                    score: data.committeeEqualization.finalScore,
+                    justification: data.committeeEqualization.comments,
+                    // ✅ NOVO: Incluir changeReason apenas se for uma atualização e o campo não estiver vazio
+                    ...(existingEqualization && data.committeeEqualization.changeReason?.trim() && {
+                        changeReason: data.committeeEqualization.changeReason.trim()
+                    })
+                },
+            };
+
+            const response = await saveEqualizationMutation.mutateAsync(payload);
+            
+            // ✅ CORREÇÃO: Forçar atualização imediata dos dados
+            await queryClient.refetchQueries({ 
+                queryKey: ['committee-collaborator-details', collaboratorId, currentCycle?.id || 0] 
+            });
+            await queryClient.refetchQueries({ 
+                queryKey: ['committee-equalization', collaboratorId, currentCycle?.id || 0] 
+            });
+            
+            // ✅ CORREÇÃO: Marcar como recém salvo para atualizar a interface
+            setJustSaved(true);
+            
+            // ✅ NOVO: Mostrar mensagem específica se foi uma atualização
+            if (response.data?.history) {
+                showToast(`Equalização atualizada com sucesso! Nota alterada de ${response.data.history.previousScore} para ${response.data.history.newScore}`, 'success');
+            } else {
+                showToast('Equalização salva com sucesso!', 'success');
+            }
+        } catch {
+            showToast('Erro ao salvar a equalização.', 'error');
         } finally {
             setIsSubmitting(false);
         }
     });
 
+    if (isLoading) {
+        return <CycleLoading />;
+    }
+
+    if (!currentCycle) {
+        return <CycleLoadErrorMessage />;
+    }
+
+    // ✅ CORREÇÃO: Comitê só pode fazer equalizações quando o ciclo estiver fechado
+    if (currentCycle.isActive) {
+        return <CycleInProgressMessage cycleName={currentCycle?.name} className="mb-6" />;
+    }
+
+    if (!collaboratorDetails) {
+        return <CollaboratorNotFoundMessage />;
+    }
+
+    // Extrair dados do colaborador
+    const collaborator = collaboratorDetails.collaborator;
+    const autoEvaluation = collaboratorDetails.autoEvaluation;
+    const evaluations360 = collaboratorDetails.evaluation360;
+    const managerEvaluation = collaboratorDetails.managerEvaluation;
+    
+    // ✅ CORREÇÃO: Usar justSaved para determinar se há equalização
+    const committeeEqualization = justSaved ? {
+        finalScore: methods.getValues('committeeEqualization.finalScore'),
+        comments: methods.getValues('committeeEqualization.comments'),
+        committee: {
+            id: 1, // TODO: Pegar do usuário logado
+            name: 'Comitê',
+            position: 'Membro'
+        },
+        lastUpdated: new Date().toISOString()
+    } : collaboratorDetails.committeeEqualization;
+
+    // Converter dados para o formato esperado pelo formulário
+    const collaboratorSelfAssessment = autoEvaluation?.criteria || [];
+    const referencesReceived: Array<{
+        collaratorName: string;
+        collaboratorPosition: string;
+        justification: string;
+    }> = []; // TODO: Implementar referências se necessário
+
+    // Converter evaluations360 para o formato esperado
+    const formattedEvaluations360 = evaluations360.map(evaluation => ({
+        collaratorName: evaluation.collaratorName,
+        collaboratorPosition: evaluation.collaboratorPosition,
+        rating: evaluation.rating,
+        improvements: evaluation.improvements,
+        strengths: evaluation.strengths,
+    }));
+    
     return (
         <FormProvider {...methods}>
             <div className="min-h-screen bg-[#FAFAFA]">
                 <CommitteeEvaluationForm
                     collaborator={collaborator}
-                    cycleName="2025.2"
-                    collaboratorSelfAssessment={mockSelfAssessment}
-                    evaluations360={evaluations360}
+                    cycleName={currentCycle.name || 'Ciclo Atual'}
+                    collaboratorSelfAssessment={collaboratorSelfAssessment}
+                    evaluations360={formattedEvaluations360}
                     referencesReceived={referencesReceived}
                     isSubmitting={isSubmitting}
                     onSaveEqualization={handleSaveEqualization}
+                    autoEvaluation={autoEvaluation}
+                    managerEvaluation={managerEvaluation}
+                    committeeEqualization={committeeEqualization}
+                    isReadOnly={justSaved}
+                    onEnterEditMode={() => {
+                        setJustSaved(false); // Resetar justSaved quando entrar em modo de edição
+                    }}
                 />
             </div>
         </FormProvider>

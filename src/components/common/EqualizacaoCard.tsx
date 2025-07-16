@@ -10,7 +10,7 @@ import { getScoreColor } from '../../utils/colorUtils';
 import CollaboratorCard from './CollaboratorCard';
 import Badge from './Badge';
 import { useToast } from '../../hooks/useToast';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileDown } from 'lucide-react';
 
 interface EqualizacaoCardProps {
@@ -31,6 +31,10 @@ interface EqualizacaoCardProps {
     editable?: boolean;
     onClick?: () => void;
     onSubmit?: () => void;
+    // ✅ NOVO: Prop para controlar diretamente o estado de edição
+    isReadOnly?: boolean;
+    // ✅ NOVO: Callback para quando entrar em modo de edição
+    onEnterEditMode?: () => void;
 }
 
 const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
@@ -51,19 +55,57 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
     justificationError,
     onClick,
     onSubmit,
+    isReadOnly,
+    onEnterEditMode,
 }) => {
     const { showToast } = useToast();
-    const [isEditing, setIsEditing] = useState(true);
+    // ✅ CORREÇÃO: Usar isReadOnly se fornecido, senão usar status
+    const [isEditing, setIsEditing] = useState(
+        isReadOnly !== undefined ? !isReadOnly : status === 'Em andamento'
+    );
+    
+    // ✅ CORREÇÃO: Atualizar estado de edição quando isReadOnly ou status mudar
+    useEffect(() => {
+        if (isReadOnly !== undefined) {
+            setIsEditing(!isReadOnly);
+        } else {
+            setIsEditing(status === 'Em andamento');
+        }
+    }, [isReadOnly, status]);
+    
+    // ✅ CORREÇÃO: Forçar modo readonly quando isReadOnly for true
+    useEffect(() => {
+        if (isReadOnly === true) {
+            setIsEditing(false);
+        }
+    }, [isReadOnly]);
 
     const handleConcluir = () => {
-        if (onSubmit) onSubmit();
-        showToast('Equalização salva com sucesso', 'success');
-        setIsEditing(false);
+        console.log('🎯 EqualizacaoCard: Botão Concluir clicado!');
+        if (onSubmit) {
+            onSubmit();
+            // ✅ CORREÇÃO: Não mostrar toast aqui, será mostrado pelo componente pai
+            // ✅ CORREÇÃO: Não mudar isEditing aqui, será controlado pelo status
+        } else {
+            console.warn('⚠️ EqualizacaoCard: onSubmit não foi passada');
+        }
     };
 
     const handleEditar = () => {
+        console.log('🎯 EqualizacaoCard: Entrando em modo de edição');
         setIsEditing(true);
+        if (onEnterEditMode) {
+            onEnterEditMode();
+        }
     };
+    
+    // ✅ CORREÇÃO: Chamar onEnterEditMode quando mudar de readonly para edição
+    useEffect(() => {
+        if (isEditing && isReadOnly === true && onEnterEditMode) {
+            console.log('🎯 EqualizacaoCard: Mudando de readonly para edição');
+            onEnterEditMode();
+        }
+    }, [isEditing, isReadOnly, onEnterEditMode]);
 
     const handleExportar = () => {
         // Simula exportação de relatório
@@ -187,8 +229,7 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                     <SummaryBox
                         summary={
                             status === 'Finalizado'
-                                ? summary ||
-                                  'Você se saiu muito bem por conta disso e isso.'
+                                ? summary || 'Resumo será gerado automaticamente em breve.'
                                 : '-'
                         }
                     />

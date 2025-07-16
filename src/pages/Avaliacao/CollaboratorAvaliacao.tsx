@@ -8,16 +8,20 @@ import { useEvaluationFormPopulation } from '../../hooks/useEvaluationFormPopula
 import { fullEvaluationSchema, type EvaluationFormData } from '../../schemas/evaluation';
 
 import CycleLoading from '../../components/common/CycleLoading';
-import AllEvaluation from '../../components/Evaluation/AllEvaluation';
 import { EvaluationForm } from '../../components/Evaluation/EvaluationForm';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import EvaluationSubmittedMessage from '../../components/Evaluation/EvaluationSubmittedMessage';
+import CycleClosedEvaluationMessage from '../../components/CycleMessages/CycleClosedEvaluationMessage';
 import type { Cycle } from '../../types/cycle';
 import { useEffect } from 'react';
+import AllEvaluation from '../../components/Evaluation/AllEvaluation';
 
 export function CollaboratorAvaliacao() {
-    const { currentCycle, isLoading } = useCycle();
+
+    const { currentCycle, isLoading, status } = useCycle();
+
     const { data, isLoading: isLoadingEvaluation } = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
+
     const { data: draftData } = useCollaboratorDraftQuery(currentCycle?.id);
 
     const methods = useForm<EvaluationFormData>({
@@ -46,6 +50,11 @@ export function CollaboratorAvaliacao() {
 
     if (!currentCycle.isActive) {
         return <AllEvaluation />;
+    }
+
+    // ✅ CORREÇÃO: Colaboradores só podem fazer avaliações quando o ciclo estiver aberto
+    if (status !== 'open') {
+        return <CycleClosedEvaluationMessage cycleName={currentCycle?.name} className="mb-6" />;
     }
 
     if (data) {

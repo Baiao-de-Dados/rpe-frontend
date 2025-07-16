@@ -15,7 +15,7 @@ import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import { LeaderEvaluationForm } from '../../components/Evaluation/LeaderEvaluationForm';
 import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
-import CycleClosedEvaluationMessage from '../../components/CycleMessages/CycleClosedEvaluationMessage';
+import CycleEndedForLeadersMessage from '../../components/CycleMessages/CycleEndedForLeadersMessage';
 
 import { fullLeaderEvaluationSchema, type FullLeaderEvaluationFormData } from '../../schemas/leaderEvaluation';
 
@@ -135,15 +135,17 @@ export function LeaderAvaliacao({ collaboratorId }: LeaderAvaliacaoProps) {
         return <CycleLoadErrorMessage />;
     }
 
+    
+    if (!currentCycle.isActive) {
+        return <CycleEndedForLeadersMessage cycleName={currentCycle?.name} className="mb-6" />;
+    }
+
     if (!collaborator) {
         return <CollaboratorNotFoundMessage />;
     }
 
     console.log('Current Cycle:', currentCycle);
 
-    if (!currentCycle.isActive) {
-        return <CycleClosedEvaluationMessage cycleName={currentCycle?.name} className="mb-6" />;
-    }
     console.log(evaluationData)
     return (
         <LeaderEvaluationReadonlyContext.Provider value={{ readonly: isReadonly, setReadonly: setIsReadonly, evaluationData }}>

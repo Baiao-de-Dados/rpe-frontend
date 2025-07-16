@@ -41,6 +41,14 @@ export const ReadOnlyManagerSelfAssessmentSection = memo(({
     const { control } = useFormContext<FullManagerEvaluationFormData>();
     const isInitialized = useRef(false);
 
+    // ✅ DEBUG: Log dos dados recebidos
+    console.log('🎯 ReadOnlyManagerSelfAssessmentSection: Dados recebidos:', {
+        collaboratorSelfAssessment: collaboratorSelfAssessment.length,
+        managerEvaluationData: managerEvaluationData.length,
+        allCriteria: allCriteria?.length
+    });
+    console.log('🎯 ReadOnlyManagerSelfAssessmentSection: managerEvaluationData:', managerEvaluationData);
+
     const { fields, replace } = useFieldArray({
         control,
         name: 'managerAssessment',
@@ -85,9 +93,11 @@ export const ReadOnlyManagerSelfAssessmentSection = memo(({
         return collaboratorSelfAssessment.filter((data: { pilarId: number }) => data.pilarId === pillarId);
     };
 
-    // Função para obter dados do gestor por pilar
+    // Função para obter dados do manager por pilar
     const getManagerDataByPillar = (pillarId: number) => {
-        return managerEvaluationData.filter((data: { pilarId: number }) => data.pilarId === pillarId);
+        const data = managerEvaluationData.filter((data: { pilarId: number }) => data.pilarId === pillarId);
+        console.log('🎯 ReadOnlyManagerSelfAssessmentSection: Dados do manager para pilar', pillarId, ':', data);
+        return data;
     };
 
     // Agrupar critérios por pilar

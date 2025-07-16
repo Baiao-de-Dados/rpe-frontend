@@ -10,7 +10,7 @@ import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
 
 // Remover imports não usados
 import EqualizacaoCard from '../../common/EqualizacaoCard';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import type { Collaborator } from '../../../types/collaborator';
 
 // Reutilizando componentes do gestor em modo readonly
@@ -40,58 +40,121 @@ const ManagerMentoringEvaluationSection = lazy(() =>
 );
 
 // Seção de equalização
-const EqualizationSection = ({ collaborator }: { collaborator: Collaborator }) => {
-    // Mock de dados de avaliação (substitua pelos dados reais do colaborador)
-    const scores: {
-        selfEvalScore: number;
-        managerEvalScore: number;
-        postureScore: number;
-        finalScore: number | null;
-        status: 'Finalizado' | 'Em andamento';
-        summary: string;
-    } = {
-        selfEvalScore: 4.0,
-        managerEvalScore: 4.2,
-        postureScore: 5.0,
-        finalScore: null,
-        status: 'Em andamento',
-        summary: 'Você se saiu muito bem por conta disso e isso.'
-    };
-    const { control, setValue, watch, formState: { errors } } = useForm({
-        defaultValues: {
-            rating: 0,
-            justification: '',
-        },
+const EqualizationSection = ({ 
+    collaborator, 
+    autoEvaluation, 
+    managerEvaluation, 
+    evaluations360, 
+    committeeEqualization,
+    onSaveEqualization,
+    isReadOnly,
+}: { 
+    collaborator: Collaborator;
+    autoEvaluation: {
+        score: number;
+        criteria: Array<{
+            pilarId: number;
+            criterionId: number;
+            rating: number;
+            justification: string;
+        }>;
+    } | null;
+    managerEvaluation: {
+        score: number;
+        criteria: Array<{
+            pilarId: number;
+            criterionId: number;
+            rating: number;
+            justification: string;
+        }>;
+    } | null;
+    evaluations360: Array<{
+        collaratorName: string;
+        collaboratorPosition: string;
+        rating: number;
+        improvements: string;
+        strengths: string;
+    }>;
+    committeeEqualization: {
+        finalScore: number;
+        comments: string;
+        committee: {
+            id: number;
+            name: string;
+            position: string;
+        };
+        lastUpdated: string;
+    } | null;
+    onSaveEqualization?: () => void;
+    isReadOnly?: boolean;
+}) => {
+    // ✅ CORREÇÃO: Usar o formulário principal em vez de criar um local
+    const { control, setValue, watch, formState: { errors } } = useFormContext();
+    
+    // Calcular scores reais
+    const selfEvalScore = autoEvaluation?.score || 0;
+    const managerEvalScore = managerEvaluation?.score || 0;
+    
+    // Calcular média das avaliações 360
+    const postureScore = evaluations360.length > 0 
+        ? evaluations360.reduce((sum, evaluation) => sum + evaluation.rating, 0) / evaluations360.length 
+        : 0;
+    
+    const finalScore = committeeEqualization?.finalScore || null;
+    const status = committeeEqualization ? 'Finalizado' as const : 'Em andamento' as const;
+    // ✅ CORREÇÃO: Resumo deve ficar vazio até ser implementada a geração automática
+    const summary = '';
+
+    // ✅ DEBUG: Log dos scores calculados
+    console.log('🎯 EqualizationSection: Scores calculados:', {
+        selfEvalScore,
+        managerEvalScore,
+        postureScore,
+        finalScore,
+        evaluations360Count: evaluations360.length
     });
-    // rating removido, não é mais necessário
-    const justification = watch('justification');
+    
+    // ✅ CORREÇÃO: Usar os campos do formulário principal
+    const watchedFinalScore = watch('committeeEqualization.finalScore');
+    const watchedComments = watch('committeeEqualization.comments');
+    
     const onSubmit = () => {
-        // TODO: Integrar com API
-        // alert('Equalização salva!');
+        console.log('🎯 EqualizationSection: Botão Concluir clicado!');
+        console.log('🎯 EqualizationSection: Dados do formulário principal:', {
+            finalScore: watchedFinalScore,
+            comments: watchedComments
+        });
+        if (onSaveEqualization) {
+            onSaveEqualization();
+        } else {
+            console.warn('⚠️ EqualizationSection: onSaveEqualization não foi passada');
+        }
     };
+    
     return (
         <Controller
-            name="rating"
+            name="committeeEqualization.finalScore"
             control={control}
             rules={{ required: 'A nota é obrigatória', min: 1, max: 5 }}
             render={({ field }) => (
                 <EqualizacaoCard
                     collaboratorName={collaborator.name}
                     position={collaborator.position}
-                    status={scores.status}
-                    finalScore={scores.finalScore ?? 0}
-                    selfEvalScore={scores.selfEvalScore}
-                    managerEvalScore={scores.managerEvalScore}
-                    postureScore={scores.postureScore}
-                    summary={scores.summary}
+                    status={status}
+                    finalScore={finalScore ?? 0}
+                    selfEvalScore={selfEvalScore}
+                    managerEvalScore={managerEvalScore}
+                    postureScore={postureScore}
+                    summary={summary}
                     rating={field.value}
                     onChangeRating={field.onChange}
-                    ratingError={errors.rating?.message as string}
-                    justification={justification}
-                    onChangeJustification={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue('justification', e.target.value)}
-                    justificationError={errors.justification?.message as string}
+                    ratingError={(errors.committeeEqualization as { finalScore?: { message?: string } })?.finalScore?.message as string}
+                    justification={watchedComments}
+                    onChangeJustification={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue('committeeEqualization.comments', e.target.value)}
+                    justificationError={(errors.committeeEqualization as { comments?: { message?: string } })?.comments?.message as string}
                     editable={true}
                     onSubmit={onSubmit}
+                    isReadOnly={isReadOnly}
                 />
             )}
         />
@@ -120,14 +183,54 @@ interface CommitteeSectionRendererProps {
         justification: string;
     }>;
     cycleName: string;
+    // Novos dados para equalização
+    autoEvaluation?: {
+        score: number;
+        criteria: Array<{
+            pilarId: number;
+            criterionId: number;
+            rating: number;
+            justification: string;
+        }>;
+    } | null;
+    managerEvaluation?: {
+        score: number;
+        criteria: Array<{
+            pilarId: number;
+            criterionId: number;
+            rating: number;
+            justification: string;
+        }>;
+    } | null;
+    committeeEqualization?: {
+        finalScore: number;
+        comments: string;
+        committee: {
+            id: number;
+            name: string;
+            position: string;
+        };
+        lastUpdated: string;
+    } | null;
+    // ✅ NOVO: Função de submit do formulário principal
+    onSaveEqualization?: () => void;
+    // ✅ NOVO: Prop para controlar estado de edição
+    isReadOnly?: boolean;
+    // ✅ NOVO: Callback para quando entrar em modo de edição
+    onEnterEditMode?: () => void;
 }
 
 export function CommitteeSectionRenderer({ 
     activeSection, 
     collaborator,
     collaboratorSelfAssessment,
-    evaluations360,
-    cycleName
+    evaluations360 = [],
+    cycleName,
+    autoEvaluation,
+    managerEvaluation,
+    committeeEqualization,
+    onSaveEqualization,
+    isReadOnly,
 }: CommitteeSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -138,12 +241,19 @@ export function CommitteeSectionRenderer({
                 return (
                     <ReadOnlyManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
+                        managerEvaluationData={managerEvaluation?.criteria || []}
                     />
                 );
             case 'Avaliações 360':
                 return (
                     <Manager360ReceivedSection 
-                        evaluations360={evaluations360 || []}
+                        evaluations360={evaluations360.map(evaluation => ({
+                            collaratorName: evaluation.collaratorName,
+                            collaboratorPosition: evaluation.collaboratorPosition,
+                            rating: evaluation.rating,
+                            improvements: evaluation.improvements,
+                            strengths: evaluation.strengths,
+                        }))}
                         cycleName={cycleName || 'Não definido'}
                     />
                 );
@@ -162,11 +272,22 @@ export function CommitteeSectionRenderer({
                     />
                 );
             case 'Equalização':
-                return <EqualizationSection collaborator={collaborator} />;
+                return (
+                    <EqualizationSection 
+                        collaborator={collaborator}
+                        autoEvaluation={autoEvaluation || null}
+                        managerEvaluation={managerEvaluation || null}
+                        evaluations360={evaluations360}
+                        committeeEqualization={committeeEqualization || null}
+                        onSaveEqualization={onSaveEqualization}
+                        isReadOnly={isReadOnly}
+                    />
+                );
             default:
                 return (
                     <ReadOnlyManagerSelfAssessmentSection 
                         collaboratorSelfAssessment={collaboratorSelfAssessment}
+                        managerEvaluationData={managerEvaluation?.criteria || []}
                     />
                 );
         }

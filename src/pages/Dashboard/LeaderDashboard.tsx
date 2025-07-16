@@ -87,14 +87,25 @@ export function LeaderDashboard() {
             <main className="p-8 pt-6 space-y-6">
 
                 {status === 'open' || status === 'closed' ? (
-                    <LeaderMetrics
-                        totalLeadership={collaboratorsArray.length}
-                        reviewsCompleted={reviewsCompleted}
-                        completionPercentage={completionPercentage}
-                        pendingReviews={pendingReviews}
-                        averageManagerScore={averageManagerScore}
-                        averageLeaderScore={averageLeaderScore}
-                    />
+                    <>
+                        <LeaderMetrics
+                            totalLeadership={collaboratorsArray.length}
+                            reviewsCompleted={reviewsCompleted}
+                            completionPercentage={completionPercentage}
+                            pendingReviews={pendingReviews}
+                            averageManagerScore={averageManagerScore}
+                            averageLeaderScore={averageLeaderScore}
+                        />
+                        
+                        {/* ✅ CORREÇÃO: Mostrar mensagem apropriada baseada no status do ciclo */}
+                        {!currentCycle?.isActive && (
+                            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <Typography variant="body" color="muted" className="text-sm">
+                                    ⚠️ Ciclo de avaliação encerrado. As avaliações de líderes não estão mais disponíveis.
+                                </Typography>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className="mb-6">
                         <CycleBanner />
@@ -125,7 +136,6 @@ export function LeaderDashboard() {
                                     <CollaboratorEvaluationCard
                                         key={summary.collaborator.id}
                                         summary={summary}
-                                        leaderRating={summary.leaderEvaluationScore}
                                         onClick={() => navigate(`/colaboradores/${summary.collaborator.id}/avaliacao`)}
                                         className="shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                                     />

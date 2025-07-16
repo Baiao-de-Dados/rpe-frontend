@@ -9,12 +9,11 @@ import { getEvaluationFields, getDisplayName, getDisplayPosition, getBadgeProps,
 
 export interface CollaboratorEvaluationCardProps {
     summary: CollaboratorEvaluations;
-    leaderRating?: number | null; 
     onClick?: () => void;
     className?: string;
 }
 
-function CollaboratorEvaluationCard({ summary, onClick, className = '', leaderRating }: CollaboratorEvaluationCardProps) {
+function CollaboratorEvaluationCard({ summary, onClick, className = '' }: CollaboratorEvaluationCardProps) {
 
     const [isMobile, setIsMobile] = useState(false);
 
@@ -43,13 +42,13 @@ function CollaboratorEvaluationCard({ summary, onClick, className = '', leaderRa
             <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end w-full sm:max-w-[60%]">
                 <Badge
                     label={
-                        leaderRating !== undefined && leaderRating !== null
+                        summary.managerEvaluationScore !== undefined && summary.managerEvaluationScore !== null
                             ? 'Finalizado'
                             : summary.status === 'finalizado' ? 'Finalizado' 
                             : summary.status === 'sem-ciclo' ? 'Sem ciclo' : 'Pendente'
                     }
                     variant={
-                        leaderRating !== undefined && leaderRating !== null
+                        summary.managerEvaluationScore !== undefined && summary.managerEvaluationScore !== null
                             ? 'success'
                             : summary.status === 'finalizado' ? 'success' 
                             : summary.status === 'sem-ciclo' ? 'default' : 'warning'

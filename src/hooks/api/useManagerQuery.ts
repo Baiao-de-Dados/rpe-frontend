@@ -205,6 +205,10 @@ export function useManagerEvaluation() {
             queryClient.invalidateQueries({ queryKey: ['manager-missing-evaluations'] });
             queryClient.invalidateQueries({ queryKey: ['manager-evaluation-percentage'] });
             queryClient.invalidateQueries({ queryKey: ['manager-evaluation'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-leader-evaluation-percentage'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-leaders-and-collaborators'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-collaborators-only'] });
+            queryClient.invalidateQueries({ queryKey: ['manager-dashboard-metrics'] });
             
             console.log('Manager evaluation mutation success - cache invalidated');
         },
