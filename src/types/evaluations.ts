@@ -1,3 +1,55 @@
+export interface EvaluationCyclesHistory {
+    cycles: EvaluationCycle[];
+}
+
+export interface EvaluationCycle {
+    cycleName: string;
+    selfAssessment: EvaluationSelfAssessment;
+    evaluation360: Evaluation360History;
+    reference: EvaluationReferenceHistory[];
+    mentoring: EvaluationMentoringHistory;
+}
+
+export interface EvaluationSelfAssessment {
+    pillars: EvaluationPillar[];
+}
+
+export interface EvaluationPillar {
+    pillarName: string;
+    criteria: EvaluationCriteria[];
+}
+
+export interface EvaluationCriteria {
+    criteriaName: string;
+    rating: number;
+    weight: number;
+    managerRating: number;
+    justification: string;
+}
+
+export interface Evaluation360History {
+    evaluation: Evaluation360Item[];
+}
+
+export interface Evaluation360Item {
+    collaratorName: string;
+    collaboratorPosition: string;
+    rating: number;
+    improvements: string;
+    strengths: string;
+}
+
+export interface EvaluationReferenceHistory {
+    collaratorName: string;
+    collaboratorPosition: string;
+    justification: string;
+}
+
+export interface EvaluationMentoringHistory {
+    mentorName: string;
+    rating: number;
+    justification: string;
+}
 export type SelfAssessmentDraft = {
     pillarId: number;
     criteriaId: number;

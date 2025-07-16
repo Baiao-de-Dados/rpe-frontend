@@ -10,17 +10,16 @@ import { RHDashboard } from './RHDashboard';
 
 export function Dashboard() {
 
-
     const { hasRole } = useAuth();
+
+    // RH Dashboard (prioridade alta)
+    if (hasRole(UserRoleEnum.RH)) {
+        return <RHDashboard />; 
+    }
 
     // Leader Dashboard
     if (hasRole(UserRoleEnum.LEADER)) {
         return <LeaderDashboard />;
-    }
-
-    // RH Dashboard (prioridade alta)
-    if (hasRole(UserRoleEnum.RH)) {
-        return <RHDashboard />; // RH vê dashboard de comitê
     }
 
     // Committee Dashboard

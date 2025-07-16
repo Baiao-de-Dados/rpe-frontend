@@ -7,8 +7,6 @@ import ProgressCircle from '../common/ProgressCircle';
 import { CHART_COLORS } from '../../utils/colorUtils';
 
 interface RHMetricsProps {
-    totalCollaborators: number;
-    completedEvaluations: number;
     pendingEvaluations: number;
     completionPercentage: number;
     daysUntilClosure?: number;

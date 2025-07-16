@@ -47,7 +47,7 @@ export function CollaboratorAvaliacao() {
     if (!currentCycle.isActive) {
         return <AllEvaluation />;
     }
-    
+
     if (evaluationQuery.data) {
         return (
             <EvaluationSubmittedMessage

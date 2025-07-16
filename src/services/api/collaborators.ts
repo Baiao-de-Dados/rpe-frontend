@@ -4,13 +4,15 @@ import type { Track } from '../../types/track';
 
 import type { Network } from '../../types/collaborator';
 
-import type { CollaboratorEvaluateDraft, CollaboratorEvaluatePayload, CollaboratorEvaluation } from '../../types/evaluations';
+import type { CollaboratorEvaluateDraft, CollaboratorEvaluatePayload, CollaboratorEvaluation, EvaluationCyclesHistory } from '../../types/evaluations';
 
 export const collaboratorsEndpoints = {
     getCriteria: (trackId: number) => 
         api.get<Track>(`/rh/criteria/track-config/filter/${trackId}`),
     getNetwork: () =>
         api.get<Network>('/employer/network'),
+    getAllEvaluation: () =>
+        api.get<EvaluationCyclesHistory>('/employer/cycles-history'),
     evaluate: (payload: CollaboratorEvaluatePayload) =>
         api.post('/evaluations', payload),
     getEvaluation: (cycleConfigId: number) =>
