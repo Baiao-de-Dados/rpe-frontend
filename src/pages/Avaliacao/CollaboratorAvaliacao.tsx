@@ -25,12 +25,6 @@ export function CollaboratorAvaliacao() {
         mode: 'onSubmit',
     });
 
-    useEffect(() => {
-        console.log('isValid:', methods.formState.isValid);
-        console.log('errors:', methods.formState.errors);
-    }, [methods.formState]);
-
-
     useEvaluationFormPopulation(methods);
 
     useEffect(() => {

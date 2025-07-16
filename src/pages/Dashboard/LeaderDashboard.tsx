@@ -110,7 +110,7 @@ export function LeaderDashboard() {
                             Ver todos
                         </Button>
                     </div>
-                    <div className="flex-1 overflow-y-scroll pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 min-h-0">
+                    <div className="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 min-h-[400px] max-h-[400px]">
                         <div className="flex flex-col gap-3 sm:gap-4">
                             {status === 'upcoming' || status === undefined ? (
                                 <Typography variant="body" className="text-neutral-500 text-center w-full py-8">

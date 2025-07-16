@@ -1,13 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import { leaderEndpoints } from '../../services/api/leader';
 import type { CollaboratorsEvaluationsSummary } from '../../types/collaborator';
-import type { LeaderEvaluationPayload, GetLeaderEvaluationPayload, LeaderEvaluation } from '../../types/leader';
+import type { LeaderEvaluationPayload, GetLeaderEvaluationPayload, LeaderEvaluation, CycleLeaderAvg } from '../../types/leader';
 
 export function useLeaderCollaboratorsEvaluation() {
+
     const query = useQuery<CollaboratorsEvaluationsSummary>({
         queryKey: ['leader-collaborators-evaluations-summary'],
         queryFn: async () => {
             const res = await leaderEndpoints.getLeaderCollaboratorsEvaluation();
+            return res.data;
+        },
+        staleTime: 30 * 1000,
+    });
+
+    const allCycleAvgQuery = useQuery<CycleLeaderAvg[]>({
+        queryKey: ['leader-all-cycle-avg'],
+        queryFn: async () => {
+            const res = await leaderEndpoints.getAllCycleAvg();
             return res.data;
         },
         staleTime: 30 * 1000,
@@ -26,5 +36,8 @@ export function useLeaderCollaboratorsEvaluation() {
         ...query,
         leaderEvaluation,
         getLeaderEvaluation,
+        allCycleAvg: allCycleAvgQuery.data,
+        isLoadingAllCycleAvg: allCycleAvgQuery.isLoading,
+        allCycleAvgQuery,
     };
 }

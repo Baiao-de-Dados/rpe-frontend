@@ -35,7 +35,7 @@ export function CycleBanner({ linkTo }: CycleBannerProps) {
                         <Typography variant="caption" color="white">
                             {remainingDays && remainingDays.daysToEnd > 0 ? (
                                 <>
-                                    <span className="font-bold">{remainingDays.daysToEnd} dias</span> restantes
+                                    <span className="font-bold">{remainingDays.daysToEnd} {remainingDays.daysToEnd === 1 ? 'dia' : 'dias'}</span> restantes
                                 </>
                             ) : 'Ciclo encerrado'}
                         </Typography>
@@ -69,7 +69,7 @@ export function CycleBanner({ linkTo }: CycleBannerProps) {
                         </Typography>
                         <Typography variant="caption" color="primary">
                             {remainingDays && remainingDays.daysToStart > 0
-                                ? `${remainingDays.daysToStart} dias para começar`
+                                ? `${remainingDays.daysToStart} ${remainingDays.daysToStart === 1 ? 'dia' : 'dias'} para começar`
                                 : 'Ciclo já iniciou'}
                         </Typography>
                     </>

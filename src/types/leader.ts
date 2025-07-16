@@ -19,3 +19,9 @@ export interface LeaderEvaluation {
     strengths?: string;
     improvements?: string;
 }
+
+export interface CycleLeaderAvg {
+    cycleId: number;
+    cycleName: string;
+    averageEqualizationScore: number
+}

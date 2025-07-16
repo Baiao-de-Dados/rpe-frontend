@@ -1,8 +1,9 @@
-import { useCycle } from '../../hooks/useCycle';
-import { useAdvancedCollaboratorFilter } from '../../hooks/useAdvancedCollaboratorFilter';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { mockCycles } from '../../data/mockCycles';
-import { mockCommitteeData } from '../../data/mockCommitteeData';
+import { useCycle } from '../../hooks/useCycle';
+import { useLeaderCollaboratorsEvaluation } from '../../hooks/api/useLeaderQuery';
+import { useAdvancedCollaboratorFilter } from '../../hooks/useAdvancedCollaboratorFilter';
 
 import SearchBar from '../../components/common/Searchbar';
 import SummaryBox from '../../components/common/SummaryBox';
@@ -15,32 +16,78 @@ import { PerformanceChart } from '../../components/Charts/PerformanceChart';
 import BrutalFactsMetrics from '../../components/Lideranca/BrutalFactsMetrics';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import CollaboratorEvaluationCard from '../../components/common/CollaboratorEvaluationCard';
+import { BrutalFactsNotClosedMessage } from '../../components/Lideranca/BrutalFactsNotClosedMessage';
+import type { Cycle } from '../../types/cycle';
 
-const chartData: { cycleName: string; score: number }[] = mockCycles.map(cycle => ({
-    cycleName: cycle.cycleName,
-    score: cycle.score
-}));
-
-const uniquePositions = Array.from(
-    new Set(mockCommitteeData.collaboratorsSummary.map(s => s.collaborator.position))
-);
-
-const uniqueTracks = Array.from(
-    new Set(mockCommitteeData.collaboratorsSummary.map(s => s.collaborator.track?.name ?? ''))
-);
-
-const positions = uniquePositions;
-const tracks = uniqueTracks;   
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getPositionsAndTracks(collaboratorsSummary: any[]) {
+    const positions = Array.from(new Set(collaboratorsSummary.map(s => s.collaborator.position)));
+    const tracks = Array.from(new Set(collaboratorsSummary.map(s => s.collaborator.track?.name ?? '')));
+    return { positions, tracks };
+}
 
 export function BrutalFactsPage() {
 
-    const { currentCycle, isLoading } = useCycle();
-
-    const collaboratorsSummary = mockCommitteeData.collaboratorsSummary;
+    const navigate = useNavigate();
+    const { currentCycle, isLoading, status } = useCycle();
+    const {
+        data: collaboratorsSummary = [],
+        isLoading: isLeaderLoading,
+        allCycleAvg = [],
+        isLoadingAllCycleAvg
+    } = useLeaderCollaboratorsEvaluation();
+    const { positions, tracks } = getPositionsAndTracks(collaboratorsSummary);
 
     const { search, setSearch, setFilters, filteredCollaborators } = useAdvancedCollaboratorFilter({ collaboratorsSummary, positions, tracks });
 
-    if (isLoading) {
+    const averageFinalScore = useMemo(() => {
+        const finalScores = collaboratorsSummary
+            .map(c => c.finalEvaluationScore)
+            .filter(score => typeof score === 'number');
+        return finalScores.length > 0
+            ? finalScores.reduce((acc, score) => acc + score, 0) / finalScores.length
+            : 0;
+    }, [collaboratorsSummary]);
+
+    const { growth, growthCycleLabel } = useMemo(() => {
+        if (!allCycleAvg || allCycleAvg.length < 2 || !currentCycle) {
+            return { growth: 0, growthCycleLabel: '' };
+        }
+
+        const sortedCycles = [...allCycleAvg].sort((a, b) =>
+            a.cycleName.localeCompare(b.cycleName)
+        );
+
+        const currentCycleIndex = sortedCycles.findIndex(
+            (cycle) => cycle.cycleName === currentCycle.name
+        );
+        
+        if (currentCycleIndex > 0) {
+            const currentCycleData = sortedCycles[currentCycleIndex];
+            const previousCycleData = sortedCycles[currentCycleIndex - 1];
+
+            const calculatedGrowth =
+                currentCycleData.averageEqualizationScore -
+                previousCycleData.averageEqualizationScore;
+
+            return {
+                growth: calculatedGrowth,
+                growthCycleLabel: previousCycleData.cycleName,
+            };
+        }
+
+        return { growth: 0, growthCycleLabel: '' };
+    }, [allCycleAvg, currentCycle]);
+
+    const chartData = useMemo(() => {
+        if (!allCycleAvg || !Array.isArray(allCycleAvg)) return [];
+        return allCycleAvg.map(cycle => ({
+            cycleName: String(cycle.cycleName),
+            score: cycle.averageEqualizationScore
+        }));
+    }, [allCycleAvg]);
+
+    if (isLoading || isLeaderLoading || isLoadingAllCycleAvg) {
         return <CycleLoading />;
     }
 
@@ -48,32 +95,35 @@ export function BrutalFactsPage() {
         return <CycleLoadErrorMessage />;
     }
 
+    if (status !== 'done') {
+        return <BrutalFactsNotClosedMessage cycle={currentCycle as Cycle}/>
+    }
+
     return (
-        <div>
+        <>
             <PageHeader title="Brutal Facts" />
-            <div className="flex flex-col gap-6 p-6">
+            <main className="p-8 pt-6">
                 <BrutalFactsMetrics
-                    score={4.5}
-                    cycleLabel="2024.2"
-                    growth={+0.3}
-                    growthCycleLabel="2024.1"
-                    total={150}
+                    score={averageFinalScore}
+                    cycleLabel={currentCycle.name}
+                    growth={growth}
+                    growthCycleLabel={growthCycleLabel}
+                    total={collaboratorsSummary.filter(c => c.finalEvaluationScore !== null && c.finalEvaluationScore !== undefined).length}
                 />
 
-                <CardContainer className="-mt-6 flex flex-col gap-6">
+                <CardContainer className="flex flex-col gap-6 mb-6">
                     <Typography variant="h2" className="text-black font-bold text-2xl">Resumo</Typography>
-                    <SummaryBox summary={mockCycles[0].summary} title="Insights" />
+                    <SummaryBox summary='' title="Insights" />
                 </CardContainer>
 
                 <CardContainer className="flex flex-col gap-6 p-6">
                     <Typography variant="h2" className="text-black font-bold text-2xl">Desempenho</Typography>
                     <PerformanceChart cycles={chartData} />
-                    <SummaryBox summary={mockCycles[0].summary} title="Insights" />
                 </CardContainer>
 
-                <CardContainer className="flex flex-col gap-6">
+                <CardContainer className="flex flex-col gap-6 mt-6">
                     <div className="flex flex-row justify-between items-center">
-                        <Typography variant="h2" className="text-black font-bold text-2xl">Resumo de equalizações</Typography>
+                        <Typography variant="h2" className="text-black font-bold text-2xl">Resumo dos liderados</Typography>
                         <div className="flex flex-row items-center justify-center gap-4">
                             <div className="flex flex-col items-center justify-center border-2 border-gray-200 rounded-xl">
                                 <SearchBar
@@ -95,11 +145,13 @@ export function BrutalFactsPage() {
                             <CollaboratorEvaluationCard
                                 key={summary.collaborator.id}
                                 summary={summary}
+                                onClick={() => navigate(`/colaboradores/${summary.collaborator.id}/avaliacao`)}
+                                className="-z-1 shadow-none border border-[#f0f0f0] px-2 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl w-full cursor-pointer hover:shadow-md transition-shadow"
                             />
                         ))}
                     </div>
                 </CardContainer>
-            </div>
-        </div>
+            </main>
+        </>
     );
 }
