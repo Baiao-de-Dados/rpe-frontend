@@ -2,7 +2,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { useRHQueries } from '../../hooks/api/useRHQuery';
 
-
 import { formatDate, getRemainingDays } from '../../utils/globalUtils';
 
 import Typography from '../../components/common/Typography';

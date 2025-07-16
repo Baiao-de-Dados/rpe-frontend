@@ -25,7 +25,7 @@ export function AdminMetrics({ importedProjects, importedUsers, lastSyncDate }: 
                             <span className="font-semibold" style={{ color: CHART_COLORS.EXCELLENT }}>
                                 {importedUsers}
                             </span>{' '}
-                            usuários foram importados do ERP
+                            {importedUsers === 1 ? 'usuário foi importado do ERP' : 'usuários foram importados do ERP'}
                         </Typography>
                     </div>
                 </div>
@@ -47,7 +47,7 @@ export function AdminMetrics({ importedProjects, importedUsers, lastSyncDate }: 
                             <span className="font-semibold" style={{ color: CHART_COLORS.GOOD }}>
                                 {importedProjects}
                             </span>{' '}
-                            projetos foram importados do ERP
+                            {importedProjects === 1 ? 'projeto foi importado do ERP' : 'projetos foram importados do ERP'}
                         </Typography>
                     </div>
                 </div>

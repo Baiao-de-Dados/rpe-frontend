@@ -23,3 +23,16 @@ export interface Network {
 }
 
 export type CollaboratorsEvaluationsSummary = CollaboratorEvaluations[];
+
+export interface CycleGrade {
+    cycleId: number;
+    cycleName: string;
+    autoEvaluation: number;
+    evaluation360: number;
+    managerEvaluation: number;
+    finalEvaluation: number;
+}
+
+export interface CyclesGrades {
+    cycles: CycleGrade[];
+}

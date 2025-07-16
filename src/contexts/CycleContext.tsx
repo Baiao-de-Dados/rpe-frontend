@@ -49,22 +49,12 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         if (isLoading) {
             return undefined as unknown as CurrentCycle;
         }
+
         const foundCurrentCycle = cycles.find(cycle => cycle.name === currentCycleName);
-        if (foundCurrentCycle && foundCurrentCycle.startDate && foundCurrentCycle.endDate) {
+        if (foundCurrentCycle) {
             return foundCurrentCycle;
         }
-        let filteredCycles = cycles;
-        if (!foundCurrentCycle) {
-            filteredCycles = cycles.filter(cycle => cycle.name !== currentCycleName);
-        }
-        const sortedCycles = [...filteredCycles].sort((a, b) => {
-            if (!a.startDate || !b.startDate) return 0;
-            return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
-        });
-        const previousValidCycle = sortedCycles.find(cycle => cycle.startDate && cycle.endDate);
-        if (previousValidCycle) {
-            return previousValidCycle;
-        }
+
         return {
             name: currentCycleName,
             isActive: false,

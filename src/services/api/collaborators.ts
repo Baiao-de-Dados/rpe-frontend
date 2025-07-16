@@ -2,7 +2,7 @@ import api from '.';
 
 import type { Track } from '../../types/track';
 
-import type { Network } from '../../types/collaborator';
+import type { CyclesGrades, Network } from '../../types/collaborator';
 
 import type { CollaboratorEvaluateDraft, CollaboratorEvaluatePayload, CollaboratorEvaluation, EvaluationCyclesHistory } from '../../types/evaluations';
 
@@ -21,4 +21,6 @@ export const collaboratorsEndpoints = {
         api.post('/evaluations/draft', payload),
     getDraft: (cycleId: number) =>
         api.get<CollaboratorEvaluateDraft>('/evaluations/draft', { params: { cycleId } }),
+    getCyclesGrades: () =>
+        api.get<CyclesGrades>('/employer/cycles-grades'),
 };

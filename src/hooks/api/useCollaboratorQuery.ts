@@ -10,6 +10,7 @@ import type { EvaluationCyclesHistory } from '../../types/evaluations';
 import type { CollaboratorEvaluateDraft } from '../../types/evaluations';
 import type { CollaboratorEvaluatePayload } from '../../types/evaluations';
 import type { SelfAssessmentDraft, Evaluation360Draft, MentoringDraft, ReferencesDraft, SelfAssessmentFormItem, Evaluation360FormItem, ReferencesFormItem } from '../../types/evaluations';
+import type { CyclesGrades } from '../../types/collaborator';
 
 export type FormValues = {
     selfAssessment?: SelfAssessmentFormItem[];
@@ -133,7 +134,6 @@ export function useSaveCollaboratorDraftMutation(cycleId?: number) {
 }
 
 export function buildCollaboratorDraftPayload(values: FormValues, cycleId: number): CollaboratorEvaluateDraft {
-
     const selfAssessmentGrouped: SelfAssessmentDraft[] = (values.selfAssessment || []).map((item: SelfAssessmentFormItem) => ({
         pillarId: Number(item.pilarId),
         criteriaId: Number(item.criterionId),
@@ -151,7 +151,7 @@ export function buildCollaboratorDraftPayload(values: FormValues, cycleId: numbe
     const mentoring: MentoringDraft = {
         justification: values.mentoringJustification || '',
         rating: values.mentoringRating || 0,
-        mentorId: values.mentorId || 0, // Ensure mentorId is included
+        mentorId: values.mentorId || 0, 
     };
 
     const references: ReferencesDraft[] = (values.references || []).map((item: ReferencesFormItem) => ({
@@ -168,4 +168,16 @@ export function buildCollaboratorDraftPayload(values: FormValues, cycleId: numbe
             references,
         },
     };
+}
+
+export function useCycleGradesQuery(options?: { enabled?: boolean }) {
+    return useQuery<CyclesGrades>({
+        queryKey: ['cycle', 'grades'],
+        queryFn: async () => {
+            const res = await collaboratorsEndpoints.getCyclesGrades();
+            return res.data;
+        },
+        enabled: options?.enabled ?? true,
+        staleTime: 30 * 1000,
+    });
 }

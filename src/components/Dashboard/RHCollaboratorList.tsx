@@ -47,6 +47,7 @@ export function RHCollaboratorList({ evaluationsSummary }: RHCollaboratorListPro
                     </div>
                 ) : (
                     evaluationsSummary.map(summary => (
+                        console.log(summary),
                         <div key={summary.id} className="flex items-center justify-between border border-gray-300 rounded-xl p-3 hover:bg-gray-50 transition-colors">
                             <div className="flex items-center space-x-3 flex-1 min-w-0">
                                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
@@ -61,8 +62,8 @@ export function RHCollaboratorList({ evaluationsSummary }: RHCollaboratorListPro
                                         </Typography>
                                         <div className="sm:hidden">
                                             <Badge
-                                                label={summary.autoEvaluationScore !== null ? 'Finalizado' : 'Pendente'}
-                                                variant={summary.autoEvaluationScore !== null ? 'success' : 'warning'}
+                                                label={typeof summary.autoEvaluationScore === 'number' ? 'Finalizado' : 'Pendente'}
+                                                variant={typeof summary.autoEvaluationScore === 'number' ? 'success' : 'warning'}
                                                 size="sm"
                                             />
                                         </div>
@@ -74,8 +75,8 @@ export function RHCollaboratorList({ evaluationsSummary }: RHCollaboratorListPro
                             </div>
                             <div className="hidden sm:block">
                                 <Badge
-                                    label={summary.autoEvaluationScore !== null ? 'Finalizado' : 'Pendente'}
-                                    variant={summary.autoEvaluationScore !== null ? 'success' : 'warning'}
+                                    label={typeof summary.autoEvaluationScore === 'number' ? 'Finalizado' : 'Pendente'}
+                                    variant={typeof summary.autoEvaluationScore === 'number' ? 'success' : 'warning'}
                                     size="sm"
                                 />
                             </div>

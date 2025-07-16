@@ -52,7 +52,6 @@ export function CollaboratorAvaliacao() {
         return <AllEvaluation />;
     }
 
-    // ✅ CORREÇÃO: Colaboradores só podem fazer avaliações quando o ciclo estiver aberto
     if (status !== 'open') {
         return <CycleClosedEvaluationMessage cycleName={currentCycle?.name} className="mb-6" />;
     }
