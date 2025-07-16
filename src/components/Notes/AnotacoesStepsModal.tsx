@@ -1,4 +1,3 @@
-import React from 'react';
 import Typography from '../common/Typography';
 import Button from '../common/Button';
 import Modal from "../common/Modal";
