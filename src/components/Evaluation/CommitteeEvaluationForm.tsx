@@ -1,5 +1,4 @@
-import { useMemo, memo } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { memo } from 'react';
 
 import type { Collaborator } from '../../types/collaborator';
 
@@ -34,6 +33,39 @@ interface CommitteeEvaluationFormProps {
     }>;
     isSubmitting?: boolean;
     onSaveEqualization?: () => void;
+    // Novos dados para equalização
+    autoEvaluation?: {
+        score: number;
+        criteria: Array<{
+            pilarId: number;
+            criterionId: number;
+            rating: number;
+            justification: string;
+        }>;
+    } | null;
+    managerEvaluation?: {
+        score: number;
+        criteria: Array<{
+            pilarId: number;
+            criterionId: number;
+            rating: number;
+            justification: string;
+        }>;
+    } | null;
+    committeeEqualization?: {
+        finalScore: number;
+        comments: string;
+        committee: {
+            id: number;
+            name: string;
+            position: string;
+        };
+        lastUpdated: string;
+    } | null;
+    // ✅ NOVO: Prop para controlar estado de edição
+    isReadOnly?: boolean;
+    // ✅ NOVO: Callback para quando entrar em modo de edição
+    onEnterEditMode?: () => void;
 }
 
 export const CommitteeEvaluationForm = memo(({
@@ -42,29 +74,17 @@ export const CommitteeEvaluationForm = memo(({
     collaboratorSelfAssessment,
     evaluations360,
     referencesReceived,
-    isSubmitting,
-    onSaveEqualization
+    onSaveEqualization,
+    autoEvaluation,
+    managerEvaluation,
+    committeeEqualization,
+    isReadOnly,
+    onEnterEditMode
 }: CommitteeEvaluationFormProps) => {
     const { activeSection, navigateToSection, sections } =
         useSectionNavigation<CommitteeSectionType>([...committeeEvaluationSections]);
 
-    const { control } = useFormContext();
 
-    const watchedEqualization = useWatch({
-        control,
-        name: 'committeeEqualization',
-    });
-
-    const isEqualizationComplete = useMemo(() => {
-        if (!watchedEqualization) return false;
-        const { finalScore, comments } = watchedEqualization;
-        return (
-            typeof finalScore === 'number' && 
-            finalScore > 0 && 
-            typeof comments === 'string' && 
-            comments.trim().length > 0
-        );
-    }, [watchedEqualization]);
 
     return (
         <>
@@ -74,9 +94,6 @@ export const CommitteeEvaluationForm = memo(({
                 sections={sections}
                 collaborator={collaborator}
                 cycleName={cycleName}
-                isEqualizationComplete={isEqualizationComplete}
-                isSubmitting={isSubmitting}
-                onSaveEqualization={onSaveEqualization}
             />
             <main className="p-8 pt-6">
                 <CommitteeSectionRenderer 
@@ -86,6 +103,12 @@ export const CommitteeEvaluationForm = memo(({
                     evaluations360={evaluations360}
                     referencesReceived={referencesReceived}
                     cycleName={cycleName}
+                    autoEvaluation={autoEvaluation}
+                    managerEvaluation={managerEvaluation}
+                    committeeEqualization={committeeEqualization}
+                    onSaveEqualization={onSaveEqualization}
+                    isReadOnly={isReadOnly}
+                    onEnterEditMode={onEnterEditMode}
                 />
             </main>
         </>
