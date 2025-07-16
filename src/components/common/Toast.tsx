@@ -23,6 +23,8 @@ const Toast: React.FC<ToastProps> = ({
     const [isVisible, setIsVisible] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
+    console.log('Toast rendered:', { message, type, show, title });
+
     useEffect(() => {
         if (show) {
             setIsVisible(true);

@@ -10,7 +10,6 @@ import { useSectionNavigation } from '../../hooks/useSectionNavigation';
 import { CommitteeSectionRenderer } from './SectionsCommittee/CommitteeSectionRenderer';
 import { committeeEvaluationSections, type CommitteeSectionType } from './SectionsCommittee/CommitteeEvaluationSections';
 
-
 interface CommitteeEvaluationFormProps {
     collaborator: Collaborator;
     cycleName: string;

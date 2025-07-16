@@ -76,7 +76,7 @@ export const ManagerPillarRatingDisplay = memo(({
     const managerAverage = useMemo(() => {
         if (!watchedManagerRatings || fieldIndices.length === 0) return null;
 
-        const managerRatingsWithWeights = fieldIndices.map((fieldIndex, index) => {
+        const managerRatingsWithWeights = fieldIndices.map((_, index) => {
             const criterion = criteria[index];
             const rating = watchedManagerRatings[index];
             return {

@@ -1,5 +1,5 @@
 import api from '.';
-import type { GetLogsResponse } from '../../types/admin';
+import type { ERP, GetLogsResponse } from '../../types/admin';
 
 export const adminEndpoints = {
     getLogs: (params: { 
@@ -11,4 +11,8 @@ export const adminEndpoints = {
         dateTo?: string; 
         order?: 'asc' | 'desc';
     }) => api.get<GetLogsResponse>('/logs', { params }),
+    getERP: () =>
+        api.get<ERP>('/erp/export'),
+    synchronize: () =>
+        api.post('/erp/synchronize'),
 };

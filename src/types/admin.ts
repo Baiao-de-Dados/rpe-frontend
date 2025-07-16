@@ -23,3 +23,24 @@ export type LogsFilters = {
     dateTo?: string;
     order?: 'asc' | 'desc';
 };
+
+export interface ERP {
+    lastSyncDate: string | null;
+    projects: ErpProject[];
+}
+
+export interface ErpProject {
+    name: string;
+    status: string;
+    projectMembers: ErpProjectMember[];
+}
+
+export interface ErpProjectMember {
+    name: string;
+    track: string;
+    email: string;
+    position: string;
+    role: 'MANAGER' | 'LEADER' | 'EMPLOYER';
+    startDate: string;
+    endDate: string | null;
+}

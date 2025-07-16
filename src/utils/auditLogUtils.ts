@@ -1,4 +1,4 @@
-import type { AuditLogEntry, AuditLogMetadata } from "../data/mockAdmin";
+import type { AuditLogEntry, AuditLogMetadata } from "../types/admin";
 
 export function isLoginMeta(meta: AuditLogMetadata): meta is { ip: string; userAgent: string; details: string } {
     return 'details' in meta && 'userAgent' in meta;

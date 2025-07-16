@@ -1,6 +1,7 @@
-import { format } from 'date-fns-tz';
+import { format, toZonedTime } from 'date-fns-tz';
 import { isBefore, parseISO } from 'date-fns';
 import { differenceInCalendarDays } from 'date-fns';
+import { format as formatTz } from 'date-fns-tz';
 
 export const getDateOnly = (dateString: string): string => {
     if (dateString.includes('T')) {
@@ -29,13 +30,10 @@ export function formatDate(date: string | Date): string {
 }
 
 export const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    const date = new Date(dateString);
+    const timeZone = 'America/Sao_Paulo';
+    const zonedDate = toZonedTime(date, timeZone); 
+    return formatTz(zonedDate, 'dd/MM/yyyy HH:mm', { timeZone });
 };
 
 export function getBadgeText(start: string, end?: string | null) {

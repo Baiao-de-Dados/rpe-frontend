@@ -1,3 +1,5 @@
+import type { AuditLogEntry } from "../types/admin";
+
 export interface UserExtra {
     email: string;
     name: string;
@@ -18,7 +20,6 @@ export interface ProjectType {
     leaders: ProjectPerson[];
     collaborators: ProjectPerson[];
 }
-
 
 
 export const mockERP = {

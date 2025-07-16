@@ -4,7 +4,6 @@ import Typography from '../common/Typography';
 import CardContainer from '../common/CardContainer';
 
 import { CHART_COLORS } from '../../utils/colorUtils';
-import { formatDateTime } from '../../utils/globalUtils';
 
 interface AdminMetricsProps {
     importedUsers: number;
@@ -67,10 +66,29 @@ export function AdminMetrics({ importedProjects, importedUsers, lastSyncDate }: 
                     </Typography>
                     <div className="flex items-center border-l-4 pl-4 min-h-[3rem]" style={{ borderLeftColor: CHART_COLORS.BELOW }}>
                         <Typography variant="caption" className="text-gray-500 max-w-[20rem] leading-5">
-                            Sincronizado em{' '}
-                            <span className="font-semibold" style={{ color: CHART_COLORS.BELOW }}>
-                                {formatDateTime(lastSyncDate)}
-                            </span>
+                            {lastSyncDate ? (
+                                <>
+                                    Sincronizado em{' '}
+                                    <span className="font-semibold" style={{ color: CHART_COLORS.BELOW }}>
+                                        {(() => {
+                                            const date = new Date(lastSyncDate);
+                                            date.setHours(date.getHours() + 3);
+                                            return date.toLocaleString('pt-BR', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                                day: '2-digit',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                second: '2-digit'
+                                            });
+                                        })()}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="font-semibold" style={{ color: CHART_COLORS.BELOW }}>
+                                    Nunca foi sincronizado
+                                </span>
+                            )}
                         </Typography>
                     </div>
                 </div>
