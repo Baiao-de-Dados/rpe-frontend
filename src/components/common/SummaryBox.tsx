@@ -14,6 +14,7 @@ interface SummaryBoxProps {
     icon?: React.ReactNode;
     title?: string;
     className?: string;
+    isGeneratingSummary?: boolean; // NOVO: indica se está gerando resumo
 }
 
 const SummaryBox: React.FC<SummaryBoxProps> = ({
@@ -21,6 +22,7 @@ const SummaryBox: React.FC<SummaryBoxProps> = ({
     icon = <Sparkles className="text-primary-500" size={18} fill="currentColor" />,
     title = 'Resumo',
     className = '',
+    isGeneratingSummary = false, // NOVO
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -81,7 +83,7 @@ const SummaryBox: React.FC<SummaryBoxProps> = ({
                         className="text-sm leading-relaxed"
                         
                     >
-                        {summaryText}
+                        {isGeneratingSummary ? 'Gerando resumo...' : summaryText}
                     </Typography>
 
                     {/* Conteúdo detalhado (visível apenas quando expandido) */}

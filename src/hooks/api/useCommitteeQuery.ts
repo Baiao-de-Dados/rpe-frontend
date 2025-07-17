@@ -111,6 +111,7 @@ export function useCommitteeGenerateAiSummary() {
     const [error, setError] = useState('');
     const [stepErrors, setStepErrors] = useState([false, false, false]);
     const abortControllerRef = useRef<AbortController | null>(null);
+    const [isGeneratingManual, setIsGeneratingManual] = useState(false); // NOVO
 
     const mutation = useMutation({
         mutationFn: async ({ collaboratorId, cycleConfigId }: { collaboratorId: number; cycleConfigId: number }) => {
@@ -134,6 +135,7 @@ export function useCommitteeGenerateAiSummary() {
     });
 
     const handleGenerateSummary = async (collaboratorId: number, cycleConfigId: number) => {
+        setIsGeneratingManual(true); // NOVO: loading imediato
         setModalStep(0);
         setError('');
         setStepErrors([false, false, false]);
@@ -185,6 +187,7 @@ export function useCommitteeGenerateAiSummary() {
             }
         } finally {
             abortControllerRef.current = null;
+            setIsGeneratingManual(false); // NOVO: loading termina
         }
     };
 
@@ -234,6 +237,38 @@ export function useCommitteeGenerateAiSummary() {
         canContinue,
         handleModalCancel,
         handleModalContinue,
-        isGenerating: mutation.isPending,
+        isGenerating: isGeneratingManual || mutation.isPending,
     };
+}
+
+// ✅ NOVO: Hook para exportar relatório de avaliações
+export function useCommitteeExportEvaluations() {
+    const { showToast } = useToast();
+    
+    return useMutation({
+        mutationFn: async (cycleId: number) => {
+            const response = await committeeEndpoints.exportEvaluations(cycleId);
+            return response;
+        },
+        onSuccess: (data) => {
+            // Criar blob e fazer download
+            const blob = new Blob([data.data], { 
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+            });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'evaluations.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            showToast('Relatório exportado com sucesso!', 'success');
+        },
+        onError: (error: unknown) => {
+            showToast('Erro ao exportar relatório', 'error');
+            console.error('Export error:', error);
+        },
+    });
 } 

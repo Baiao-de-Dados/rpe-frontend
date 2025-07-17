@@ -78,6 +78,8 @@ interface CommitteeEvaluationFormProps {
     aiSummary?: CommitteeAiSummary;
     // ✅ NOVO: Props para exportar relatório
     onExportReport?: () => void;
+    // NOVO: indica se está gerando resumo
+    isGeneratingSummary?: boolean;
 }
 
 export const CommitteeEvaluationForm = memo(({
@@ -94,7 +96,8 @@ export const CommitteeEvaluationForm = memo(({
     onGenerateAiSummary,
     hasAiSummary,
     aiSummary,
-    onExportReport
+    onExportReport,
+    isGeneratingSummary = false,
 }: CommitteeEvaluationFormProps) => {
     const { activeSection, navigateToSection, sections } =
         useSectionNavigation<CommitteeSectionType>([...committeeEvaluationSections]);
@@ -125,6 +128,7 @@ export const CommitteeEvaluationForm = memo(({
                     hasAiSummary={hasAiSummary}
                     aiSummary={aiSummary}
                     onExportReport={onExportReport}
+                    isGeneratingSummary={isGeneratingSummary}
                 />
             </main>
         </>
