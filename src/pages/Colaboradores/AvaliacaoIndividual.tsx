@@ -9,10 +9,6 @@ export function AvaliacaoIndividual() {
     const { hasRole } = useAuth();
     const { collaboratorId } = useParams<{ collaboratorId: string }>();
 
-    // RH - Visualização e equalização (prioridade alta)
-    if (hasRole(UserRoleEnum.RH)) {
-        return <CommitteeAvaliacao collaboratorId={Number(collaboratorId)} />;
-    }
 
     // Committee - Visualização e equalização
     if (hasRole(UserRoleEnum.COMMITTEE)) {
