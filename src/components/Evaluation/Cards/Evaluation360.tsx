@@ -7,7 +7,6 @@ import type { Collaborator } from '../../../types/collaborator';
 import StarRating from '../../common/StarRating';
 import CardContainer from '../../common/CardContainer';
 import RatingDisplay from '../../common/RatingDisplay';
-import { ErrorMessage } from '../../common/ErrorMessage';
 import CollaboratorCard from '../../common/CollaboratorCard';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import IAValidateActions from '../../common/IAValidateActions';
@@ -74,11 +73,6 @@ const Evaluation360 = ({ collaborator, onRemove, name, index }: Evaluation360Pro
                     <p className="text-sm font-medium text-gray-700">
                         Dê uma avaliação de 1 a 5 ao colaborador
                     </p>
-                    <Controller name={`${name}.rating`} control={control}
-                        render={({ fieldState }) => (
-                            <ErrorMessage error={fieldState.error?.message} />
-                        )}
-                    />
                 </div>
                 <Controller name={`${name}.rating`} control={control}
                     render={({ field }) => (
@@ -90,16 +84,16 @@ const Evaluation360 = ({ collaborator, onRemove, name, index }: Evaluation360Pro
             <div className="flex gap-4">
                 <div className="flex-1">
                     <Controller name={`${name}.strengths`} control={control}
-                        render={({ field, fieldState }) => (
-                            <TextAreaWithTitle title="Pontos fortes" placeholder="Descreva os principais pontos fortes deste colaborador..." value={field.value || ''} onChange={field.onChange} maxLength={1000} error={fieldState.error?.message}/>
+                        render={({ field }) => (
+                            <TextAreaWithTitle title="Pontos fortes" placeholder="Descreva os principais pontos fortes deste colaborador..." value={field.value || ''} onChange={field.onChange} maxLength={1000} />
                         )}
                     />
                 </div>
 
                 <div className="flex-1">
                     <Controller name={`${name}.improvements`} control={control}
-                        render={({ field, fieldState }) => (
-                            <TextAreaWithTitle title="Pontos de melhoria" placeholder="Descreva os principais pontos de melhoria para este colaborador..." value={field.value || ''} onChange={field.onChange} maxLength={1000} error={fieldState.error?.message}/>
+                        render={({ field }) => (
+                            <TextAreaWithTitle title="Pontos de melhoria" placeholder="Descreva os principais pontos de melhoria para este colaborador..." value={field.value || ''} onChange={field.onChange} maxLength={1000} />
                         )}
                     />
                 </div>
