@@ -35,6 +35,12 @@ export const committeeEndpoints = {
     generateAiSummary: (collaboratorId: number, cycleConfigId: number) => 
         api.post<{ code: string; rating?: number; detailedAnalysis?: string; summary?: string; discrepancies?: string; error?: string }>(`/committee/equalization/${collaboratorId}/generate-ai-summary?cycleConfigId=${cycleConfigId}`),
     
+    // ✅ NOVO: Exportar relatório de avaliações
+    exportEvaluations: (cycleId: number) => 
+        api.get(`/export/evaluations?cycleId=${cycleId}`, {
+            responseType: 'blob',
+        }),
+    
     // ✅ NOVO: Buscar resumo da IA salvo
     getAiSummary: (collaboratorId: number, cycleConfigId: number) => 
         api.get<CommitteeAiSummary>(`/committee/equalization/${collaboratorId}/ai-summary?cycleConfigId=${cycleConfigId}`),

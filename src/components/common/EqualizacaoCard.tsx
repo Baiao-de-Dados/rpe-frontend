@@ -11,7 +11,7 @@ import CollaboratorCard from './CollaboratorCard';
 import Badge from './Badge';
 import { useToast } from '../../hooks/useToast';
 import { useState, useEffect } from 'react';
-import { Sparkles, FileDown } from 'lucide-react';
+import { Sparkles, FileDown, Loader2 } from 'lucide-react';
 
 interface EqualizacaoCardProps {
     collaboratorName: string;
@@ -46,6 +46,8 @@ interface EqualizacaoCardProps {
     hasAiSummary?: boolean;
     // ✅ NOVO: Props para exportar relatório
     onExportReport?: () => void;
+    // NOVO: indica se está gerando resumo
+    isGeneratingSummary?: boolean;
 }
 
 const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
@@ -71,6 +73,7 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
     onGenerateAiSummary,
     hasAiSummary = false,
     onExportReport,
+    isGeneratingSummary = false,
 }) => {
     const { showToast } = useToast();
     // ✅ CORREÇÃO: Usar isReadOnly se fornecido, senão usar status
@@ -179,12 +182,20 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                             variant="outline"
                             size="sm"
                             onClick={onGenerateAiSummary}
-                            disabled={hasAiSummary}
-                            title={hasAiSummary ? 'Resumo já foi gerado' : 'Gerar resumo da IA'}
+                            disabled={hasAiSummary || isGeneratingSummary}
+                            title={hasAiSummary ? 'Resumo já foi gerado' : isGeneratingSummary ? 'Gerando resumo...' : 'Gerar resumo da IA'}
                             className="flex items-center gap-1"
                         >
-                            <Sparkles size={14} />
-                            {hasAiSummary ? 'Resumo gerado' : 'Gerar Resumo'}
+                            {isGeneratingSummary ? (
+                                <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                                <Sparkles size={14} />
+                            )}
+                            {isGeneratingSummary
+                                ? 'Gerando resumo...'
+                                : hasAiSummary
+                                    ? 'Resumo gerado'
+                                    : 'Gerar Resumo'}
                         </Button>
                     )}
                 </div>
@@ -266,6 +277,7 @@ const EqualizacaoCard: React.FC<EqualizacaoCardProps> = ({
                                 ? summary || 'Resumo será gerado automaticamente em breve.'
                                 : '-'
                         }
+                        isGeneratingSummary={isGeneratingSummary}
                     />
                 </div>
 

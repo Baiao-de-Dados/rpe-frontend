@@ -4,13 +4,12 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useToast } from '../../hooks/useToast';
-import { useCommitteeCollaboratorDetails, useCommitteeEqualization, useCommitteeSaveEqualization, useCommitteeGenerateAiSummary, useCommitteeAiSummary } from '../../hooks/api/useCommitteeQuery';
+import { useCommitteeCollaboratorDetails, useCommitteeEqualization, useCommitteeSaveEqualization, useCommitteeGenerateAiSummary, useCommitteeAiSummary, useCommitteeExportEvaluations } from '../../hooks/api/useCommitteeQuery';
 
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
 import CycleInProgressMessage from '../../components/CycleMessages/CycleInProgressMessage';
 import CollaboratorNotFoundMessage from '../../components/Evaluation/CollaboratorNotFoundMessage';
-import AnotacoesStepsModal from '../../components/Notes/AnotacoesStepsModal';
 
 import { CommitteeEvaluationForm } from '../../components/Evaluation/CommitteeEvaluationForm';
 
@@ -40,6 +39,9 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
         collaboratorId,
         currentCycle?.id || 0
     );
+    
+    // ✅ NOVO: Hook para exportar relatório
+    const exportEvaluationsMutation = useCommitteeExportEvaluations();
 
     const isLoading = cycleLoading || detailsLoading || equalizationLoading || aiSummaryLoading;
 
@@ -129,6 +131,15 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
         aiSummaryGeneration.generateSummary(collaboratorId, currentCycle.id || 0);
     };
 
+    // ✅ NOVO: Handler para exportar relatório
+    const handleExportReport = () => {
+        if (!currentCycle) {
+            showToast('Ciclo não encontrado', 'error');
+            return;
+        }
+        exportEvaluationsMutation.mutate(currentCycle.id || 0);
+    };
+
     if (isLoading) {
         return <CycleLoading />;
     }
@@ -182,17 +193,7 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
     return (
         <FormProvider {...methods}>
             <div className="min-h-screen bg-[#FAFAFA]">
-                {/* ✅ NOVO: Modal de geração de resumo da IA */}
-                <AnotacoesStepsModal
-                    open={aiSummaryGeneration.isModalOpen}
-                    steps={aiSummaryGeneration.steps}
-                    error={aiSummaryGeneration.error}
-                    onCancel={aiSummaryGeneration.handleModalCancel}
-                    onContinue={aiSummaryGeneration.handleModalContinue}
-                    canContinue={aiSummaryGeneration.canContinue}
-                    title="Gerando resumo da IA"
-                    isEqualization={true}
-                />
+                {/* Modal removido - agora apenas texto "Gerando resumo..." no SummaryBox */}
                 
                 <CommitteeEvaluationForm
                     collaborator={collaborator}
@@ -210,10 +211,9 @@ export function CommitteeAvaliacao({ collaboratorId }: { collaboratorId: number 
                     onGenerateAiSummary={handleGenerateAiSummary}
                     hasAiSummary={!!collaboratorDetails?.committeeEqualization?.aiSummary || !!aiSummary?.aiSummary}
                     aiSummary={aiSummary}
-                    // ✅ NOVO: Props para exportar relatório (feature futura)
-                    onExportReport={() => {
-                        showToast('Funcionalidade de exportação será implementada em breve', 'info');
-                    }}
+                    // ✅ NOVO: Props para exportar relatório
+                    onExportReport={handleExportReport}
+                    isGeneratingSummary={aiSummaryGeneration.isGenerating}
                 />
             </div>
         </FormProvider>

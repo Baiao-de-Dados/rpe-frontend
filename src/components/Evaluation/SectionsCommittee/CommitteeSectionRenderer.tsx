@@ -53,6 +53,7 @@ const EqualizationSection = ({
     hasAiSummary,
     aiSummary,
     onExportReport,
+    isGeneratingSummary,
 }: { 
     collaborator: Collaborator;
     autoEvaluation: {
@@ -103,6 +104,7 @@ const EqualizationSection = ({
     hasAiSummary?: boolean;
     aiSummary?: CommitteeAiSummary;
     onExportReport?: () => void;
+    isGeneratingSummary?: boolean;
 }) => {
     // ✅ CORREÇÃO: Usar o formulário principal em vez de criar um local
     const { control, setValue, watch, formState: { errors } } = useFormContext();
@@ -191,6 +193,7 @@ const EqualizationSection = ({
                     onGenerateAiSummary={onGenerateAiSummary}
                     hasAiSummary={hasAiSummary}
                     onExportReport={onExportReport}
+                    isGeneratingSummary={isGeneratingSummary}
                 />
             )}
         />
@@ -266,6 +269,8 @@ interface CommitteeSectionRendererProps {
     aiSummary?: CommitteeAiSummary;
     // ✅ NOVO: Props para exportar relatório
     onExportReport?: () => void;
+    // NOVO: indica se está gerando resumo
+    isGeneratingSummary?: boolean;
 }
 
 export function CommitteeSectionRenderer({ 
@@ -282,7 +287,8 @@ export function CommitteeSectionRenderer({
     onGenerateAiSummary,
     hasAiSummary,
     aiSummary,
-    onExportReport
+    onExportReport,
+    isGeneratingSummary = false,
 }: CommitteeSectionRendererProps) {
 
     const { variants } = useOptimizedAnimation();
@@ -337,6 +343,7 @@ export function CommitteeSectionRenderer({
                         hasAiSummary={hasAiSummary}
                         aiSummary={aiSummary}
                         onExportReport={onExportReport}
+                        isGeneratingSummary={isGeneratingSummary}
                     />
                 );
             default:
