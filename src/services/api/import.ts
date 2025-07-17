@@ -11,7 +11,7 @@ export const importEvaluations = async (file: File): Promise<string> => {
             },
         });
         return response.data; // Retorna a resposta do backend
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Erro na requisição:', error);
         throw error; // Propaga o erro para o frontend
     }

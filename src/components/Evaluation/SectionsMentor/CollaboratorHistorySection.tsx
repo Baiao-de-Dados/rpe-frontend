@@ -1,8 +1,11 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import Typography from '../../common/Typography';
 import CardContainer from '../../common/CardContainer';
 import { useCollaboratorAllEvaluations } from '../../../hooks/api/useManagerQuery';
+import { useCycleGradesQuery } from '../../../hooks/api/useCollaboratorQuery';
+import { PerfomanceEvolution } from '../../Evolution/PerfomanceEvolution';
+import { CyclesEvolution } from '../../Evolution/CyclesEvolution';
 
 interface CollaboratorHistorySectionProps {
     collaboratorId: number;
@@ -14,7 +17,26 @@ export const CollaboratorHistorySection = memo(({
     collaboratorName 
 }: CollaboratorHistorySectionProps) => {
 
-    const { data: allEvaluations, isLoading } = useCollaboratorAllEvaluations(collaboratorId);
+    const { isLoading: historyLoading } = useCollaboratorAllEvaluations(collaboratorId);
+    const { data: cyclesGrades, isLoading: evolutionLoading } = useCycleGradesQuery();
+
+    const isLoading = historyLoading || evolutionLoading;
+
+    // Adapta CycleGrade para Cycle (igual à página de evolução)
+    const sortedCycles = useMemo(() => {
+        if (!cyclesGrades?.cycles) return [];
+        return cyclesGrades.cycles
+            .slice()
+            .sort((a, b) => b.cycleName.localeCompare(a.cycleName))
+            .map(cycle => ({
+                cycleName: cycle.cycleName,
+                status: cycle.finalEvaluation !== null && cycle.finalEvaluation !== undefined ? 'Finalizado' : 'Pendente',
+                finalScore: cycle.finalEvaluation ?? 0,
+                selfEvalScore: cycle.autoEvaluation ?? 0,
+                managerScore: cycle.managerEvaluation ?? 0,
+                summary: '', // Ignorar summary por enquanto
+            }));
+    }, [cyclesGrades]);
 
     if (isLoading) {
         return (
@@ -24,11 +46,11 @@ export const CollaboratorHistorySection = memo(({
         );
     }
 
-    if (!allEvaluations || allEvaluations.length === 0) {
+    if (!cyclesGrades) {
         return (
             <CardContainer className="p-6">
                 <Typography variant="h3" color="primary" className="mb-4">
-                    Histórico de Avaliações
+                    Histórico de Avaliações - {collaboratorName}
                 </Typography>
                 <Typography variant="body" color="muted">
                     Nenhuma avaliação encontrada para {collaboratorName}.
@@ -37,66 +59,50 @@ export const CollaboratorHistorySection = memo(({
         );
     }
 
+    const lastCycle = sortedCycles[0];
+    const previousFinalizedCycle = sortedCycles.find(
+        cycle => cycle.finalScore !== null && cycle.finalScore !== undefined && cycle.finalScore > 0,
+    );
+
+    const displayedScore =
+        lastCycle?.finalScore !== undefined && lastCycle?.finalScore !== null && lastCycle.finalScore > 0
+            ? lastCycle.finalScore
+            : previousFinalizedCycle?.finalScore || '-';
+
+    const displayedCycleName =
+        lastCycle?.finalScore !== undefined && lastCycle?.finalScore !== null && lastCycle.finalScore > 0
+            ? lastCycle.cycleName
+            : previousFinalizedCycle?.cycleName || 'N/A';
+    const previousCycleIndex =
+        sortedCycles.findIndex(
+            cycle => cycle.cycleName === displayedCycleName,
+        ) + 1;
+    const previousCycle = sortedCycles[previousCycleIndex];
+
+    const growth =
+        lastCycle && previousCycle && previousCycle.finalScore !== undefined && previousCycle.finalScore !== null
+            ? (Number(displayedScore) - previousCycle.finalScore).toFixed(1)
+            : '0.0';
+    const finalizedCyclesCount = sortedCycles.filter(
+        cycle => cycle.finalScore !== null && cycle.finalScore !== undefined && cycle.finalScore > 0
+    ).length;
+
     return (
         <div className="space-y-6">
             <Typography variant="h3" color="primary" className="mb-6">
                 Histórico de Avaliações - {collaboratorName}
             </Typography>
 
-            <div className="space-y-4">
-                {allEvaluations.map((evaluation, index) => (
-                    <CardContainer key={index} className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <div>
-                                <Typography variant="h4" color="primary" className="font-semibold">
-                                    {evaluation.cycle.name}
-                                </Typography>
-                                <Typography variant="body" color="muted" className="text-sm">
-                                    {new Date(evaluation.cycle.startDate).toLocaleDateString('pt-BR')} - {new Date(evaluation.cycle.endDate).toLocaleDateString('pt-BR')}
-                                </Typography>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="text-center">
-                                <Typography variant="body" color="muted" className="text-sm mb-1">
-                                    Autoavaliação
-                                </Typography>
-                                <Typography variant="h4" color="primary" className="font-bold">
-                                    {evaluation.autoEvaluation ? evaluation.autoEvaluation.toFixed(1) : 'N/A'}
-                                </Typography>
-                            </div>
-
-                            <div className="text-center">
-                                <Typography variant="body" color="muted" className="text-sm mb-1">
-                                    360°
-                                </Typography>
-                                <Typography variant="h4" color="primary" className="font-bold">
-                                    {evaluation.evaluation360 ? evaluation.evaluation360.toFixed(1) : 'N/A'}
-                                </Typography>
-                            </div>
-
-                            <div className="text-center">
-                                <Typography variant="body" color="muted" className="text-sm mb-1">
-                                    Manager
-                                </Typography>
-                                <Typography variant="h4" color="primary" className="font-bold">
-                                    {evaluation.manager ? evaluation.manager.toFixed(1) : 'N/A'}
-                                </Typography>
-                            </div>
-
-                            <div className="text-center">
-                                <Typography variant="body" color="muted" className="text-sm mb-1">
-                                    Comitê
-                                </Typography>
-                                <Typography variant="h4" color="primary" className="font-bold">
-                                    {evaluation.committee ? evaluation.committee.toFixed(1) : 'N/A'}
-                                </Typography>
-                            </div>
-                        </div>
-                    </CardContainer>
-                ))}
-            </div>
+            {/* Conteúdo da página de evolução sem o header */}
+            <PerfomanceEvolution
+                displayedScore={displayedScore}
+                displayedCycleName={displayedCycleName}
+                growth={growth}
+                previousCycleName={previousCycle?.cycleName || 'N/A'}
+                finalizedCyclesCount={finalizedCyclesCount}
+                sortedCycles={sortedCycles}
+            />
+            <CyclesEvolution sortedCycles={sortedCycles} />
         </div>
     );
 });
