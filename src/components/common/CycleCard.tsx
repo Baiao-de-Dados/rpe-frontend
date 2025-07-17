@@ -1,6 +1,5 @@
 import Badge from './Badge';
 import Typography from './Typography';
-import SummaryBox from './SummaryBox';
 
 import { getStatusVariant } from '../../utils/statusUtils';
 import { getScoreBadgeClasses, getScoreLabel } from '../../utils/colorUtils';
@@ -9,11 +8,10 @@ interface CycleCardProps {
     score: number;
     status: 'Finalizado' | 'Em andamento' | 'Pendente' | 'Cancelado';
     cycleName: string;
-    summary: string;
     onClick?: () => void;
 }
 
-export function CycleCard({ score, status, cycleName, summary, onClick }: CycleCardProps) {
+export function CycleCard({ score, status, cycleName, onClick }: CycleCardProps) {
 
     // Converte a pontuação para uma variante de cor compatível com Typography
     const getScoreColorVariant = () => {
@@ -80,11 +78,6 @@ export function CycleCard({ score, status, cycleName, summary, onClick }: CycleC
                             size="md"
                         />
                     </div>
-                    <SummaryBox summary={summary} className="w-full break-words whitespace-pre-line" />
-                </div>
-
-                <div className="sm:hidden">
-                    <SummaryBox summary={summary} />
                 </div>
             </div>
         </div>
