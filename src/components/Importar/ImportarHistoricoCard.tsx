@@ -64,10 +64,7 @@ const ImportarHistoricoCard = () => {
             setFile(null); // Limpar o arquivo após o envio
         } catch (error: unknown) {
             console.error('Erro ao enviar o arquivo:', error);
-            const errorMessage =
-                error instanceof Error && 'response' in error && error.response?.data?.message 
-                    ? error.response.data.message 
-                    : 'Erro ao importar o arquivo. Tente novamente mais tarde!';
+            const errorMessage = 'Erro ao importar o arquivo. Tente novamente mais tarde!';
             showToast(errorMessage, 'error', {
                 title: 'Erro ao importar',
                 duration: -1,

@@ -87,11 +87,7 @@ export function Colaboradores() {
     }, [committeeCollaboratorsSummary]);
 
     const getFilteredCollaboratorsSummaryByRole = () => {
-        if (hasRole(UserRoleEnum.RH) || hasRole(UserRoleEnum.ADMIN) || hasRole(UserRoleEnum.DEVELOPER)) {
-
-            return [];
-        }
-        if (hasRole(UserRoleEnum.COMMITTEE)) {
+        if (hasRole(UserRoleEnum.COMMITTEE) || hasRole(UserRoleEnum.RH)) {
             // ✅ NOVO: Usar os mesmos dados do dashboard do comitê
             return committeeCollaboratorsWithCalculatedScores;
         }

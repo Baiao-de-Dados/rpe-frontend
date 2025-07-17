@@ -1,5 +1,5 @@
 export interface FileItem {
-    file(file: any): Promise<string>;
+    file(file: File): Promise<string>;
     name: string;
     size: number;
     fileData: File;
