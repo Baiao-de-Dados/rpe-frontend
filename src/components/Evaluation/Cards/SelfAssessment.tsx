@@ -5,7 +5,6 @@ import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import StarRating from '../../common/StarRating';
 import RatingDisplay from '../../common/RatingDisplay';
-import { ErrorMessage } from '../../common/ErrorMessage';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
 import IAValidateActions from '../../common/IAValidateActions';
 import { useOptimizedAnimation } from '../../../hooks/useOptimizedAnimation';
@@ -102,14 +101,13 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                         <div className={`transition-all duration-300 ease-in-out origin-top ${ isMinimized ? 'max-h-0 opacity-0 scale-y-0' : 'max-h-[500px] opacity-100 scale-y-100' }`}>
                             <div className="p-4 pt-0 pl-0">
                                 <Controller name={`${name}.rating`} control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <div className="mb-6">
                                             <div className="flex items-center justify-between mb-3">
                                                 <p className="text-sm font-medium text-gray-700">
                                                     Dê uma avaliação de 1 a 5 com base
                                                     no critério
                                                 </p>
-                                                <ErrorMessage error={fieldState.error?.message} />
                                             </div>
                                             <StarRating value={field.value} onChange={value => { field.onChange(value); }} />
                                         </div>
@@ -117,14 +115,13 @@ const SelfAssessment = memo(({ criterionName, name, topicNumber, isLast = false 
                                 />
 
                                 <Controller name={`${name}.justification`} control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <TextAreaWithTitle
                                             title="Justifique sua nota"
                                             placeholder="Justifique sua nota"
                                             value={field.value || ''}
                                             onChange={field.onChange}
                                             maxLength={1000}
-                                            error={fieldState.error?.message}
                                         />
                                     )}
                                 />

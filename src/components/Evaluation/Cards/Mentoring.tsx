@@ -7,7 +7,6 @@ import StarRating from '../../common/StarRating';
 import Typography from '../../common/Typography';
 import RatingDisplay from '../../common/RatingDisplay';
 import CardContainer from '../../common/CardContainer';
-import { ErrorMessage } from '../../common/ErrorMessage';
 import CollaboratorCard from '../../common/CollaboratorCard';
 import IAValidateActions from '../../common/IAValidateActions';
 import TextAreaWithTitle from '../../common/TextAreaWithTitle';
@@ -87,7 +86,7 @@ const Mentoring = () => {
                 />
 
             <Controller name="mentoringRating" control={control}
-                render={({ field, fieldState }) => (
+                render={({ field }) => (
                     <>
                         <div className="flex items-center gap-4 mb-4">
                             <CollaboratorCard collaborator={mentor} variant="compact"/>
@@ -97,7 +96,6 @@ const Mentoring = () => {
                             <Typography variant="body" className="text-sm text-gray-600">
                                 Dê uma avaliação de 1 à 5 ao seu mentor
                             </Typography>
-                            <ErrorMessage error={fieldState.error?.message} />
                         </div>
                         <div className="mb-4">
                             <StarRating value={field.value || null} onChange={value => { field.onChange(value); }}/>
@@ -107,14 +105,13 @@ const Mentoring = () => {
             />
 
             <Controller name="mentoringJustification" control={control}
-                render={({ field, fieldState }) => (
+                render={({ field }) => (
                     <TextAreaWithTitle 
                         title="Justifique sua nota" 
                         placeholder="Justifique sua nota" 
                         maxLength={1000} 
                         value={field.value || ''} 
                         onChange={field.onChange} 
-                        error={fieldState.error?.message}
                     />
                 )}
             />

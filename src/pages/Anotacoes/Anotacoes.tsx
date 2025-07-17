@@ -22,6 +22,7 @@ import { useNoteQuery, useUpsertNoteMutation } from '../../hooks/api/useNotesQue
 import { anotacoesSchema, type AnotacoesFormData } from '../../schemas/anotacoesSchema';
 import CycleLoading from '../../components/common/CycleLoading';
 import CycleLoadErrorMessage from '../../components/Evaluation/CycleLoadErrorMessage';
+import { useCollaboratorEvaluationQuery } from '../../hooks/api/useCollaboratorQuery';
 
 export function Anotacoes() {
 
@@ -29,6 +30,10 @@ export function Anotacoes() {
     const { user } = useAuth();
     const { variants } = useOptimizedAnimation();
     const { currentCycle, isLoading } = useCycle();
+
+    
+    const { data, isLoading: isLoadingEvaluation } = useCollaboratorEvaluationQuery(currentCycle?.id, { enabled: !!currentCycle?.id });
+    
 
     const { data: noteData } = useNoteQuery(user!.id);
     const upsertMutation = useUpsertNoteMutation(user!.id);
@@ -61,7 +66,7 @@ export function Anotacoes() {
         }
     };
     
-    if (isLoading) {
+    if (isLoading || isLoadingEvaluation) {
         return <CycleLoading />;
     }
     
@@ -69,7 +74,7 @@ export function Anotacoes() {
         return <CycleLoadErrorMessage />;
     }
 
-    const isButtonDisabled = !isValid || textValue.trim().length === 0 || notes.isEvaluating || notes.isModalOpen || !currentCycle.isActive;
+    const isButtonDisabled = !isValid || textValue.trim().length === 0 || notes.isEvaluating || notes.isModalOpen || !currentCycle.isActive || data !== null;
 
     return (
         <>
@@ -94,7 +99,7 @@ export function Anotacoes() {
                             className="flex items-center gap-2"  
                             disabled={isButtonDisabled}
                             onClick={handleSubmit(() => notes.handleEvaluateWithAI(user!.id, currentCycle.id!))}
-                            title={!currentCycle.isActive ? 'Não há ciclo de avaliação aberto' : ''}
+                            title={!currentCycle.isActive ? 'Não há ciclo de avaliação aberto' : data !== null ? 'Avaliação já finalizada' : ''}
                         >
                             {notes.isEvaluating ? 'Avaliando...' : 'Avaliar com IA'}
                             <Sparkles size={18} />

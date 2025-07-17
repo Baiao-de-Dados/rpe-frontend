@@ -163,9 +163,7 @@ export function useEvaluationFormPopulation(methods: UseFormReturn<EvaluationFor
             }
         }
 
-        // Força validação do formulário se algum campo foi populado
         if (populated) {
-            console.log("salve")
             methods.trigger();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -59,14 +59,13 @@ const Reference = ({ collaborator, onRemove, name, index }: ReferenceProps) => {
             </div>
             <div>
                 <Controller name={name} control={control}
-                    render={({ field, fieldState }) => (
+                    render={({ field }) => (
                         <TextAreaWithTitle 
                             title="Justifique sua escolha" 
                             placeholder="Escreva sobre este colaborador como referência..."
                             value={field.value || ''} 
                             onChange={field.onChange} 
                             maxLength={1000} 
-                            error={fieldState.error?.message}
                         />
                     )}
                 />
