@@ -1,221 +1,417 @@
-# RPE Frontend
+# 🚀 RPE Frontend
 
-Sistema de avaliação de performance da Rocket Corp.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
+  <img src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" alt="Material-UI" />
+</p>
 
-## Integrações de API Implementadas
+Interface web moderna do **Sistema de Avaliação de Performance** (RPE) da RocketCorp. Uma aplicação React robusta e responsiva que oferece uma experiência completa para gestão de ciclos de avaliação, feedback 360° e relatórios de performance.
 
-### Manager API
+## 📋 Índice
 
-#### Endpoints Implementados:
+- [🎯 Funcionalidades](#-funcionalidades)
+- [🛠️ Tecnologias](#️-tecnologias)
+- [📁 Estrutura do Projeto](#-estrutura-do-projeto)
+- [🚀 Instalação e Configuração](#-instalação-e-configuração)
+- [⚙️ Configuração](#️-configuração)
+- [🔐 Autenticação](#-autenticação)
+- [📱 Responsividade](#-responsividade)
+- [🎨 Design System](#-design-system)
+- [📋 Scripts Disponíveis](#-scripts-disponíveis)
+- [🧪 Qualidade de Código](#-qualidade-de-código)
 
-- `GET /manager/leaders-and-collaborators` - Lista líderes e colaboradores
-- `POST /manager/assign-leader-evaluation` - Atribui líder para avaliar colaborador
-- `GET /manager/dashboard/total-leaders` - Total de líderes
-- `GET /manager/dashboard/evaluation-percentage` - Percentual de avaliações
-- `GET /manager/dashboard/missing-evaluations` - Avaliações faltantes
-- `GET /manager/dashboard/leaders/evaluation-percentage` - Percentual de avaliações de líderes
-- `GET /manager/dashboard/collaborators/without-leader` - Colaboradores sem líder
-- `GET /manager/collaborators/evaluations-summary` - Resumo de avaliações dos colaboradores
-- `GET /manager/collaborators-evaluations-details` - Detalhes das avaliações
-- `GET /manager/auto-evaluation/:userId` - Autoavaliação do usuário
-- `POST /manager/evaluate` - Avaliação do manager (formato corrigido)
+## 🎯 Funcionalidades
 
-#### Endpoints de Avaliações dos Colaboradores (rotas existentes do employer):
+### 👨‍💼 Dashboard Gerencial
 
-- `GET /employer/evaluation-result` - Avaliação completa do colaborador (autoavaliação, 360°, mentoring, referências)
-- `GET /employer/all-evaluations` - Histórico de todas as avaliações do colaborador
+- **Métricas em tempo real** de avaliações e colaboradores
+- **Visão consolidada** de progresso por equipe
+- **Navegação intuitiva** para avaliações pendentes
+- **Gráficos interativos** com Chart.js
 
-#### Hooks Implementados:
+### 📊 Sistema de Avaliações
 
-- `useLeadersAndCollaborators()` - Busca líderes e colaboradores
-- `useAssignLeaderEvaluation()` - Atribui líder para avaliação
-- `useTotalLeaders()` - Total de líderes
-- `useEvaluationPercentage()` - Percentual de avaliações
-- `useMissingEvaluations()` - Avaliações faltantes
-- `useLeaderEvaluationPercentage()` - Percentual de avaliações de líderes
-- `useCollaboratorsWithoutLeader()` - Colaboradores sem líder
-- `useCollaboratorsEvaluationsSummary()` - Resumo de avaliações
-- `useCollaboratorsEvaluationsDetails()` - Detalhes das avaliações
-- `useUserAutoEvaluation(userId)` - Autoavaliação do usuário
-- `useManagerEvaluation()` - Mutation para avaliação do manager
-- `useTrackCriteria()` - Critérios da trilha
-- `useCollaboratorEvaluationResult(cycleId, collaboratorId)` - Avaliação completa do colaborador
-- `useCollaboratorAllEvaluations(collaboratorId)` - Histórico de avaliações do colaborador
+- **Autoavaliação**: Interface para colaboradores avaliarem performance própria
+- **Avaliação 360°**: Coleta de feedback multidirecional
+- **Avaliação Gerencial**: Ferramentas para gestores avaliarem colaboradores
+- **Histórico completo**: Visualização de avaliações anteriores
 
-#### Componentes Atualizados:
+### 🔄 Gestão de Ciclos
 
-- `ManagerDashboard` - Usa dados reais da API e permite navegação para avaliação
-- `ManagerAvaliacao` - Integração completa com API de avaliação do colaborador
-- `ManagerEvaluationForm` - Usa critérios reais da trilha
-- `ManagerSelfAssessmentSection` - Usa critérios dinâmicos
-- `CollaboratorHistorySection` - Exibe histórico real de avaliações
+- **Configuração flexível** de períodos de avaliação
+- **Controle de prazos** com notificações visuais
+- **Status tracking** em tempo real
+- **Extensão de ciclos** com justificativas
 
-## Funcionalidades Implementadas
+### 👥 Gestão de Colaboradores
 
-### ✅ **Dashboard do Manager**
+- **Filtros avançados** para busca de colaboradores
+- **Atribuição dinâmica** de líderes para avaliação
+- **Visualização de trilhas** de desenvolvimento
+- **Importação em massa** de dados
 
-- Métricas reais de líderes, colaboradores e avaliações
-- Navegação direta para avaliação do colaborador
-- Cards clicáveis com dados reais da API
+### 📈 Analytics e Relatórios
 
-### ✅ **Avaliação de Colaboradores**
+- **Gráficos de performance** interativos
+- **Comparação entre ciclos** históricos
+- **Exportação de dados** para análise
+- **Métricas de engajamento** da equipe
 
-- Formulário completo com critérios da trilha do colaborador
-- Visualização das autoavaliações do colaborador (read-only)
-- Visualização das avaliações 360° recebidas
-- Visualização das referências recebidas
-- Visualização do mentoring
-- Histórico completo de avaliações do colaborador
+### 🔍 Auditoria
 
-### ✅ **Integração com Rotas Existentes**
+- **Log detalhado** de todas as ações
+- **Rastreamento de mudanças** em avaliações
+- **Histórico de acessos** e modificações
 
-- Usa as rotas `/employer/evaluation-result` e `/employer/all-evaluations`
-- Converte dados da API para o formato esperado pelo frontend
-- Mantém compatibilidade com a estrutura existente
+## 🛠️ Tecnologias
 
-### ✅ **Formato Correto do Payload**
+### Core Framework
 
-- Corrigido para usar o formato real do backend
-- Inclui `trackId` obrigatório
-- Remove `justification` do payload (mantida apenas para UX)
-- Usa `criteria` em vez de `criterias`
+- **[React 19](https://react.dev/)** - Biblioteca para interfaces de usuário
+- **[TypeScript](https://www.typescriptlang.org/)** - Superset tipado do JavaScript
+- **[Vite](https://vitejs.dev/)** - Build tool e dev server moderno
 
-## Próximos Passos
+### Estilização & UI
 
-### Backend (NestJS)
+- **[Tailwind CSS](https://tailwindcss.com/)** - Framework CSS utility-first
+- **[Material-UI](https://mui.com/)** - Componentes React prontos
+- **[Framer Motion](https://www.framer.com/motion/)** - Biblioteca de animações
+- **[Lucide React](https://lucide.dev/)** - Ícones modernos
 
-1. **Verificar compatibilidade dos DTOs**:
+### Gerenciamento de Estado
 
-    - `ManagerEvaluationDto` deve corresponder ao schema do frontend
-    - Adicionar campos para track/criteria se necessário
+- **[React Query](https://tanstack.com/query)** - State management para server state
+- **[React Context](https://react.dev/reference/react/useContext)** - Estado global da aplicação
 
-2. **Novos endpoints necessários**:
+### Formulários & Validação
 
-    ```typescript
-    GET /manager/collaborator/:id          // Dados completos do colaborador
-    GET /manager/collaborator/:id/track    // Trilha do colaborador
-    GET /manager/collaborator/:id/360      // Avaliações 360°
-    GET /manager/collaborator/:id/references // Referências
-    ```
+- **[React Hook Form](https://react-hook-form.com/)** - Formulários performáticos
+- **[Zod](https://zod.dev/)** - Validação de schemas TypeScript-first
+- **[@hookform/resolvers](https://github.com/react-hook-form/resolvers)** - Integração RHF + Zod
 
-3. **Melhorias no Service**:
-    - Implementar busca de dados do colaborador (nome, email, posição)
-    - Adicionar validações de permissão
-    - Implementar cache para otimização
+### Roteamento & Navegação
 
-### Frontend
+- **[React Router](https://reactrouter.com/)** - Roteamento declarativo
+- **[nuqs](https://nuqs.47ng.com/)** - URL state management
 
-1. **Melhorias na integração**:
+### Visualização de Dados
 
-    - Implementar busca de dados completos do colaborador
-    - Adicionar loading states adequados
-    - Implementar error handling robusto
+- **[Chart.js](https://www.chartjs.org/)** - Gráficos interativos
+- **[React Chart.js 2](https://react-chartjs-2.js.org/)** - Wrapper React para Chart.js
 
-2. **Novos componentes**:
+### Utilitários
 
-    - `CollaboratorDetailsCard` - Exibir dados completos
-    - `TrackCriteriaSelector` - Seleção de critérios
-    - `EvaluationProgressTracker` - Acompanhar progresso
+- **[Axios](https://axios-http.com/)** - Cliente HTTP
+- **[date-fns](https://date-fns.org/)** - Manipulação de datas
+- **[clsx](https://github.com/lukeed/clsx)** - Utility para classes condicionais
+- **[tailwind-merge](https://github.com/dcastil/tailwind-merge)** - Merge de classes Tailwind
 
-3. **Otimizações**:
-    - Implementar cache local para dados estáticos
-    - Adicionar paginação para listas grandes
-    - Implementar busca e filtros avançados
+### DevOps & Qualidade
 
-## Como Testar
+- **[ESLint](https://eslint.org/)** - Linter para JavaScript/TypeScript
+- **[Prettier](https://prettier.io/)** - Formatador de código
+- **[Husky](https://typicode.github.io/husky/)** - Git hooks
+- **[lint-staged](https://github.com/okonet/lint-staged)** - Lint em arquivos staged
 
-1. **Backend**:
+## 📁 Estrutura do Projeto
 
-    ```bash
-    # Verificar se os endpoints estão funcionando
-    curl -H "Authorization: Bearer <token>" http://localhost:3002/manager/leaders-and-collaborators
-    curl -H "Authorization: Bearer <token>" http://localhost:3002/employer/evaluation-result?cycleConfigId=1&userId=3
-    ```
+```
+src/
+├── components/         # Componentes reutilizáveis
+│   ├── common/         # Componentes base (buttons, inputs, etc.)
+│   ├── Charts/         # Componentes de gráficos
+│   ├── Dashboard/      # Componentes do dashboard
+│   ├── Evaluation/     # Componentes de avaliação
+│   ├── Lideranca/      # Componentes de liderança
+│   └── ...
+├── pages/              # Páginas da aplicação
+│   ├── Dashboard/      # Página principal
+│   ├── Avaliacao/      # Páginas de avaliação
+│   ├── Colaboradores/  # Gestão de colaboradores
+│   ├── Configuracoes/  # Configurações do sistema
+│   └── ...
+├── hooks/              # Custom hooks
+│   ├── api/            # Hooks para integração com API
+│   ├── useAuth.ts      # Hook de autenticação
+│   ├── useCycle.ts     # Hook de ciclos
+│   └── ...
+├── services/           # Serviços e integração com API
+│   └── api/            # Configuração e endpoints da API
+├── contexts/           # Contextos React
+│   ├── AuthContext.tsx # Contexto de autenticação
+│   ├── CycleContext.tsx# Contexto de ciclos
+│   └── ...
+├── types/              # Definições TypeScript
+│   ├── auth.ts         # Tipos de autenticação
+│   ├── collaborator.ts # Tipos de colaborador
+│   ├── evaluations.ts  # Tipos de avaliações
+│   └── ...
+├── schemas/            # Schemas de validação Zod
+│   ├── evaluation.ts   # Schema de avaliações
+│   ├── startCycleSchema.ts # Schema de ciclos
+│   └── ...
+├── utils/              # Funções utilitárias
+├── layouts/            # Layouts da aplicação
+├── router/             # Configuração de rotas
+└── data/               # Dados mock para desenvolvimento
+```
 
-2. **Frontend**:
+## � Instalação e Configuração
 
-    ```bash
-    # Iniciar em modo desenvolvimento
-    npm run dev
-    ```
+### Pré-requisitos
 
-3. **Testes de Integração**:
-    - Login como manager
-    - Acessar dashboard do manager
-    - Clicar em um colaborador para ver sua avaliação
-    - Verificar se os dados são carregados da API
-    - Testar avaliação de colaborador
+- **Node.js** (v18 ou superior)
+- **pnpm** (gerenciador de pacotes recomendado)
+- **RPE Backend** rodando
 
-## Estrutura de Dados
+### 1. Clone o repositório
 
-### Manager Evaluation Payload (Formato Correto)
+```bash
+git clone <repository-url>
+cd rpe-frontend
+```
+
+### 2. Instale as dependências
+
+```bash
+pnpm install
+```
+
+### 3. Configure as variáveis de ambiente
+
+```bash
+cp .env.example .env.local
+```
+
+### 4. Inicie a aplicação
+
+```bash
+# Modo desenvolvimento
+pnpm dev
+
+# Build para produção
+pnpm build
+
+# Preview do build
+pnpm preview
+```
+
+A aplicação estará disponível em `http://localhost:5173`
+
+## ⚙️ Configuração
+
+### Configuração da API
+
+O frontend está configurado para integrar com a API REST do RPE Backend:
 
 ```typescript
+// Principais endpoints integrados:
+- Authentication: /auth/*
+- Manager: /manager/*
+- Employer: /employer/*
+- Cycles: /cycles/*
+- Users: /users/*
+```
+
+## 🔐 Autenticação
+
+### Sistema de Autenticação
+
+- **JWT Tokens** com refresh automático
+- **Roles hierárquicos**: Admin, Manager, Leader, Employer
+- **Rotas protegidas** com middleware de autenticação
+- **Sessão persistente** com localStorage
+
+### Fluxo de Autenticação
+
+1. Login via formulário
+2. Recebimento e armazenamento do JWT
+3. Interceptação automática de requests
+4. Refresh token automático
+5. Logout com limpeza de dados
+
+### Controle de Acesso
+
+```typescript
+// Roles disponíveis
+enum Role {
+  ADMIN = 'ADMIN',
+  MANAGER = 'MANAGER',
+  LEADER = 'LEADER',
+  EMPLOYER = 'EMPLOYER'
+}
+
+// Rotas protegidas por role
+<ProtectedRoute roles={[Role.MANAGER, Role.ADMIN]}>
+  <ManagerDashboard />
+</ProtectedRoute>
+```
+
+## 📱 Responsividade
+
+### Breakpoints Tailwind
+
+- **mobile**: 320px+ (padrão)
+- **sm**: 640px+ (smartphones grandes)
+- **md**: 768px+ (tablets)
+- **lg**: 1024px+ (desktop)
+- **xl**: 1280px+ (desktop large)
+- **2xl**: 1536px+ (telas muito grandes)
+
+### Abordagem Mobile-First
+
+```typescript
+// Exemplo de componente responsivo
+<div className="
+  grid grid-cols-1
+  md:grid-cols-2
+  lg:grid-cols-3
+  xl:grid-cols-4
+  gap-4
+">
+```
+
+### Componentes Adaptáveis
+
+- **Navegação**: Menu hambúrguer em mobile, sidebar em desktop
+- **Tabelas**: Scroll horizontal em mobile, completas em desktop
+- **Modais**: Fullscreen em mobile, centralizados em desktop
+- **Charts**: Redimensionamento automático
+
+## 🎨 Design System
+
+### Paleta de Cores
+
+```css
+/* Cores principais */
+--primary: #3b82f6 /* Blue-500 */ --secondary: #6b7280 /* Gray-500 */ --success: #10b981 /* Emerald-500 */ --warning: #f59e0b /* Amber-500 */ --error: #ef4444 /* Red-500 */;
+```
+
+### Componentes Base
+
+- **Buttons**: Variações de size, color e variant
+- **Inputs**: Validação visual e estados
+- **Cards**: Elevation e hover effects
+- **Tables**: Sorting, filtering e pagination
+- **Modals**: Overlay e animações
+
+### Temas
+
+- **Light Mode**: Tema padrão claro
+- **Dark Mode**: Em desenvolvimento
+- **High Contrast**: Para acessibilidade
+
+## � Scripts Disponíveis
+
+### Desenvolvimento
+
+```bash
+pnpm dev              # Servidor de desenvolvimento
+pnpm build            # Build para produção
+pnpm preview          # Preview do build
+```
+
+### Qualidade de Código
+
+```bash
+pnpm lint             # Verifica problemas no código
+pnpm lint:fix         # Corrige problemas automaticamente
+pnpm format           # Formata código com Prettier
+pnpm format:check     # Verifica formatação
+pnpm type-check       # Verifica tipos TypeScript
+```
+
+### Utilitários
+
+```bash
+pnpm prepare          # Configura Husky hooks
+```
+
+## 🧪 Qualidade de Código
+
+### Linting e Formatação
+
+- **ESLint** configurado para React e TypeScript
+- **Prettier** para formatação consistente
+- **Husky** para git hooks automáticos
+- **lint-staged** para verificação em commits
+
+### Padrões de Código
+
+```typescript
+// Exemplo de estrutura de componente
+interface ComponentProps {
+  title: string;
+  onAction?: () => void;
+}
+
+export const Component: React.FC<ComponentProps> = ({
+  title,
+  onAction
+}) => {
+  return (
+    <div className="flex items-center justify-between p-4">
+      <h2 className="text-lg font-semibold">{title}</h2>
+      {onAction && (
+        <button
+          onClick={onAction}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Action
+        </button>
+      )}
+    </div>
+  );
+};
+```
+
+### TypeScript Strict Mode
+
+- **Strict type checking** habilitado
+- **Interfaces explícitas** para props e dados
+- **Type guards** para runtime safety
+- **Utility types** para transformações
+
+### Performance
+
+- **Code splitting** automático por rota
+- **Lazy loading** de componentes pesados
+- **Memoização** com React.memo e useMemo
+- **Otimização de re-renders** com useCallback
+
+## 🚀 Deploy
+
+### Build para Produção
+
+```bash
+pnpm build
+```
+
+### Deploy na Vercel
+
+O projeto está configurado para deploy automático na Vercel através do `vercel.json`:
+
+```json
 {
-    managerId: number;
-    collaboratorId: number;
-    cycleId: number;
-    trackId: number;
-    criteria: Array<{
-        criterionId: number;
-        score: number;
-    }>;
+    "buildCommand": "pnpm build",
+    "outputDirectory": "dist",
+    "framework": "vite"
 }
 ```
 
-### Collaborator Evaluation Result
+### Variáveis de Ambiente em Produção
 
-```typescript
-{
-    id: number;
-    cycleConfigId: number;
-    userId: number;
-    user: {
-        id: number;
-        name: string;
-        track: string;
-    }
-    autoEvaluation: {
-        pilares: Array<{
-            pilarId: number;
-            criterios: Array<{
-                criterioId: number;
-                nota: number;
-                justificativa: string;
-            }>;
-        }>;
-    }
-    evaluation360: Array<{
-        avaliadoId: number;
-        pontosFortes: string;
-        pontosMelhoria: string;
-        score: number;
-    }>;
-    mentoring: {
-        mentorId: number;
-        justificativa: string;
-        score: number;
-    }
-    reference: Array<{
-        colaboradorId: number;
-        justificativa: string;
-    }>;
-}
-```
+Configure as variáveis de ambiente no painel da Vercel:
 
-### Collaborator All Evaluations
+- `VITE_API_BASE_URL`
+- `VITE_APP_ENV=production`
+- Outras variáveis conforme necessário
 
-```typescript
-Array<{
-    cycle: {
-        id: number;
-        name: string;
-        startDate: string;
-        endDate: string;
-    };
-    autoEvaluation: number;
-    evaluation360: number;
-    manager: number | null;
-    committee: number | null;
-}>;
-```
+---
+
+<p align="center">
+  Desenvolvido com ❤️ para a <strong>RocketCorp</strong>
+</p>
