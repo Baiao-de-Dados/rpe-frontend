@@ -4,6 +4,8 @@ import { UserRoleEnum } from '../../types/auth';
 import { ManagerAvaliacao } from './ManagerAvaliacao';
 import { LeaderAvaliacao } from './LeaderAvaliacao';
 import { CommitteeAvaliacao } from './CommitteeAvaliacao';
+import StatusMessageCard from '../../components/common/StatusMessageCard';
+import { Lock } from 'lucide-react';
 
 export function AvaliacaoIndividual() {
     const { hasRole } = useAuth();
@@ -29,9 +31,10 @@ export function AvaliacaoIndividual() {
 
     // Default - não deveria chegar aqui
     return (
-        <div className="p-8">
-            <h1>Acesso não autorizado</h1>
-            <p>Você não tem permissão para acessar esta página.</p>
-        </div>
+        <StatusMessageCard
+            icon={<Lock size={40} className="text-primary-500" />}
+            title="Acesso não autorizado"
+            message="Você não tem permissão para acessar esta página."
+        />
     );
 }
