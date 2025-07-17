@@ -23,7 +23,6 @@ export function CollaboratorDashboard() {
         cycleName: `Ciclo ${cycle.cycleName}`,
         score: cycle.finalEvaluation ?? 0,
         status: cycle.finalEvaluation !== null && cycle.finalEvaluation !== undefined ? 'Finalizado' : 'Em andamento',
-        summary: '',
     }));
 
     const chartData = cycles
@@ -77,7 +76,6 @@ export function CollaboratorDashboard() {
                                                 score={cycle.score}
                                                 status={cycle.status as 'Finalizado' | 'Em andamento'}
                                                 cycleName={cycle.cycleName}
-                                                summary={cycle.summary}
                                                 onClick={() => navigate('/avaliacao')}
                                             />
                                         ))}

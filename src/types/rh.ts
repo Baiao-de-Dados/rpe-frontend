@@ -4,10 +4,14 @@ export interface GetRHCollaborators {
     email: string;
     position: string;
     track: string;
-    av360Score: number | null;
-    autoEvaluationScore: number | null;
-    managerScore: number | null;
-    equalizationScore: number | null;
+    scores: Array<{
+        cycleId: number;
+        cycleName: string;
+        av360Score: number | null;
+        autoEvaluationScore: number | null;
+        managerScore: number | null;
+        equalizationScore: number | null;
+    }>;
 }
 
 export interface GetRHDashboard {
