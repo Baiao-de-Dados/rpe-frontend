@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useCycle } from '../../hooks/useCycle';
 import { useLeaderCollaboratorsEvaluation } from '../../hooks/api/useLeaderQuery';
+import { useAuth } from '../../hooks/useAuth';
 import { useAdvancedCollaboratorFilter } from '../../hooks/useAdvancedCollaboratorFilter';
 
 import SearchBar from '../../components/common/Searchbar';
@@ -28,14 +29,38 @@ function getPositionsAndTracks(collaboratorsSummary: any[]) {
 
 export function BrutalFactsPage() {
 
+    const { user } = useAuth();
+
     const navigate = useNavigate();
     const { currentCycle, isLoading, status } = useCycle();
     const {
         data: collaboratorsSummary = [],
         isLoading: isLeaderLoading,
         allCycleAvg = [],
-        isLoadingAllCycleAvg
+        isLoadingAllCycleAvg,
+        getLeaderSummary
     } = useLeaderCollaboratorsEvaluation();
+
+    const [leaderSummary, setLeaderSummary] = useState<string>('');
+    const [isLoadingLeaderSummary, setIsLoadingLeaderSummary] = useState(false);
+
+    useEffect(() => {
+        async function fetchSummary() {
+            if (user?.id && currentCycle?.id) {
+                setIsLoadingLeaderSummary(true);
+                const res = await getLeaderSummary({ userId: user.id, cycleId: currentCycle.id });
+                if (res.code === 'SUCCESS') {
+                    setLeaderSummary(res.summary);
+                } else if (res.code === 'ERROR') {
+                    setLeaderSummary('Erro ao gerar insights: ' + res.error);
+                } else {
+                    setLeaderSummary('Nenhum insight gerado para este ciclo.');
+                }
+                setIsLoadingLeaderSummary(false);
+            }
+        }
+        fetchSummary();
+    }, [user?.id, currentCycle?.id, getLeaderSummary]);
     const { positions, tracks } = getPositionsAndTracks(collaboratorsSummary);
 
     const { search, setSearch, setFilters, filteredCollaborators } = useAdvancedCollaboratorFilter({ collaboratorsSummary, positions, tracks });
@@ -83,7 +108,7 @@ export function BrutalFactsPage() {
         if (!allCycleAvg || !Array.isArray(allCycleAvg)) return [];
         return allCycleAvg.map(cycle => ({
             cycleName: String(cycle.cycleName),
-            score: cycle.averageEqualizationScore
+            finalScore: cycle.averageEqualizationScore
         }));
     }, [allCycleAvg]);
 
@@ -113,7 +138,11 @@ export function BrutalFactsPage() {
 
                 <CardContainer className="flex flex-col gap-6 mb-6">
                     <Typography variant="h2" className="text-black font-bold text-2xl">Resumo</Typography>
-                    <SummaryBox summary='' title="Insights" />
+                    {isLoadingLeaderSummary ? (
+                        <SummaryBox summary="Gerando resumo..." title="Insights" />
+                    ) : (
+                        <SummaryBox summary={leaderSummary} title="Insights" />
+                    )}
                 </CardContainer>
 
                 <CardContainer className="flex flex-col gap-6 p-6">

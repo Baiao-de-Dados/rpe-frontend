@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { leaderEndpoints } from '../../services/api/leader';
+import type { LeaderAISummary } from '../../types/evaluationAI';
 import type { CollaboratorsEvaluationsSummary } from '../../types/collaborator';
 import type { LeaderEvaluationPayload, GetLeaderEvaluationPayload, LeaderEvaluation, CycleLeaderAvg } from '../../types/leader';
 
@@ -36,10 +37,16 @@ export function useLeaderCollaboratorsEvaluation() {
         return res.data;
     };
 
+    const getLeaderSummary = async (payload: { userId: number; cycleId: number }): Promise<LeaderAISummary> => {
+        const res = await leaderEndpoints.getLeaderSummary(payload);
+        return res.data;
+    };
+
     return {
         ...query,
         leaderEvaluation,
         getLeaderEvaluation,
+        getLeaderSummary,
         allCycleAvg: allCycleAvgQuery.data,
         isLoadingAllCycleAvg: allCycleAvgQuery.isLoading,
         allCycleAvgQuery,

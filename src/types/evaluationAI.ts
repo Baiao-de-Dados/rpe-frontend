@@ -55,3 +55,8 @@ export type IAEvaluationServiceResponse = {
     written?: string;
     applicable?: string[];
 }
+
+export type LeaderAISummary =
+    | { code: 'ERROR'; error: string }
+    | { code: 'SUCCESS'; summary: string }
+    | { code: 'NO_INSIGHT' };

@@ -16,9 +16,8 @@ export function CollaboratorDashboard() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const { data: cyclesGrades, isLoading } = useCycleGradesQuery();
-    const { currentCycle, isLoading: isLoadingCycle } = useCycle(); // Mantido para uso futuro
+    const { currentCycle, isLoading: isLoadingCycle } = useCycle(); 
 
-    // Adapta os dados da API para os componentes
     const cycles = cyclesGrades?.cycles || [];
     const cycleCards = cycles.map(cycle => ({
         cycleName: `Ciclo ${cycle.cycleName}`,
