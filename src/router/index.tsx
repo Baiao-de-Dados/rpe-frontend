@@ -89,8 +89,6 @@ export function Router() {
                                     UserRoleEnum.LEADER,
                                     UserRoleEnum.MANAGER,
                                     UserRoleEnum.COMMITTEE,
-                                    UserRoleEnum.ADMIN,
-                                    UserRoleEnum.DEVELOPER,
                             ]}>
                                 <Colaboradores />
                             </RoleRoute>
@@ -117,7 +115,6 @@ export function Router() {
                         element={
                             <RoleRoute requiredRoles={[
                                 UserRoleEnum.RH, 
-                                UserRoleEnum.ADMIN
                             ]}>
                                 <Configuracoes />
                             </RoleRoute>
@@ -128,38 +125,8 @@ export function Router() {
                         element={
                             <RoleRoute requiredRoles={[
                                 UserRoleEnum.RH, 
-                                UserRoleEnum.ADMIN
                             ]}>
                                 <ImportarHistoricos />
-                            </RoleRoute>
-                        }
-                    />
-
-                    <Route path="administracao"
-                        element={
-                            <RoleRoute requiredRoles={[
-                                UserRoleEnum.RH, 
-                                UserRoleEnum.ADMIN
-                            ]}>
-                                <div className="p-6">
-                                    <h1 className="text-2xl font-bold">Painel de Administração</h1>
-                                    <p>Esta página só é acessível para RH, Comitê, Admin e Desenvolvedor</p>
-                                </div>
-                            </RoleRoute>
-                        }
-                    />
-
-                    <Route path="dev"
-                        element={
-                            <RoleRoute redirectTo="/dashboard" 
-                            requiredRoles={[
-                                UserRoleEnum.DEVELOPER, 
-                                UserRoleEnum.ADMIN
-                            ]}>
-                                <div className="p-6">
-                                    <h1 className="text-2xl font-bold">Ferramentas de Desenvolvimento</h1>
-                                    <p>Esta página só é acessível para desenvolvedores</p>
-                                </div>
                             </RoleRoute>
                         }
                     />
@@ -167,11 +134,7 @@ export function Router() {
                     <Route path="lideranca"
                         element={
                             <MultiRoleRoute redirectTo="/dashboard" allowedRoles={[
-                                UserRoleEnum.MENTOR, 
-                                UserRoleEnum.LEADER, 
                                 UserRoleEnum.MANAGER, 
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.RH
                             ]}>
                                 <Lideranca />
                             </MultiRoleRoute>
@@ -181,10 +144,6 @@ export function Router() {
                     <Route path="anotacoes" 
                         element={
                             <RoleRoute requiredRoles={[
-                                    UserRoleEnum.MENTOR,
-                                    UserRoleEnum.RH,
-                                    UserRoleEnum.ADMIN,
-                                    UserRoleEnum.DEVELOPER,
                                     UserRoleEnum.EMPLOYER,
                             ]}>
                                 <Anotacoes />
@@ -196,9 +155,6 @@ export function Router() {
                         element={
                             <MultiRoleRoute redirectTo="/dashboard" allowedRoles={[
                                 UserRoleEnum.LEADER, 
-                                UserRoleEnum.MANAGER, 
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.RH
                             ]}>
                                 <BrutalFactsPage />
                             </MultiRoleRoute>

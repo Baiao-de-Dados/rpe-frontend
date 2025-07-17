@@ -71,8 +71,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.EMPLOYER, 
-                                UserRoleEnum.RH,
-                                UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/avaliacao" onClick={closeMenu} title="Avaliação de ciclo" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}`}>
@@ -86,7 +84,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.EMPLOYER,
-                                UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/evolucao" onClick={closeMenu} title="Evolução" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}` }>
@@ -101,10 +98,7 @@ export default function AsideMenu() {
                         <RoleGuard anyRole={[
                                 UserRoleEnum.LEADER,
                                 UserRoleEnum.RH,
-                                UserRoleEnum.MENTOR,
                                 UserRoleEnum.MANAGER,
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/colaboradores" onClick={closeMenu} title="Colaboradores" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}`}>
@@ -130,7 +124,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.RH,
-                                UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/importar" onClick={closeMenu} title="Importar Histórico" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}`}>
@@ -154,9 +147,6 @@ export default function AsideMenu() {
                         </RoleGuard>
 
                         <RoleGuard anyRole={[
-                                UserRoleEnum.RH,
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.DEVELOPER,
                                 UserRoleEnum.MANAGER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
@@ -184,8 +174,6 @@ export default function AsideMenu() {
 
                         <RoleGuard anyRole={[
                                 UserRoleEnum.RH,
-                                UserRoleEnum.ADMIN,
-                                UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/configuracoes" onClick={closeMenu} title="Configurações" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}`}>
@@ -198,8 +186,6 @@ export default function AsideMenu() {
                         </RoleGuard>
                         <RoleGuard anyRole={[
                                 UserRoleEnum.LEADER,
-                                UserRoleEnum.RH,
-                                UserRoleEnum.DEVELOPER,
                             ]}>
                             <li className="list-none w-full max-lg:flex max-lg:justify-start max-lg:w-auto">
                                 <NavLink to="/brutalfacts" onClick={closeMenu} title="Avaliação de ciclo" className={({ isActive }) => `flex items-center gap-4 no-underline relative transition-all duration-200 ease-in-out hover:text-secondary-600 max-lg:text-2xl max-lg:gap-4 pl-0 pr-4 py-2 ${isActive ? 'text-primary-500 font-semibold bg-neutral-100 rounded-lg' : 'text-secondary-400'}`}>

@@ -10,9 +10,11 @@ export interface CycleContextType {
     startCycle: (payload: StartCyclePayload) => void;
     extendCycle: (id: number, payload: ExtendCyclePayload) => void;
     cancelCycle: (id: number) => void;
+    finishEqualization: (cycleId: number) => void;
     isStarting: boolean;
     isExtending: boolean;
     isCanceling: boolean;
+    isFinishingEqualization: boolean;
 }
 
 export const CycleContext = createContext<CycleContextType | undefined>(

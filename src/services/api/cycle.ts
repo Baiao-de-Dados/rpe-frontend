@@ -11,4 +11,7 @@ export const cycleEndpoints = {
         api.post(`/cycle-config/${id}/extend`, payload),
     cancelCycle: (id: number) => 
         api.delete(`/cycle-config/${id}/cancel`),
+    // ✅ NOVO: Finalizar equalização
+    finishEqualization: (cycleId: number) => 
+        api.post(`/cycle-config/${cycleId}/done`),
 };

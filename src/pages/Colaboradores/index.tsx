@@ -27,7 +27,7 @@ export function Colaboradores() {
 
     const { hasRole } = useAuth();
     const navigate = useNavigate();
-    const { currentCycle, isLoading: cycleLoading } = useCycle();
+    const { currentCycle, isLoading: cycleLoading, finishEqualization } = useCycle();
 
     // API queries para gestor
     const { data: collaboratorsOnly, isLoading: collaboratorsLoading } = useCollaboratorsOnly();
@@ -88,7 +88,7 @@ export function Colaboradores() {
 
     const getFilteredCollaboratorsSummaryByRole = () => {
         if (hasRole(UserRoleEnum.RH) || hasRole(UserRoleEnum.ADMIN) || hasRole(UserRoleEnum.DEVELOPER)) {
-            // TODO: Implementar dados reais para RH/Admin/Developer
+
             return [];
         }
         if (hasRole(UserRoleEnum.COMMITTEE)) {
@@ -136,10 +136,13 @@ export function Colaboradores() {
     }
 
     const handleFinalize = () => {
-        // TODO: Chamar API de finalização
+        if (!currentCycle?.id) {
+            alert('Ciclo não encontrado');
+            return;
+        }
+        finishEqualization(currentCycle.id);
         setShowFinalizeModal(false);
         setFinalizeInput('');
-        alert('Equalizações finalizadas com sucesso!');
     };
 
     return (

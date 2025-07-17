@@ -52,7 +52,7 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
 
         const foundCurrentCycle = cycles.find(cycle => cycle.name === currentCycleName);
         if (foundCurrentCycle) {
-            foundCurrentCycle.isActive = false;
+            // foundCurrentCycle.isActive = false;
             return foundCurrentCycle;
         }
 
@@ -112,6 +112,23 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         },
     });
 
+    // ✅ NOVO: Mutação para finalizar equalização
+    const finishEqualizationMutation = useMutation({
+        mutationFn: (cycleId: number) => cycleEndpoints.finishEqualization(cycleId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['cycles'] });
+            showToast('Equalizações finalizadas com sucesso! O ciclo foi marcado como concluído.', 'success', {
+                title: 'Equalizações finalizadas', duration: 5000 
+            });
+        },
+        onError: () => {
+            showToast('Erro ao finalizar equalizações. Tente novamente mais tarde!', 'error', {
+                title: 'Erro',
+                duration: 10000
+            });
+        },
+    });
+
     const value: CycleContextType = {
         cycles,
         currentCycle,
@@ -121,9 +138,11 @@ export const CycleProvider = ({ children }: { children: ReactNode }) => {
         startCycle: (payload: StartCyclePayload) => startCycleMutation.mutate(payload),
         extendCycle: (id: number, payload: ExtendCyclePayload) => extendCycleMutation.mutate({ id, payload }),
         cancelCycle: (id: number) => cancelCycleMutation.mutate(id),
+        finishEqualization: (cycleId: number) => finishEqualizationMutation.mutate(cycleId),
         isStarting: startCycleMutation.isPending,
         isExtending: extendCycleMutation.isPending,
         isCanceling: cancelCycleMutation.isPending,
+        isFinishingEqualization: finishEqualizationMutation.isPending,
     };
 
     return (
