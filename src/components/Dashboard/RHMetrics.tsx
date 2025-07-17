@@ -84,7 +84,7 @@ export function RHMetrics({
                         >
                             Faltam{' '}
                             <span className="font-semibold" style={{ color: CHART_COLORS.EXCELLENT }}>
-                                {daysUntilClosure} dias
+                                {daysUntilClosure} {daysUntilClosure === 1 ? 'dia' : 'dias'}
                             </span>{' '}
                             para o fechamento do ciclo, no dia {closureDate}
                         </Typography>
@@ -103,7 +103,7 @@ export function RHMetrics({
                             className="font-bold text-sm sm:text-base"
                             style={{ color: CHART_COLORS.EXCELLENT }}
                         >
-                            dias
+                            {daysUntilClosure === 1 ? 'dia' : 'dias'}
                         </span>
                     </div>
                 </div>
