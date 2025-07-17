@@ -26,45 +26,63 @@ Interface web moderna do **Sistema de Avaliação de Performance** (RPE) da Rock
 ## 🎯 Funcionalidades
 
 ### 👨‍💼 Dashboard Gerencial
-
-- **Métricas em tempo real** de avaliações e colaboradores
-- **Visão consolidada** de progresso por equipe
-- **Navegação intuitiva** para avaliações pendentes
-- **Gráficos interativos** com Chart.js
+- Métricas em tempo real de avaliações e colaboradores;
+- Visão consolidada de progresso por equipe;
+- Gráficos interativos com dados de performance;
+- Navegação intuitiva para avaliações pendentes;
+- Comparativos visuais entre ciclos anteriores.
 
 ### 📊 Sistema de Avaliações
+- Autoavaliação: Interface para colaboradores avaliarem sua própria performance;
+- Avaliação 360°: Coleta de feedback de pares, lideranças e subordinados;
+- Avaliação Gerencial: Ferramentas específicas para gestores avaliarem colaboradores;
+- Histórico completo: Visualização detalhada de ciclos e avaliações anteriores;
+- Controle de edição: Avaliações bloqueadas ou habilitadas conforme status do ciclo.
 
-- **Autoavaliação**: Interface para colaboradores avaliarem performance própria
-- **Avaliação 360°**: Coleta de feedback multidirecional
-- **Avaliação Gerencial**: Ferramentas para gestores avaliarem colaboradores
-- **Histórico completo**: Visualização de avaliações anteriores
+### 🤖 Inteligência Artificial Aplicada
+- Geração automática de avaliações com base nas anotações do dia a dia;
+- Identificação de Brutal Facts: insights objetivos gerados automaticamente sobre pontos de atenção;
+- Equalização assistida: sugestões automáticas para nivelar avaliações discrepantes;
+- Análises baseadas em linguagem natural para apoiar o RH e os líderes na tomada de decisão.
 
-### 🔄 Gestão de Ciclos
+### 🔄 Gestão de Ciclos de Avaliação
+- Criação e configuração flexível de novos ciclos;
+- Controle de prazos com indicadores visuais;
+- Extensão de ciclos com justificativas e validação;
+- Cancelamento de ciclos com confirmação e aviso;
+- Visualização por seções: trilhas, pilares, critérios e ciclos organizados.
 
-- **Configuração flexível** de períodos de avaliação
-- **Controle de prazos** com notificações visuais
-- **Status tracking** em tempo real
-- **Extensão de ciclos** com justificativas
+### 🧩 Configurações de Avaliação
+- Adição dinâmica de pilares e critérios;
+- Criação de trilhas de desenvolvimento personalizadas;
+- Edição inline de critérios e pesos;
+- Modais para ações críticas: iniciar, estender ou cancelar ciclos;
+- Componentização das seções de configuração, facilitando a manutenção.
 
 ### 👥 Gestão de Colaboradores
-
-- **Filtros avançados** para busca de colaboradores
-- **Atribuição dinâmica** de líderes para avaliação
-- **Visualização de trilhas** de desenvolvimento
-- **Importação em massa** de dados
+- Filtros avançados para busca por nome, trilha, nota, posição, etc;
+- Atribuição dinâmica de líderes para cada colaborador;
+- Importação em massa de dados de colaboradores;
+- Visualização das trilhas e vínculos hierárquicos.
 
 ### 📈 Analytics e Relatórios
+- Gráficos interativos de performance por colaborador, equipe e ciclo;
+- Análises específicas para RH com filtros dedicados;
+- Exportação de dados para ferramentas externas de análise;
+- Métricas de engajamento por equipe e por ciclo.
 
-- **Gráficos de performance** interativos
-- **Comparação entre ciclos** históricos
-- **Exportação de dados** para análise
-- **Métricas de engajamento** da equipe
+### 🔍 Auditoria e Controle
+- Log detalhado de todas as ações importantes no sistema;
+- Rastreamento de alterações em avaliações e ciclos;
+- Sincronização robusta com ERP externo;
+- Histórico de acessos e modificações por usuário.
 
-### 🔍 Auditoria
-
-- **Log detalhado** de todas as ações
-- **Rastreamento de mudanças** em avaliações
-- **Histórico de acessos** e modificações
+### 💡 Experiência do Usuário
+- Feedback visual em tempo real com toasts globais;
+- Componentes com skeletons para carregamento suave;
+- Botões inteligentes com loading e prevenção de duplo clique;
+- Indicadores de status (ativo/inativo, preenchido/pendente);
+- Spinner de carregamento ao navegar entre páginas.
 
 ## 🛠️ Tecnologias
 
@@ -180,13 +198,7 @@ cd rpe-frontend
 pnpm install
 ```
 
-### 3. Configure as variáveis de ambiente
-
-```bash
-cp .env.example .env.local
-```
-
-### 4. Inicie a aplicação
+### 3. Inicie a aplicação
 
 ```bash
 # Modo desenvolvimento
@@ -200,6 +212,7 @@ pnpm preview
 ```
 
 A aplicação estará disponível em `http://localhost:5173`
+Se rodar o backend utilizando o docker-compose, não precisa configurar .env no front, por padrão o Axios já faz requisições para a porta 3002.
 
 ## ⚙️ Configuração
 
@@ -252,28 +265,6 @@ enum Role {
 
 ## 📱 Responsividade
 
-### Breakpoints Tailwind
-
-- **mobile**: 320px+ (padrão)
-- **sm**: 640px+ (smartphones grandes)
-- **md**: 768px+ (tablets)
-- **lg**: 1024px+ (desktop)
-- **xl**: 1280px+ (desktop large)
-- **2xl**: 1536px+ (telas muito grandes)
-
-### Abordagem Mobile-First
-
-```typescript
-// Exemplo de componente responsivo
-<div className="
-  grid grid-cols-1
-  md:grid-cols-2
-  lg:grid-cols-3
-  xl:grid-cols-4
-  gap-4
-">
-```
-
 ### Componentes Adaptáveis
 
 - **Navegação**: Menu hambúrguer em mobile, sidebar em desktop
@@ -287,7 +278,11 @@ enum Role {
 
 ```css
 /* Cores principais */
---primary: #3b82f6 /* Blue-500 */ --secondary: #6b7280 /* Gray-500 */ --success: #10b981 /* Emerald-500 */ --warning: #f59e0b /* Amber-500 */ --error: #ef4444 /* Red-500 */;
+--primary: #2b5f60;           /* Teal-500 - Cor principal da marca */
+--secondary: #6b9999;         /* Teal-400 - Usada para elementos secundários */
+--success: #539959;           /* Verde - Sucesso, confirmação */
+--warning: #f59e0b;           /* Amarelo/Amber-500 - Avisos */
+--error: #da3633;             /* Vermelho - Erro, alertas */
 ```
 
 ### Componentes Base
@@ -297,12 +292,6 @@ enum Role {
 - **Cards**: Elevation e hover effects
 - **Tables**: Sorting, filtering e pagination
 - **Modals**: Overlay e animações
-
-### Temas
-
-- **Light Mode**: Tema padrão claro
-- **Dark Mode**: Em desenvolvimento
-- **High Contrast**: Para acessibilidade
 
 ## � Scripts Disponíveis
 
@@ -338,35 +327,6 @@ pnpm prepare          # Configura Husky hooks
 - **Prettier** para formatação consistente
 - **Husky** para git hooks automáticos
 - **lint-staged** para verificação em commits
-
-### Padrões de Código
-
-```typescript
-// Exemplo de estrutura de componente
-interface ComponentProps {
-  title: string;
-  onAction?: () => void;
-}
-
-export const Component: React.FC<ComponentProps> = ({
-  title,
-  onAction
-}) => {
-  return (
-    <div className="flex items-center justify-between p-4">
-      <h2 className="text-lg font-semibold">{title}</h2>
-      {onAction && (
-        <button
-          onClick={onAction}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Action
-        </button>
-      )}
-    </div>
-  );
-};
-```
 
 ### TypeScript Strict Mode
 
